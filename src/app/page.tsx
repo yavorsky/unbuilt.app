@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Loader2, ArrowLeft } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +15,7 @@ type TechStack = {
 
 // Simulated function to get tech stack (replace with actual implementation in a real app)
 const getTechStack = async (url: string): Promise<TechStack> => {
+  console.log(url);
   await new Promise(resolve => setTimeout(resolve, 3000)) // Simulate a 3-second delay
   return {
     Framework: ["Next.js"],
@@ -47,7 +48,7 @@ export default function TechStackAnalyzer() {
     setTechStack(null)
   }
 
-  const handleUrlUpdate = (e) => {
+  const handleUrlUpdate = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     console.log(value, 'value');
     const url = `https://${value.replace(/h?t?t?p?s?\:?\/?\/?/, '')}`

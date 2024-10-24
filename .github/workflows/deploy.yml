@@ -34,6 +34,6 @@ jobs:
           script: |
             cd /home/yavorsky/unbuilt-app
             git pull origin main
-            npm install
-            npm run build
-            pm2 restart unbuilt-app
+            yarn
+            yarn run build
+            pm2 start npm --name "unbuilt" -- start
