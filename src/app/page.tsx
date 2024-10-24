@@ -57,7 +57,7 @@ export default function TechStackAnalyzer() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 p-5">
       <Card className="w-full max-w-md bg-transparent text-white">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Unbuilt</CardTitle>
