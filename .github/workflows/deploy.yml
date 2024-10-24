@@ -1,4 +1,4 @@
-name: Debug SSH Connection
+name: Deploy to Digital Ocean
 
 on:
   push:
@@ -10,27 +10,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug - Print Key Info
-        run: |
-          echo "Key length: ${{ length(secrets.DROPLET_SSH_KEY) }}"
-          echo "Username: ${{ secrets.DROPLET_USERNAME }}"
-          echo "IP exists: ${{ secrets.DROPLET_IP != '' }}"
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-      - name: Create SSH key file
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ls -la ~/.ssh/deploy_key
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20.18'
 
-      - name: Test SSH Connection with Debug
+      - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DROPLET_USERNAME }}
+          username: server
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          debug: true
           script: |
-            echo "Testing connection"
-            whoami
-            pwd
+            echo "Starting deployment..."
+            cd /home/server/unbuilt-app
+
+            echo "Pulling latest changes..."
+            git pull origin main
+
+            echo "Installing dependencies..."
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            yarn install
+
+            echo "Building application..."
+            yarn build
+
+            echo "Restarting PM2 process..."
+            pm2 restart unbuilt
+
+            echo "Deployment completed successfully!"
