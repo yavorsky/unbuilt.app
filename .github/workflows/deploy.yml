@@ -1,4 +1,4 @@
-name: Deploy to Digital Ocean
+name: Debug SSH Connection
 
 on:
   push:
@@ -10,15 +10,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Deploy to DigitalOcean
+      - name: Debug - Print Key Info
+        run: |
+          echo "Key length: ${{ length(secrets.DROPLET_SSH_KEY) }}"
+          echo "Username: ${{ secrets.DROPLET_USERNAME }}"
+          echo "IP exists: ${{ secrets.DROPLET_IP != '' }}"
+
+      - name: Create SSH key file
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DROPLET_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ls -la ~/.ssh/deploy_key
+
+      - name: Test SSH Connection with Debug
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
+          debug: true
           script: |
-            cd /home/${{ secrets.DROPLET_USERNAME }}/unbuilt-app
-            git pull origin main
-            yarn install
-            yarn build
-            pm2 restart unbuilt
+            echo "Testing connection"
+            whoami
+            pwd
