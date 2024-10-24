@@ -64,7 +64,7 @@ export default function TechStackAnalyzer() {
           <CardDescription className="text-gray-400">Analyze the technical stack of any website</CardDescription>
         </CardHeader>
         <CardContent>
-          Artem <3 Dashu!!!
+          <div>{'Artem <3 Dashu!!!'}</div>
           {/* {!techStack && !isLoading && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
