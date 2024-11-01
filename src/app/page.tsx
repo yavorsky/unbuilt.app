@@ -62,9 +62,9 @@ export default function TechStackAnalyzer() {
       <Card className="w-full max-w-md bg-transparent text-white">
         <CardHeader>
           <CardTitle className="text-2xl font-bold">Unbuilt</CardTitle>
-          <CardDescription className="text-gray-400">Analyze the technical stack of any website</CardDescription>
+          {/* <CardDescription className="text-gray-400">Analyze the technical stack of any website</CardDescription> */}
         </CardHeader>
-        <CardContent>
+        {/* <CardContent>
           {!techStack && !isLoading && (
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
@@ -109,7 +109,7 @@ export default function TechStackAnalyzer() {
               ))}
             </div>
           )}
-        </CardContent>
+        </CardContent> */}
       </Card>
     </div>
   )
