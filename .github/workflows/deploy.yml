@@ -39,7 +39,8 @@ jobs:
             echo "Building application..."
             yarn build
 
-            echo "Restarting PM2 process..."
+            echo "Restarting PM2 processes..."
             pm2 restart unbuilt
+            pm2 restart unbuilt-worker
 
             echo "Deployment completed successfully!"
