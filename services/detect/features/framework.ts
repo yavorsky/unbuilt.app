@@ -1,5 +1,8 @@
-import { Page } from 'playwright';
+/// <reference types="../../../types/window.d.ts" />
+
+import { Browser, Page } from 'playwright';
 import { Resources } from '../resources';
+import { calculateSimilarity } from '../utils';
 
 export interface FrameworkFeatures {
   name: string;
@@ -15,18 +18,18 @@ export interface FrameworkFeatures {
 export class FrameworkFeaturesDetector {
   private page: Page;
   private resources: Resources;
-  constructor(page: Page, resources: Resources) {
+  private browser: Browser
+  constructor(page: Page, resources: Resources, browser: Browser) {
     this.page = page;
     this.resources = resources;
+    this.browser = browser;
   }
 
   async detect(): Promise<FrameworkFeatures> {
     const frameworks = await this.page!.evaluate(() => {
       const signs = {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        react: !!(window as any).React || !!document.querySelector('[data-reactroot]'),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        vue: !!(window as any).__VUE__ || !!document.querySelector('[data-v-app]'),
+        react: !!window.React || !!document.querySelector('[data-reactroot]'),
+        vue: !!window.__VUE__ || !!document.querySelector('[data-v-app]'),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         angular: !!(window as any).ng || !!document.querySelector('[ng-version]'),
         svelte: !!document.querySelector('style[data-svelte]'),
@@ -84,6 +87,7 @@ export class FrameworkFeaturesDetector {
   private async hasRedux(): Promise<boolean> {
     // Check for Redux in window object
     const hasReduxInWindow = await this.page!.evaluate(() => {
+      // eslint-disable-next-line
       return !!(window as any).__REDUX_DEVTOOLS_EXTENSION__ || !!(window as any).__REDUX_STATE__;
     });
 
@@ -102,7 +106,7 @@ export class FrameworkFeaturesDetector {
       'configureStore', // Redux Toolkit
     ];
 
-    const hasReduxInScripts = Array.from(this.scripts).some((script) =>
+    const hasReduxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       reduxPatterns.some((pattern) => script.includes(pattern))
     );
 
@@ -112,6 +116,7 @@ export class FrameworkFeaturesDetector {
   private async hasReactRouter(): Promise<boolean> {
     // Check for React Router in window object
     const hasReactRouterInWindow = await this.page!.evaluate(() => {
+      // eslint-disable-next-line
       return !!(window as any).ReactRouter || !!(window as any).__RouterContext;
     });
 
@@ -127,7 +132,7 @@ export class FrameworkFeaturesDetector {
       'withRouter',
     ];
 
-    const hasRouterInScripts = Array.from(this.scripts).some((script) =>
+    const hasRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       routerPatterns.some((pattern) => script.includes(pattern))
     );
 
@@ -149,6 +154,172 @@ export class FrameworkFeaturesDetector {
       hasStateManagement: await this.hasStateManagement(framework),
     };
   }
+
+  private async hasRouting(framework: string): Promise<boolean> {
+    switch (framework) {
+      case 'react':
+        return this.hasReactRouter();
+      case 'vue':
+        return this.hasVueRouter();
+      case 'angular':
+        return this.hasAngularRouter();
+      default:
+        return false;
+    }
+  }
+
+  private async hasStateManagement(framework: string): Promise<boolean> {
+    switch (framework) {
+      case 'react':
+        return this.hasReactStateManagement();
+      case 'vue':
+        return this.hasVueStateManagement();
+      case 'angular':
+        return this.hasAngularStateManagement();
+      default:
+        return false;
+    }
+  }
+
+  private async hasReactStateManagement(): Promise<boolean> {
+    // Check for various React state management solutions
+    const hasRedux = await this.hasRedux();
+    const hasMobx = await this.hasMobX();
+    const hasRecoil = await this.hasRecoil();
+    const hasZustand = await this.hasZustand();
+
+    return hasRedux || hasMobx || hasRecoil || hasZustand;
+  }
+
+  private async hasMobX(): Promise<boolean> {
+    const mobxPatterns = [
+      'observable',
+      'action',
+      'computed',
+      'makeObservable',
+      'makeAutoObservable',
+      'observer',
+      'useObserver'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      mobxPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasRecoil(): Promise<boolean> {
+    const recoilPatterns = [
+      'RecoilRoot',
+      'atom(',
+      'selector(',
+      'useRecoilState',
+      'useRecoilValue',
+      'useSetRecoilState'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      recoilPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasZustand(): Promise<boolean> {
+    const zustandPatterns = [
+      'create((set, get)',
+      'zustand/vanilla',
+      'useStore(',
+      'shallow'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      zustandPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasVueStateManagement(): Promise<boolean> {
+    // Check for various Vue state management solutions
+    const hasVuex = await this.hasVuex();
+    const hasPinia = await this.hasPinia();
+
+    return hasVuex || hasPinia;
+  }
+
+  private async hasPinia(): Promise<boolean> {
+    const piniaPatterns = [
+      'createPinia',
+      'defineStore',
+      'storeToRefs',
+      'usePinia'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      piniaPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasAngularStateManagement(): Promise<boolean> {
+    // Check for various Angular state management solutions
+    const hasNgrx = await this.hasNgrx();
+    const hasNgxs = await this.hasNgxs();
+    const hasAkita = await this.hasAkita();
+
+    return hasNgrx || hasNgxs || hasAkita;
+  }
+
+  private async hasNgrx(): Promise<boolean> {
+    const ngrxPatterns = [
+      'StoreModule',
+      'createAction',
+      'createReducer',
+      'createEffect',
+      'createSelector'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      ngrxPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasNgxs(): Promise<boolean> {
+    const ngxsPatterns = [
+      '@State',
+      '@Action',
+      '@Selector',
+      'Store.select',
+      'StateOperator'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      ngxsPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasAkita(): Promise<boolean> {
+    const akitaPatterns = [
+      'QueryEntity',
+      'StoreConfig',
+      'EntityStore',
+      'EntityState',
+      'akita'
+    ];
+
+    return Array.from(this.resources.getAllScripts()).some(script =>
+      akitaPatterns.some(pattern => script.includes(pattern))
+    );
+  }
+
+  private async hasAngularRouter(): Promise<boolean> {
+  const routerPatterns = [
+    'RouterModule',
+    'ActivatedRoute',
+    'Router',
+    'routerLink',
+    'router-outlet'
+  ];
+
+  return Array.from(this.resources.getAllScripts()).some(script =>
+    routerPatterns.some(pattern => script.includes(pattern))
+  );
+}
 
   private async detectSSR(framework: string): Promise<boolean> {
     // First check framework-specific SSR markers
@@ -280,6 +451,7 @@ export class FrameworkFeaturesDetector {
 
   private async detectAngularSSR(): Promise<boolean> {
     return this.page!.evaluate(() => {
+      const root = document.querySelector('app-root');
       const markers = {
         // Angular Universal markers
         hasUniversalState: !!(window as any).UNIVERSAL_STATE,
@@ -291,7 +463,7 @@ export class FrameworkFeaturesDetector {
         hasPlatformServer: document.documentElement.hasAttribute('ng-server-context'),
 
         // Check for prerendered content
-        hasPrerenderedContent: document.querySelector('app-root')?.children.length > 0,
+        hasPrerenderedContent: root && root?.children?.length > 0,
       };
 
       return Object.values(markers).some(Boolean);
@@ -346,7 +518,7 @@ export class FrameworkFeaturesDetector {
       hasStaticMarkers: initialHtml.includes('static-page') || initialHtml.includes('prerender'),
 
       // Compare content with and without JS
-      hasSimilarContent: this.calculateSimilarity(initialHtml, noJsHtml) > 0.7,
+      hasSimilarContent: calculateSimilarity(initialHtml, noJsHtml) > 0.7,
 
       // Check for meta tags that are typically server-rendered
       hasServerRenderedMeta: initialHtml.includes('og:') && initialHtml.includes('twitter:'),
@@ -394,7 +566,7 @@ export class FrameworkFeaturesDetector {
       'ThemeProvider'
     ];
 
-    const hasStyledInScripts = Array.from(this.scripts).some(script =>
+    const hasStyledInScripts = Array.from(this.resources.getAllScripts()).some(script =>
       styledPatterns.some(pattern => script.includes(pattern))
     );
 
@@ -418,7 +590,7 @@ export class FrameworkFeaturesDetector {
       'router-link'
     ];
 
-    const hasRouterInScripts = Array.from(this.scripts).some(script =>
+    const hasRouterInScripts = Array.from(this.resources.getAllScripts()).some(script =>
       routerPatterns.some(pattern => script.includes(pattern))
     );
 
@@ -444,7 +616,7 @@ export class FrameworkFeaturesDetector {
       'dispatch('
     ];
 
-    const hasVuexInScripts = Array.from(this.scripts).some(script =>
+    const hasVuexInScripts = Array.from(this.resources.getAllScripts()).some(script =>
       vuexPatterns.some(pattern => script.includes(pattern))
     );
 
@@ -467,7 +639,7 @@ export class FrameworkFeaturesDetector {
       'useNuxtApp'
     ];
 
-    const hasNuxtInScripts = Array.from(this.scripts).some(script =>
+    const hasNuxtInScripts = Array.from(this.resources.getAllScripts()).some(script =>
       nuxtPatterns.some(pattern => script.includes(pattern))
     );
 

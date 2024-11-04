@@ -16,7 +16,7 @@ export class ModuleFeaturesDetector {
     this.resources = resources;
   }
 
-  async detect() {
+  async detect(): Promise<ModuleFeatures> {
     return {
       type: this.detectModuleType(),
       hasDynamicImports: this.detectDynamicImports(),
