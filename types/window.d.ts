@@ -1,10 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 declare global {
-  interface Window {
+  interface Window extends (Window & typeof globalThis) {
+    // Vue
+    __VUE__: any;
+    Vue: {
+      version: string;
+      extend: (options: any) => any;
+      nextTick: (fn: () => void) => void;
+      set: (target: object, key: string, value: any) => void;
+    };
+    VueRouter: any;
+    $router: any;
+    Vuex: any;
+    $store: any;
+
     // React
     React: {
       version: string;
+      // eslint-disable-next-line
+      createElement: Function;
+      Component: any;
+      lazy: any;
+      Suspense: any;
     };
     ReactRouter: any;
     __RouterContext: any;
@@ -12,34 +30,24 @@ declare global {
     __REDUX_STATE__: any;
     __REACT_ERROR_OVERLAY__: any;
 
-    // Vue
-    Vue: {
-      version: string;
-    };
-    __VUE__: any;
-    VueRouter: any;
-    $router: any;
-    Vuex: any;
-    $store: any;
-
     // Next.js
     __NEXT_DATA__: {
-      props: any;
+      props: {
+        pageProps: Record<string, unknown>;
+        [key: string]: unknown;
+      };
       page: string;
-      query: any;
+      query: Record<string, string>;
       buildId: string;
       assetPrefix: string;
-      runtimeConfig: any;
+      runtimeConfig: Record<string, unknown>;
       nextExport: boolean;
       autoExport: boolean;
       isFallback: boolean;
       dynamicIds: string[];
-      err: any;
-      gsp: boolean;
-      gssp: boolean;
-      customServer: boolean;
-      gip: boolean;
-      appGip: boolean;
+      err?: Error & {
+        statusCode?: number;
+      };
     };
 
     // Nuxt.js
@@ -66,7 +74,6 @@ declare global {
     ___gatsby: any;
 
     // Performance and Debugging
-    performance: Performance;
     __REDUX_DEVTOOLS_EXTENSION_COMPOSE__: any;
 
     // SSR & Hydration
@@ -75,3 +82,6 @@ declare global {
     __SSR_HYDRATION__: any;
   }
 }
+
+// Export empty object to make it a module
+export {};
