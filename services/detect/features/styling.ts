@@ -38,7 +38,7 @@ export class StylingFeaturesDetector {
               });
             }
           } catch (e) {
-            // CORS might prevent reading external stylesheets
+            console.error(e);
           }
         });
 
