@@ -4,6 +4,9 @@ declare global {
   interface Window extends (Window & typeof globalThis) {
     // Vue
     __VUE__: any;
+    __vite__mapDeps: any;
+    __vite__base: any;
+    __vite__import: any;
     Vue: {
       version: string;
       extend: (options: any) => any;
