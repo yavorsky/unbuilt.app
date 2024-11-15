@@ -35,4 +35,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Turborepo
+.turbo
+node_modules
 !yarn.lock
