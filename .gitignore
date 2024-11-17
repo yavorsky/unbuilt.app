@@ -42,3 +42,4 @@ node_modules
 build
 packages/analyzer/build
 .next
+**/build
