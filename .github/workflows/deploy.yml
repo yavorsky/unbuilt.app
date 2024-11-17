@@ -13,34 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.18'
-
       - name: Deploy to DigitalOcean
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
-          username: server
+          username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            echo "Starting deployment..."
             cd /home/server/unbuilt-app
-
-            echo "Pulling latest changes..."
             git pull origin main
-
-            echo "Installing dependencies..."
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             yarn install
-
-            echo "Building application..."
-            yarn build
-
-            echo "Restarting PM2 processes..."
-            pm2 restart unbuilt
-            pm2 restart unbuilt-worker
-
-            echo "Deployment completed successfully!"
+            yarn turbo run build
+            pm2 restart ecosystem.config.js
