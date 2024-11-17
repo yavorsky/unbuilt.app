@@ -72,7 +72,7 @@ export class StylingFeaturesDetector {
         tailwind: this.detectTailwind(stylingInfo.classes),
         bootstrap: this.detectBootstrap(stylingInfo.classes),
         mui: this.detectMUI(stylingInfo.classes),
-        styledComponents: this.detectStyledComponents(stylingInfo.classes),
+        styledComponents: await this.detectStyledComponents(stylingInfo.classes),
       },
       features: {
         hasModules: this.detectCSSModules(stylingInfo.links),
@@ -125,10 +125,6 @@ export class StylingFeaturesDetector {
     return classes.some((cls) => cls.startsWith('Mui') || cls.startsWith('makeStyles-'));
   }
 
-  private detectStyledComponents(classes: string[]): boolean {
-    return classes.some((cls) => /^sc-[a-zA-Z0-9]{5,}/.test(cls));
-  }
-
   private detectCSSModules(links: string[]): boolean {
     return links.some((href) => href && href.includes('.module.css'));
   }
@@ -138,6 +134,26 @@ export class StylingFeaturesDetector {
       (style) =>
         style.includes('emotion') || style.includes('styled-components') || /jsx-[0-9]+/.test(style)
     );
+  }
+
+  private async detectStyledComponents(classes: string[]): Promise<boolean> {
+    // Check for styled-components class patterns
+    const hasStyledClasses = await this.page!.evaluate(() => {
+      return Array.from(document.querySelectorAll('*')).some((el) =>
+        Array.from(el.classList).some((cls) => /^sc-[a-zA-Z0-9]/.test(cls))
+      );
+    });
+
+    // Check for styled-components patterns in scripts
+    const styledPatterns = ['styled.', 'createGlobalStyle', 'css`', 'withTheme', 'ThemeProvider'];
+
+    const hasStyledInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+      styledPatterns.some((pattern) => script.includes(pattern))
+    );
+
+    const hasStyledInClasses = classes.some((cls) => /^sc-[a-zA-Z0-9]{5,}/.test(cls));
+
+    return hasStyledClasses || hasStyledInScripts || hasStyledInClasses;
   }
 
   private detectUtilityClasses(classes: string[]): boolean {

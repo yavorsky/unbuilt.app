@@ -39,3 +39,6 @@ next-env.d.ts
 .turbo
 node_modules
 !yarn.lock
+build
+packages/analyzer/build
+.next

@@ -2,27 +2,29 @@ import { Browser, Page } from 'playwright';
 import { Resources } from '../resources.js';
 import { calculateSimilarity } from '../utils.js';
 
-export interface FrameworkFeatures {
+type UILibraries = {
+  stateManagement: string[];
+  router: string[];
+} | null;
+export interface UILibFeatures {
   name: string;
   version?: string;
-  features: string[];
   confidence: number;
-  meta: {
-    isSSR: boolean;
-    hasRouter: boolean;
-    hasStateManagement: boolean;
-  };
+  libraries: UILibraries;
 }
 
-interface FrameworkPatterns {
+interface UILibPatterns {
   runtime: RegExp[];
   components: RegExp[];
   markup: RegExp[];
   features: RegExp[];
+  state?: RegExp[]; // New category for state management
+  routing?: RegExp[]; // New category for routing
+  styling?: RegExp[]; // New category for styling solutions
 }
 
 
-export class FrameworkFeaturesDetector {
+export class UILibFeaturesDetector {
   private page: Page;
   private resources: Resources;
   private browser: Browser;
@@ -32,44 +34,181 @@ export class FrameworkFeaturesDetector {
     this.browser = browser;
   }
 
-  async detect(): Promise<FrameworkFeatures> {
-    const patterns: Record<string, FrameworkPatterns> = {
+  async detect(): Promise<UILibFeatures> {
+    const patterns: Record<string, UILibPatterns> = {
       react: {
         runtime: [
+          // Core React patterns
           /(?:React|react)\.(?:createElement|Component|Fragment|useState|useEffect|memo)/,
           /__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
           /\$\$typeof|Symbol\.for\("react\.element"\)/,
           /_jsx|_jsxs|_jsxDEV/,
           /react-dom/,
+          // React 18 specific
+          /createRoot|hydrateRoot/,
+          /useId|useDeferredValue|useTransition/,
+          /Suspense|useInsertionEffect/,
+          // React experimental
+          /unstable_|experimental_/,
         ],
-        components: [/className=/, /onClick=/, /onChange=/, /data-reactroot/, /[rR]eact\.lazy\(/],
+        components: [
+          /className=/,
+          /onClick=/,
+          /onChange=/,
+          /data-reactroot/,
+          /[rR]eact\.lazy\(/,
+          // Common patterns
+          /[A-Z][a-zA-Z]*\s*\{/,  // Component declarations
+          /React\.memo\(/,
+          /forwardRef\(/,
+          /useImperativeHandle/,
+          // Props patterns
+          /props\.[a-zA-Z]/,
+          /{\s*\.{3}props\s*}/,   // Props spreading
+        ],
         markup: [
-          /<\/?[A-Z][A-Za-z0-9]*>/, // React component naming convention
-          /<!--\$-->|<!--\$!-->/, // React 18 streaming markers
+          /<\/?[A-Z][A-Za-z0-9]*>/,
+          /<!--\$-->|<!--\$!-->/,
           /data-reactid/,
           /hydrate(?:Root)?/,
+          // JSX patterns
+          /<>\s*</,               // Fragment shorthand
+          /<\/>/,                 // Fragment closing
+          /\{\s*children\s*\}/,   // Children prop
         ],
         features: [
           /useCallback|useMemo|useContext|useReducer|useRef/,
           /Suspense|StrictMode|Fragment|Portal/,
           /createPortal|flushSync|startTransition/,
+          // Modern features
+          /useSyncExternalStore/,
+          /useLayoutEffect/,
+          /Profiler|StrictMode/,
+        ],
+        state: [
+          // Redux
+          /createStore|combineReducers|applyMiddleware/,
+          /useSelector|useDispatch/,
+          /createSlice|configureStore/,
+          // Zustand
+          /create\(\s*\(\s*set\s*,\s*get\s*\)/,
+          // Recoil
+          /RecoilRoot|atom|selector|useRecoilState/,
+          // Jotai
+          /atom\(/,
+          // XState
+          /createMachine|useMachine/,
+        ],
+        routing: [
+          // React Router
+          /BrowserRouter|Routes|Route/,
+          /useNavigate|useParams|useLocation/,
+          /NavLink|Link/,
+          // TanStack Router
+          /createRouter|useRouter/,
+          /routeTree|parseRoute/,
+        ],
+        styling: [
+          // Styled Components
+          /styled\.[a-z]+`|styled\([^)]+\)`/,
+          // Emotion
+          /css`|styled\.div`/,
+          // CSS Modules
+          /styles\.[a-zA-Z]/,
+          /\.module\.css/,
+          // Tailwind
+          /className="[^"]*(?:bg-|text-|p-|m-)/,
         ],
       },
-      next: {
+      preact: {
         runtime: [
-          /__NEXT_DATA__/,
-          /__NEXT_LOADED_PAGES__/,
-          /__next_app|__next_init/,
-          /next\/router|next\/link/,
-          /_app|_document|_error/,
+          /import\s*{\s*[^}]*}\s*from\s*['"]preact['"]/,
+          /h\s*\(/,
+          /render\s*\(/,
+          /preact\/hooks/,
+          /preact\/compat/,
         ],
-        components: [/next\/image/, /next\/script/, /next\/head/, /next\/dynamic/],
-        markup: [/data-nextjs/, /next-route-announcer/, /next-page/, /__next-css/],
+        components: [
+          /className=/,
+          /onClick=/,
+          /onChange=/,
+          // Preact specific
+          /class\s+extends\s+Component/,
+          /props\./,
+          /this\.state\./,
+        ],
+        markup: [
+          /<\/?[A-Z][A-Za-z0-9]*>/,
+          /hydrate\(/,
+          // JSX in Preact
+          /<>\s*</,
+          /<\/>/,
+        ],
         features: [
-          /getStaticProps|getServerSideProps/,
-          /getInitialProps/,
-          /useRouter|withRouter/,
-          /_middleware/,
+          /useCallback|useMemo|useContext|useReducer|useRef/,
+          /useEffect|useState/,
+          /createPortal/,
+          // Preact signals
+          /useSignal|useComputed/,
+        ],
+      },
+      solid: {
+        runtime: [
+          /import\s*{\s*[^}]*}\s*from\s*['"]solid-js['"]/,
+          /createSignal|createEffect|createMemo/,
+          /createResource|createStore/,
+          /solid-js\/web/,
+        ],
+        components: [
+          /className=/,
+          /onClick=/,
+          /onChange=/,
+          // Solid specific
+          /on:|bind:/,
+          /use:/,
+          /prop:/,
+        ],
+        markup: [
+          /<For\s*\{/,
+          /<Show\s*\{/,
+          /<Switch\s*\{/,
+          /<Match\s*\{/,
+          /<Dynamic\s*\{/,
+        ],
+        features: [
+          /createRoot|render/,
+          /useTransition|batch/,
+          /children\s*\(/,
+          /createContext|useContext/,
+        ],
+      },
+
+      qwik: {
+        runtime: [
+          /import\s*{\s*[^}]*}\s*from\s*['"]@builder\.io\/qwik['"]/,
+          /component\$|useSignal\$/,
+          /useStore\$|useResource\$/,
+          /useClientEffect\$/,
+        ],
+        components: [
+          /bind:/,
+          /on:click/,
+          /on:input/,
+          // Qwik specific
+          /useClientEffect\$/,
+          /component\$/,
+        ],
+        markup: [
+          /<\$>/,
+          /<\/\$>/,
+          /<Slot\s*\/>/,
+          /q:slot/,
+        ],
+        features: [
+          /useStore\$/,
+          /useSignal\$/,
+          /useResource\$/,
+          /useLocation\$/,
         ],
       },
       vue: {
@@ -165,120 +304,240 @@ export class FrameworkFeaturesDetector {
     };
 
     // Check window objects first
-    const globalDetection = await this.page!.evaluate(() => {
+    const globalMarkers = await this.page!.evaluate(() => {
       return {
+        // React and React-based
         react: {
-          present: !!window.React,
+          present: !!(
+            window.React ||
+            window.__REACT_DEVTOOLS_GLOBAL_HOOK__ ||
+            document.querySelector('[data-reactroot]')
+          ),
           version: window.React?.version,
         },
+
+        // Preact
+        preact: {
+          present: !!(
+            window.preact ||
+            document.querySelector('[data-preact-root]') ||
+            // Preact running in React compatibility mode
+            (window.__PREACT_DEVTOOLS__ && window.React)
+          ),
+          version: window.preact?.version,
+        },
+
+        // Solid
+        solid: {
+          present: !!(
+            window.Solid ||
+            window._$HY || // Solid's hydratable marker
+            document.querySelector('[data-hk]') // Solid resource marker
+          ),
+          version: window.Solid?.version,
+        },
+
+        // Qwik
+        qwik: {
+          present: !!(
+            window.qwik ||
+            window.Q ||
+            document.querySelector('[q\\:container]') ||
+            document.querySelector('[q\\:version]')
+          ),
+          version: document.querySelector('[q\\:version]')?.getAttribute('q:version'),
+        },
+
+        // Vue and Nuxt
         vue: {
-          present: !!(window.__VUE__ || window.Vue),
-          version: window.Vue?.version,
+          present: !!(
+            window.Vue ||
+            window.__VUE__ ||
+            document.querySelector('[data-v-app]') ||
+            document.querySelector('[__vue_app__]')
+          ),
+          version: window.Vue?.version || document.querySelector('[data-v-app]')?.getAttribute('version'),
         },
-        angular: {
-          present: !!window.ng,
-          version: document.querySelector('[ng-version]')?.getAttribute('ng-version'),
-        },
-        next: {
-          present: !!window.__NEXT_DATA__,
-          version: window.__NEXT_DATA__?.buildId,
-        },
+
+        // Nuxt specific
         nuxt: {
-          present: !!window.__NUXT__,
-          version: window.$nuxt?.$version,
+          present: !!(
+            window.__NUXT__ ||
+            window.$nuxt ||
+            document.querySelector('#__nuxt') ||
+            document.querySelector('#__nuxt_async')
+          ),
+          version: window.$nuxt?.$version || window.__NUXT__?.version,
         },
+
+        // Angular
+        angular: {
+          present: !!(
+            window.ng ||
+            window.angular ||
+            document.querySelector('[ng-version]') ||
+            document.querySelector('[ng-app]')
+          ),
+          version: document.querySelector('[ng-version]')?.getAttribute('ng-version') ||
+                   window.angular?.version?.full,
+        },
+
+        // Svelte
         svelte: {
-          present: !!window.__SVELTE,
-          version: null, // Svelte doesn't expose version globally
+          present: !!(
+            window.__SVELTE ||
+            window.svelte ||
+            document.querySelector('[data-svelte]') ||
+            document.querySelector('[data-svelte-component]')
+          ),
+          version: window.svelte?.VERSION,
         },
+
+        // Additional framework information
+        // meta: {
+        //   // State management
+        //   stateManagement: {
+        //     redux: !!window.__REDUX_DEVTOOLS_EXTENSION__,
+        //     mobx: !!window.__MOBX_DEVTOOLS_GLOBAL_HOOK__,
+        //     vuex: !!window.__VUEX__,
+        //     pinia: !!window.__PINIA__,
+        //     recoil: !!window.__RECOIL_DEVTOOLS_EXTENSION__,
+        //     zustand: !!window.__ZUSTAND_DEVTOOLS_EXTENSION__,
+        //   },
+
+        //   // Router
+        //   routing: {
+        //     reactRouter: !!window.__REACT_ROUTER_GLOBAL_HISTORY__,
+        //     vueRouter: !!window.__VUE_ROUTER__,
+        //     angularRouter: !!window.ng?.getInjector,
+        //     svelteRouter: !!window.__SVELTEKIT_ROUTER__,
+        //   }
+        // }
       };
     });
 
-    // Score calculation based on pattern matches
-    const calculateScore = (content: string, frameworkPatterns: FrameworkPatterns) => {
-      let score = 0;
-
-      // Runtime patterns are strongest indicators
-      frameworkPatterns.runtime.forEach((pattern) => {
-        if (pattern.test(content)) score += 0.3;
-      });
-
-      // Component patterns are good indicators
-      frameworkPatterns.components.forEach((pattern) => {
-        if (pattern.test(content)) score += 0.2;
-      });
-
-      // Markup patterns are good indicators
-      frameworkPatterns.markup.forEach((pattern) => {
-        if (pattern.test(content)) score += 0.2;
-      });
-
-      // Feature patterns are supporting indicators
-      frameworkPatterns.features.forEach((pattern) => {
-        if (pattern.test(content)) score += 0.1;
-      });
-
-      return Math.min(score, 1); // Normalize to 0-1
+    const scores: Record<keyof typeof patterns, number> = {
+      react: 0,
+      preact: 0,
+      solid: 0,
+      qwik: 0,
+      vue: 0,
+      nuxt: 0,
+      angular: 0,
+      svelte: 0,
     };
+
+    if (globalMarkers.react.present) scores.react += 0.4;
+    if (globalMarkers.preact.present) scores.preact += 0.4;
+    if (globalMarkers.solid.present) scores.solid += 0.4;
+    if (globalMarkers.qwik.present) scores.qwik += 0.4;
+    if (globalMarkers.vue.present) scores.vue += 0.4;
+    if (globalMarkers.nuxt.present) scores.nuxt += 0.4;
+    if (globalMarkers.angular.present) scores.angular += 0.4;
+    if (globalMarkers.svelte.present) scores.svelte += 0.4;
 
     // Get all scripts and HTML content
     const allScripts = Array.from(this.resources.getAllScripts()).join('\n');
     const htmlContent = await this.page!.content();
     const allContent = allScripts + htmlContent;
 
+    const checkPatterns = <T extends keyof typeof patterns>(
+      content: string,
+      bundler: T,
+      category: keyof typeof patterns[T],
+      weight: number
+    ) => {
+      const bundlerPatternsList = patterns[bundler][category] as RegExp[];
+      bundlerPatternsList.forEach((pattern: RegExp) => {
+        if (pattern.test(content)) {
+          scores[bundler] += weight;
+        }
+      });
+    };
+
+    Object.keys(patterns).forEach(bundler => {
+      const bundlerKey = bundler as keyof typeof patterns;
+      // Runtime patterns are strong indicators
+      checkPatterns(allScripts, bundlerKey, 'runtime', 0.3);
+      // Build patterns are strong indicators
+      checkPatterns(allScripts, bundlerKey, 'components', 0.25);
+      // Build patterns are strong indicators
+      checkPatterns(allScripts, bundlerKey, 'markup', 0.2);
+      // Module patterns are moderate indicators
+      checkPatterns(allScripts, bundlerKey, 'features', 0.1);
+    });
+
     // Calculate scores for each framework
-    const scores = Object.entries(patterns).reduce((acc, [framework, frameworkPatterns]) => {
-      const score = calculateScore(allContent, frameworkPatterns);
-      // Add bonus for global detection
-      if (globalDetection[framework as keyof typeof globalDetection].present) {
-        acc[framework] = Math.min(score + 0.3, 1);
-      } else {
-        acc[framework] = score;
-      }
-      return acc;
-    }, {} as Record<string, number>);
+
 
     // Find the framework with highest score
     const [[mainFramework, maxScore]] = Object.entries(scores).sort(([, a], [, b]) => b - a);
 
     // Get version from global detection
-    const version = globalDetection[mainFramework as keyof typeof globalDetection].version;
+    const version = globalMarkers[mainFramework as keyof typeof globalMarkers]?.version;
 
-    const features = await this.detectFrameworkFeatures(mainFramework);
-    const meta = await this.detectFrameworkMeta(mainFramework);
+    const libraries = await this.detectLibraries(mainFramework);
+    // const meta = await this.detectMeta(mainFramework);
+
+    if (maxScore < 0.3) {
+      return {
+        name: 'unknown',
+        confidence: 0,
+        libraries: null,
+      };
+    }
 
     return {
       name: mainFramework,
       version,
       confidence: maxScore,
-      features,
-      meta: {
-        ...meta,
-        isSSR: await this.detectSSR(mainFramework),
-        hasRouter: features.includes('router'),
-        hasStateManagement: features.includes('state-management'),
-      },
+      libraries,
     };
   }
 
-  private async detectFrameworkFeatures(framework: string): Promise<string[]> {
-    const features: string[] = [];
+  private async detectLibraries(framework: string): Promise<UILibraries> {
+    const stateManagementLibraries = [];
+    const routerLibraries = [];
 
     switch (framework) {
       case 'react':
-        if (await this.hasReactRouter()) features.push('router');
-        if (await this.hasRedux()) features.push('redux');
-        if (await this.hasStyleComponents()) features.push('styled-components');
+        if (await this.hasReactRouter()) routerLibraries.push('react-router');
+        if (await this.hasRedux()) stateManagementLibraries.push('redux');
+        if (await this.hasMobX()) stateManagementLibraries.push('mobx');
+        if (await this.hasRecoil()) stateManagementLibraries.push('recoil');
         break;
       case 'vue':
-        if (await this.hasVueRouter()) features.push('vue-router');
-        if (await this.hasVuex()) features.push('vuex');
-        if (await this.hasNuxt()) features.push('nuxt');
+        if (await this.hasVueRouter()) routerLibraries.push('vue-router');
+        if (await this.hasVuex()) stateManagementLibraries.push('vuex');
+        if (await this.hasPinia()) stateManagementLibraries.push('pinia');
         break;
-      // Add more framework-specific feature detection
+      case 'angular':
+        if (await this.hasAngularRouter()) routerLibraries.push('angular-router');
+        if (await this.hasNgrx()) stateManagementLibraries.push('ngrx');
+        if (await this.hasNgxs()) stateManagementLibraries.push('ngxs');
+        if (await this.hasAkita()) stateManagementLibraries.push('akita');
+        break;
+      case 'svelte':
+        if (await this.hasSvelteRouter()) {
+          routerLibraries.push('svelte-routing');
+          if (await this.hasSvelteKit()) {
+            routerLibraries.push('sveltekit-router');
+          }
+        }
+
+        if (await this.hasSvelteStore()) {
+          stateManagementLibraries.push('svelte-store');
+        }
+        if (await this.hasSvelteMobx()) {
+          stateManagementLibraries.push('svelte-mobx');
+        }
+        break;
     }
 
-    return features;
+    return {
+      stateManagement: stateManagementLibraries,
+      router: routerLibraries,
+    };
   }
 
   private async hasRedux(): Promise<boolean> {
@@ -314,7 +573,7 @@ export class FrameworkFeaturesDetector {
     // Check for React Router in window object
     const hasReactRouterInWindow = await this.page!.evaluate(() => {
       // eslint-disable-next-line
-      return !!(window as any).ReactRouter || !!(window as any).__RouterContext;
+      return !!(window as any).ReactRouter || !!(window as any).__RouterContext || window.__REACT_ROUTER_GLOBAL_HISTORY__;
     });
 
     // Check for React Router patterns in scripts
@@ -344,14 +603,6 @@ export class FrameworkFeaturesDetector {
     return hasReactRouterInWindow || hasRouterInScripts || hasRouterElements;
   }
 
-  private async detectFrameworkMeta(framework: string) {
-    return {
-      isSSR: await this.detectSSR(framework),
-      hasRouter: await this.hasRouting(framework),
-      hasStateManagement: await this.hasStateManagement(framework),
-    };
-  }
-
   private async hasRouting(framework: string): Promise<boolean> {
     switch (framework) {
       case 'react':
@@ -365,30 +616,12 @@ export class FrameworkFeaturesDetector {
     }
   }
 
-  private async hasStateManagement(framework: string): Promise<boolean> {
-    switch (framework) {
-      case 'react':
-        return this.hasReactStateManagement();
-      case 'vue':
-        return this.hasVueStateManagement();
-      case 'angular':
-        return this.hasAngularStateManagement();
-      default:
-        return false;
-    }
-  }
-
-  private async hasReactStateManagement(): Promise<boolean> {
-    // Check for various React state management solutions
-    const hasRedux = await this.hasRedux();
-    const hasMobx = await this.hasMobX();
-    const hasRecoil = await this.hasRecoil();
-    const hasZustand = await this.hasZustand();
-
-    return hasRedux || hasMobx || hasRecoil || hasZustand;
-  }
-
   private async hasMobX(): Promise<boolean> {
+    const hasMobxInWindow = await this.page!.evaluate(() => {
+      return !!window.__MOBX_DEVTOOLS_GLOBAL_HOOK__;
+    });
+
+
     const mobxPatterns = [
       'observable',
       'action',
@@ -399,12 +632,18 @@ export class FrameworkFeaturesDetector {
       'useObserver',
     ];
 
-    return Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasMobxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       mobxPatterns.some((pattern) => script.includes(pattern))
     );
+
+    return hasMobxInWindow || hasMobxInScripts;
   }
 
   private async hasRecoil(): Promise<boolean> {
+    const hasRecoilInWindow = await this.page!.evaluate(() => {
+      return !!window.__RECOIL_DEVTOOLS_EXTENSION__;
+    });
+
     const recoilPatterns = [
       'RecoilRoot',
       'atom(',
@@ -414,9 +653,11 @@ export class FrameworkFeaturesDetector {
       'useSetRecoilState',
     ];
 
-    return Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasRecoilInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       recoilPatterns.some((pattern) => script.includes(pattern))
     );
+
+    return hasRecoilInWindow || hasRecoilInScripts;
   }
 
   private async hasZustand(): Promise<boolean> {
@@ -436,11 +677,17 @@ export class FrameworkFeaturesDetector {
   }
 
   private async hasPinia(): Promise<boolean> {
+    const hasPiniaInWindow = await this.page!.evaluate(() => {
+      return !!window.window.__PINIA__;
+    });
+
     const piniaPatterns = ['createPinia', 'defineStore', 'storeToRefs', 'usePinia'];
 
-    return Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasPinitInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       piniaPatterns.some((pattern) => script.includes(pattern))
     );
+
+    return hasPiniaInWindow || hasPinitInScripts
   }
 
   private async hasAngularStateManagement(): Promise<boolean> {
@@ -483,6 +730,10 @@ export class FrameworkFeaturesDetector {
   }
 
   private async hasAngularRouter(): Promise<boolean> {
+    const hasAngularRouterInWindow = await this.page!.evaluate(() => {
+      return !!window.ng?.getInjector;
+    });
+
     const routerPatterns = [
       'RouterModule',
       'ActivatedRoute',
@@ -491,32 +742,89 @@ export class FrameworkFeaturesDetector {
       'router-outlet',
     ];
 
-    return Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasAngularRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       routerPatterns.some((pattern) => script.includes(pattern))
     );
+
+    return hasAngularRouterInWindow || hasAngularRouterInScripts;
   }
+
+  private async hasSvelteRouter(): Promise<boolean> {
+    const routerPatterns = [
+      /Router|Link|navigate/,
+      /svelte-routing/,
+      /\$page/,
+      /goto\(/
+    ];
+
+    const hasSvelteRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+      routerPatterns.some((pattern) => pattern.test(script))
+    );
+
+    return hasSvelteRouterInScripts;
+   }
+
+   private async hasSvelteKit(): Promise<boolean> {
+    const patterns = [
+      /\$app\/navigation/,
+      /\$app\/stores/,
+      /__SVELTEKIT_APP__/,
+      /load\(\{\s*fetch\s*\}/
+    ];
+
+    const hasSvelteKitInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+      patterns.some((pattern) => pattern.test(script))
+    );
+
+    return hasSvelteKitInScripts;
+   }
+
+   private async hasSvelteStore(): Promise<boolean> {
+    const patterns = [
+      /writable|readable|derived/,
+      /\$store/,
+      /import\s*{\s*[^}]*}\s*from\s*['"]svelte\/store['"]/,
+      /store\.subscribe/
+    ];
+
+    const svelteStoreInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+      patterns.some((pattern) => pattern.test(script))
+    );
+
+    return svelteStoreInScripts;
+   }
+
+   private async hasSvelteMobx(): Promise<boolean> {
+    const patterns = [
+      /svelte-mobx/,
+      /useMobxStore/,
+      /observer\(/
+    ];
+    const svelteMobxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+      patterns.some((pattern) => pattern.test(script))
+    );
+
+    return svelteMobxInScripts;
+   }
+
 
   private async detectSSR(framework: string): Promise<boolean> {
     // First check framework-specific SSR markers
-    const frameworkSSR = await this.detectFrameworkSpecificSSR(framework);
-    if (frameworkSSR !== null) {
-      return frameworkSSR;
+    const librarySSR = await this.detectLibrarySpecificSSR(framework);
+    if (librarySSR !== null) {
+      return librarySSR;
     }
 
     // If framework-specific detection is inconclusive, try general SSR detection
     return this.detectGeneralSSR();
   }
 
-  private async detectFrameworkSpecificSSR(framework: string): Promise<boolean | null> {
+  private async detectLibrarySpecificSSR(framework: string): Promise<boolean | null> {
     switch (framework) {
       case 'react':
         return this.detectReactSSR();
       case 'vue':
         return this.detectVueSSR();
-      case 'next':
-        return this.detectNextSSR();
-      case 'nuxt':
-        return this.detectNuxtSSR();
       case 'angular':
         return this.detectAngularSSR();
       default:
@@ -533,12 +841,6 @@ export class FrameworkFeaturesDetector {
 
         // React hydration markers
         hasHydrationComment: document.documentElement.innerHTML.includes('<!--$-->'),
-
-        // Next.js specific markers
-        hasNextData: !!window.__NEXT_DATA__,
-
-        // Gatsby specific markers
-        hasGatsbyData: !!window.___gatsby,
 
         // React hydration errors in console can indicate SSR
         hasHydrationError: window.__REACT_ERROR_OVERLAY__ !== undefined,
@@ -570,54 +872,6 @@ export class FrameworkFeaturesDetector {
         hasInitialContent:
           document.body.children.length > 0 &&
           !document.querySelector('[id="app"]')?.children.length,
-      };
-
-      return Object.values(markers).some(Boolean);
-    });
-  }
-
-  private async detectNextSSR(): Promise<boolean> {
-    return this.page!.evaluate(() => {
-      const markers = {
-        // Next.js data object
-        hasNextData: !!window.__NEXT_DATA__,
-
-        // Next.js specific props
-        hasPageProps: document.querySelector('[data-nextjs-page]') !== null,
-
-        // Static optimization indicator
-        hasStaticOptimization: !!window.__NEXT_DATA__?.autoExport,
-
-        // Server-side generated styles
-        hasSSRStyles: !!document.querySelector('style[data-n-href]'),
-
-        // Check for specific Next.js attributes
-        hasNextAttributes: document
-          .querySelector('[data-reactroot]')
-          ?.hasAttribute('data-nextjs-page'),
-      };
-
-      return Object.values(markers).some(Boolean);
-    });
-  }
-
-  private async detectNuxtSSR(): Promise<boolean> {
-    return this.page!.evaluate(() => {
-      const markers = {
-        // Nuxt.js window object
-        hasNuxtData: !!window.__NUXT__,
-
-        // Nuxt.js meta tags
-        hasNuxtMeta: !!document.querySelector('script[data-n-head="ssr"]'),
-
-        // Server-rendered attribute
-        hasSSRAttribute: !!document.querySelector('[data-server-rendered="true"]'),
-
-        // Nuxt.js loading indicator
-        hasNuxtLoading: !!document.getElementById('nuxt-loading'),
-
-        // Check for Nuxt.js static generation
-        hasStaticGeneration: !!window.__NUXT__.staticGenerations,
       };
 
       return Object.values(markers).some(Boolean);
@@ -724,28 +978,28 @@ export class FrameworkFeaturesDetector {
     return score > 0.5;
   }
 
-  private async hasStyleComponents(): Promise<boolean> {
-    // Check for styled-components class patterns
-    const hasStyledClasses = await this.page!.evaluate(() => {
-      return Array.from(document.querySelectorAll('*')).some((el) =>
-        Array.from(el.classList).some((cls) => /^sc-[a-zA-Z0-9]/.test(cls))
-      );
-    });
+  // private async hasStyleComponents(): Promise<boolean> {
+  //   // Check for styled-components class patterns
+  //   const hasStyledClasses = await this.page!.evaluate(() => {
+  //     return Array.from(document.querySelectorAll('*')).some((el) =>
+  //       Array.from(el.classList).some((cls) => /^sc-[a-zA-Z0-9]/.test(cls))
+  //     );
+  //   });
 
-    // Check for styled-components patterns in scripts
-    const styledPatterns = ['styled.', 'createGlobalStyle', 'css`', 'withTheme', 'ThemeProvider'];
+  //   // Check for styled-components patterns in scripts
+  //   const styledPatterns = ['styled.', 'createGlobalStyle', 'css`', 'withTheme', 'ThemeProvider'];
 
-    const hasStyledInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      styledPatterns.some((pattern) => script.includes(pattern))
-    );
+  //   const hasStyledInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+  //     styledPatterns.some((pattern) => script.includes(pattern))
+  //   );
 
-    return hasStyledClasses || hasStyledInScripts;
-  }
+  //   return hasStyledClasses || hasStyledInScripts;
+  // }
 
   private async hasVueRouter(): Promise<boolean> {
     // Check for Vue Router in window object
     const hasVueRouterInWindow = await this.page!.evaluate(() => {
-      return !!window.VueRouter || !!window.$router;
+      return !!window.VueRouter || !!window.$router || window.__VUE_ROUTER__;
     });
 
     // Check for Vue Router patterns in scripts
@@ -758,11 +1012,11 @@ export class FrameworkFeaturesDetector {
       'router-link',
     ];
 
-    const hasRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasVueRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
       routerPatterns.some((pattern) => script.includes(pattern))
     );
 
-    return hasVueRouterInWindow || hasRouterInScripts;
+    return hasVueRouterInWindow || hasVueRouterInScripts;
   }
 
   private async hasVuex(): Promise<boolean> {
@@ -788,35 +1042,5 @@ export class FrameworkFeaturesDetector {
     );
 
     return hasVuexInWindow || hasVuexInScripts;
-  }
-
-  private async hasNuxt(): Promise<boolean> {
-    // Check for Nuxt in window object
-    const hasNuxtInWindow = await this.page!.evaluate(() => {
-      return !!window.__NUXT__ || !!window.$nuxt;
-    });
-
-    // Check for Nuxt patterns in scripts
-    const nuxtPatterns = [
-      '__NUXT__',
-      'useNuxt',
-      'useRuntimeConfig',
-      'defineNuxtConfig',
-      'useNuxtApp',
-    ];
-
-    const hasNuxtInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      nuxtPatterns.some((pattern) => script.includes(pattern))
-    );
-
-    // Check for Nuxt-specific meta tags
-    const hasNuxtMeta = await this.page!.evaluate(() => {
-      return (
-        !!document.querySelector('script[data-n-head="ssr"]') ||
-        !!document.querySelector('meta[data-n-head="ssr"]')
-      );
-    });
-
-    return hasNuxtInWindow || hasNuxtInScripts || hasNuxtMeta;
   }
 }
