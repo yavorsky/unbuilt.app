@@ -9,7 +9,7 @@ import { NoPageInitializedError } from './errors.js';
 import { StylingFeatures, StylingFeaturesDetector } from './features/styling.js';
 
 
-interface AnalysisResult {
+export interface AnalysisResult {
   url: string;
   build: BuildFeatures | null;
   uiLib: UILibFeatures | null;

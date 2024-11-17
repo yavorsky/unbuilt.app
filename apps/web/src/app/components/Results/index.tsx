@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import { getJobStatus } from '../../../actions';
+import { CardsResult } from './cards-result';
+import { JSONResult } from './json-result';
 
 export function Results({ jobId }: { jobId: string }) {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showAsJSON, setShowAsJSON] = useState(false);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -48,25 +51,9 @@ export function Results({ jobId }: { jobId: string }) {
     );
   }
 
-  return (
-    <div className="space-y-4">
-      <div className="p-4 bg-gray-50 rounded">
-        <h3 className="font-bold">Status: {result.status}</h3>
-        <p>Job ID: {result.id}</p>
-        <p>Started: {new Date(result.timestamp).toLocaleString()}</p>
-        {result.finishedOn && (
-          <p>Finished: {new Date(result.finishedOn).toLocaleString()}</p>
-        )}
-      </div>
+  if (showAsJSON) {
+    return <JSONResult result={result.result} status={result.status} id={result.id} finishedOn={result.finishedOn} />
+  }
 
-      {result.result && (
-        <div className="p-4 bg-white border rounded">
-          <h3 className="font-bold mb-2">Analysis Results</h3>
-          <pre className="whitespace-pre-wrap">
-            {JSON.stringify(result.result, null, 2)}
-          </pre>
-        </div>
-      )}
-    </div>
-  );
+  return <CardsResult result={result.result} />
 }
