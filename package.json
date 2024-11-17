@@ -2,6 +2,7 @@
   "name": "unbuilt",
   "private": true,
   "workspaces": [
+    "apps/*",
     "packages/*"
   ],
   "packageManager": "yarn@1.22.21",
