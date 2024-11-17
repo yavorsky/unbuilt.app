@@ -17,6 +17,9 @@
     "start": "node dist/index.js",
     "lint": "eslint src"
   },
+  "peerDependencies": {
+    "playwright": "^1.48.1"
+  },
   "license": "MIT",
   "author": {
     "name": "Artem Yavorskyi",
