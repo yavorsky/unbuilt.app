@@ -1,7 +1,7 @@
 {
   "extends": [
     "next/core-web-vitals",
-    "../../eslintrc.json"
+    "../../.eslintrc.json"
   ],
   "rules": {
     "@next/next/no-html-link-for-pages": "off"
