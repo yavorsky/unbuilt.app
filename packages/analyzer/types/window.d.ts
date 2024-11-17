@@ -8,6 +8,25 @@ declare global {
     __vite__base: any;
     __vite__import: any;
     __SVELTE: any;
+    __NUXT_PREPATHS__: any;
+    angular: any;
+    svelte: any;
+    __MOBX_DEVTOOLS_GLOBAL_HOOK__: any;
+    __VUEX__: any;
+    __PINIA__: any;
+    __RECOIL_DEVTOOLS_EXTENSION__: any;
+    __ZUSTAND_DEVTOOLS_EXTENSION__: any;
+    __REACT_ROUTER_GLOBAL_HISTORY__: any;
+    __VUE_ROUTER__: any;
+    __SVELTEKIT_ROUTER__: any;
+    preact: any;
+    __PREACT_DEVTOOLS__: any;
+    __MOBX_DEVTOOLS_GLOBAL_HOOK__: any;
+    qwik: any;
+    Q: any;
+    _$HY: any;
+    __REACT_DEVTOOLS_GLOBAL_HOOK__: any;
+    Solid: any;
     Vue: {
       version: string;
       extend: (options: any) => any;
@@ -62,6 +81,7 @@ declare global {
       state: any;
       serverRendered: boolean;
       staticGenerations: any;
+      version?: string;
     };
     $nuxt: any;
 

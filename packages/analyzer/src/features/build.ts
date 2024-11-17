@@ -28,9 +28,17 @@ interface TranspilerResult {
   };
   target?: {
     ecmaVersion: string;
-    modules: 'esm' | 'commonjs' | 'amd' | 'umd';
   };
 }
+
+type SupportedBundler = 'webpack' | 'rollup' | 'vite' | 'parcel' | 'turbopack' | 'esbuild' | 'nx' | 'bazel' | 'bun' | 'gulp' | 'grunt' | 'brunch';
+
+type BuildPatterns = Record<SupportedBundler, {
+  runtime: RegExp[];
+  assets: RegExp[];
+  build: RegExp[];
+  modules: RegExp[];
+}>
 
 export interface BuildFeatures {
   bundler: {
@@ -100,47 +108,85 @@ export class BuildFeaturesDetector {
       };
     });
 
-    const patterns = {
-      webpack: {
-        // Core Webpack patterns
+    const webpackBuildPatterns = {
+      // Core Webpack patterns
+      runtime: [
+        /__webpack_require__/,
+        /webpack\/runtime/,
+        /webpack\/bootstrap/,
+        /webpack-dev-server/,
+        /webpack\/hot\/dev-server/,
+        /webpack-hot-middleware/,
+        /__webpack_exports__/,
+        /__webpack_module__/,
+        /webpackChunk/,
+        /webpackJsonp/,
+        /webpack_require\.e/,  // Chunk loading
+        /webpack_require\.t/,  // Module mode
+        /webpack_require\.d/,  // Exports definition
+        /webpack_require\.o/,  // Object.prototype.hasOwnProperty
+        /webpack_require\.r/,  // Module.__esModule
+      ],
+      // Asset patterns
+      assets: [
+        /\.[a-f0-9]{20}\.js$/,  // Content hash
+        /\.(js|css)\.[a-f0-9]{8}\.hot-update\./,  // HMR
+        /chunks?\/[a-zA-Z0-9]+\.[a-f0-9]+\.js/,   // Chunk naming
+        /runtime~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Runtime chunks
+        /vendors~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Vendor chunks
+      ],
+      // Build output patterns
+      build: [
+        /\(\{\}\["webpackJsonp"\]\s*=\s*\{\}\["webpackJsonp"\]\s*\|\|\s*\[\]\)/,
+        /function\([a-zA-Z0-9_$]+,\s*[a-zA-Z0-9_$]+,\s*[a-zA-Z0-9_$]+\)\s*{\s*return\s*__webpack_require__/,
+        /window\["webpackJsonp"\]/,
+        /window\.webpackJsonp/,
+      ],
+      // Module handling patterns
+      modules: [
+        /modules\[\[[^\]]+\]\]/,  // Module arrays
+        /defineProperty\(exports,\s*"__esModule"/,
+        /Object\.defineProperty\(exports,\s*"__esModule"/,
+        /typeof\s+Symbol\s*!==\s*"undefined"\s*&&\s*Symbol\.toStringTag/,
+      ]
+    };
+
+    const patterns: BuildPatterns = {
+      webpack: webpackBuildPatterns,
+
+      // Turbopack is a mix of webpack and turbopack specific patterns
+      turbopack: {
         runtime: [
-          /__webpack_require__/,
-          /webpack\/runtime/,
-          /webpack\/bootstrap/,
-          /webpack-dev-server/,
-          /webpack\/hot\/dev-server/,
-          /webpack-hot-middleware/,
-          /__webpack_exports__/,
-          /__webpack_module__/,
-          /webpackChunk/,
-          /webpackJsonp/,
-          /webpack_require\.e/,  // Chunk loading
-          /webpack_require\.t/,  // Module mode
-          /webpack_require\.d/,  // Exports definition
-          /webpack_require\.o/,  // Object.prototype.hasOwnProperty
-          /webpack_require\.r/,  // Module.__esModule
+          ...webpackBuildPatterns.runtime,
+          /__turbopack_require__/,
+          /__turbopack_external_require__/,
+          /__turbopack_chunk_/,
+          /__turbopack_module__/,
+          /turbopack\/runtime/,
+          /__turbopack_load__/,
+          /TURBOPACK compile-time/,
+          /__turbopack_import__/,
+          /global\$turbopack/,
         ],
-        // Asset patterns
         assets: [
-          /\.[a-f0-9]{20}\.js$/,  // Content hash
-          /\.(js|css)\.[a-f0-9]{8}\.hot-update\./,  // HMR
-          /chunks?\/[a-zA-Z0-9]+\.[a-f0-9]+\.js/,   // Chunk naming
-          /runtime~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Runtime chunks
-          /vendors~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Vendor chunks
+          ...webpackBuildPatterns.assets,
+          /\_next\/static\/chunks\/\[turbo\]/,
+          /\.entry\.js$/,
+          /\.chunk\.js$/,
+          /\_(app|page|layout|loading|error)\-[a-f0-9]+\.js$/,
+          /turbo-client-runtime-[a-f0-9]+\.js/,
         ],
-        // Build output patterns
         build: [
-          /\(\{\}\["webpackJsonp"\]\s*=\s*\{\}\["webpackJsonp"\]\s*\|\|\s*\[\]\)/,
-          /function\([a-zA-Z0-9_$]+,\s*[a-zA-Z0-9_$]+,\s*[a-zA-Z0-9_$]+\)\s*{\s*return\s*__webpack_require__/,
-          /window\["webpackJsonp"\]/,
-          /window\.webpackJsonp/,
+          ...webpackBuildPatterns.build,
+          /turbo\.json/,
+          /.turbo\/config.json/,
         ],
-        // Module handling patterns
         modules: [
-          /modules\[\[[^\]]+\]\]/,  // Module arrays
-          /defineProperty\(exports,\s*"__esModule"/,
-          /Object\.defineProperty\(exports,\s*"__esModule"/,
-          /typeof\s+Symbol\s*!==\s*"undefined"\s*&&\s*Symbol\.toStringTag/,
+          ...webpackBuildPatterns.modules,
+          /@vercel\/turbopack-ecmascript-runtime/,
+          /turbopack\.loadPage/,
+          /turbopack\.register/,
+          /eval\(\"require\"\)/,
         ]
       },
 
@@ -190,6 +236,9 @@ export class BuildFeaturesDetector {
           /VITE_[A-Z_]+/,  // Environment variables
           /import\.meta\.env\.VITE_/,
           /import\.meta\.hot/,
+          /@vite\/client/,
+          /vite\/modulepreload-polyfill/,
+          /vite\/preload-helper/,
           /\?v=[a-zA-Z0-9]+/,  // Vite's query string pattern
         ],
         // Asset patterns
@@ -245,7 +294,7 @@ export class BuildFeaturesDetector {
           /\$[a-f0-9]{16}\$init/,
           /parcelRequire\.register/,
           /module\.hot\.accept/,
-        ]
+        ],
       },
 
       esbuild: {
@@ -274,16 +323,176 @@ export class BuildFeaturesDetector {
           /import\s*\.\s*meta\s*\.\s*url/,
           /require\s*\.\s*resolve/,
           /Promise\.resolve\(\)\.then\(\(\)\s*=>\s*import\(/,
+        ],
+      },
+
+      nx: {
+        runtime: [
+          /__nx_bundle_/,
+          /nx\-console/,
+          /@nrwl\/workspace/,
+          /nx\/init/,
+          /nx\/utils/,
+        ],
+        assets: [
+          /dist\/apps\/[^\/]+\//,
+          /dist\/libs\/[^\/]+\//,
+          /\.nx-cache\//,
+          /nx-cloud/,
+        ],
+        build: [],
+        modules: [
+          /@nrwl\/[a-zA-Z-]+/,
+          /nx g @nrwl/,
+          /nx affected/,
+          /nx run-many/,
+        ]
+      },
+
+      bazel: {
+        runtime: [
+          /__bazel_script_/,
+          /__bazel_bundle_/,
+          /__bazel_module_/,
+          /bazelbuild/,
+          /rules_nodejs/,
+        ],
+        build: [],
+        assets: [
+          /bazel\-out\/[^\/]+\//,
+          /bazel\-bin\/[^\/]+\//,
+          /bazel\-testlogs\/[^\/]+\//,
+          /\.runfiles\//,
+        ],
+        modules: [
+          /load\("[^"]+"\)/,
+          /exports_files\(\[/,
+          /filegroup\(name = /,
+          /js_library\(name = /,
+        ]
+      },
+
+      bun: {
+        runtime: [
+          /Bun\.serve/,
+          /Bun\.build/,
+          /Bun\.plugin/,
+          /bun:ffi/,
+          /bun:sqlite/,
+          /bun:jsc/,
+        ],
+        assets: [
+          /bun\.lockb$/,
+          /\.bun\//,
+          /bun-double-[a-f0-9]+\.js/,
+          /bun-[a-f0-9]+\.js/,
+        ],
+        build: [],
+        modules: [
+          /import\.meta\.require/,
+          /Bun\.env\./,
+          /process\.bun/,
+          /bun(Import|Resolve)\(/,
+        ]
+      },
+
+      // Legacy patterns. Confident detection is not accurate
+
+      gulp: {
+        runtime: [
+          /require\('gulp'\)/,
+          /gulp\.task\(/,
+          /gulp\.src\(/,
+          /gulp\.dest\(/,
+          /gulp\.watch\(/,
+          /gulp\.series\(/,
+          /gulp\.parallel\(/,
+        ],
+        assets: [
+          /\.tmp\//,
+          /dist\//,
+          /build\//,
+          /\.gulp\-cache/,
+        ],
+        build: [],
+        modules: [
+          /gulp-[a-zA-Z-]+/,
+          /require\('gulp-[^']+'\)/,
+          /pipe\(([^)]+)\)/,
+          /\.pipe\(/,
+        ]
+      },
+
+      grunt: {
+        runtime: [
+          /require\('grunt'\)/,
+          /grunt\.initConfig\(/,
+          /grunt\.loadNpmTasks\(/,
+          /grunt\.registerTask\(/,
+          /grunt\.file\./,
+        ],
+        assets: [
+          /\.grunt\//,
+          /dist\//,
+          /temp\//,
+          /tmp\//,
+        ],
+        build: [],
+        modules: [
+          /grunt-contrib-[a-zA-Z-]+/,
+          /grunt-[a-zA-Z-]+/,
+          /require\('grunt-[^']+'\)/,
+          /loadNpmTasks\('grunt-[^']+'\)/,
+        ]
+      },
+
+      brunch: {
+        runtime: [
+          // Core Brunch runtime patterns
+          /require\.register\(['"]/,
+          /window\.require\.register/,
+          /window\.require\.deps/,
+          /window\.__brunch__/,
+          /__brunch_framework__/,
+          /brunch-config/,
+          /brunch-reload/,
+        ],
+        assets: [
+          // Brunch's asset patterns
+          /public\/[^\/]+\-[a-f0-9]{8}\.(js|css)$/,  // Fingerprinted assets
+          /app\.(js|css)$/,     // Main bundles
+          /vendor\.(js|css)$/,  // Vendor bundles
+          /\.(js|css)\.map$/,   // Source maps
+          /public\/assets\//,    // Asset directory
+        ],
+        build: [
+          /\(function\(\) \{\s*window\.require\.register/,
+        ],
+        modules: [
+          // Module handling patterns
+          /require\.register\(['"]([^'"]+)['"]/,
+          /require\.alias\(/,
+          /window\.require\(['"]([^'"]+)/,
+          /module\.exports = /,
+          /exports\.\w+ = /,
+          /^require\.modules = /m,
         ]
       }
     };
 
-    const scores = {
+    const scores: Record<keyof typeof patterns, number> = {
       webpack: 0,
+      turbopack: 0,
       rollup: 0,
       vite: 0,
       parcel: 0,
-      esbuild: 0
+      esbuild: 0,
+      nx: 0,
+      bun: 0,
+      bazel: 0,
+      gulp: 0,
+      grunt: 0,
+      brunch: 0,
     };
 
     // Check global markers
@@ -328,6 +537,8 @@ export class BuildFeaturesDetector {
       checkPatterns(allScripts, bundlerKey, 'modules', 0.1);
     });
 
+    console.log(scores);
+
     // Normalize scores
     Object.keys(scores).forEach(key => {
       scores[key as keyof typeof scores] = Math.min(scores[key as keyof typeof scores], 1);
@@ -336,8 +547,6 @@ export class BuildFeaturesDetector {
     // Find the highest scoring bundler
     const [[detectedBundler, maxScore]] = Object.entries(scores)
       .sort(([, a], [, b]) => b - a);
-
-    console.log(detectedBundler, maxScore);
 
     return {
       name: maxScore > 0.3 ? detectedBundler : 'unknown',
@@ -649,16 +858,8 @@ export class BuildFeaturesDetector {
       },
       target: {
         ecmaVersion: detectTarget(allScripts),
-        modules: this.detectModuleSystem(allScripts),
       }
     };
-  }
-
-  private detectModuleSystem(content: string): 'esm' | 'commonjs' | 'amd' | 'umd' {
-    if (content.includes('define.amd')) return 'amd';
-    if (content.includes('module.exports') || content.includes('require(')) return 'commonjs';
-    if (content.includes('export ') || content.includes('import ')) return 'esm';
-    return 'umd'; // Default to UMD if no clear indicators
   }
 
   private async detectMinifier(): Promise<MinifierResult> {
