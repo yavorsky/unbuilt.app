@@ -7,6 +7,9 @@ git pull origin main
 # Install dependencies
 yarn install
 
+# Install playwright deps
+yarn playwright install
+
 # Build packages
 yarn turbo run build
 
