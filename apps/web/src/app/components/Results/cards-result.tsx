@@ -1,5 +1,5 @@
 import { AnalysisResult } from '@unbuilt/analyzer';
-import { FC } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { UILibrariesCard } from './cards/ui-libraries';
 import { MetaFrameworkCard } from './cards/meta-framework';
 import { BuildCard } from './cards/build';
@@ -7,10 +7,19 @@ import { StylingCard } from './cards/styling';
 import { PerformanceCard } from './cards/performance';
 
 export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
-  return <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-xl font-bold text-white mb-2">Tech Stack Analysis</h1>
-        <p className="text-white font-bold text-3xl">{result.url}</p>
+  const truncatedUrl = useMemo(() => {
+    const url = new URL(result.url);
+    return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
+  }, [result.url]);
+
+  useEffect(() => {
+    document.title = `Unbuilt ${truncatedUrl}`;
+  }, [truncatedUrl])
+
+  return (
+    <div className="max-w-7xl mx-auto">
+      <div className="mb-8 flex items-center justify-center max-w-7xl mx-auto">
+        <a href={result.url} target="_blank" className="text-white font-bold text-3xl">{truncatedUrl}</a>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {result.uiLib && <UILibrariesCard uiLib={result.uiLib} />}
@@ -18,7 +27,7 @@ export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
         {result.build && <BuildCard build={result.build} />}
         {result.styling && <StylingCard styling={result.styling} />}
         {result.performance && <PerformanceCard performance={result.performance} />}
-
       </div>
-    </div>;
+    </div>
+  );
 };
