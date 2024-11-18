@@ -16,7 +16,7 @@ export default function ResultsPage({
       <div className="flex items-center justify-center mt-20 max-w-7xl mx-auto">
         <Link
           href="/"
-          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-100"
+          className="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-500 disabled:bg-blue-300"
         >
           New Analysis
         </Link>

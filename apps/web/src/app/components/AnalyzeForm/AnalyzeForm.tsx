@@ -19,22 +19,17 @@ export const AnalyzeForm = () => {
 
   return (
     <form action={formAction} className="space-y-4">
-      <div>
-        <label
-          htmlFor="url"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Website URL
-        </label>
+      <div className="flex w-full max-w-sm items-center space-x-2 mb-2">
         <URLInput
           name="url"
           id="url"
           required
         />
+      <SubmitButton isPending={isPending} />
       </div>
 
-      <SubmitButton isPending={isPending} />
 
+      <p className="text-sm text-gray-500">Unbuilt app is currently in development phase. Some results could be wrong.</p>
       {state?.error && (
         <p className="text-red-500">{state.error}</p>
       )}
