@@ -44,9 +44,8 @@ export function Results({ jobId }: { jobId: string }) {
 
   if (loading) {
     return (
-      <div className="p-4">
-        <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-        <p className="mt-2">Analyzing website...</p>
+      <div className="flex items-center justify-center mt-20 max-w-7xl mx-auto">
+        <div className="animate-spin h-8 w-8 border-4 border-gray-300 rounded-full border-t-transparent"></div>
       </div>
     );
   }
