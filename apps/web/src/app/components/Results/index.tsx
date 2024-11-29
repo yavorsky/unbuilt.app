@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react';
-import { getJobStatus } from '../../../actions';
+import { getAnalysisResults } from '../../../actions';
 import { CardsResult } from './cards-result';
 import { JSONResult } from './json-result';
 
@@ -13,7 +13,7 @@ export function Results({ jobId }: { jobId: string }) {
 
   useEffect(() => {
     const checkStatus = async () => {
-      const status = await getJobStatus(jobId);
+      const status = await getAnalysisResults(jobId);
 
       if (status.error) {
         setError(status.error);

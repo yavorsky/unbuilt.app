@@ -4,16 +4,59 @@ import { ResourceAnalysis, Resources } from './resources.js';
 import { ModuleResult, ModuleFeaturesDetector } from './features/module.js';
 import { PerformanceFeatures, PerformanceFeaturesDetector } from './features/performance.js';
 import { UILibFeatures, UILibFeaturesDetector } from './features/ui-lib.js';
-import { MetaFrameworkFeatures, MetaFrameworkFeaturesDetector } from './features/meta-framework.js';
+import { MetaFrameworkFeatures, MetaFrameworkFeaturesDetector } from './features/framework/detect.js';
 import { NoPageInitializedError } from './errors.js';
 import { StylingFeatures, StylingFeaturesDetector } from './features/styling.js';
+
+// {
+//   framework: {
+//     name: 'next',
+//     // Next JS features
+//     features: {},
+//   },
+//   uiLibrary: {
+//     name: 'react',
+//     features: {},
+//   },
+//   styling: {
+//     name: 'styled-components' | 'tailwind',
+//     features: {},
+//   },
+//   network: {
+//     items: {
+//       name: 'graphql' | 'rest' | 'grpc',
+//       library: 'apollo' | 'relay' | 'fetch' | 'axios'
+//     }
+//   },
+//   libs: {
+//     stateManagement: ['redux'],
+//     routing: ['react-router'],
+//     dates: ['moment.js'],
+//     // List of differnet libraries
+//     other: ['lodash', 'lodash-es']
+//   },
+//   build: {
+//     name: 'webpack',
+//     features: {
+//       modules: 'ESM',
+//     },
+//   },
+//   transformer: {
+//     name: 'babel',
+//     features: {},
+//   },
+//   minifier: {
+//     name: 'terser',
+//     features: {},
+//   },
+// }
 
 
 export interface AnalysisResult {
   url: string;
   build: BuildFeatures | null;
   uiLib: UILibFeatures | null;
-  metaFramework: MetaFrameworkFeatures | null;
+  framework: MetaFrameworkFeatures | null;
   styling: StylingFeatures | null;
   performance: PerformanceFeatures | null;
   modules: ModuleResult | null;

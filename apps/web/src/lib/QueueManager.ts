@@ -1,17 +1,20 @@
 // lib/queueManager.ts
 import QueueService, { Queue, Job } from 'bull';
 import { BrowserManager } from './BrowserManager';
-import { Analyzer } from '@unbuilt/analyzer';
+import { AnalysisResult, Analyzer } from '@unbuilt/analyzer';
 import os from 'os';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
+
+type OnJobCompleted = (jobId: string, result: AnalysisResult) => void;
 
 export class QueueManager {
   private static instance: QueueManager;
   private queue: Queue | null = null;
   private browserManager: BrowserManager | null = null;
   private initializing: Promise<void> | null = null;
+  private onJobCompleted: OnJobCompleted | null = null;
 
   private constructor() {}
 
@@ -22,10 +25,12 @@ export class QueueManager {
     return QueueManager.instance;
   }
 
-  async initialize() {
+  async initialize({ onJobCompleted }: { onJobCompleted?: OnJobCompleted } = {}) {
     // Prevent multiple simultaneous initializations
     if (this.initializing) return this.initializing;
     if (this.queue) return;
+
+    this.onJobCompleted = onJobCompleted ?? null;
 
     this.initializing = (async () => {
       // Initialize queue
@@ -68,6 +73,8 @@ export class QueueManager {
       // Set up event handlers
       this.queue.on('completed', (job, result) => {
         console.log(`Job ${job.id} completed:`, result);
+        // Consider moving to process callback and not store any result in redis
+        this.onJobCompleted?.(job.id.toString(), result);
       });
 
       this.queue.on('failed', (job, error) => {
@@ -88,14 +95,14 @@ export class QueueManager {
     this.initializing = null;
   }
 
-  async addJob(url: string) {
+  async addJob(url: string, opts: { jobId: string }) {
     if (!this.queue) {
       throw new Error('Queue not initialized');
     }
     return this.queue.add({
       url,
       timestamp: new Date().toISOString()
-    });
+    }, opts);
   }
 
   async getJob(jobId: string) {
