@@ -29,22 +29,22 @@ export const jsJoda = [
       return page.evaluate(() => {
         const markers = {
           // Check for JSJoda global
-          hasJSJoda: typeof (window as any).JSJoda !== 'undefined',
+          hasJSJoda: typeof window.JSJoda !== 'undefined',
 
           // Check for main classes
-          hasLocalDateTime: !!(window as any).JSJoda?.LocalDateTime,
-          hasZonedDateTime: !!(window as any).JSJoda?.ZonedDateTime,
+          hasLocalDateTime: !!window.JSJoda?.LocalDateTime,
+          hasZonedDateTime: !!window.JSJoda?.ZonedDateTime,
 
           // Check for temporal utilities
-          hasChronoUnit: !!(window as any).JSJoda?.ChronoUnit,
-          hasChronoField: !!(window as any).JSJoda?.ChronoField,
+          hasChronoUnit: !!window.JSJoda?.ChronoUnit,
+          hasChronoField: !!window.JSJoda?.ChronoField,
 
           // Check for formatters
-          hasDateTimeFormatter: !!(window as any).JSJoda?.DateTimeFormatter
+          hasDateTimeFormatter: !!window.JSJoda?.DateTimeFormatter,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'formatting' as const,
@@ -62,8 +62,8 @@ export const jsJoda = [
 
       // Format patterns (unique to js-joda)
       /ofPattern\(['"][yMdHms:\/\.-]+['"]\)/,
-      /appendPattern\(['"][yMdHms:\/\.-]+['"]\)/
-    ]
+      /appendPattern\(['"][yMdHms:\/\.-]+['"]\)/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -73,7 +73,7 @@ export const jsJoda = [
       /@js-joda\/timezone/,
       /@js-joda\/locale/,
       /js-joda(?:\.min)?\.js$/,
-      /js-joda\.[a-f0-9]+\.js$/
-    ]
-  }
- ];
+      /js-joda\.[a-f0-9]+\.js$/,
+    ],
+  },
+];

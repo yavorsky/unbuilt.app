@@ -20,7 +20,7 @@ export const vue = [
       // Common minified patterns
       /_vm\.|_v\$/,
       /__VUE_/,
-    ]
+    ],
   },
   {
     name: 'rendering' as const,
@@ -37,7 +37,7 @@ export const vue = [
       // Vue 3 Fragments
       /Teleport|Suspense/,
       /KeepAlive/,
-    ]
+    ],
   },
   {
     name: 'reactivity' as const,
@@ -53,7 +53,7 @@ export const vue = [
       /provide\s*\(|inject\s*\(/,
       /defineProps|defineEmits/,
       /withDefaults\s*\(/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -69,7 +69,7 @@ export const vue = [
       // SFC markers
       /\.vue["']/,
       /script\s+setup\b/,
-    ]
+    ],
   },
   {
     name: 'routing' as const,
@@ -84,7 +84,7 @@ export const vue = [
       /beforeRouteLeave/,
       /router-link/,
       /router-view/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -93,22 +93,22 @@ export const vue = [
       return page.evaluate(() => {
         const markers = {
           // Check for Vue global
-          hasVueGlobal: typeof (window as any).Vue !== 'undefined',
+          hasVueGlobal: typeof window.Vue !== 'undefined',
           // Check for Vue devtools
-          hasDevTools: !!(window as any).__VUE_DEVTOOLS_GLOBAL_HOOK__,
+          hasDevTools: !!window.__VUE_DEVTOOLS_GLOBAL_HOOK__,
           // Check for Vue instance
           hasVueInstance: !!document.querySelector('[data-v-]'),
           // Check for Vue 3 app container
           hasVue3Container: !!document.querySelector('[__vue_app__]'),
           // Check for Vuex state
-          hasVuex: !!(window as any).__VUEX__,
+          hasVuex: !!window.__VUEX__,
           // Check for common Vue directives
           hasDirectives: !!document.querySelector('[v-show],[v-if],[v-for]'),
           // Check for Vue router
-          hasRouter: !!(window as any).__VUE_ROUTER_GLOBAL_HOOK__,
+          hasRouter: !!window.__VUE_ROUTER_GLOBAL_HOOK__,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
+    },
+  },
 ];

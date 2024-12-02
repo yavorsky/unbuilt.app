@@ -36,7 +36,7 @@ export const qwik = [
       /q:load/,
       /q:watch/,
       /on:qvisible/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -53,7 +53,7 @@ export const qwik = [
       /Slot\s*\(/,
       /useContext\s*\(/,
       /createContextId\s*\(/,
-    ]
+    ],
   },
   {
     name: 'optimization' as const,
@@ -69,7 +69,7 @@ export const qwik = [
       /on:click\$/,
       /on:input\$/,
       /preventdefault:/,
-    ]
+    ],
   },
   {
     name: 'serverPatterns' as const,
@@ -85,7 +85,7 @@ export const qwik = [
       /qwik\/city/,
       /useLocation\s*\(/,
       /useNavigate\s*\(/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -94,7 +94,7 @@ export const qwik = [
       return page.evaluate(() => {
         const markers = {
           // Check for Qwik global
-          hasQwikGlobal: typeof (window as any).QWIK !== 'undefined',
+          hasQwikGlobal: typeof window.QWIK !== 'undefined',
           // Check for Qwik container
           hasQwikContainer: !!document.querySelector('[q\\:container]'),
           // Check for Qwik version marker
@@ -104,12 +104,12 @@ export const qwik = [
           // Check for Qwik loader script
           hasQwikLoader: !!document.querySelector('script[id="qwikloader"]'),
           // Check for Qwik context
-          hasQwikContext: !!(window as any).__q_context__,
+          hasQwikContext: !!window.__q_context__,
           // Check for Qwik events
-          hasQwikEvents: !!(window as any).__qwik_listener_count,
+          hasQwikEvents: !!window.__qwik_listener_count,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
 ];

@@ -21,30 +21,30 @@ export const dayJs = [
 
       // Format tokens (Moment.js compatible)
       /(?:YYYY|MM|DD|HH|mm|ss|SSS)/,
-      /\[.*?\]/  // Escaped format tokens
+      /\[.*?\]/, // Escaped format tokens
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for global dayjs
-          hasDayjs: typeof (window as any).dayjs === 'function',
+          hasDayjs: typeof window.dayjs === 'function',
 
           // Check for plugins
-          hasPlugins: !!(window as any).dayjs?.extend,
+          hasPlugins: !!window.dayjs?.extend,
 
           // Check for locale support
-          hasLocale: !!(window as any).dayjs?.locale,
+          hasLocale: !!window.dayjs?.locale,
 
           // Check for common plugin methods
-          hasUtc: typeof (window as any).dayjs?.utc === 'function',
-          hasDuration: typeof (window as any).dayjs?.duration === 'function',
+          hasUtc: typeof window.dayjs?.utc === 'function',
+          hasDuration: typeof window.dayjs?.duration === 'function',
 
           // Check for Moment.js compatibility
-          hasFormat: typeof (window as any).dayjs?.unix === 'function'
+          hasFormat: typeof window.dayjs?.unix === 'function',
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'plugins' as const,
@@ -61,8 +61,8 @@ export const dayJs = [
 
       // Common locale/format patterns
       /(?:updateLocale|locale)\(['"][a-z-]+['"]/,
-      /\.format\(['"](LLL?L?|l{1,4})['"]\)/
-    ]
+      /\.format\(['"](LLL?L?|l{1,4})['"]\)/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -71,7 +71,7 @@ export const dayJs = [
       /dayjs(?:\.min)?\.js$/,
       /dayjs\.[a-f0-9]+\.js$/,
       /dayjs\/locale\//,
-      /dayjs\/plugin\//
-    ]
-  }
- ];
+      /dayjs\/plugin\//,
+    ],
+  },
+];

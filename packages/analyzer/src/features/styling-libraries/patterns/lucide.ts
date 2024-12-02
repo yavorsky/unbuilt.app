@@ -26,7 +26,7 @@ export const lucide = [
       /currentColor/,
       /stroke-[2-3]/,
       /stroke-linecap="round"/,
-      /stroke-linejoin="round"/
+      /stroke-linejoin="round"/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -39,21 +39,25 @@ export const lucide = [
           ),
 
           // Check for common Lucide class names
-          hasLucideClasses: document.querySelector('[class*="lucide-"]') !== null,
+          hasLucideClasses:
+            document.querySelector('[class*="lucide-"]') !== null,
 
           // Check for Lucide SVG structure
-          hasLucideSVGStructure: Array.from(document.querySelectorAll('svg')).some(
-            svg => svg.getAttribute('stroke-linecap') === 'round' &&
-                   svg.getAttribute('stroke-linejoin') === 'round'
+          hasLucideSVGStructure: Array.from(
+            document.querySelectorAll('svg')
+          ).some(
+            (svg) =>
+              svg.getAttribute('stroke-linecap') === 'round' &&
+              svg.getAttribute('stroke-linejoin') === 'round'
           ),
 
           // Check global Lucide object
-          hasLucideGlobal: !!(window as any).lucide
+          hasLucideGlobal: !!window.lucide,
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'files' as const,
@@ -68,7 +72,7 @@ export const lucide = [
       /icons\.[a-f0-9]+\.js$/,
 
       // Common build outputs
-      /vendor\.lucide\.[a-f0-9]+\.js$/
-    ]
-  }
-]
+      /vendor\.lucide\.[a-f0-9]+\.js$/,
+    ],
+  },
+];

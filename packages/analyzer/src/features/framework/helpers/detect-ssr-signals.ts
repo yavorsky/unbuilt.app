@@ -43,13 +43,15 @@ const collectSSRSignals = async (page: Page, browser: Browser) => {
       initialHtml.includes('<!---->'),
 
     // Check for static content markers
-    hasStaticMarkers: initialHtml.includes('static-page') || initialHtml.includes('prerender'),
+    hasStaticMarkers:
+      initialHtml.includes('static-page') || initialHtml.includes('prerender'),
 
     // Compare content with and without JS
     hasSimilarContent: calculateSimilarity(initialHtml, noJsHtml) > 0.7,
 
     // Check for meta tags that are typically server-rendered
-    hasServerRenderedMeta: initialHtml.includes('og:') && initialHtml.includes('twitter:'),
+    hasServerRenderedMeta:
+      initialHtml.includes('og:') && initialHtml.includes('twitter:'),
 
     // Check for structured data
     hasStructuredData: initialHtml.includes('application/ld+json'),

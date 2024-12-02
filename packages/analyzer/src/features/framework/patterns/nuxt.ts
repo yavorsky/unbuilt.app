@@ -1,5 +1,3 @@
-import { Pattern } from "../../../types.js";
-
 export const nuxt = [
   {
     score: 0.3,
@@ -13,7 +11,7 @@ export const nuxt = [
       // Nuxt 3 specifics
       /useNuxtApp/,
       /defineNuxtPlugin/,
-    ]
+    ],
   },
   {
     score: 0.3,
@@ -27,7 +25,7 @@ export const nuxt = [
       // Data fetching
       /useAsyncData|useFetch/,
       /useLazyFetch|useLazyAsyncData/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -40,7 +38,7 @@ export const nuxt = [
       // Nuxt specific classes
       /nuxt-link-active/,
       /nuxt-link-exact-active/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -54,7 +52,7 @@ export const nuxt = [
       // Composables
       /useHead|useSeoMeta/,
       /useRoute|useRouter/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -68,7 +66,7 @@ export const nuxt = [
       /buildModules/,
       /transpile/,
       /nitro/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -80,7 +78,7 @@ export const nuxt = [
       // Navigation
       /navigateTo/,
       /abortNavigation/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -94,7 +92,7 @@ export const nuxt = [
       // Server utilities
       /useRequestHeaders/,
       /useRequestEvent/,
-    ]
+    ],
   },
   {
     score: 0.2,
@@ -105,6 +103,6 @@ export const nuxt = [
       /process\.server/,
       /process\.client/,
       /onServerPrefetch/,
-    ]
+    ],
   },
 ];

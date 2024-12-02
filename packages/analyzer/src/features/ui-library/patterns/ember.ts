@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const ember = [
   {
@@ -18,7 +18,7 @@ export const ember = [
       /__ember_auto_import__/,
       /EMBER_ENV/,
       /EmberENV/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -36,7 +36,7 @@ export const ember = [
       /this\.send\(/,
       /this\.actions\./,
       /action\s*\(/,
-    ]
+    ],
   },
   {
     name: 'templates' as const,
@@ -53,7 +53,7 @@ export const ember = [
       // Component invocation
       /\{\{[A-Z][^}]+\}\}/,
       /\{\{component\s+/,
-    ]
+    ],
   },
   {
     name: 'routing' as const,
@@ -70,7 +70,7 @@ export const ember = [
       // Route components
       /\{\{outlet\}\}/,
       /LinkComponent/,
-    ]
+    ],
   },
   {
     name: 'data' as const,
@@ -85,7 +85,7 @@ export const ember = [
       // Adapters and serializers
       /RESTAdapter|JSONAPIAdapter/,
       /RESTSerializer|JSONAPISerializer/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -94,22 +94,22 @@ export const ember = [
       return page.evaluate(() => {
         const markers = {
           // Check for Ember global
-          hasEmber: typeof (window as any).Ember !== 'undefined',
+          hasEmber: typeof window.Ember !== 'undefined',
           // Check for Ember Data
-          hasEmberData: typeof (window as any).DS !== 'undefined',
+          hasEmberData: typeof window.DS !== 'undefined',
           // Check for Ember testing helpers
-          hasTestHelpers: typeof (window as any).require?.has?.('ember-qunit'),
+          hasTestHelpers: typeof window.require?.has?.('ember-qunit'),
           // Check for Ember application
-          hasApp: !!(window as any).Ember?.Application?.BOOTED,
+          hasApp: !!window.Ember?.Application?.BOOTED,
           // Check for Ember debugging
-          hasDebug: !!(window as any).Ember?.Debug,
+          hasDebug: !!window.Ember?.Debug,
           // Check for common Ember elements
           hasEmberView: !!document.querySelector('[id^="ember"]'),
           // Check for Ember CLI
-          hasEmberCli: !!(window as any).EmberENV,
+          hasEmberCli: !!window.EmberENV,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
- ];
+    },
+  },
+];

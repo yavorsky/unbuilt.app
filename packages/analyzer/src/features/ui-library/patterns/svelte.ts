@@ -18,7 +18,7 @@ export const svelte = [
       /#svelte/,
       /\$\$render/,
       /__svelte_/,
-    ]
+    ],
   },
   {
     name: 'reactivity' as const,
@@ -27,15 +27,15 @@ export const svelte = [
       // Store and reactivity
       /writable|readable|derived/,
       /\$store/,
-      /\$\:/,  // reactive declarations
+      /\$:/, // reactive declarations
       // Reactive syntax
       /\$\{[^}]+\}/,
-      /\$\w+/,  // auto-subscriptions
+      /\$\w+/, // auto-subscriptions
       // Store patterns
       /subscribe\s*\(/,
       /set\s*\(/,
       /update\s*\(/,
-    ]
+    ],
   },
   {
     name: 'lifecycle' as const,
@@ -51,7 +51,7 @@ export const svelte = [
       /getContext\s*\(/,
       /tick\s*\(/,
       /createEventDispatcher\s*\(/,
-    ]
+    ],
   },
   {
     name: 'bindings' as const,
@@ -69,7 +69,7 @@ export const svelte = [
       /in:[\w$]+/,
       /out:[\w$]+/,
       /animate:[\w$]+/,
-    ]
+    ],
   },
   {
     name: 'sveltekit' as const,
@@ -86,7 +86,7 @@ export const svelte = [
       // Navigation
       /goto\s*\(/,
       /invalidate\s*\(/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -97,11 +97,11 @@ export const svelte = [
           // Check for Svelte components
           hasSvelteComponents: !!document.querySelector('[class*="svelte-"]'),
           // Check for SvelteKit markers
-          hasSvelteKit: !!(window as any).__sveltekit_dev,
+          hasSvelteKit: !!window.__sveltekit_dev,
           // Check for Svelte stores
-          hasSvelteStores: typeof (window as any)?.__svelte !== 'undefined',
+          hasSvelteStores: typeof window?.__svelte !== 'undefined',
           // Check for Svelte HMR
-          hasHMR: !!(window as any).__SVELTE_HMR_HOT_API,
+          hasHMR: !!window.__SVELTE_HMR_HOT_API,
           // Check for Svelte runtime
           hasRuntime: !!document.querySelector('[data-svelte]'),
           // Check for hydration markers
@@ -109,6 +109,6 @@ export const svelte = [
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
- ];
+    },
+  },
+];

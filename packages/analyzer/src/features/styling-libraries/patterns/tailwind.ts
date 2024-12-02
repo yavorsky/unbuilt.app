@@ -30,9 +30,9 @@ export const tailwind = [
       /(?:^|\s)(?:bg|text|border|ring)-(?:primary|secondary|white|black|gray|red|blue|green)/,
 
       // Special characters that indicate Tailwind
-      /\//,  // divide classes
-      /:/,   // modifier separator
-      /-/    // general separator
+      /\//, // divide classes
+      /:/, // modifier separator
+      /-/, // general separator
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -47,19 +47,24 @@ export const tailwind = [
           // Responsive patterns
           /^(?:sm|md|lg|xl|2xl):/,
           // Arbitrary values
-          /\[.+\]/
+          /\[.+\]/,
         ];
 
         // Check a sample of elements (for performance)
-        const elements = Array.from(document.querySelectorAll('*')).slice(0, 100);
+        const elements = Array.from(document.querySelectorAll('*')).slice(
+          0,
+          100
+        );
 
-        return elements.some(el =>
-          Array.from(el.classList).some(className =>
-            patterns.some(pattern => pattern.test(className))
-          )
-        ) || !!document.querySelector('[class*="tailwind"]');
+        return (
+          elements.some((el) =>
+            Array.from(el.classList).some((className) =>
+              patterns.some((pattern) => pattern.test(className))
+            )
+          ) || !!document.querySelector('[class*="tailwind"]')
+        );
       });
-    }
+    },
   },
   {
     name: 'chunks' as const,
@@ -72,9 +77,9 @@ export const tailwind = [
       /tw\.[\w-]+\.css$/,
 
       // Common build output patterns
-      /styles\.[a-f0-9]+\.css$/,  // Need to check content for Tailwind patterns
+      /styles\.[a-f0-9]+\.css$/, // Need to check content for Tailwind patterns
       /main\.[a-f0-9]+\.css$/,
-      /app\.[a-f0-9]+\.css$/
-    ]
-  }
- ]
+      /app\.[a-f0-9]+\.css$/,
+    ],
+  },
+];

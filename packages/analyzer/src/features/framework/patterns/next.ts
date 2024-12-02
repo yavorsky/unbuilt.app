@@ -131,10 +131,7 @@ export const next = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [
-      /getServerSideProps/,
-      /getInitialProps/,
-    ],
+    runtime: [/getServerSideProps/, /getInitialProps/],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -171,14 +168,11 @@ export const next = [
   {
     score: 0.2,
     name: 'ssg' as const,
-    runtime: [
-      /getStaticProps/,
-      /getStaticPaths/,
-    ],
+    runtime: [/getStaticProps/, /getStaticPaths/],
   },
   {
     score: 0.2,
     name: 'isr' as const,
     runtime: [/revalidate:\s*\d+/],
-  }
+  },
 ];

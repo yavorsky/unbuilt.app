@@ -25,7 +25,20 @@ export interface ResourceAnalysis {
   };
 }
 
-export type ResourceType = 'document' | 'stylesheet' | 'image' | 'media' | 'font' | 'script' | 'texttrack' | 'xhr' | 'fetch' | 'eventsource' | 'websocket' | 'manifest' | 'other';
+export type ResourceType =
+  | 'document'
+  | 'stylesheet'
+  | 'image'
+  | 'media'
+  | 'font'
+  | 'script'
+  | 'texttrack'
+  | 'xhr'
+  | 'fetch'
+  | 'eventsource'
+  | 'websocket'
+  | 'manifest'
+  | 'other';
 
 export type Resource = {
   type: ResourceType;
@@ -57,7 +70,15 @@ export class Resources {
         const response = await route.fetch();
         content = await response.text();
       }
-      this.set({ url: request.url(), size: 0, timing: Date.now(), type: resourceType as ResourceType }, content);
+      this.set(
+        {
+          url: request.url(),
+          size: 0,
+          timing: Date.now(),
+          type: resourceType as ResourceType,
+        },
+        content
+      );
 
       await route.continue();
     });
@@ -142,13 +163,15 @@ export class Resources {
       js: {
         count: jsResources.length,
         size: jsResources.reduce((sum, r) => sum + r.size, 0),
-        external: jsResources.filter((r) => !r.url.includes(this.page!.url())).length,
+        external: jsResources.filter((r) => !r.url.includes(this.page!.url()))
+          .length,
         inline: await this.countInlineScripts(),
       },
       css: {
         count: cssResources.length,
         size: cssResources.reduce((sum, r) => sum + r.size, 0),
-        external: cssResources.filter((r) => !r.url.includes(this.page!.url())).length,
+        external: cssResources.filter((r) => !r.url.includes(this.page!.url()))
+          .length,
         inline: await this.countInlineStyles(),
       },
       images: {
@@ -181,7 +204,9 @@ export class Resources {
   }
 
   private async countInlineScripts(): Promise<number> {
-    return this.page!.evaluate(() => document.querySelectorAll('script:not([src])').length);
+    return this.page!.evaluate(
+      () => document.querySelectorAll('script:not([src])').length
+    );
   }
 
   private async countInlineStyles(): Promise<number> {
@@ -190,7 +215,10 @@ export class Resources {
 
   private async countOptimizedImages(): Promise<number> {
     return this.page!.evaluate(
-      () => document.querySelectorAll('img[srcset], img[loading="lazy"], picture source').length
+      () =>
+        document.querySelectorAll(
+          'img[srcset], img[loading="lazy"], picture source'
+        ).length
     );
   }
 

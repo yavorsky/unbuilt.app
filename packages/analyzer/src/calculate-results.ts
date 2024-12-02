@@ -20,14 +20,18 @@ export interface FeatureResult<Names extends string> {
   matched: Set<Names>;
 }
 
-export interface CalculationResult<T extends Record<string, Pattern<string>[]>> {
+export interface CalculationResult<
+  T extends Record<string, Pattern<string>[]>,
+> {
   result: {
     name: keyof T;
     confidence: number;
     matched: Set<AllPatternNames<T>>;
   };
   getResultFor(featureName: keyof T): FeatureResult<AllPatternNames<T>> | null;
-  getAllResultsWithConfidence(minConfidence: number): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
+  getAllResultsWithConfidence(
+    minConfidence: number
+  ): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
   getAllResults(): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
 }
 
@@ -35,7 +39,7 @@ async function processPatterns<Names extends string>(
   patterns: Pattern<Names>[],
   resources: Resources,
   page: Page,
-  browser: Browser,
+  browser: Browser
 ): Promise<{ totalScore: number; matchedPatterns: Set<Names> }> {
   const content = resources.getAllScriptsContent();
   const filenames = Array.from(resources.getAllScriptsNames());
@@ -87,7 +91,9 @@ async function processPatterns<Names extends string>(
   );
 }
 
-export async function calculateResults<T extends Record<string, Pattern<string>[]>>(
+export async function calculateResults<
+  T extends Record<string, Pattern<string>[]>,
+>(
   resources: Resources,
   page: Page,
   browser: Browser,
@@ -95,7 +101,12 @@ export async function calculateResults<T extends Record<string, Pattern<string>[
 ): Promise<CalculationResult<T>> {
   const results = await Promise.all(
     Object.entries(patterns).map(async ([name, patternList]) => {
-      const processed = await processPatterns(patternList, resources, page, browser);
+      const processed = await processPatterns(
+        patternList,
+        resources,
+        page,
+        browser
+      );
       return {
         name,
         confidence: processed.totalScore,
@@ -104,13 +115,16 @@ export async function calculateResults<T extends Record<string, Pattern<string>[
     })
   );
 
-  const initialResults = Object.keys(patterns).reduce((acc, key) => {
-    acc[key as keyof T] = {
-      confidence: 0,
-      matched: new Set(),
-    } as FeatureResult<AllPatternNames<T>>;
-    return acc;
-  }, {} as Record<keyof T, FeatureResult<AllPatternNames<T>>>);
+  const initialResults = Object.keys(patterns).reduce(
+    (acc, key) => {
+      acc[key as keyof T] = {
+        confidence: 0,
+        matched: new Set(),
+      } as FeatureResult<AllPatternNames<T>>;
+      return acc;
+    },
+    {} as Record<keyof T, FeatureResult<AllPatternNames<T>>>
+  );
 
   const calculatedResults = results.reduce((acc, curr) => {
     acc[curr.name as keyof T] = {
@@ -131,14 +145,18 @@ export async function calculateResults<T extends Record<string, Pattern<string>[
       matched: highestResult.matched,
     },
     getAllResultsWithConfidence: (minConfidence = 0.3) => {
-      return Object.entries(calculatedResults).reduce((acc, [key, value]) => {
-        if (value.confidence >= minConfidence) {
-          acc[key as keyof T] = value;
-        }
-        return acc;
-      }, {} as Record<keyof T, FeatureResult<AllPatternNames<T>>>);
+      return Object.entries(calculatedResults).reduce(
+        (acc, [key, value]) => {
+          if (value.confidence >= minConfidence) {
+            acc[key as keyof T] = value;
+          }
+          return acc;
+        },
+        {} as Record<keyof T, FeatureResult<AllPatternNames<T>>>
+      );
     },
     getAllResults: () => calculatedResults,
-    getResultFor: (featureName: keyof T) => calculatedResults[featureName] || null,
+    getResultFor: (featureName: keyof T) =>
+      calculatedResults[featureName] || null,
   };
 }

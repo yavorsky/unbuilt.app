@@ -59,7 +59,7 @@ export const react = [
       // Common build patterns
       /\[\s*"ref"\s*,\s*null\s*,/,
       /\[\s*"key"\s*,\s*null\s*,/,
-    ]
+    ],
   },
   {
     name: 'hooks' as const,
@@ -75,7 +75,7 @@ export const react = [
       /(?:React\.|[\W])use(?:DebugValue|InsertionEffect)\W/,
       /dispatcher\s*=\s*ReactCurrentDispatcher/,
       /__react_hooks__/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -92,7 +92,7 @@ export const react = [
       /\._owner=/,
       // Error boundaries
       /componentDidCatch|getDerivedStateFromError/,
-    ]
+    ],
   },
   {
     name: 'reconciler' as const,
@@ -111,7 +111,7 @@ export const react = [
       /Scheduler\.unstable_/,
       /unstable_scheduleCallback/,
       /requestIdleCallback/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -121,14 +121,41 @@ export const react = [
         const markers = {
           hasReact: typeof window.React !== 'undefined',
           hasReactDOM: typeof window.ReactDOM !== 'undefined',
-          hasDispatcher: !!(window as any).__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
+          hasDispatcher:
+            !!window.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
           // Check for React root
           hasReactRoot: !!document.querySelector('[data-reactroot]'),
           // Check for React devtools hook
-          hasDevTools: !!(window as any).__REACT_DEVTOOLS_GLOBAL_HOOK__,
+          hasDevTools: !!window.__REACT_DEVTOOLS_GLOBAL_HOOK__,
         };
         return Object.values(markers).some(Boolean);
-      })
-    }
+      });
+    },
+  },
+  {
+    name: 'ssr' as const,
+    score: 0.2,
+    browser: async (page: Page) => {
+      // Check for React SSR markers
+      return page!.evaluate(() => {
+        // Check for specific React SSR signatures
+        const markers = {
+          // Data-reactroot attribute indicates React SSR
+          hasReactRoot: !!document.querySelector('[data-reactroot]'),
+
+          // React hydration markers
+          hasHydrationComment:
+            document.documentElement.innerHTML.includes('<!--$-->'),
+
+          // React hydration errors in console can indicate SSR
+          hasHydrationError: window.__REACT_ERROR_OVERLAY__ !== undefined,
+
+          // Check if content is present before JS loads
+          hasInitialContent: document.body.children.length > 0,
+        };
+
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
 ];

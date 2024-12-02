@@ -32,6 +32,7 @@ export const less = [
                 rule.cssText.match(/when\s*\(/)
             );
           } catch (e) {
+            console.error(e);
             return false;
           }
         });

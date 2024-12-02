@@ -1,5 +1,3 @@
-import { Pattern } from '../../../types.js';
-
 export const gatsby = [
   {
     score: 0.2,

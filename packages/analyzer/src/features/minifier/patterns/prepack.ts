@@ -18,7 +18,7 @@ export const prepack = [
       /void\s+function/,
 
       // Variable naming patterns
-      /_\$[0-9]+/,  // Underscore dollar number pattern
+      /_\$[0-9]+/, // Underscore dollar number pattern
       /\$[A-Z][0-9]+/, // Dollar capital number pattern
 
       // Known value substitution
@@ -27,25 +27,17 @@ export const prepack = [
 
       // Loop unrolling patterns
       /\[\.\.\.Array\([0-9]+\)\]/,
-      /Array\.from\({length:/
-    ]
+      /Array\.from\({length:/,
+    ],
   },
   {
     name: 'chunks' as const,
     score: 0.3,
-    filenames: [
-      /\.prepack\.js$/,
-      /prepack-min\.js$/,
-      /-prepack\.js$/
-    ]
+    filenames: [/\.prepack\.js$/, /prepack-min\.js$/, /-prepack\.js$/],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
-    filenames: [
-      /\.min\.js$/,
-      /\.[a-f0-9]{8}\.js$/,
-      /optimized\.js$/
-    ]
-  }
- ];
+    filenames: [/\.min\.js$/, /\.[a-f0-9]{8}\.js$/, /optimized\.js$/],
+  },
+];

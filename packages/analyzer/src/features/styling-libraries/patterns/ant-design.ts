@@ -42,7 +42,7 @@ export const antDesign = [
 
       // Specific component attributes
       /data-row-key/,
-      /data-menu-id/
+      /data-menu-id/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -51,7 +51,8 @@ export const antDesign = [
           hasAntClasses: document.querySelector('[class*="ant-"]') !== null,
 
           // Icon checks
-          hasAntIcons: document.querySelector('.anticon, [class*="anticon-"]') !== null,
+          hasAntIcons:
+            document.querySelector('.anticon, [class*="anticon-"]') !== null,
 
           // Component structure checks
           hasComponents: !!(
@@ -63,18 +64,25 @@ export const antDesign = [
           ),
 
           // Modal/Popup container checks
-          hasPortals: !!document.querySelector('.ant-popup-container, .ant-modal-root'),
+          hasPortals: !!document.querySelector(
+            '.ant-popup-container, .ant-modal-root'
+          ),
 
           // Message/Notification container
-          hasMessageContainer: !!document.querySelector('.ant-message, .ant-notification'),
+          hasMessageContainer: !!document.querySelector(
+            '.ant-message, .ant-notification'
+          ),
 
           // Theme checks
-          hasThemeAttributes: document.querySelector('[data-theme], [ant-click-animating-without-extra-node]') !== null
+          hasThemeAttributes:
+            document.querySelector(
+              '[data-theme], [ant-click-animating-without-extra-node]'
+            ) !== null,
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'chunks' as const,
@@ -94,7 +102,7 @@ export const antDesign = [
 
       // Icons package
       /@ant-design\/icons/,
-      /icons-[\w-]+\.js$/
-    ]
-  }
- ]
+      /icons-[\w-]+\.js$/,
+    ],
+  },
+];

@@ -37,13 +37,14 @@ export const foundation = [
       /\[data-whatinput=/,
       /is-active/,
       /is-open/,
-      /is-visible/
+      /is-visible/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Grid system checks
-          hasGridSystem: document.querySelector('.grid-x, .grid-y, .cell') !== null,
+          hasGridSystem:
+            document.querySelector('.grid-x, .grid-y, .cell') !== null,
 
           // Component checks
           hasComponents: !!(
@@ -54,21 +55,28 @@ export const foundation = [
           ),
 
           // Data attributes
-          hasDataAttributes: document.querySelector('[data-dropdown], [data-tooltip], [data-accordion]') !== null,
+          hasDataAttributes:
+            document.querySelector(
+              '[data-dropdown], [data-tooltip], [data-accordion]'
+            ) !== null,
 
           // Foundation global object
-          hasFoundation: typeof (window as any).Foundation !== 'undefined',
+          hasFoundation: typeof window.Foundation !== 'undefined',
 
           // Common utility classes
-          hasUtilities: document.querySelector('.float-left, .float-right, .clearfix, .show-for-medium') !== null,
+          hasUtilities:
+            document.querySelector(
+              '.float-left, .float-right, .clearfix, .show-for-medium'
+            ) !== null,
 
           // XY Grid specific
-          hasXYGrid: document.querySelector('.grid-margin-x, .grid-margin-y') !== null
+          hasXYGrid:
+            document.querySelector('.grid-margin-x, .grid-margin-y') !== null,
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'files' as const,
@@ -86,7 +94,7 @@ export const foundation = [
 
       // Chunk names
       /foundation-[\w-]+\.js$/,
-      /chunk-foundation-[\w-]+\.js$/
-    ]
-  }
- ]
+      /chunk-foundation-[\w-]+\.js$/,
+    ],
+  },
+];

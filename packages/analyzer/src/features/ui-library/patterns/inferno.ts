@@ -13,12 +13,12 @@ export const inferno = [
       // Inferno internal markers
       /__render/,
       /__patch/,
-      /\$V/,  // VNode reference
+      /\$V/, // VNode reference
       // Common minified patterns
       /_infernoFlags/,
       /InfernoComponent/,
       /infernoClient/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -36,7 +36,7 @@ export const inferno = [
       /createPortal/,
       /createRef/,
       /forwardRef/,
-    ]
+    ],
   },
   {
     name: 'hooks' as const,
@@ -51,7 +51,7 @@ export const inferno = [
       /useRef\s*\(/,
       /useContext\s*\(/,
       /useReducer\s*\(/,
-    ]
+    ],
   },
   {
     name: 'routing' as const,
@@ -67,7 +67,7 @@ export const inferno = [
       /useHistory/,
       /useParams/,
       /withRouter/,
-    ]
+    ],
   },
   {
     name: 'compatibility' as const,
@@ -81,7 +81,7 @@ export const inferno = [
       /findDOMNode/,
       /createPortal/,
       /hydrate\s*\(/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -90,11 +90,11 @@ export const inferno = [
       return page.evaluate(() => {
         const markers = {
           // Check for Inferno global
-          hasInfernoGlobal: typeof (window as any).Inferno !== 'undefined',
+          hasInfernoGlobal: typeof window.Inferno !== 'undefined',
           // Check for Inferno version
-          hasVersion: !!(window as any).__INFERNO_VERSION__,
+          hasVersion: !!window.__INFERNO_VERSION__,
           // Check for Inferno devtools
-          hasDevTools: !!(window as any).__INFERNO_DEVTOOLS_GLOBAL_HOOK__,
+          hasDevTools: !!window.__INFERNO_DEVTOOLS_GLOBAL_HOOK__,
           // Check for Inferno root
           hasRoot: !!document.querySelector('[data-infernoroot]'),
           // Check for component markers
@@ -104,6 +104,6 @@ export const inferno = [
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
- ];
+    },
+  },
+];

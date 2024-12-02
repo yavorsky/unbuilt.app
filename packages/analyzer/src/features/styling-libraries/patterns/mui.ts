@@ -35,19 +35,23 @@ export const mui = [
       /variant=/,
       /elevation=/,
       /severity=/,
-      /color=/
+      /color=/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for any MUI-like classes (including minified)
-          hasMuiClasses: document.querySelector('*[class*="mui-"], *[class*="Mui"]') !== null,
+          hasMuiClasses:
+            document.querySelector('*[class*="mui-"], *[class*="Mui"]') !==
+            null,
 
           // Emotion classes (survives minification)
-          hasEmotionClasses: document.querySelector('*[class^="css-"]') !== null,
+          hasEmotionClasses:
+            document.querySelector('*[class^="css-"]') !== null,
 
           // Data attributes (often preserved in minification)
-          hasMuiAttributes: document.querySelector('[data-mui], [aria-labelledby]') !== null,
+          hasMuiAttributes:
+            document.querySelector('[data-mui], [aria-labelledby]') !== null,
 
           // Common MUI DOM structures
           hasCommonStructures: !!(
@@ -62,12 +66,12 @@ export const mui = [
           hasStyleTags: !!(
             document.querySelector('style[data-emotion]') ||
             document.querySelector('style[data-mui-color-scheme]')
-          )
+          ),
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'chunks' as const,
@@ -79,7 +83,7 @@ export const mui = [
       /\.mui\./,
       /mui\.[a-f0-9]+\.js$/,
       /material\.[a-f0-9]+\.js$/,
-      /chunk\.[\w-]+\.js$/  // Check content for MUI patterns
-    ]
-  }
-]
+      /chunk\.[\w-]+\.js$/, // Check content for MUI patterns
+    ],
+  },
+];

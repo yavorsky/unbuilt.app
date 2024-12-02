@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const reactIntl = [
   {
@@ -29,29 +29,29 @@ export const reactIntl = [
 
       // Hook patterns
       /useIntl\(\)\.formatMessage/,
-      /useIntl\(\)\.format(?:Number|Date|Time|RelativeTime)/
+      /useIntl\(\)\.format(?:Number|Date|Time|RelativeTime)/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for React Intl globals
-          hasIntl: !!(window as any).ReactIntl,
+          hasIntl: !!window.ReactIntl,
 
           // Check for formatters
-          hasFormatters: !!(window as any).ReactIntl?.FormattedMessage,
+          hasFormatters: !!window.ReactIntl?.FormattedMessage,
 
           // Check for hooks
-          hasHooks: !!(window as any).ReactIntl?.useIntl,
+          hasHooks: !!window.ReactIntl?.useIntl,
 
           // Check for provider
-          hasProvider: !!(window as any).ReactIntl?.IntlProvider,
+          hasProvider: !!window.ReactIntl?.IntlProvider,
 
           // Check for messages
-          hasMessages: !!(window as any).ReactIntl?.defineMessages
+          hasMessages: !!window.ReactIntl?.defineMessages,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'formatting' as const,
@@ -70,8 +70,8 @@ export const reactIntl = [
       // Plural/Select formatting
       /selectordinal/,
       /\=(?:zero|one|two|few|many|other)\s*\{/,
-      /offset:\s*\d+/
-    ]
+      /offset:\s*\d+/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -81,7 +81,7 @@ export const reactIntl = [
       /@formatjs\/intl/,
       /compiled-lang\/[a-z-]+\.json$/,
       /messages\/[a-z-]+\.json$/,
-      /intl\/[a-z-]+\.json$/
-    ]
-  }
- ];
+      /intl\/[a-z-]+\.json$/,
+    ],
+  },
+];

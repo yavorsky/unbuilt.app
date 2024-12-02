@@ -5,7 +5,7 @@ import { remix } from './remix.js';
 
 export const patterns = {
   next,
-  // nuxt,
-  // remix,
-  // gatsby,
+  nuxt,
+  remix,
+  gatsby,
 } as const;

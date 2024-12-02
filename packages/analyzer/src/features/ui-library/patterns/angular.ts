@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const angular = [
   {
@@ -7,8 +7,8 @@ export const angular = [
     runtime: [
       // Core Angular
       /\bangular\b/i,
-      /ng\-version/,
-      /\bng\-app\b/,
+      /ng-version/,
+      /\bng-app\b/,
       /platformBrowser/,
       // Zone.js
       /Zone\$|__zone_symbol__|NgZone/,
@@ -16,8 +16,8 @@ export const angular = [
       /__NgCli/,
       /ngDevMode/,
       /NG_COMP_DEF/,
-      /ɵ[a-z]+/,  // Angular internal symbols
-    ]
+      /ɵ[a-z]+/, // Angular internal symbols
+    ],
   },
   {
     name: 'components' as const,
@@ -35,7 +35,7 @@ export const angular = [
       // Change detection
       /ChangeDetector|ChangeDetectionStrategy/,
       /detectChanges|markForCheck/,
-    ]
+    ],
   },
   {
     name: 'templates' as const,
@@ -53,7 +53,7 @@ export const angular = [
       // Common directives
       /ngClass|ngStyle/,
       /ngSwitch|ngSwitchCase/,
-    ]
+    ],
   },
   {
     name: 'routing' as const,
@@ -61,7 +61,7 @@ export const angular = [
     runtime: [
       // Router
       /RouterModule|Routes/,
-      /router\-outlet/,
+      /router-outlet/,
       /routerLink/,
       /ActivatedRoute/,
       // Navigation
@@ -69,7 +69,7 @@ export const angular = [
       /NavigationEnd|NavigationStart/,
       /CanActivate|CanDeactivate/,
       /resolveGuard/,
-    ]
+    ],
   },
   {
     name: 'forms' as const,
@@ -85,7 +85,7 @@ export const angular = [
       /required|minlength|maxlength/,
       /\[\(ngModel\)\]/,
       /ValidatorFn|AsyncValidatorFn/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -94,13 +94,13 @@ export const angular = [
       return page.evaluate(() => {
         const markers = {
           // Check for Angular global
-          hasAngularGlobal: !!(window as any).ng,
+          hasAngularGlobal: !!window.ng,
           // Check for Zone.js
-          hasZone: typeof (window as any).Zone !== 'undefined',
+          hasZone: typeof window.Zone !== 'undefined',
           // Check for Angular attributes
           hasAngularAttributes: !!document.querySelector('[ng-version]'),
           // Check for Angular dev mode
-          hasDevMode: typeof (window as any).ngDevMode !== 'undefined',
+          hasDevMode: typeof window.ngDevMode !== 'undefined',
           // Check for Angular router
           hasRouter: !!document.querySelector('router-outlet'),
           // Check for common Angular elements
@@ -110,6 +110,31 @@ export const angular = [
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
- ];
+    },
+  },
+  {
+    name: 'ssr' as const,
+    score: 0.3,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const root = document.querySelector('app-root');
+        const markers = {
+          // Angular Universal markers
+          hasUniversalState: !!window.UNIVERSAL_STATE,
+
+          // Transfer state marker
+          hasTransferState: !!document.querySelector('#_TRANSFER_STATE'),
+
+          // Platform server marker
+          hasPlatformServer:
+            document.documentElement.hasAttribute('ng-server-context'),
+
+          // Check for prerendered content
+          hasPrerenderedContent: root && root?.children?.length > 0,
+        };
+
+        return Object.values(markers).some(Boolean);
+      });
+    },
+  },
+];

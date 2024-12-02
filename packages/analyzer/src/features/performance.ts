@@ -5,9 +5,9 @@ export interface PerformanceFeatures {
   resourceCount: number;
   totalSize: number;
   scriptMetrics: {
-    async: number,
-    defer: number,
-    modules: number,
+    async: number;
+    defer: number;
+    modules: number;
   };
   imageMetrics: {
     lazyLoaded: number;

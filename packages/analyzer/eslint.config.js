@@ -5,6 +5,9 @@ export default [
   ...baseConfig,
   {
     files: ['**/*.{ts,tsx}'],
+    rules: {
+      'no-useless-escape': 'off',
+    },
     languageOptions: {
       globals: {
         ...globals.browser,

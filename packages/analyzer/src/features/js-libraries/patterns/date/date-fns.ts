@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const dateFns = [
   {
@@ -23,28 +23,30 @@ export const dateFns = [
 
       // FP variant
       /from\s+["']date-fns\/fp["']/,
-      /\/date-fns\/fp\//
+      /\/date-fns\/fp\//,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for common functions in global scope
-          hasFunctions: typeof (window as any).format === 'function' ||
-                       typeof (window as any).parse === 'function',
+          hasFunctions:
+            typeof window.format === 'function' ||
+            typeof window.parse === 'function',
 
           // Check for date-fns namespace
-          hasNamespace: !!(window as any).dateFns,
+          hasNamespace: !!window.dateFns,
 
           // Check for fp variant
-          hasFp: !!(window as any).dateFnsFp,
+          hasFp: !!window.dateFnsFp,
 
           // Check for locale functions
-          hasLocale: typeof (window as any).formatRelative === 'function' ||
-                    typeof (window as any).formatDistance === 'function'
+          hasLocale:
+            typeof window.formatRelative === 'function' ||
+            typeof window.formatDistance === 'function',
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'modules' as const,
@@ -61,8 +63,8 @@ export const dateFns = [
 
       // Error messages specific to date-fns
       /is not a valid date/,
-      /requires \d+ arguments? but received \d+/
-    ]
+      /requires \d+ arguments? but received \d+/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -71,7 +73,7 @@ export const dateFns = [
       /date-fns(?:\.min)?\.js$/,
       /date-fns\/\w+\.js$/,
       /date-fns-\w+\.js$/,
-      /\bdate-fns\.[a-f0-9]+\.js$/
-    ]
-  }
- ];
+      /\bdate-fns\.[a-f0-9]+\.js$/,
+    ],
+  },
+];

@@ -42,7 +42,7 @@ export const fetch = [
           // Check for polyfills
           hasPolyfill: globals.some(
             (g) =>
-              // @ts-expect-error
+              // @ts-expect-error - TS doesn't know about polyfill properties
               (g.fetch && g.fetch.polyfill) ||
               g.fetch.toString().includes('[native code]') === false
           ),

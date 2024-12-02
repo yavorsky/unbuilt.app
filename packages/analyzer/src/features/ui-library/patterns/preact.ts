@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const preact = [
   {
@@ -10,8 +10,8 @@ export const preact = [
       /from\s+["']preact["']/,
       // Preact internal markers
       /__preactattr_/,
-      /__n/,  // Common minified Preact function
-      /\bh\s*\(/,  // Preact's createElement equivalent
+      /__n/, // Common minified Preact function
+      /\bh\s*\(/, // Preact's createElement equivalent
       // VNode patterns
       /\.__v/,
       /\.__k/,
@@ -36,7 +36,7 @@ export const preact = [
       // Preact specific attributes
       /\bkey\$|\bref\$/,
       /__self\$|__source\$/,
-    ]
+    ],
   },
   {
     name: 'hooks' as const,
@@ -51,7 +51,7 @@ export const preact = [
       // Hook internals
       /__hooks\$?/,
       /__c\s*=\s*!/, // Common hook initialization pattern
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -69,7 +69,7 @@ export const preact = [
       /Fragment\s*[,}]|Fragment:/,
       // Common patterns
       /this\.props|this\.state/,
-    ]
+    ],
   },
   {
     name: 'compat' as const,
@@ -86,7 +86,7 @@ export const preact = [
       /createPortal/,
       /Suspense/,
       /lazy\s*\(/,
-    ]
+    ],
   },
   {
     name: 'signals' as const,
@@ -102,7 +102,7 @@ export const preact = [
       // Signal internals
       /__value/,
       /__subscribers/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -110,14 +110,14 @@ export const preact = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasPreact: typeof (window as any).preact !== 'undefined',
+          hasPreact: typeof window.preact !== 'undefined',
           hasPreactMarkers: !!document.querySelector('[data-preact-client]'),
-          hasDevTools: !!(window as any).__PREACT_DEVTOOLS__,
-          hasOptions: !!(window as any).__PREACT_OPTIONS__,
-          hasHooks: !!(window as any).__PREACT_HOOKS__
+          hasDevTools: !!window.__PREACT_DEVTOOLS__,
+          hasOptions: !!window.__PREACT_OPTIONS__,
+          hasHooks: !!window.__PREACT_HOOKS__,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
 ];

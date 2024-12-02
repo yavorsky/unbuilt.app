@@ -27,29 +27,29 @@ export const spacetime = [
       /\.isAwake\(\)/,
       /\.isDST\(\)/,
       /\.hasDST\(\)/,
-      /\.hemisphere\(\)/
+      /\.hemisphere\(\)/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for global spacetime
-          hasSpacetime: typeof (window as any).spacetime === 'function',
+          hasSpacetime: typeof window.spacetime === 'function',
 
           // Check for utilities
-          hasUtils: !!(window as any).spacetime?.now,
+          hasUtils: !!window.spacetime?.now,
 
           // Check for timezone support
-          hasTimezone: !!(window as any).spacetime?.prototype?.timezone,
+          hasTimezone: !!window.spacetime?.prototype?.timezone,
 
           // Check for unique features
-          hasUnique: typeof (window as any).spacetime?.whereIts === 'function',
+          hasUnique: typeof window.spacetime?.whereIts === 'function',
 
           // Check for version
-          hasVersion: !!(window as any).spacetime?.version
+          hasVersion: !!window.spacetime?.version,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'plugins' as const,
@@ -68,8 +68,8 @@ export const spacetime = [
       // Comparison methods
       /\.isSame\(['"][^'"]+['"]\)/,
       /\.isEqual\(/,
-      /\.diff\(/
-    ]
+      /\.diff\(/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -78,7 +78,7 @@ export const spacetime = [
       /spacetime(?:\.min)?\.js$/,
       /spacetime\.[a-f0-9]+\.js$/,
       /spacetime-[\w-]+\.js$/,
-      /spacetime\/builds?\//
-    ]
-  }
- ];
+      /spacetime\/builds?\//,
+    ],
+  },
+];

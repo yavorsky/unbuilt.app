@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const sass = [
   {
@@ -34,6 +34,7 @@ export const sass = [
                 rule.cssText.includes('@mixin')
             );
           } catch (e) {
+            console.error(e);
             return false;
           }
         });

@@ -2,11 +2,20 @@ import { chromium, Page, Browser } from 'playwright';
 import { BuildFeatures, BuildFeaturesDetector } from './features/build.js';
 import { ResourceAnalysis, Resources } from './resources.js';
 import { ModuleResult, ModuleFeaturesDetector } from './features/module.js';
-import { PerformanceFeatures, PerformanceFeaturesDetector } from './features/performance.js';
+import {
+  PerformanceFeatures,
+  PerformanceFeaturesDetector,
+} from './features/performance.js';
 import { UILibFeatures, UILibFeaturesDetector } from './features/ui-lib.js';
-import { MetaFrameworkFeatures, MetaFrameworkFeaturesDetector } from './features/framework/detect.js';
+import {
+  MetaFrameworkFeatures,
+  MetaFrameworkFeaturesDetector,
+} from './features/framework/detect.js';
 import { NoPageInitializedError } from './errors.js';
-import { StylingFeatures, StylingFeaturesDetector } from './features/styling.js';
+import {
+  StylingFeatures,
+  StylingFeaturesDetector,
+} from './features/styling.js';
 
 // {
 //   framework: {
@@ -51,7 +60,6 @@ import { StylingFeatures, StylingFeaturesDetector } from './features/styling.js'
 //   },
 // }
 
-
 export interface AnalysisResult {
   url: string;
   build: BuildFeatures | null;
@@ -71,9 +79,11 @@ export class Analyzer {
   private buildFeaturesDetector: BuildFeaturesDetector | null = null;
   private stylingFeaturesDetector: StylingFeaturesDetector | null = null;
   private uiLibFeaturesDetector: UILibFeaturesDetector | null = null;
-  private metaFameworkFeaturesDetector: MetaFrameworkFeaturesDetector | null = null;
+  private metaFameworkFeaturesDetector: MetaFrameworkFeaturesDetector | null =
+    null;
   private moduleFeaturesDetector: ModuleFeaturesDetector | null = null;
-  private performanceFeaturesDetector: PerformanceFeaturesDetector | null = null;
+  private performanceFeaturesDetector: PerformanceFeaturesDetector | null =
+    null;
 
   constructor(page: Page, browser: Browser) {
     this.browser = browser;
@@ -97,12 +107,32 @@ export class Analyzer {
     if (!this.page || !this.resources || !this.browser) {
       throw new NoPageInitializedError();
     }
-    this.buildFeaturesDetector = new BuildFeaturesDetector(this.page, this.resources);
-    this.stylingFeaturesDetector = new StylingFeaturesDetector(this.page, this.resources);
-    this.uiLibFeaturesDetector = new UILibFeaturesDetector(this.page, this.resources, this.browser);
-    this.metaFameworkFeaturesDetector = new MetaFrameworkFeaturesDetector(this.page, this.resources, this.browser);
-    this.moduleFeaturesDetector = new ModuleFeaturesDetector(this.page, this.resources);
-    this.performanceFeaturesDetector = new PerformanceFeaturesDetector(this.page, this.resources);
+    this.buildFeaturesDetector = new BuildFeaturesDetector(
+      this.page,
+      this.resources
+    );
+    this.stylingFeaturesDetector = new StylingFeaturesDetector(
+      this.page,
+      this.resources
+    );
+    this.uiLibFeaturesDetector = new UILibFeaturesDetector(
+      this.page,
+      this.resources,
+      this.browser
+    );
+    this.metaFameworkFeaturesDetector = new MetaFrameworkFeaturesDetector(
+      this.page,
+      this.resources,
+      this.browser
+    );
+    this.moduleFeaturesDetector = new ModuleFeaturesDetector(
+      this.page,
+      this.resources
+    );
+    this.performanceFeaturesDetector = new PerformanceFeaturesDetector(
+      this.page,
+      this.resources
+    );
   }
 
   async analyze(url: string): Promise<AnalysisResult> {
@@ -120,12 +150,13 @@ export class Analyzer {
 
       const analysis: AnalysisResult = {
         url,
-        build: await this.buildFeaturesDetector?.detect() ?? null,
-        uiLib: await this.uiLibFeaturesDetector?.detect() ?? null,
-        metaFramework: await this.metaFameworkFeaturesDetector?.detect() ?? null,
-        styling: await this.stylingFeaturesDetector?.detect() ?? null,
-        performance: await this.performanceFeaturesDetector?.detect() ?? null,
-        modules: await this.moduleFeaturesDetector?.detect() ?? null,
+        build: (await this.buildFeaturesDetector?.detect()) ?? null,
+        uiLib: (await this.uiLibFeaturesDetector?.detect()) ?? null,
+        metaFramework:
+          (await this.metaFameworkFeaturesDetector?.detect()) ?? null,
+        styling: (await this.stylingFeaturesDetector?.detect()) ?? null,
+        performance: (await this.performanceFeaturesDetector?.detect()) ?? null,
+        modules: (await this.moduleFeaturesDetector?.detect()) ?? null,
         resources: await this.resources.analyze(),
         timestamp: new Date().toISOString(),
       };

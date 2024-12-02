@@ -23,7 +23,6 @@ interface UILibPatterns {
   styling?: RegExp[]; // New category for styling solutions
 }
 
-
 export class UILibFeaturesDetector {
   private page: Page;
   private resources: Resources;
@@ -58,13 +57,13 @@ export class UILibFeaturesDetector {
           /data-reactroot/,
           /[rR]eact\.lazy\(/,
           // Common patterns
-          /[A-Z][a-zA-Z]*\s*\{/,  // Component declarations
+          /[A-Z][a-zA-Z]*\s*\{/, // Component declarations
           /React\.memo\(/,
           /forwardRef\(/,
           /useImperativeHandle/,
           // Props patterns
           /props\.[a-zA-Z]/,
-          /{\s*\.{3}props\s*}/,   // Props spreading
+          /{\s*\.{3}props\s*}/, // Props spreading
         ],
         markup: [
           /<\/?[A-Z][A-Za-z0-9]*>/,
@@ -72,9 +71,9 @@ export class UILibFeaturesDetector {
           /data-reactid/,
           /hydrate(?:Root)?/,
           // JSX patterns
-          /<>\s*</,               // Fragment shorthand
-          /<\/>/,                 // Fragment closing
-          /\{\s*children\s*\}/,   // Children prop
+          /<>\s*</, // Fragment shorthand
+          /<\/>/, // Fragment closing
+          /\{\s*children\s*\}/, // Children prop
         ],
         features: [
           /useCallback|useMemo|useContext|useReducer|useRef/,
@@ -198,12 +197,7 @@ export class UILibFeaturesDetector {
           /useClientEffect\$/,
           /component\$/,
         ],
-        markup: [
-          /<\$>/,
-          /<\/\$>/,
-          /<Slot\s*\/>/,
-          /q:slot/,
-        ],
+        markup: [/<\$>/, /<\/\$>/, /<Slot\s*\/>/, /q:slot/],
         features: [
           /useStore\$/,
           /useSignal\$/,
@@ -251,8 +245,18 @@ export class UILibFeaturesDetector {
           /NuxtPage|NuxtLayout/,
           /useAsyncData|useFetch/,
         ],
-        markup: [/data-n-head/, /_nuxt\/|-nuxt-/, /nuxt-error-/, /nuxt-loading/],
-        features: [/useRuntimeConfig/, /defineNuxtPlugin/, /useNuxtApp/, /nuxt\.config\./],
+        markup: [
+          /data-n-head/,
+          /_nuxt\/|-nuxt-/,
+          /nuxt-error-/,
+          /nuxt-loading/,
+        ],
+        features: [
+          /useRuntimeConfig/,
+          /defineNuxtPlugin/,
+          /useNuxtApp/,
+          /nuxt\.config\./,
+        ],
       },
       angular: {
         runtime: [
@@ -267,7 +271,12 @@ export class UILibFeaturesDetector {
           /\(click\)|\(change\)|\(input\)/,
           /ngModel|ngFor|ngIf/,
         ],
-        markup: [/ng-version/, /ng-reflect/, /_nghost|_ngcontent/, /ng-star-inserted/],
+        markup: [
+          /ng-version/,
+          /ng-reflect/,
+          /_nghost|_ngcontent/,
+          /ng-star-inserted/,
+        ],
         features: [
           /ChangeDetector|NgZone/,
           /HttpClient|FormGroup/,
@@ -345,7 +354,9 @@ export class UILibFeaturesDetector {
             document.querySelector('[q\\:container]') ||
             document.querySelector('[q\\:version]')
           ),
-          version: document.querySelector('[q\\:version]')?.getAttribute('q:version'),
+          version: document
+            .querySelector('[q\\:version]')
+            ?.getAttribute('q:version'),
         },
 
         // Vue and Nuxt
@@ -356,7 +367,9 @@ export class UILibFeaturesDetector {
             document.querySelector('[data-v-app]') ||
             document.querySelector('[__vue_app__]')
           ),
-          version: window.Vue?.version || document.querySelector('[data-v-app]')?.getAttribute('version'),
+          version:
+            window.Vue?.version ||
+            document.querySelector('[data-v-app]')?.getAttribute('version'),
         },
 
         // Nuxt specific
@@ -378,8 +391,10 @@ export class UILibFeaturesDetector {
             document.querySelector('[ng-version]') ||
             document.querySelector('[ng-app]')
           ),
-          version: document.querySelector('[ng-version]')?.getAttribute('ng-version') ||
-                   window.angular?.version?.full,
+          version:
+            document
+              .querySelector('[ng-version]')
+              ?.getAttribute('ng-version') || window.angular?.version?.full,
         },
 
         // Svelte
@@ -444,7 +459,7 @@ export class UILibFeaturesDetector {
     const checkPatterns = <T extends keyof typeof patterns>(
       content: string,
       bundler: T,
-      category: keyof typeof patterns[T],
+      category: keyof (typeof patterns)[T],
       weight: number
     ) => {
       const bundlerPatternsList = patterns[bundler][category] as RegExp[];
@@ -455,7 +470,7 @@ export class UILibFeaturesDetector {
       });
     };
 
-    Object.keys(patterns).forEach(bundler => {
+    Object.keys(patterns).forEach((bundler) => {
       const bundlerKey = bundler as keyof typeof patterns;
       // Runtime patterns are strong indicators
       checkPatterns(allScripts, bundlerKey, 'runtime', 0.3);
@@ -469,12 +484,14 @@ export class UILibFeaturesDetector {
 
     // Calculate scores for each framework
 
-
     // Find the framework with highest score
-    const [[mainFramework, maxScore]] = Object.entries(scores).sort(([, a], [, b]) => b - a);
+    const [[mainFramework, maxScore]] = Object.entries(scores).sort(
+      ([, a], [, b]) => b - a
+    );
 
     // Get version from global detection
-    const version = globalMarkers[mainFramework as keyof typeof globalMarkers]?.version;
+    const version =
+      globalMarkers[mainFramework as keyof typeof globalMarkers]?.version;
 
     const libraries = await this.detectLibraries(mainFramework);
     // const meta = await this.detectMeta(mainFramework);
@@ -512,7 +529,8 @@ export class UILibFeaturesDetector {
         if (await this.hasPinia()) stateManagementLibraries.push('pinia');
         break;
       case 'angular':
-        if (await this.hasAngularRouter()) routerLibraries.push('angular-router');
+        if (await this.hasAngularRouter())
+          routerLibraries.push('angular-router');
         if (await this.hasNgrx()) stateManagementLibraries.push('ngrx');
         if (await this.hasNgxs()) stateManagementLibraries.push('ngxs');
         if (await this.hasAkita()) stateManagementLibraries.push('akita');
@@ -543,8 +561,7 @@ export class UILibFeaturesDetector {
   private async hasRedux(): Promise<boolean> {
     // Check for Redux in window object
     const hasReduxInWindow = await this.page!.evaluate(() => {
-      // eslint-disable-next-line
-      return !!(window as any).__REDUX_DEVTOOLS_EXTENSION__ || !!(window as any).__REDUX_STATE__;
+      return !!window.__REDUX_DEVTOOLS_EXTENSION__ || !!window.__REDUX_STATE__;
     });
 
     // Check for Redux patterns in scripts
@@ -562,8 +579,8 @@ export class UILibFeaturesDetector {
       'configureStore', // Redux Toolkit
     ];
 
-    const hasReduxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      reduxPatterns.some((pattern) => script.includes(pattern))
+    const hasReduxInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => reduxPatterns.some((pattern) => script.includes(pattern))
     );
 
     return hasReduxInWindow || hasReduxInScripts;
@@ -573,7 +590,7 @@ export class UILibFeaturesDetector {
     // Check for React Router in window object
     const hasReactRouterInWindow = await this.page!.evaluate(() => {
       // eslint-disable-next-line
-      return !!(window as any).ReactRouter || !!(window as any).__RouterContext || window.__REACT_ROUTER_GLOBAL_HISTORY__;
+      return !!window.ReactRouter || !!window.__RouterContext || window.__REACT_ROUTER_GLOBAL_HISTORY__;
     });
 
     // Check for React Router patterns in scripts
@@ -588,15 +605,16 @@ export class UILibFeaturesDetector {
       'withRouter',
     ];
 
-    const hasRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      routerPatterns.some((pattern) => script.includes(pattern))
+    const hasRouterInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => routerPatterns.some((pattern) => script.includes(pattern))
     );
 
     // Check for router-specific DOM elements
     const hasRouterElements = await this.page!.evaluate(() => {
       return (
-        !!document.querySelector('[data-reactroot] a[href]:not([href^="http"])') ||
-        !!document.querySelector('nav a[href]:not([href^="http"])')
+        !!document.querySelector(
+          '[data-reactroot] a[href]:not([href^="http"])'
+        ) || !!document.querySelector('nav a[href]:not([href^="http"])')
       );
     });
 
@@ -621,7 +639,6 @@ export class UILibFeaturesDetector {
       return !!window.__MOBX_DEVTOOLS_GLOBAL_HOOK__;
     });
 
-
     const mobxPatterns = [
       'observable',
       'action',
@@ -632,8 +649,8 @@ export class UILibFeaturesDetector {
       'useObserver',
     ];
 
-    const hasMobxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      mobxPatterns.some((pattern) => script.includes(pattern))
+    const hasMobxInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => mobxPatterns.some((pattern) => script.includes(pattern))
     );
 
     return hasMobxInWindow || hasMobxInScripts;
@@ -653,15 +670,20 @@ export class UILibFeaturesDetector {
       'useSetRecoilState',
     ];
 
-    const hasRecoilInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      recoilPatterns.some((pattern) => script.includes(pattern))
+    const hasRecoilInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => recoilPatterns.some((pattern) => script.includes(pattern))
     );
 
     return hasRecoilInWindow || hasRecoilInScripts;
   }
 
   private async hasZustand(): Promise<boolean> {
-    const zustandPatterns = ['create((set, get)', 'zustand/vanilla', 'useStore(', 'shallow'];
+    const zustandPatterns = [
+      'create((set, get)',
+      'zustand/vanilla',
+      'useStore(',
+      'shallow',
+    ];
 
     return Array.from(this.resources.getAllScripts()).some((script) =>
       zustandPatterns.some((pattern) => script.includes(pattern))
@@ -681,13 +703,18 @@ export class UILibFeaturesDetector {
       return !!window.window.__PINIA__;
     });
 
-    const piniaPatterns = ['createPinia', 'defineStore', 'storeToRefs', 'usePinia'];
+    const piniaPatterns = [
+      'createPinia',
+      'defineStore',
+      'storeToRefs',
+      'usePinia',
+    ];
 
-    const hasPinitInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      piniaPatterns.some((pattern) => script.includes(pattern))
+    const hasPinitInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => piniaPatterns.some((pattern) => script.includes(pattern))
     );
 
-    return hasPiniaInWindow || hasPinitInScripts
+    return hasPiniaInWindow || hasPinitInScripts;
   }
 
   private async hasAngularStateManagement(): Promise<boolean> {
@@ -714,7 +741,13 @@ export class UILibFeaturesDetector {
   }
 
   private async hasNgxs(): Promise<boolean> {
-    const ngxsPatterns = ['@State', '@Action', '@Selector', 'Store.select', 'StateOperator'];
+    const ngxsPatterns = [
+      '@State',
+      '@Action',
+      '@Selector',
+      'Store.select',
+      'StateOperator',
+    ];
 
     return Array.from(this.resources.getAllScripts()).some((script) =>
       ngxsPatterns.some((pattern) => script.includes(pattern))
@@ -722,7 +755,13 @@ export class UILibFeaturesDetector {
   }
 
   private async hasAkita(): Promise<boolean> {
-    const akitaPatterns = ['QueryEntity', 'StoreConfig', 'EntityStore', 'EntityState', 'akita'];
+    const akitaPatterns = [
+      'QueryEntity',
+      'StoreConfig',
+      'EntityStore',
+      'EntityState',
+      'akita',
+    ];
 
     return Array.from(this.resources.getAllScripts()).some((script) =>
       akitaPatterns.some((pattern) => script.includes(pattern))
@@ -742,7 +781,9 @@ export class UILibFeaturesDetector {
       'router-outlet',
     ];
 
-    const hasAngularRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasAngularRouterInScripts = Array.from(
+      this.resources.getAllScripts()
+    ).some((script) =>
       routerPatterns.some((pattern) => script.includes(pattern))
     );
 
@@ -754,59 +795,54 @@ export class UILibFeaturesDetector {
       /Router|Link|navigate/,
       /svelte-routing/,
       /\$page/,
-      /goto\(/
+      /goto\(/,
     ];
 
-    const hasSvelteRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      routerPatterns.some((pattern) => pattern.test(script))
-    );
+    const hasSvelteRouterInScripts = Array.from(
+      this.resources.getAllScripts()
+    ).some((script) => routerPatterns.some((pattern) => pattern.test(script)));
 
     return hasSvelteRouterInScripts;
-   }
+  }
 
-   private async hasSvelteKit(): Promise<boolean> {
+  private async hasSvelteKit(): Promise<boolean> {
     const patterns = [
       /\$app\/navigation/,
       /\$app\/stores/,
       /__SVELTEKIT_APP__/,
-      /load\(\{\s*fetch\s*\}/
+      /load\(\{\s*fetch\s*\}/,
     ];
 
-    const hasSvelteKitInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      patterns.some((pattern) => pattern.test(script))
-    );
+    const hasSvelteKitInScripts = Array.from(
+      this.resources.getAllScripts()
+    ).some((script) => patterns.some((pattern) => pattern.test(script)));
 
     return hasSvelteKitInScripts;
-   }
+  }
 
-   private async hasSvelteStore(): Promise<boolean> {
+  private async hasSvelteStore(): Promise<boolean> {
     const patterns = [
       /writable|readable|derived/,
       /\$store/,
       /import\s*{\s*[^}]*}\s*from\s*['"]svelte\/store['"]/,
-      /store\.subscribe/
+      /store\.subscribe/,
     ];
 
-    const svelteStoreInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      patterns.some((pattern) => pattern.test(script))
-    );
+    const svelteStoreInScripts = Array.from(
+      this.resources.getAllScripts()
+    ).some((script) => patterns.some((pattern) => pattern.test(script)));
 
     return svelteStoreInScripts;
-   }
+  }
 
-   private async hasSvelteMobx(): Promise<boolean> {
-    const patterns = [
-      /svelte-mobx/,
-      /useMobxStore/,
-      /observer\(/
-    ];
-    const svelteMobxInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      patterns.some((pattern) => pattern.test(script))
+  private async hasSvelteMobx(): Promise<boolean> {
+    const patterns = [/svelte-mobx/, /useMobxStore/, /observer\(/];
+    const svelteMobxInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => patterns.some((pattern) => pattern.test(script))
     );
 
     return svelteMobxInScripts;
-   }
-
+  }
 
   private async detectSSR(framework: string): Promise<boolean> {
     // First check framework-specific SSR markers
@@ -819,7 +855,9 @@ export class UILibFeaturesDetector {
     return this.detectGeneralSSR();
   }
 
-  private async detectLibrarySpecificSSR(framework: string): Promise<boolean | null> {
+  private async detectLibrarySpecificSSR(
+    framework: string
+  ): Promise<boolean | null> {
     switch (framework) {
       case 'react':
         return this.detectReactSSR();
@@ -840,7 +878,8 @@ export class UILibFeaturesDetector {
         hasReactRoot: !!document.querySelector('[data-reactroot]'),
 
         // React hydration markers
-        hasHydrationComment: document.documentElement.innerHTML.includes('<!--$-->'),
+        hasHydrationComment:
+          document.documentElement.innerHTML.includes('<!--$-->'),
 
         // React hydration errors in console can indicate SSR
         hasHydrationError: window.__REACT_ERROR_OVERLAY__ !== undefined,
@@ -866,7 +905,8 @@ export class UILibFeaturesDetector {
         hasVueMeta: !!document.querySelector('[data-vue-meta]'),
 
         // Vue hydration markers
-        hasHydrationMarker: document.documentElement.innerHTML.includes('<!--[-->'),
+        hasHydrationMarker:
+          document.documentElement.innerHTML.includes('<!--[-->'),
 
         // Check for server-rendered content
         hasInitialContent:
@@ -889,7 +929,8 @@ export class UILibFeaturesDetector {
         hasTransferState: !!document.querySelector('#_TRANSFER_STATE'),
 
         // Platform server marker
-        hasPlatformServer: document.documentElement.hasAttribute('ng-server-context'),
+        hasPlatformServer:
+          document.documentElement.hasAttribute('ng-server-context'),
 
         // Check for prerendered content
         hasPrerenderedContent: root && root?.children?.length > 0,
@@ -928,7 +969,8 @@ export class UILibFeaturesDetector {
     // Compare and collect signals
     return {
       // Check if meaningful content is present without JS
-      hasContentWithoutJs: noJsHtml.length > 1000 && noJsHtml.includes('</div>'),
+      hasContentWithoutJs:
+        noJsHtml.length > 1000 && noJsHtml.includes('</div>'),
 
       // Check for common SSR markers
       hasCommonSSRMarkers:
@@ -944,13 +986,16 @@ export class UILibFeaturesDetector {
         initialHtml.includes('<!---->'),
 
       // Check for static content markers
-      hasStaticMarkers: initialHtml.includes('static-page') || initialHtml.includes('prerender'),
+      hasStaticMarkers:
+        initialHtml.includes('static-page') ||
+        initialHtml.includes('prerender'),
 
       // Compare content with and without JS
       hasSimilarContent: calculateSimilarity(initialHtml, noJsHtml) > 0.7,
 
       // Check for meta tags that are typically server-rendered
-      hasServerRenderedMeta: initialHtml.includes('og:') && initialHtml.includes('twitter:'),
+      hasServerRenderedMeta:
+        initialHtml.includes('og:') && initialHtml.includes('twitter:'),
 
       // Check for structured data
       hasStructuredData: initialHtml.includes('application/ld+json'),
@@ -1012,7 +1057,9 @@ export class UILibFeaturesDetector {
       'router-link',
     ];
 
-    const hasVueRouterInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
+    const hasVueRouterInScripts = Array.from(
+      this.resources.getAllScripts()
+    ).some((script) =>
       routerPatterns.some((pattern) => script.includes(pattern))
     );
 
@@ -1037,8 +1084,8 @@ export class UILibFeaturesDetector {
       'dispatch(',
     ];
 
-    const hasVuexInScripts = Array.from(this.resources.getAllScripts()).some((script) =>
-      vuexPatterns.some((pattern) => script.includes(pattern))
+    const hasVuexInScripts = Array.from(this.resources.getAllScripts()).some(
+      (script) => vuexPatterns.some((pattern) => script.includes(pattern))
     );
 
     return hasVuexInWindow || hasVuexInScripts;

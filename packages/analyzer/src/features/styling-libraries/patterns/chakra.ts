@@ -8,7 +8,7 @@ export const chakra = [
       // Core Chakra classes and attributes
       /chakra-/,
       /data-theme/,
-      /css-[a-zA-Z0-9]+/,  // Emotion-based classes
+      /css-[a-zA-Z0-9]+/, // Emotion-based classes
 
       // Component patterns
       /(?:^|\s)(?:chakra-(?:button|text|stack|flex|box|container|input|select|modal))/,
@@ -43,19 +43,21 @@ export const chakra = [
       // Common minified patterns
       /css-[\w]{6,}/,
       /\[data-theme\]/,
-      /\[data-placement\]/
+      /\[data-placement\]/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Core class checks
-          hasChakraClasses: document.querySelector('[class*="chakra-"]') !== null,
+          hasChakraClasses:
+            document.querySelector('[class*="chakra-"]') !== null,
 
           // CSS custom properties
           hasChakraTokens: !!document.querySelector('style[data-emotion]'),
 
           // Theme attributes
-          hasThemeAttributes: document.querySelector('[data-theme], [data-placement]') !== null,
+          hasThemeAttributes:
+            document.querySelector('[data-theme], [data-placement]') !== null,
 
           // Component structure checks
           hasComponents: !!(
@@ -66,18 +68,22 @@ export const chakra = [
           ),
 
           // Portal checks
-          hasPortals: !!document.querySelector('.chakra-portal, .chakra-modal__content-container'),
+          hasPortals: !!document.querySelector(
+            '.chakra-portal, .chakra-modal__content-container'
+          ),
 
           // Emotion integration
           hasEmotionClasses: document.querySelector('[class^="css-"]') !== null,
 
           // Color mode script
-          hasColorModeScript: !!document.querySelector('script[id="chakra-script"]')
+          hasColorModeScript: !!document.querySelector(
+            'script[id="chakra-script"]'
+          ),
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'chunks' as const,
@@ -97,7 +103,7 @@ export const chakra = [
 
       // Theme files
       /theme\.[a-f0-9]+\.js$/,
-      /chakra-theme\.js$/
-    ]
-  }
-]
+      /chakra-theme\.js$/,
+    ],
+  },
+];

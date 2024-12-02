@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const solid = [
   {
@@ -35,7 +35,7 @@ export const solid = [
       /createComponent\s*\(/,
       /insert\s*\(/,
       /template\s*\(/,
-    ]
+    ],
   },
   {
     name: 'reactivity' as const,
@@ -51,7 +51,7 @@ export const solid = [
       // Store patterns
       /produce\s*\(/,
       /reconcile\s*\(/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -71,7 +71,7 @@ export const solid = [
       /ErrorBoundary\s*\{/,
       /Suspense\s*\{/,
       /Portal\s*\{/,
-    ]
+    ],
   },
   {
     name: 'compilation' as const,
@@ -89,7 +89,7 @@ export const solid = [
       // Resource patterns
       /loadResource/,
       /refetchResource/,
-    ]
+    ],
   },
   {
     name: 'stores' as const,
@@ -106,7 +106,7 @@ export const solid = [
       // Store patterns
       /\[\$\$\]/,
       /\$\$self/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -116,12 +116,14 @@ export const solid = [
         const markers = {
           hasReactiveMarkers: !!window._$HY,
           hasHydrationMarkers: !!document.querySelector('[data-hk],[data-dk]'),
-          hasTemplateMarkers: !!document.querySelector('template[data-type="text/hyperscript"]'),
+          hasTemplateMarkers: !!document.querySelector(
+            'template[data-type="text/hyperscript"]'
+          ),
           hasSolidMarkers: !!document.querySelector('[data-solid]'),
-          hasComponentMarkers: !!document.querySelector('[_$HY]')
+          hasComponentMarkers: !!document.querySelector('[_$HY]'),
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
 ];

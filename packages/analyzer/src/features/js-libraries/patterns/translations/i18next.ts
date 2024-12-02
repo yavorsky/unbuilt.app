@@ -12,7 +12,7 @@ export const i18next = [
       /(?:import|require)\s+i18next/,
 
       // Common namespaces and keys
-      /\.t\(['"][^'"]+:[^'"]+['"]\)/,  // namespace:key pattern
+      /\.t\(['"][^'"]+:[^'"]+['"]\)/, // namespace:key pattern
       /\.t\(['"][^'"]+\.[^'"]+['"]\)/, // nested key pattern
       /i18next\.exists\(/,
       /i18next\.getFixedT\(/,
@@ -20,29 +20,29 @@ export const i18next = [
       // Translation function patterns
       /useTranslation\(\s*['"]\w+['"]\s*\)/,
       /withTranslation\(\s*['"]\w+['"]\s*\)/,
-      /Trans\s+[^>]*i18nKey=/
+      /Trans\s+[^>]*i18nKey=/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for global i18next
-          hasI18next: typeof (window as any).i18next !== 'undefined',
+          hasI18next: typeof window.i18next !== 'undefined',
 
           // Check for core methods
-          hasTranslation: typeof (window as any).i18next?.t === 'function',
+          hasTranslation: typeof window.i18next?.t === 'function',
 
           // Check for language handling
-          hasLanguage: !!(window as any).i18next?.language,
+          hasLanguage: !!window.i18next?.language,
 
           // Check for plugins
-          hasBackend: !!(window as any).i18next?.services?.backendConnector,
+          hasBackend: !!window.i18next?.services?.backendConnector,
 
           // Check for store
-          hasStore: !!(window as any).i18next?.store?.data
+          hasStore: !!window.i18next?.store?.data,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'plugins' as const,
@@ -62,8 +62,8 @@ export const i18next = [
 
       // Plugin initialization
       /\.use\([^)]+\)\.use\([^)]+\)/,
-      /i18next\.modules\.external/
-    ]
+      /i18next\.modules\.external/,
+    ],
   },
   {
     name: 'interpolation' as const,
@@ -82,8 +82,8 @@ export const i18next = [
       // Formatting
       /interpolation:\s*\{/,
       /formatSeparator/,
-      /format:\s*["']\w+["']/
-    ]
+      /format:\s*["']\w+["']/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -93,7 +93,7 @@ export const i18next = [
       /i18next\.[a-f0-9]+\.js$/,
       /locales\/[a-z-]+\.json$/,
       /translations\/[a-z-]+\.json$/,
-      /i18n\/[a-z-]+\.json$/
-    ]
-  }
- ];
+      /i18n\/[a-z-]+\.json$/,
+    ],
+  },
+];

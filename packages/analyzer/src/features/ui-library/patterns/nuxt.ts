@@ -18,7 +18,7 @@ export const nuxt = [
       /from\s+["']#imports["']/,
       /from\s+["']~~["']/,
       /from\s+["']@nuxt\/["']/,
-    ]
+    ],
   },
   {
     name: 'components' as const,
@@ -36,7 +36,7 @@ export const nuxt = [
       // Pages and layouts
       /definePageMeta/,
       /defineNuxtRouteMiddleware/,
-    ]
+    ],
   },
   {
     name: 'composables' as const,
@@ -54,7 +54,7 @@ export const nuxt = [
       // Server
       /useRequestHeaders/,
       /useRequestEvent/,
-    ]
+    ],
   },
   {
     name: 'plugins' as const,
@@ -71,7 +71,7 @@ export const nuxt = [
       // Plugin markers
       /app\.config\./,
       /app\.hook\(/,
-    ]
+    ],
   },
   {
     name: 'server' as const,
@@ -87,7 +87,7 @@ export const nuxt = [
       /useRequestHeaders/,
       /useRequestEvent/,
       /useCookie/,
-    ]
+    ],
   },
   {
     name: 'runtimeExecution' as const,
@@ -96,20 +96,22 @@ export const nuxt = [
       return page.evaluate(() => {
         const markers = {
           // Check for Nuxt global
-          hasNuxtGlobal: typeof (window as any).__NUXT__ !== 'undefined',
+          hasNuxtGlobal: typeof window.__NUXT__ !== 'undefined',
           // Check for Nuxt app instance
-          hasNuxtApp: !!(window as any)?.$nuxt,
+          hasNuxtApp: !!window?.$nuxt,
           // Check for Nuxt payload
           hasNuxtPayload: !!document.getElementById('__NUXT_DATA__'),
           // Check for Nuxt loading
           hasNuxtLoading: !!document.getElementById('nuxt-loading'),
           // Check for Nuxt layout
-          hasNuxtLayout: !!document.getElementById('__nuxt') || !!document.getElementById('__layout'),
+          hasNuxtLayout:
+            !!document.getElementById('__nuxt') ||
+            !!document.getElementById('__layout'),
           // Check for auto-imports
-          hasAutoImports: typeof (window as any)?.__nuxt_component_0 !== 'undefined'
+          hasAutoImports: typeof window?.__nuxt_component_0 !== 'undefined',
         };
         return Object.values(markers).some(Boolean);
       });
-    }
-  }
- ];
+    },
+  },
+];

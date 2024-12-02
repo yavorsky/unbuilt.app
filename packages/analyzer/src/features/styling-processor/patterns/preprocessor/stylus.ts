@@ -30,9 +30,10 @@ export const stylus = [
               (rule) =>
                 rule.cssText.includes('$') ||
                 rule.cssText.includes('+') ||
-                rule.cssText.match(/^\s+[\w-\.#]/)
+                rule.cssText.match(/^\s+[\w-.#]/)
             );
           } catch (e) {
+            console.error(e);
             return false;
           }
         });

@@ -25,28 +25,28 @@ export const luxon = [
 
       // Error handling
       /InvalidDateTime|InvalidDuration|InvalidInterval/,
-      /InvalidZone|ConflictingZone/
+      /InvalidZone|ConflictingZone/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for Luxon global
-          hasLuxon: typeof (window as any).luxon !== 'undefined',
+          hasLuxon: typeof window.luxon !== 'undefined',
 
           // Check for main classes
-          hasDateTime: !!(window as any).luxon?.DateTime,
-          hasDuration: !!(window as any).luxon?.Duration,
-          hasInterval: !!(window as any).luxon?.Interval,
+          hasDateTime: !!window.luxon?.DateTime,
+          hasDuration: !!window.luxon?.Duration,
+          hasInterval: !!window.luxon?.Interval,
 
           // Check for settings
-          hasSettings: !!(window as any).luxon?.Settings,
+          hasSettings: !!window.luxon?.Settings,
 
           // Check for zones
-          hasZones: !!(window as any).luxon?.IANAZone
+          hasZones: !!window.luxon?.IANAZone,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'methods' as const,
@@ -63,8 +63,8 @@ export const luxon = [
 
       // Math operations
       /\.(?:plus|minus|diff)\(\{/,
-      /\.(?:startOf|endOf)\(['"][\w]+['"]\)/
-    ]
+      /\.(?:startOf|endOf)\(['"][\w]+['"]\)/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -73,7 +73,7 @@ export const luxon = [
       /luxon(?:\.min)?\.js$/,
       /luxon\.[a-f0-9]+\.js$/,
       /\bluxon\.(?:esm|umd|cjs)\.js$/,
-      /luxon-\w+\.js$/
-    ]
-  }
+      /luxon-\w+\.js$/,
+    ],
+  },
 ];

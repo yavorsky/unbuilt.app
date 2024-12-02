@@ -26,30 +26,30 @@ export const vueI18n = [
       /availableLocales/,
       /datetimeFormats/,
       /numberFormats/,
-      /silentTranslationWarn/
+      /silentTranslationWarn/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for Vue I18n global
-          hasVueI18n: typeof (window as any).VueI18n !== 'undefined',
+          hasVueI18n: typeof window.VueI18n !== 'undefined',
 
           // Check for modern composition API
-          hasComposition: !!(window as any).createI18n,
+          hasComposition: !!window.createI18n,
 
           // Check for legacy instance
-          hasLegacy: !!(window as any).Vue?.prototype?.$i18n,
+          hasLegacy: !!window.Vue?.prototype?.$i18n,
 
           // Check for translations
-          hasTranslations: !!(window as any).$i18n?.messages,
+          hasTranslations: !!window.$i18n?.messages,
 
           // Check for number/datetime formats
-          hasFormatting: !!(window as any).$i18n?.numberFormats ||
-                        !!(window as any).$i18n?.datetimeFormats
+          hasFormatting:
+            !!window.$i18n?.numberFormats || !!window.$i18n?.datetimeFormats,
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'formats' as const,
@@ -58,7 +58,7 @@ export const vueI18n = [
       // Translation syntax patterns
       /\{\s*\$t\([^)]+\)\s*\}/,
       /\{\s*count\s*\}/,
-      /\|/,  // plural delimiter
+      /\|/, // plural delimiter
 
       // Named formatting
       /named\(/,
@@ -72,10 +72,10 @@ export const vueI18n = [
       /setDateTimeFormat/,
 
       // Common patterns in translation files
-      /"@.+?"/,  // meta information
+      /"@.+?"/, // meta information
       /"pluralization"/,
-      /"pluralRules"/
-    ]
+      /"pluralRules"/,
+    ],
   },
   {
     name: 'components' as const,
@@ -95,8 +95,8 @@ export const vueI18n = [
 
       // Legacy component options
       /i18n:\s*\{/,
-      /i18nOptions:/
-    ]
+      /i18nOptions:/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -106,7 +106,7 @@ export const vueI18n = [
       /vue-i18n\.[a-f0-9]+\.js$/,
       /i18n\/[a-z-]+\.json$/,
       /locales\/[a-z-]+\.json$/,
-      /messages\/[a-z-]+\.yml$/
-    ]
-  }
- ];
+      /messages\/[a-z-]+\.yml$/,
+    ],
+  },
+];

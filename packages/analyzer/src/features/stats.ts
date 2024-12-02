@@ -1,15 +1,12 @@
-import { Browser, Page } from 'playwright';
-import { Resources } from './resources.js';
+import { Page } from 'playwright';
 
 export const stats = async (page: Page) => {
-
   const resourceMetrics = await page!.evaluate(() => {
     const resources = performance.getEntriesByType('resource');
 
     return {
       resourceCount: resources.length,
-      // TODO: Use PerformanceObserver
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       totalSize: resources.reduce((sum, r) => sum + (r as any).transferSize, 0),
       scriptMetrics: {
         async: document.querySelectorAll('script[async]').length,

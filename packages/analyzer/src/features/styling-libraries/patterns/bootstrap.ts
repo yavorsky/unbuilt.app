@@ -34,13 +34,16 @@ export const bootstrap = [
       /\.active/,
       /\.show/,
       /\.fade/,
-      /\.collapse/
+      /\.collapse/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for Bootstrap's core classes
-          hasGridSystem: document.querySelector('[class*="col-"], [class*="row"], .container') !== null,
+          hasGridSystem:
+            document.querySelector(
+              '[class*="col-"], [class*="row"], .container'
+            ) !== null,
 
           // Check for common components
           hasComponents: !!(
@@ -51,10 +54,12 @@ export const bootstrap = [
           ),
 
           // Check for Bootstrap data attributes
-          hasDataAttributes: document.querySelector('[data-bs-toggle], [data-bs-target]') !== null,
+          hasDataAttributes:
+            document.querySelector('[data-bs-toggle], [data-bs-target]') !==
+            null,
 
           // Check for Bootstrap JavaScript
-          hasBootstrapJS: !!(window as any).bootstrap,
+          hasBootstrapJS: !!window.bootstrap,
 
           // Check for modal/popover structures
           hasStructures: !!(
@@ -64,12 +69,15 @@ export const bootstrap = [
           ),
 
           // Check for utilities
-          hasUtilities: document.querySelector('[class*="bg-"], [class*="text-"], [class*="m-"], [class*="p-"]') !== null
+          hasUtilities:
+            document.querySelector(
+              '[class*="bg-"], [class*="text-"], [class*="m-"], [class*="p-"]'
+            ) !== null,
         };
 
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'chunks' as const,
@@ -86,7 +94,7 @@ export const bootstrap = [
 
       // Common chunk names
       /vendor\.bootstrap\.[a-f0-9]+\.js$/,
-      /chunk\.bootstrap\.[a-f0-9]+\.js$/
-    ]
-  }
-]
+      /chunk\.bootstrap\.[a-f0-9]+\.js$/,
+    ],
+  },
+];

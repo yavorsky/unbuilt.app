@@ -1,5 +1,6 @@
 import { Page } from 'playwright';
 
+// For now, we are detecting Pinia together with Vuex.
 export const pinia = [
   {
     name: 'coreRuntime' as const,

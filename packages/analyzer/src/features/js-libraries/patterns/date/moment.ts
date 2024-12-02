@@ -1,4 +1,4 @@
-import { Page } from "playwright";
+import { Page } from 'playwright';
 
 export const moment = [
   {
@@ -16,8 +16,8 @@ export const moment = [
       /moment\.locale/,
 
       // Format tokens
-      /[YQMDWHhmsSw]{1,4}/,  // Format patterns
-      /\[\w+\s*(?:Mo|Do|DDDo|[\w\s]*?o)\]/,  // Ordinal formats
+      /[YQMDWHhmsSw]{1,4}/, // Format patterns
+      /\[\w+\s*(?:Mo|Do|DDDo|[\w\s]*?o)\]/, // Ordinal formats
 
       // Localization
       /moment\.defineLocale/,
@@ -27,29 +27,30 @@ export const moment = [
       // Plugins and extensions
       /moment\.(?:tz|timezone)/,
       /moment\.calendar/,
-      /moment\.relativeTime/
+      /moment\.relativeTime/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for global moment
-          hasMoment: typeof (window as any).moment !== 'undefined',
+          hasMoment: typeof window.moment !== 'undefined',
 
           // Check for version
-          hasVersion: !!(window as any).moment?.version,
+          hasVersion: !!window.moment?.version,
 
           // Check for locales
-          hasLocales: typeof (window as any).moment?.locale === 'function',
+          hasLocales: typeof window.moment?.locale === 'function',
 
           // Check for timezone support
-          hasTimezone: !!(window as any).moment?.tz,
+          hasTimezone: !!window.moment?.tz,
 
           // Check for relative time
-          hasRelativeTime: typeof (window as any).moment?.duration?.fn?.humanize === 'function'
+          hasRelativeTime:
+            typeof window.moment?.duration?.fn?.humanize === 'function',
         };
         return Object.values(markers).some(Boolean);
       });
-    }
+    },
   },
   {
     name: 'localization' as const,
@@ -67,8 +68,8 @@ export const moment = [
 
       // Ordinal formatting
       /(?:Mo|Do|DDDo|[\w\s]*?o)\b/,
-      /ordinal\s*:/
-    ]
+      /ordinal\s*:/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -77,7 +78,7 @@ export const moment = [
       /moment(?:\.min)?\.js$/,
       /moment-with-locales(?:\.min)?\.js$/,
       /moment-timezone(?:\.min)?\.js$/,
-      /locale\/[a-z-]+\.js$/
-    ]
-  }
+      /locale\/[a-z-]+\.js$/,
+    ],
+  },
 ];

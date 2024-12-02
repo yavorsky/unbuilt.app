@@ -4,9 +4,9 @@ export const esbuild = [
     score: 0.2,
     runtime: [
       // esbuild specific variable naming
-      /\$\w+\$\d+/,  // Variable pattern with numbers
-      /\$[0-9a-f]{1,6}\$/,  // Hex-based naming
-      /\$_\$/,  // Simple prefix
+      /\$\w+\$\d+/, // Variable pattern with numbers
+      /\$[0-9a-f]{1,6}\$/, // Hex-based naming
+      /\$_\$/, // Simple prefix
 
       // Module system
       /__toESM/,
@@ -25,27 +25,23 @@ export const esbuild = [
       /__error/,
       /__throws/,
       /__load_error/,
-
-      // Source map pattern
-      /\/\/# sourceMappingURL=data:application\/json;base64,.*?esbuild/
-    ]
+    ],
+  },
+  {
+    name: 'sourcemaps' as const,
+    score: 0.3,
+    runtime: [
+      /\/\/# sourceMappingURL=data:application\/json;base64,.*?esbuild/,
+    ],
   },
   {
     name: 'chunks' as const,
     score: 0.3,
-    filenames: [
-      /\.esbuild\.js$/,
-      /esbuild-min\.js$/,
-      /-esbuild\.js$/
-    ]
+    filenames: [/\.esbuild\.js$/, /esbuild-min\.js$/, /-esbuild\.js$/],
   },
   {
     name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /\.min\.js$/,
-      /\.[a-f0-9]{8}\.js$/,
-      /bundle\.[a-f0-9]+\.js$/
-    ]
-  }
+    score: 0.1,
+    filenames: [/\.min\.js$/, /\.[a-f0-9]{8}\.js$/, /bundle\.[a-f0-9]+\.js$/],
+  },
 ];

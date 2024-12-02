@@ -40,8 +40,8 @@ export const esbuild = [
       /_jsx\(/,
       /_jsxs\(/,
       /_Fragment/,
-      /jsx-runtime/
-    ]
+      /jsx-runtime/,
+    ],
   },
   {
     name: 'chunks' as const,
@@ -63,7 +63,7 @@ export const esbuild = [
 
       // Dynamic imports
       /chunks\/async\/\w+\.js$/,
-      /chunks\/dynamic\/\w+\.js$/
-    ]
-  }
- ];
+      /chunks\/dynamic\/\w+\.js$/,
+    ],
+  },
+];
