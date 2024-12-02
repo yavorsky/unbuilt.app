@@ -57,7 +57,7 @@ export const swc = [
       /__swc_helpers__/,
       /swc_runtime/,
       /_swc_/,
-      /\$[a-zA-Z0-9]+\$[0-9]+/,  // SWC's unique variable naming pattern
+      /\$[a-zA-Z0-9]+\$[0-9]+/, // SWC's unique variable naming pattern
 
       // Build comments and sourcemaps
       /\/\*\s*SWC_[A-Z_]+\s*\*\//,
@@ -97,7 +97,7 @@ export const swc = [
       // Development tools
       /_dev/,
       /_debug/,
-      /process\.env\.NODE_ENV/
-    ]
-  }
-]
+      /process\.env\.NODE_ENV/,
+    ],
+  },
+];

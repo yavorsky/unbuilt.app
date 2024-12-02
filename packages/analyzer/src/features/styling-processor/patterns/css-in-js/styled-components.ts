@@ -38,10 +38,6 @@ export const styledComponents = [
   {
     name: 'chunks' as const,
     score: 0.2,
-    filenames: [
-      /styled-components/,
-      /\.styled\.[jt]sx?$/,
-      /styles\.[jt]sx?$/
-    ],
-  }
+    filenames: [/styled-components/, /\.styled\.[jt]sx?$/, /styles\.[jt]sx?$/],
+  },
 ];

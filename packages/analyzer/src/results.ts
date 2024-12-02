@@ -2,8 +2,6 @@ import { Page } from 'playwright';
 import { Resources } from './resources.js';
 import { Pattern } from './types.js';
 
-type ScoresResult = Record<string, number>;
-
 interface FeatureResult {
   name: string;
   confidence: number;
@@ -35,58 +33,66 @@ export class Results<T extends string = string> {
     this.patternsPerFeature[featureName].push(...patterns);
   };
 
-  private processPatterns = async (
-    featureName: T,
-  ) => {
+  private processPatterns = async (featureName: T) => {
     const content = this.resources.getAllScriptsContent();
     const filenames = Array.from(this.resources.getAllScriptsNames());
 
     const patterns = this.patternsPerFeature[featureName];
-    const results = await Promise.all(patterns.map(async (pattern) => {
-      let patternScore = 0;
-      const matchedPatterns = new Set<string>();
+    const results = await Promise.all(
+      patterns.map(async (pattern) => {
+        let patternScore = 0;
+        const matchedPatterns = new Set<string>();
 
-      if (pattern.runtime) {
-        pattern.runtime.forEach((runtimePattern) => {
-          if (runtimePattern.test(content)) {
-            // TODO: Consider if we should increase score for each match or just 1 per group.
-            patternScore += pattern.score;
-            matchedPatterns.add(pattern.name);
-          }
-        });
-      }
-
-      if (pattern.filenames) {
-        pattern.filenames.forEach((runtimePattern) => {
-          const matched = filenames.some(filename => runtimePattern.test(filename));
-          if (matched) {
-            // TODO: Consider if we should increase score for each match or just 1 per group.
-            patternScore += pattern.score;
-            matchedPatterns.add(pattern.name);
-          }
-        });
-      }
-
-      if (pattern.browser) {
-        const { browser: checkBrowser, score, name } = pattern;
-        const isMatched = await this.page!.evaluate(() => {
-          return checkBrowser();
-        });
-        if (isMatched) {
-          patternScore += score;
-          matchedPatterns.add(name);
+        if (pattern.runtime) {
+          pattern.runtime.forEach((runtimePattern) => {
+            if (runtimePattern.test(content)) {
+              // TODO: Consider if we should increase score for each match or just 1 per group.
+              patternScore += pattern.score;
+              matchedPatterns.add(pattern.name);
+            }
+          });
         }
-      }
 
-      return { patternScore, matchedPatterns, name: pattern.name };
-    }));
+        if (pattern.filenames) {
+          pattern.filenames.forEach((runtimePattern) => {
+            const matched = filenames.some((filename) =>
+              runtimePattern.test(filename)
+            );
+            if (matched) {
+              // TODO: Consider if we should increase score for each match or just 1 per group.
+              patternScore += pattern.score;
+              matchedPatterns.add(pattern.name);
+            }
+          });
+        }
 
-    return results.reduce((acc, patternResult) => {
-      acc.totalScore += patternResult.patternScore;
-      acc.matchedPatterns = new Set([...acc.matchedPatterns, ...patternResult.matchedPatterns]);
+        if (pattern.browser) {
+          const { browser: checkBrowser, score, name } = pattern;
+          const isMatched = await this.page!.evaluate(() => {
+            return checkBrowser();
+          });
+          if (isMatched) {
+            patternScore += score;
+            matchedPatterns.add(name);
+          }
+        }
 
-      return acc;
-    }, { totalScore: 0, matchedPatterns: new Set<string>(), featureName });
+        return { patternScore, matchedPatterns, name: pattern.name };
+      })
+    );
+
+    return results.reduce(
+      (acc, patternResult) => {
+        acc.totalScore += patternResult.patternScore;
+        acc.matchedPatterns = new Set([
+          ...acc.matchedPatterns,
+          ...patternResult.matchedPatterns,
+        ]);
+
+        return acc;
+      },
+      { totalScore: 0, matchedPatterns: new Set<string>(), featureName }
+    );
   };
 
   public calculate = async (): Promise<CalculationResult> => {
@@ -96,16 +102,19 @@ export class Results<T extends string = string> {
         return {
           name: featureName,
           confidence: processed.totalScore,
-          matched: processed.matchedPatterns
+          matched: processed.matchedPatterns,
         };
       })
     );
 
     // Create a map of all results
-    this.calculatedResults = results.reduce((acc, curr) => {
-      acc[curr.name] = curr;
-      return acc;
-    }, {} as Record<string, FeatureResult>);
+    this.calculatedResults = results.reduce(
+      (acc, curr) => {
+        acc[curr.name] = curr;
+        return acc;
+      },
+      {} as Record<string, FeatureResult>
+    );
 
     // Find the result with highest confidence
     const highestResult = results.reduce((prev, current) => {
@@ -116,16 +125,20 @@ export class Results<T extends string = string> {
       result: highestResult,
       getAllResults: () => {
         if (!this.calculatedResults) {
-          throw new Error('Results not calculated yet. Call calculate() first.');
+          throw new Error(
+            'Results not calculated yet. Call calculate() first.'
+          );
         }
         return this.calculatedResults;
       },
       getResultFor: (featureName: string): FeatureResult | null => {
         if (!this.calculatedResults) {
-          throw new Error('Results not calculated yet. Call calculate() first.');
+          throw new Error(
+            'Results not calculated yet. Call calculate() first.'
+          );
         }
         return this.calculatedResults[featureName] || null;
-      }
+      },
     };
   };
 }

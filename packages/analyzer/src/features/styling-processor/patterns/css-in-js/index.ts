@@ -6,6 +6,6 @@ import { styledComponents } from './styled-components.js';
 export const cssInJsPatterns = {
   emotion,
   jss,
-  // stitches,
-  // styledComponents,
+  stitches,
+  styledComponents,
 } as const;

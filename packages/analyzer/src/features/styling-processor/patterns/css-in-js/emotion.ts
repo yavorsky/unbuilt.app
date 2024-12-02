@@ -18,15 +18,17 @@ export const emotion = [
       /ThemeProvider/,
       /useTheme/,
       // Babel plugin markers
-      /_css\$[0-9]+/
+      /_css\$[0-9]+/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         return !!(
           // Check for Emotion generated classes
-          document.querySelector('[class*="css-"]') ||
-          // Check for Emotion style tags
-          document.querySelector('style[data-emotion]')
+          (
+            document.querySelector('[class*="css-"]') ||
+            // Check for Emotion style tags
+            document.querySelector('style[data-emotion]')
+          )
         );
       });
     },
@@ -34,10 +36,6 @@ export const emotion = [
   {
     name: 'chunks' as const,
     score: 0.2,
-    filenames: [
-      /@emotion\/styled/,
-      /@emotion\/react/,
-      /\.emotion\.[jt]sx?$/
-    ],
+    filenames: [/@emotion\/styled/, /@emotion\/react/, /\.emotion\.[jt]sx?$/],
   },
 ];

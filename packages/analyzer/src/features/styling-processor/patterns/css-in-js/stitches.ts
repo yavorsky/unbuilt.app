@@ -15,14 +15,16 @@ export const stitches = [
       /\$[\w-]+/,
       // Variants
       /variants:/,
-      /compoundVariants:/
+      /compoundVariants:/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         // Stitches uses specific class naming pattern
         const stitchesPattern = /[a-zA-Z0-9]{5,}-[a-zA-Z0-9]{5,}/;
-        return Array.from(document.querySelectorAll('*')).some(el =>
-          Array.from(el.classList).some(className => stitchesPattern.test(className))
+        return Array.from(document.querySelectorAll('*')).some((el) =>
+          Array.from(el.classList).some((className) =>
+            stitchesPattern.test(className)
+          )
         );
       });
     },
@@ -33,7 +35,7 @@ export const stitches = [
     filenames: [
       /@stitches\/react/,
       /\.stitches\.[jt]sx?$/,
-      /stitches\.config\.[jt]s$/
+      /stitches\.config\.[jt]s$/,
     ],
-  }
+  },
 ];

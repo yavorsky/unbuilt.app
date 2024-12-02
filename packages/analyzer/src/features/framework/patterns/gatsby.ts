@@ -1,10 +1,16 @@
-import { Pattern } from "../../../types.js";
+import { Pattern } from '../../../types.js';
 
 export const gatsby = [
   {
     score: 0.2,
     name: 'Runtime',
-    runtime: [/gatsby-browser/, /gatsby-ssr/, /gatsby-config/, /gatsby-node/, /__GATSBY/],
+    runtime: [
+      /gatsby-browser/,
+      /gatsby-ssr/,
+      /gatsby-config/,
+      /gatsby-node/,
+      /__GATSBY/,
+    ],
   },
   {
     score: 0.2,
@@ -39,6 +45,6 @@ export const gatsby = [
   {
     score: 0.2,
     name: 'ssr',
-    runtime: [/gatsby-ssr/, /wrapRootElement/, /wrapPageElement/]
+    runtime: [/gatsby-ssr/, /wrapRootElement/, /wrapPageElement/],
   },
 ];

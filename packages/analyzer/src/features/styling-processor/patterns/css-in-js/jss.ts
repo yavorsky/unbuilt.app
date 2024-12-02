@@ -15,15 +15,17 @@ export const jss = [
       /withStyles/,
       /withTheme/,
       // JSS syntax
-      /createGenerateClassName/
+      /createGenerateClassName/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         return !!(
           // Check for JSS generated classes
-          document.querySelector('[class*="jss"]') ||
-          // Check for JSS style tags
-          document.querySelector('style[data-jss]')
+          (
+            document.querySelector('[class*="jss"]') ||
+            // Check for JSS style tags
+            document.querySelector('style[data-jss]')
+          )
         );
       });
     },
@@ -31,10 +33,6 @@ export const jss = [
   {
     name: 'chunks' as const,
     score: 0.2,
-    filenames: [
-      /react-jss/,
-      /\.styles\.[jt]sx?$/,
-      /jss\.config\.[jt]s$/
-    ]
-  }
+    filenames: [/react-jss/, /\.styles\.[jt]sx?$/, /jss\.config\.[jt]s$/],
+  },
 ];
