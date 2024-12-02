@@ -41,6 +41,17 @@ export const babel = [
       // Babel transform comments
       /\/\*#__PURE__\*\//,
       /\/\*@__PURE__\*\//,
+
+      // Babel's decorators implementation
+      /_decorate\(\[/,
+      // Babel's class properties transform
+      /Object\.defineProperty\(.*?prototype.*?,.*?{/,
+
+      // Module patterns
+      /Object\.defineProperty\(exports,\s*["']__esModule["']/,
+      /exports\.default\s*=/,
+      /exports\.__esModule\s*=\s*true/,
+      /require\(["'][^"']+["']\)/,
     ],
   },
   {

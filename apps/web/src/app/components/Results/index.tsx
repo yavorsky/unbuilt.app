@@ -1,19 +1,22 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from 'react';
-import { getAnalysisResults } from '../../../actions';
+import { getJobStatus } from '../../../actions';
 import { CardsResult } from './cards-result';
 import { JSONResult } from './json-result';
+import { Progress } from '@/components/ui/progress';
 
 export function Results({ jobId }: { jobId: string }) {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<Awaited<
+    ReturnType<typeof getJobStatus>
+  > | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showAsJSON, setShowAsJSON] = useState(false);
+  const [showAsJSON, setShowAsJSON] = useState(true);
 
   useEffect(() => {
     const checkStatus = async () => {
-      const status = await getAnalysisResults(jobId);
+      const status = await getJobStatus(jobId);
 
       if (status.error) {
         setError(status.error);
@@ -22,9 +25,10 @@ export function Results({ jobId }: { jobId: string }) {
       }
 
       setResult(status);
+      console.log(status);
 
       if (status.status !== 'completed' && status.status !== 'failed') {
-        setTimeout(checkStatus, 2000);
+        setTimeout(checkStatus, 500);
       } else {
         setLoading(false);
       }
@@ -42,17 +46,25 @@ export function Results({ jobId }: { jobId: string }) {
     );
   }
 
-  if (loading) {
+  if (!result || loading) {
     return (
       <div className="flex items-center justify-center mt-20 max-w-7xl mx-auto">
-        <div className="animate-spin h-8 w-8 border-4 border-gray-300 rounded-full border-t-transparent"></div>
+        <Progress value={result?.progress ?? 0} />
       </div>
     );
   }
 
   if (showAsJSON) {
-    return <JSONResult result={result.result} status={result.status} id={result.id} finishedOn={result.finishedOn} />
+    console.log(result.result);
+    return (
+      <JSONResult
+        result={result.result!}
+        status={result.status!}
+        id={+result.id!}
+        finishedOn={result.finishedOn!.toString()}
+      />
+    );
   }
 
-  return <CardsResult result={result.result} />
+  return <CardsResult result={result.result} />;
 }

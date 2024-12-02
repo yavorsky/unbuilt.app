@@ -1,4 +1,4 @@
-import { babel } from '../../transpiler/patterns/babel.js';
+import { brunch } from './brunch.js';
 import { esbuild } from './esbuilt.js';
 import { rollup } from './rollup.js';
 import { turbopack } from './turbopack.js';
@@ -6,7 +6,7 @@ import { vite } from './vite.js';
 import { webpack } from './webpack.js';
 
 export const patterns = {
-  babel,
+  brunch,
   esbuild,
   rollup,
   turbopack,

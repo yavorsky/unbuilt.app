@@ -3,9 +3,9 @@
 import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
 import { JobId } from 'bull';
-import { AnalysisManager, AnalysisStatus } from './lib/AnalysisManager';
+import { AnalysisManager } from './lib/AnalysisManager';
 
-type AnalyzeState = { error: string | null, jobId?: JobId };
+type AnalyzeState = { error: string | null; jobId?: JobId };
 
 export async function analyzeWebsite(
   prevState: AnalyzeState,
@@ -38,7 +38,7 @@ export async function getJobStatus(jobId: string) {
 
     if (!job) {
       return {
-        error: 'Job not found'
+        error: 'Job not found',
       };
     }
 
@@ -52,31 +52,27 @@ export async function getJobStatus(jobId: string) {
       progress: job.progress(),
       timestamp: job.timestamp,
       processedOn: job.processedOn,
-      finishedOn: job.finishedOn
+      finishedOn: job.finishedOn,
     };
   } catch (error) {
     console.error('Status check failed:', error);
     return {
-      error: 'Failed to get job status'
+      error: 'Failed to get job status',
     };
   }
 }
 
-{
-
-}
-
-export async function getAnalysisResults(id: string): Promise<AnalysisStatus> {
-  try {
-    const manager = AnalysisManager.getInstance();
-    return await manager.getAnalysisResults(id);
-  } catch (error) {
-    console.error('Status check failed:', error);
-    return {
-      id,
-      status: 'failed',
-      result: null,
-      error: 'Failed to get analysis status'
-    };
-  }
-}
+// export async function getAnalysisResults(id: string): Promise<AnalysisStatus> {
+//   try {
+//     const manager = AnalysisManager.getInstance();
+//     return await manager.getAnalysisResults(id);
+//   } catch (error) {
+//     console.error('Status check failed:', error);
+//     return {
+//       id,
+//       status: 'failed',
+//       result: null,
+//       error: 'Failed to get analysis status',
+//     };
+//   }
+// }

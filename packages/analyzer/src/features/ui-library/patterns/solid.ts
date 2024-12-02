@@ -120,7 +120,6 @@ export const solid = [
             'template[data-type="text/hyperscript"]'
           ),
           hasSolidMarkers: !!document.querySelector('[data-solid]'),
-          hasComponentMarkers: !!document.querySelector('[_$HY]'),
         };
         return Object.values(markers).some(Boolean);
       });

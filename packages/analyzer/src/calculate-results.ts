@@ -44,51 +44,43 @@ async function processPatterns<Names extends string>(
   const content = resources.getAllScriptsContent();
   const filenames = Array.from(resources.getAllScriptsNames());
 
-  const results = await Promise.all(
-    patterns.map(async (pattern) => {
-      let patternScore = 0;
-      const matchedPatterns = new Set<Names>();
+  const result = {
+    totalScore: 0,
+    matchedPatterns: new Set<Names>(),
+  };
 
-      if (pattern.runtime) {
-        pattern.runtime.forEach((runtimePattern) => {
-          if (runtimePattern.test(content)) {
-            patternScore += pattern.score;
-            matchedPatterns.add(pattern.name);
-          }
-        });
-      }
-
-      if (pattern.filenames) {
-        pattern.filenames.forEach((runtimePattern) => {
-          const matched = filenames.some((filename) =>
-            runtimePattern.test(filename)
-          );
-          if (matched) {
-            patternScore += pattern.score;
-            matchedPatterns.add(pattern.name);
-          }
-        });
-      }
-
-      if (pattern.browser) {
-        const isMatched = await pattern.browser(page, browser);
-        if (isMatched) {
-          patternScore += pattern.score;
-          matchedPatterns.add(pattern.name);
+  for (const pattern of patterns) {
+    if (pattern.runtime) {
+      for (const runtimePattern of pattern.runtime) {
+        if (runtimePattern.test(content)) {
+          result.totalScore += pattern.score;
+          result.matchedPatterns.add(pattern.name);
         }
       }
+    }
 
-      return { patternScore, matchedPatterns };
-    })
-  );
+    if (pattern.filenames) {
+      for (const runtimePattern of pattern.filenames) {
+        const matched = filenames.some((filename) =>
+          runtimePattern.test(filename)
+        );
+        if (matched) {
+          result.totalScore += pattern.score;
+          result.matchedPatterns.add(pattern.name);
+        }
+      }
+    }
 
-  return results.reduce(
-    (acc, { patternScore, matchedPatterns }) => ({
-      totalScore: acc.totalScore + patternScore,
-      matchedPatterns: new Set([...acc.matchedPatterns, ...matchedPatterns]),
-    }),
-    { totalScore: 0, matchedPatterns: new Set<Names>() }
-  );
+    if (pattern.browser) {
+      const isMatched = await pattern.browser(page, browser);
+      if (isMatched) {
+        result.totalScore += pattern.score;
+        result.matchedPatterns.add(pattern.name);
+      }
+    }
+  }
+
+  return result;
 }
 
 export async function calculateResults<

@@ -1,13 +1,13 @@
 // lib/queueManager.ts
 import QueueService, { Queue, Job } from 'bull';
 import { BrowserManager } from './BrowserManager';
-import { AnalysisResult, Analyzer } from '@unbuilt/analyzer';
+import { AnalyzeResult, analyze } from '@unbuilt/analyzer';
 import os from 'os';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 
-type OnJobCompleted = (jobId: string, result: AnalysisResult) => void;
+type OnJobCompleted = (jobId: string, result: AnalyzeResult) => void;
 
 export class QueueManager {
   private static instance: QueueManager;
@@ -25,7 +25,9 @@ export class QueueManager {
     return QueueManager.instance;
   }
 
-  async initialize({ onJobCompleted }: { onJobCompleted?: OnJobCompleted } = {}) {
+  async initialize({
+    onJobCompleted,
+  }: { onJobCompleted?: OnJobCompleted } = {}) {
     // Prevent multiple simultaneous initializations
     if (this.initializing) return this.initializing;
     if (this.queue) return;
@@ -34,15 +36,15 @@ export class QueueManager {
 
     this.initializing = (async () => {
       // Initialize queue
-      this.queue = new QueueService('website-analysis', {
+      this.queue = new QueueService<AnalyzeResult>('website-analysis', {
         redis: {
           host: process.env.REDIS_HOST || 'localhost',
           port: parseInt(process.env.REDIS_PORT || '6379'),
         },
         defaultJobOptions: {
-          removeOnComplete: 100,  // Keep last 100 completed jobs
-          removeOnFail: 100      // Keep last 100 failed jobs
-        }
+          removeOnComplete: 100, // Keep last 100 completed jobs
+          removeOnFail: 100, // Keep last 100 failed jobs
+        },
       });
 
       // Initialize browser manager
@@ -58,9 +60,7 @@ export class QueueManager {
 
         const page = await context.newPage();
         try {
-          const analyzer = new Analyzer(page, browser);
-          await analyzer.initialize()
-          const result = await analyzer.analyze(job.data.url);
+          const result = await analyze(job.data.url, page, browser);
           return result;
         } catch (e) {
           console.error('Analysis failed:', e);
@@ -99,10 +99,13 @@ export class QueueManager {
     if (!this.queue) {
       throw new Error('Queue not initialized');
     }
-    return this.queue.add({
-      url,
-      timestamp: new Date().toISOString()
-    }, opts);
+    return this.queue.add(
+      {
+        url,
+        timestamp: new Date().toISOString(),
+      },
+      opts
+    );
   }
 
   async getJob(jobId: string) {
@@ -139,7 +142,7 @@ export class QueueManager {
       active,
       completed,
       failed,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -157,7 +160,7 @@ export interface AnalysisJob {
 export interface JobStatus {
   id: string;
   status: string;
-  result: any | null;
+  result: AnalyzeResult | null;
   progress: number;
   timestamp: Date;
   processedOn?: Date;

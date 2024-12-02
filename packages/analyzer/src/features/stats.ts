@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-export const stats = async (page: Page) => {
+export const getStats = async (page: Page) => {
   const resourceMetrics = await page!.evaluate(() => {
     const resources = performance.getEntriesByType('resource');
 

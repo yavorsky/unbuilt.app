@@ -77,29 +77,29 @@ export const jQuery = [
             typeof window.jQuery !== 'undefined' ||
             typeof window.$ !== 'undefined',
 
-          // Check for jQuery version
-          hasVersion: typeof window.$.fn?.jquery === 'string',
+          // // Check for jQuery version
+          // hasVersion: typeof window.$?.fn?.jquery === 'string',
 
-          // Check for jQuery event handlers
-          hasEventHandlers: !!document.querySelector(
-            '[onclick*="$"], [onclick*="jQuery"]'
-          ),
+          // // Check for jQuery event handlers
+          // hasEventHandlers: !!document.querySelector(
+          //   '[onclick*="$"], [onclick*="jQuery"]'
+          // ),
 
-          // Check for jQuery data
-          hasJQueryData: Array.from(document.querySelectorAll('*')).some((el) =>
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            Object.keys((el as any).dataset ?? {}).some((key) =>
-              key.startsWith('jquery')
-            )
-          ),
+          // // Check for jQuery data
+          // hasJQueryData: Array.from(document.querySelectorAll('*')).some((el) =>
+          //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          //   Object.keys((el as any).dataset ?? {}).some((key) =>
+          //     key.startsWith('jquery')
+          //   )
+          // ),
 
-          // Check for common jQuery plugins
-          hasPlugins:
-            typeof window.$.fn?.modal !== 'undefined' ||
-            typeof window.$.fn?.tooltip !== 'undefined',
+          // // Check for common jQuery plugins
+          // hasPlugins:
+          //   typeof window.$?.fn?.modal !== 'undefined' ||
+          //   typeof window.$?.fn?.tooltip !== 'undefined',
 
-          // Check for jQuery AJAX
-          hasAjax: typeof window.$.ajax === 'function',
+          // // Check for jQuery AJAX
+          // hasAjax: typeof window.$?.ajax === 'function',
         };
         return Object.values(markers).some(Boolean);
       });

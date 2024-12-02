@@ -1,8 +1,8 @@
-import { AnalysisResult } from '@unbuilt/analyzer';
+import { AnalyzeResult } from '@unbuilt/analyzer';
 import { FC } from 'react';
 
 export const JSONResult: FC<{
-  result: AnalysisResult;
+  result: AnalyzeResult;
   finishedOn: string;
   id: number;
   status: string;
@@ -19,7 +19,9 @@ export const JSONResult: FC<{
       {result && (
         <div className="p-4 bg-white border rounded">
           <h3 className="font-bold mb-2">Analysis Results</h3>
-          <pre className="whitespace-pre-wrap">{JSON.stringify(result, null, 2)}</pre>
+          <pre className="whitespace-pre-wrap">
+            {JSON.stringify(result, null, 2)}
+          </pre>
         </div>
       )}
     </div>

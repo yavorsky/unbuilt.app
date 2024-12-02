@@ -1,19 +1,5 @@
 import { Page } from 'playwright';
 
-// Extend Window interface for Vue Router globals
-declare global {
-  interface Window {
-    __VUE_ROUTER__?: unknown;
-    __VUE_ROUTER_HISTORY__?: unknown;
-    $router?: unknown;
-    $route?: unknown;
-  }
-
-  interface History {
-    listen?: (callback: (to: any, from: any) => void) => () => void;
-  }
-}
-
 export const vueRouter = [
   {
     name: 'coreRuntime' as const,

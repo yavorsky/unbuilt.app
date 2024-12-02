@@ -1,96 +1,68 @@
 export const vite = [
   {
-    name: 'compilation' as const,
-    score: 0.2,
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      // Core Vite markers
+      // Core Vite markers - highly specific
       /\/@vite\/client/,
       /vite\/dist\/client/,
       /vite\/modulepreload-polyfill/,
       /__vite_/,
-      /\?v=[a-zA-Z0-9]+/, // Vite's cache busting pattern
-
-      // Vite HMR system
-      /@vite\/env/,
-      /import\.meta\.hot/,
-      /import\.meta\.url/,
-      /\/\@vite\/client\//,
-      /vite-hmr/,
-      /vite-hot-data/,
-      /hot\._acceptedDependencies/,
-
-      // Development mode specifics
       /__vite__bundler/,
       /__vite__xhr/,
       /__vite__log/,
       /__vite__cjsImport/,
-      /\/\/@fs\//,
-      /\/@id\//,
-
-      // Asset handling
-      /\?raw/,
-      /\?url/,
-      /\?worker/,
-      /\?sharedworker/,
-      /new URL\(.*,\s*import\.meta\.url\)/,
-
-      // Module resolution
-      /@modules\//,
-      /resolveVirtualModule/,
-      /vite-plugin-/,
-      /virtual:\/\//,
-
-      // Error overlay
-      /vite-error-overlay/,
-      /__vite__error/,
-      /vite-plugin-error/,
-
-      // Build optimization
-      /\?used/,
-      /\?import/,
-      /\?commonjs-proxy/,
-      /\?commonjs-module/,
-
-      // React fast refresh (Vite specific)
-      /@react-refresh/,
-      /\/react-refresh-runtime/,
-      /__vite__injectQuery/,
-
-      // Source maps
-      /\/\/# sourceMappingURL=data:application\/json;base64,.*vite/,
-
-      // Common build artifacts
-      /assets\/\w+\.[a-f0-9]+\./,
-      /assets\/index\.[a-f0-9]+\./,
-      /\/@fs\//,
-
-      // Env replacement
-      /import\.meta\.env\./,
-      /"process\.env\.[^"]+"/,
-      /'process\.env\.[^']+'/,
-
-      // SSR specific
-      /virtual:ssr-/,
-      /ssr-window/,
-      /ssr-handler/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Main & chunks
-      /assets\/\w+\.[a-f0-9]{8}\.js$/,
-      /assets\/index\.[a-f0-9]{8}\.js$/,
-      /assets\/vendor\.[a-f0-9]{8}\.js$/,
-      /assets\/polyfills\.[a-f0-9]{8}\.js$/,
-
-      // Dynamic imports
-      /assets\/\w+\.\w+\.[a-f0-9]{8}\.js$/,
-
-      // Development mode
-      /\?v=[a-f0-9]{8}$/,
-      /[@\w/-]+\.js\?t=\d+$/,
+    name: 'hmr' as const,
+    score: 0.8,
+    runtime: [
+      // Vite-specific HMR patterns
+      /vite-hmr/,
+      /vite-hot-data/,
+      /@vite\/env/,
+    ],
+  },
+  {
+    name: 'module-resolution' as const,
+    score: 0.7,
+    runtime: [
+      // Vite-specific module resolution
+      /\/@fs\//,
+      /\/@id\//,
+      /@modules\//,
+      /resolveVirtualModule/,
+      /virtual:\/\//,
+    ],
+  },
+  {
+    name: 'error-overlay' as const,
+    score: 0.6,
+    runtime: [
+      // Vite-specific error handling
+      /vite-error-overlay/,
+      /__vite__error/,
+      /vite-plugin-error/,
+    ],
+  },
+  {
+    name: 'plugins' as const,
+    score: 0.5,
+    runtime: [
+      // Vite-specific plugins
+      /vite-plugin-/,
+      /virtual:ssr-/,
+    ],
+  },
+  {
+    name: 'query-params' as const,
+    score: 0.4,
+    runtime: [
+      // Vite-specific query parameters
+      /\?v=[a-zA-Z0-9]+/, // Vite's cache busting
+      /\?used&v=[a-zA-Z0-9]+/,
+      /\?import&v=[a-zA-Z0-9]+/,
     ],
   },
 ];

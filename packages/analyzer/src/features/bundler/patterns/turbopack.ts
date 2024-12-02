@@ -1,76 +1,75 @@
+// First import webpack patterns as a base
 import { webpack } from './webpack.js';
 
-// Turbopack is based on webpack, so we can reuse the webpack patterns and add turbopack specific ones
-const webpackCompilation = webpack.find((item) => item.name === 'compilation');
-
+// Define Turbopack-specific patterns that are resilient to minification
 export const turbopack = [
+  ...webpack,
   {
-    name: 'compilation' as const,
-    score: 0.2,
+    name: 'turbopack-core' as const,
+    score: 1.0,
     runtime: [
-      ...(webpackCompilation?.runtime ?? []),
-      // Turbopack specific
-      /turbopack/,
-      /__turbopack_require__/,
-      /__turbopack_export__/,
-      /__turbopack_load__/,
-      /__turbopack_chunk__/,
-      /turbo_modules/,
-      /__turbopack__/,
-
-      // Turbopack comments and markers
-      /\/\*\s*Turbopack\s*\*\//,
-      /Turbopack\sChunk/,
-      /TURBOPACK\s/,
-
-      // Next.js + Turbopack specific
-      /next-turbopack/,
-      /__next_turbopack__/,
-      /app-turbopack/,
-      /pages-turbopack/,
-
-      // Rust-generated patterns (Turbopack specific)
-      /__turbopack_external_require__/,
-      /__turbopack_resolve_module__/,
-      /__turbopack_refresh__/,
-      /__turbopack_import__/,
-
-      // Error handling
-      /__turbopack_error__/,
-      /__turbopack_handle_error__/,
-
-      // Development features
-      /TURBOPACK_DEBUG/,
-      /TURBOPACK_DEVELOPMENT/,
-      /__turbopack_debug__/,
-
-      // Asset handling
-      /__turbopack_asset__/,
-      /__turbopack_asset_url__/,
-      /__turbopack_public_path__/,
+      // Core structural patterns that survive minification
+      /TURBOPACK/, // Constants usually preserved
+      /\[\[SSR\]\]/, // Special syntax usually preserved
+      // Match both full and potentially minified require patterns
+      /(__turbopack_require__|__t)[\s\n]*=/,
+      /(__turbopack_external_require__|__te)[\s\n]*=/,
+      // Cache patterns with optional minification
+      /(__turbopack_cache__|__tc)[\s\n]*=/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
+    name: 'turbopack-modules' as const,
+    score: 0.9,
     runtime: [
-      /* previous patterns */
+      // Module system patterns with minification variants
+      /(__turbopack_export__|__tx)[\s\n]*=/,
+      /(__turbopack_import__|__ti)[\s\n]*=/,
+      /(turbopack_modules|_tm)[\s\n]*=/,
+      // Look for structural patterns instead of specific names
+      /\(\s*\{\s*['"]\w+['"]\s*:\s*\[\s*function\s*\(/, // Module definition structure
     ],
+  },
+  {
+    name: 'turbopack-hmr' as const,
+    score: 0.8,
+    runtime: [
+      // HMR patterns that survive minification
+      /(hot\/signal)/,
+      /(hot\/update)/,
+      // Look for HMR-specific structures
+      /\.hot\s*\.\s*accept\s*\(/,
+      /TURBOPACK_CHUNK_UPDATE/, // Constants usually preserved
+    ],
+  },
+  {
+    name: 'turbopack-runtime' as const,
+    score: 0.7,
+    runtime: [
+      // Runtime patterns focusing on structural elements
+      /(turbopack\/runtime)/,
+      /chunk_global_id/,
+    ],
+  },
+  {
+    name: 'turbopack-chunk-structure' as const,
+    score: 0.6,
+    runtime: [
+      // Common Turbopack structural patterns
+      /\(\s*window\s*\.\s*\w+\s*=\s*window\s*\.\s*\w+\s*\|\|\s*\[\s*\]\s*\)/,
+    ],
+  },
+  {
+    name: 'turbopack-output' as const,
+    score: 0.3,
     filenames: [
-      // Static chunks
-      /static\/chunks\/\w+\.[a-f0-9]{16}\.js$/,
-      /static\/chunks\/\[\w+\]\.js$/,
-
-      // Client-side entries
-      /static\/\w+\/pages\/\[\w+\]\.js$/,
-      /static\/\w+\/app\/\[\w+\]\.js$/,
-
-      // Development builds (loaded in browser)
-      /_next\/static\/chunks\/\w+\.js$/,
-      /_next\/static\/development\/\w+\.js$/,
-
-      // HMR related
-      /static\/hmr\/\w+\.js$/,
+      // File patterns are usually not affected by minification
+      /\[\d+\]\.entry\.[a-f0-9]{16}\.js$/,
+      /chunks\/\[\d+\]\.[a-f0-9]{16}\.js$/,
+      /chunks\/[a-zA-Z0-9_-]+\.[a-f0-9]{16}\.js$/,
+      /static\/chunks\/[^/]+\.js$/,
+      /static\/chunks\/app\/[^/]+\.js$/,
+      /app-pages-browser\.js$/,
     ],
   },
 ];

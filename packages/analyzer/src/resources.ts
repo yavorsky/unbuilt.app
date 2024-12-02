@@ -53,6 +53,7 @@ type ScriptsMap = Map<string, string>;
 
 export class Resources {
   private page: Page;
+  private cache: Map<string, string> = new Map();
   private resourcesMap: ResourcesMap = new Map();
   private scriptsMap: ScriptsMap = new Map();
   constructor(page: Page) {
@@ -148,7 +149,13 @@ export class Resources {
   }
 
   getAllScriptsContent() {
-    return Array.from(this.getAllScripts()).join('\n');
+    const cached = this.cache.get('allScriptsContent');
+    if (typeof cached === 'string') {
+      return cached;
+    }
+    const result = Array.from(this.getAllScripts()).join('\n');
+    this.cache.set('allScriptsContent', result);
+    return result;
   }
 
   async analyze(): Promise<ResourceAnalysis> {

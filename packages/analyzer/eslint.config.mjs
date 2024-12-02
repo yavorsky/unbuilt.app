@@ -1,4 +1,4 @@
-import { baseConfig } from '../../eslint.config.js';
+import { baseConfig } from '../../eslint.config.mjs';
 import globals from 'globals';
 
 export default [
@@ -11,6 +11,7 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
+        ...globals.node,
       }
     },
   },

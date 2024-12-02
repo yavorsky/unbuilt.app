@@ -8,7 +8,7 @@ import { qwik } from './qwik.js';
 import { solid } from './solid.js';
 import { svelte } from './svelte.js';
 import { vue } from './vue.js';
-import { jQuery } from './jquery.js';
+import { jQuery } from './jQuery.js';
 
 export const patterns = {
   react,

@@ -98,6 +98,7 @@ export const ember = [
           // Check for Ember Data
           hasEmberData: typeof window.DS !== 'undefined',
           // Check for Ember testing helpers
+          // @ts-expect-error - Ember require modification is not defined in the global scope
           hasTestHelpers: typeof window.require?.has?.('ember-qunit'),
           // Check for Ember application
           hasApp: !!window.Ember?.Application?.BOOTED,
