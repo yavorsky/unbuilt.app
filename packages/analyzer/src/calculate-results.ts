@@ -30,7 +30,8 @@ export interface CalculationResult<
   };
   getResultFor(featureName: keyof T): FeatureResult<AllPatternNames<T>> | null;
   getAllResultsWithConfidence(
-    minConfidence: number
+    minConfidence: number,
+    ignoreMainResult?: boolean
   ): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
   getAllResults(): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
 }
@@ -136,9 +137,15 @@ export async function calculateResults<
       confidence: highestResult.confidence,
       matched: highestResult.matched,
     },
-    getAllResultsWithConfidence: (minConfidence = 0.3) => {
+    getAllResultsWithConfidence: (
+      minConfidence = 0.3,
+      ignoreMainResult = false
+    ) => {
       return Object.entries(calculatedResults).reduce(
         (acc, [key, value]) => {
+          if (ignoreMainResult && key === highestResult.name) {
+            return acc;
+          }
           if (value.confidence >= minConfidence) {
             acc[key as keyof T] = value;
           }

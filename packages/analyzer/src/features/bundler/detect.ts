@@ -19,6 +19,6 @@ export const detect = async (
     type: 'bundler',
     name: result.name,
     confidence: result.confidence,
-    secondaryMatches: getAllResultsWithConfidence(0.3),
+    secondaryMatches: getAllResultsWithConfidence(0.3, true),
   };
 };

@@ -33,6 +33,6 @@ export const detect = async (
     name: result.name,
     confidence: result.confidence,
     detectedFeatures: frameworkFeatures,
-    secondaryMatches: getAllResultsWithConfidence(0.3),
+    secondaryMatches: getAllResultsWithConfidence(0.3, true),
   };
 };

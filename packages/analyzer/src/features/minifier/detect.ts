@@ -8,10 +8,16 @@ export const detect = async (
   browser: Browser,
   resources: Resources
 ) => {
-  const { result } = await calculateResults(resources, page, browser, patterns);
+  const { result, getAllResultsWithConfidence } = await calculateResults(
+    resources,
+    page,
+    browser,
+    patterns
+  );
 
   return {
     name: result.name,
     confidence: result.confidence,
+    secondaryMatches: getAllResultsWithConfidence(0.3, true),
   };
 };

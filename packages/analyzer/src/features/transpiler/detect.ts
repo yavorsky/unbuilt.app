@@ -31,6 +31,6 @@ export const detect = async (
     name: result.name,
     confidence: result.confidence,
     detectedFeatures: features,
-    secondaryMatches: getAllResultsWithConfidence(0.3),
+    secondaryMatches: getAllResultsWithConfidence(0.3, true),
   };
 };

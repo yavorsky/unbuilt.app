@@ -10,46 +10,7 @@ import { detect as detectStylingLibraries } from './features/styling-libraries/d
 import { detect as detectTranspiler } from './features/transpiler/detect.js';
 import { Resources } from './resources.js';
 import { getStats } from './features/stats.js';
-
-export type OnProgressResult = {
-  [K in keyof AnalyzeResult]: K extends 'result'
-    ? Partial<AnalyzeResult[K]>
-    : AnalyzeResult[K];
-};
-export type OnProgress = (
-  partialResult: OnProgressResult,
-  progress: number
-) => void;
-
-const createProgressTracker = (
-  url: string,
-  onProgress: OnProgress,
-  startedAt: Date,
-  totalResults: number
-) => {
-  let results = 0;
-  let calculatedResults: Partial<AnalyzeResult['result']> = {};
-
-  return (partialResult: Partial<AnalyzeResult['result']>) => {
-    results += 1;
-    calculatedResults = {
-      ...calculatedResults,
-      ...partialResult,
-    };
-    const finishedAt = new Date();
-    const duration = finishedAt.getTime() - startedAt.getTime();
-
-    onProgress(
-      {
-        url,
-        timestamp: finishedAt.toISOString(),
-        duration,
-        result: calculatedResults,
-      },
-      (results / totalResults) * 100
-    );
-  };
-};
+import { createProgressTracker, OnProgress } from './progress.js';
 
 export const analyze = async (
   url: string,
@@ -105,7 +66,7 @@ export const analyze = async (
     url,
     timestamp: finishedAt.toISOString(),
     duration,
-    result: {
+    analysis: {
       bundler,
       transpiler,
       framework,
