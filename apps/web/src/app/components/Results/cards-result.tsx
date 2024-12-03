@@ -1,12 +1,17 @@
-import { AnalysisResult } from '@unbuilt/analyzer';
+import { OnProgressResult } from '@unbuilt/analyzer';
 import { FC, useEffect, useMemo, useState } from 'react';
 import { UILibrariesCard } from './cards/ui-libraries';
 import { MetaFrameworkCard } from './cards/meta-framework';
 import { BuildCard } from './cards/build';
 import { StylingCard } from './cards/styling';
 import { PerformanceCard } from './cards/performance';
+import { Progress } from '@/components/ui/progress';
 
-export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
+export const CardsResult: FC<{
+  result: OnProgressResult;
+  progress: number;
+  isLoading: boolean;
+}> = ({ result, isLoading, progress }) => {
   const truncatedUrl = useMemo(() => {
     const url = new URL(result.url);
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
@@ -32,6 +37,11 @@ export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      {isLoading && (
+        <div className="flex items-center justify-center mt-20 max-w-7xl mx-auto">
+          <Progress value={progress ?? 0} />
+        </div>
+      )}
       <div className="mb-8 flex items-center justify-center max-w-7xl mx-auto">
         <a
           href={result.url}
@@ -42,7 +52,7 @@ export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
           {truncatedUrl}
         </a>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {result.uiLib && <UILibrariesCard uiLib={result.uiLib} />}
         {result.metaFramework && (
           <MetaFrameworkCard metaFramework={result.metaFramework} />
@@ -52,7 +62,7 @@ export const CardsResult: FC<{ result: AnalysisResult }> = ({ result }) => {
         {result.performance && (
           <PerformanceCard performance={result.performance} />
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

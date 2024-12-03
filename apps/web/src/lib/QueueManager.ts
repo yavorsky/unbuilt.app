@@ -3,6 +3,10 @@ import QueueService, { Queue, Job } from 'bull';
 import { BrowserManager } from './BrowserManager';
 import { AnalyzeResult, analyze } from '@unbuilt/analyzer';
 import os from 'os';
+import {
+  OnProgress,
+  OnProgressResult,
+} from '../../../../packages/analyzer/build/progress';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
@@ -11,7 +15,7 @@ type OnJobCompleted = (jobId: string, result: AnalyzeResult) => void;
 
 export class QueueManager {
   private static instance: QueueManager;
-  private queue: Queue | null = null;
+  private queue: Queue<OnProgressResult> | null = null;
   private browserManager: BrowserManager | null = null;
   private initializing: Promise<void> | null = null;
   private onJobCompleted: OnJobCompleted | null = null;
@@ -60,7 +64,13 @@ export class QueueManager {
 
         const page = await context.newPage();
         try {
-          const result = await analyze(job.data.url, page, browser);
+          const onProgress: OnProgress = (partialResult, progress) => {
+            job.update(partialResult);
+            job.progress(progress);
+          };
+
+          const result = await analyze(job.data.url, page, browser, onProgress);
+
           return result;
         } catch (e) {
           console.error('Analysis failed:', e);
@@ -103,6 +113,8 @@ export class QueueManager {
       {
         url,
         timestamp: new Date().toISOString(),
+        duration: 0,
+        result: {},
       },
       opts
     );

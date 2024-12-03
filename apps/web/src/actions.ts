@@ -37,27 +37,35 @@ export async function getJobStatus(jobId: string) {
     const job = await queueManager.getJob(jobId);
 
     if (!job) {
-      return {
-        error: 'Job not found',
-      };
+      throw new Error('Job not found');
     }
 
     const state = await job.getState();
-    const result = job.returnvalue;
+    // If job is completed, return the result, otherwise return the onprogress data
+    // Not using job.returnvalue b/c it's untyped
+    const result = job.data;
 
     return {
       id: job.id,
       status: state,
-      result: result || null,
-      progress: job.progress(),
+      result,
+      progress: job.progress() as number,
       timestamp: job.timestamp,
       processedOn: job.processedOn,
       finishedOn: job.finishedOn,
+      error: null,
     };
   } catch (error) {
     console.error('Status check failed:', error);
     return {
-      error: 'Failed to get job status',
+      id: jobId,
+      status: 'failed',
+      result: null,
+      progress: 0,
+      processedOn: new Date().getTime(),
+      timestamp: Date.now(),
+      finishedOn: null,
+      error: (error as Error)?.message,
     };
   }
 }
