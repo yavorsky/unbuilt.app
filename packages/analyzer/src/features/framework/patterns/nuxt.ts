@@ -1,108 +1,70 @@
+import { Page } from 'playwright';
+
 export const nuxt = [
   {
-    score: 0.3,
-    name: 'Runtime patterns',
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      // Core Nuxt patterns
-      /__NUXT__|nuxt\.config/,
-      /useNuxt|defineNuxtConfig/,
-      /nuxt-link|nuxt-child/,
-      /nuxtjs|nuxt3/,
-      // Nuxt 3 specifics
-      /useNuxtApp/,
-      /defineNuxtPlugin/,
+      // Core Nuxt globals and identifiers
+      /__NUXT__/,
+      /window\.__NUXT__/,
+      /$nuxt/, // Nuxt 2 global instance
+      /\$nuxt\./,
     ],
   },
   {
-    score: 0.3,
-    name: 'Components',
+    name: 'dom-markers' as const,
+    score: 0.9,
     runtime: [
-      // Built-in components
-      /nuxt\/app/,
-      /nuxt\/components/,
-      /NuxtPage|NuxtLayout/,
-      /NuxtLink|NuxtChild/,
-      // Data fetching
-      /useAsyncData|useFetch/,
-      /useLazyFetch|useLazyAsyncData/,
-    ],
-  },
-  {
-    score: 0.2,
-    name: 'Markup patterns',
-    runtime: [
+      // Nuxt-specific DOM attributes and markers
       /data-n-head/,
-      /_nuxt\/|-nuxt-/,
-      /nuxt-error/,
-      /nuxt-loading/,
-      // Nuxt specific classes
-      /nuxt-link-active/,
-      /nuxt-link-exact-active/,
+      /data-n-head-ssr/,
+      /data-hid/, // Nuxt head identifier
+      /_nuxt\//, // Nuxt asset prefix
     ],
   },
   {
-    score: 0.2,
-    name: 'Internal Features',
+    name: 'hydration' as const,
+    score: 0.8,
     runtime: [
-      // Configuration
-      /useRuntimeConfig/,
-      /defineNuxtPlugin/,
-      /useNuxtApp/,
-      /nuxt\.config\./,
-      // Composables
-      /useHead|useSeoMeta/,
-      /useRoute|useRouter/,
+      // Nuxt-specific hydration markers
+      /__NUXT_STATE__/,
+      /__NUXT_LOADED__/,
+      /__NUXT_ERROR__/,
     ],
   },
   {
-    score: 0.2,
-    name: 'Build information',
-    runtime: [
-      // Build output
+    name: 'browser-check' as const,
+    score: 0.9,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Core Nuxt globals
+          hasNuxtData: typeof window.__NUXT__ !== 'undefined',
+          hasNuxtInstance: typeof window.$nuxt !== 'undefined',
+
+          // DOM markers
+          hasNuxtHead: !!document.querySelector('[data-n-head]'),
+          hasNuxtContainer: !!document.getElementById('__nuxt'),
+
+          // Asset patterns
+          hasNuxtAssets: !!document.querySelector('[data-hid]'),
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
+  },
+  {
+    name: 'chunks' as const,
+    score: 0.8,
+    filenames: [
+      // Build output directories
       /\.nuxt\//,
-      /\.output\//,
+      // Configuration files
       /nuxt\.config\./,
-      // Build features
-      /buildModules/,
-      /transpile/,
-      /nitro/,
-    ],
-  },
-  {
-    score: 0.2,
-    name: 'Routing patterns',
-    runtime: [
-      // File-based routing
-      /\[\.{3}\w+\]/, // catch-all routes
-      /\[\w+\]/, // dynamic routes
-      // Navigation
-      /navigateTo/,
-      /abortNavigation/,
-    ],
-  },
-  {
-    score: 0.2,
-    name: 'Server-side rendering',
-    runtime: [
-      // State management
-      /useState/,
-      /useAsyncData/,
-      /useFetch/,
-      /useLazyFetch/,
-      // Server utilities
-      /useRequestHeaders/,
-      /useRequestEvent/,
-    ],
-  },
-  {
-    score: 0.2,
-    name: 'Server-side rendering',
-    runtime: [
-      // SSR specific
-      /renderMeta/,
-      /process\.server/,
-      /process\.client/,
-      /onServerPrefetch/,
+      // Generated directories
+      /_nuxt\//,
+      /\/_nuxt\//,
     ],
   },
 ];

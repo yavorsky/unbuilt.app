@@ -1,62 +1,50 @@
 export const babel = [
   {
-    name: 'compilation' as const,
-    score: 0.2,
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      // Babel-specific runtime
-      /@babel\/runtime/,
+      // Core Babel runtime identifiers
       /babelHelpers\./,
-      /babel-runtime/,
       /__esModule.*babel/i,
-
-      // Babel-unique helper naming patterns
-      /_regenerator/,
-      /_asyncGenerator/,
-      /regeneratorRuntime/,
-      /asyncGeneratorStep/,
-
-      // Babel-unique class transformation
+      /\$\$typeof.*babel/i,
+    ],
+  },
+  {
+    name: 'transforms' as const,
+    score: 0.9,
+    runtime: [
+      // Babel-specific class transformations
       /_createClass/,
       /_classCallCheck/,
       /_possibleConstructorReturn/,
       /_createSuper/,
       /_isNativeReflectConstruct/,
-
-      // Babel-specific decorator implementation
+    ],
+  },
+  {
+    name: 'decorators' as const,
+    score: 0.8,
+    runtime: [
+      // Babel-unique decorator implementation
       /_initializerDefineProperty/,
       /_applyDecoratedDescriptor/,
-      /_descriptors/,
-
-      // Babel-specific plugin markers
+      /_decorate\(\[/,
+    ],
+  },
+  {
+    name: 'interop' as const,
+    score: 0.7,
+    runtime: [
+      // Babel-specific module interop
       /_interopRequireDefault/,
       /_interopRequireWildcard/,
-      /_typeof2/,
       /_objectSpread2/,
-
-      // Babel-unique minified patterns
-      /\$\$typeof.*babel/i,
-      /__proto__.*babel/i,
-      /\[Symbol\.iterator\].*babel/i,
-
-      // Babel transform comments
-      /\/\*#__PURE__\*\//,
-      /\/\*@__PURE__\*\//,
-
-      // Babel's decorators implementation
-      /_decorate\(\[/,
-      // Babel's class properties transform
-      /Object\.defineProperty\(.*?prototype.*?,.*?{/,
-
-      // Module patterns
-      /Object\.defineProperty\(exports,\s*["']__esModule["']/,
-      /exports\.default\s*=/,
-      /exports\.__esModule\s*=\s*true/,
-      /require\(["'][^"']+["']\)/,
     ],
   },
   {
     name: 'react-compiler' as const,
-    score: 0.3,
+    // No score added since we are focusing to just detect the presence of React Compiler
+    score: 0,
     runtime: [
       // React Compiler transformation markers
       /__COMPILER__/,

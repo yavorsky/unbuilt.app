@@ -3,7 +3,7 @@ import { Resources } from '../../resources.js';
 import { patterns } from './patterns/index.js';
 import { calculateResults } from '../../calculate-results.js';
 
-const detectableFrameworkFeatures = ['ssr', 'ssg', 'isr'] as const;
+const detectableFrameworkFeatures = ['ssr'] as const;
 
 export const detect = async (
   page: Page,

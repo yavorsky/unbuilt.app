@@ -1,48 +1,75 @@
+import { Page } from 'playwright';
+
 export const gatsby = [
   {
-    score: 0.2,
-    name: 'Runtime',
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      /gatsby-browser/,
-      /gatsby-ssr/,
-      /gatsby-config/,
-      /gatsby-node/,
+      // Core Gatsby global markers
       /__GATSBY/,
+      /__GATSBY_RESOLVED_PAGES/,
+      /__GATSBY_DEFERRED_CODEGEN/,
+      /__GATSBY_CHUNK_MAP/,
+      /window\.___GATSBY/,
     ],
   },
   {
-    score: 0.2,
-    name: 'Features',
-    runtime: [/gatsby-link/, /StaticQuery/, /StaticImage/, /GatsbyImage/],
+    name: 'hydration' as const,
+    score: 0.9,
+    runtime: [
+      // Gatsby-specific hydration markers
+      /__GATSBY_REGISTER_COMPONENT/,
+      /__GATSBY_DYNAMIC_CHUNK_MAP/,
+      /__GATSBY_ERROR_OVERLAY_HANDLER/,
+    ],
   },
   {
-    score: 0.2,
-    name: 'Markup',
-    runtime: [/gatsby-resp-image/, /gatsby-image/],
+    name: 'browser-check' as const,
+    score: 0.9,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Core Gatsby globals
+          hasGatsbyGlobal: typeof window.___gatsby !== 'undefined',
+          hasLoader: typeof window.___loader !== 'undefined',
+          hasEmitter: typeof window.___emitter !== 'undefined',
+
+          // Navigation system
+          hasNavigate: typeof window.___navigate === 'function',
+
+          // Page data system
+          hasPageData:
+            typeof window.pagePath !== 'undefined' ||
+            typeof window.pageData !== 'undefined',
+
+          // Hydration markers
+          hasHydrationMarkers:
+            typeof window.__GATSBY !== 'undefined' ||
+            document.querySelector('[data-gatsby]') !== null,
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
   {
-    score: 0.2,
-    name: 'Pages',
-    runtime: [/useStaticQuery/, /graphql`/, /pageQuery/],
+    name: 'routing' as const,
+    score: 0.8,
+    runtime: [
+      // Gatsby-specific routing markers
+      /___loader/,
+      /___emitter/,
+      /window\.___navigate/,
+      /window\.___replacePath/,
+    ],
   },
   {
-    score: 0.2,
-    name: 'builds',
-    runtime: [/\.cache\//, /public\//, /gatsby-config/, /gatsby-node/],
-  },
-  {
-    score: 0.2,
-    name: 'builds',
-    runtime: [/createPages/, /onCreatePage/, /gatsby-plugin-page-creator/],
-  },
-  {
-    score: 0.2,
-    name: 'data',
-    runtime: [/createPages/, /sourceNodes/, /createNode/],
-  },
-  {
-    score: 0.2,
-    name: 'ssr',
-    runtime: [/gatsby-ssr/, /wrapRootElement/, /wrapPageElement/],
+    name: 'chunks' as const,
+    score: 0.6,
+    filenames: [
+      /gatsby-config\.[jt]s$/,
+      /gatsby-node\.[jt]s$/,
+      /gatsby-ssr\.[jt]s$/,
+      /gatsby-browser\.[jt]s$/,
+    ],
   },
 ];

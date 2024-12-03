@@ -2,132 +2,54 @@ import { Browser, Page } from 'playwright';
 import { detectSSRSignals } from '../helpers/detect-ssr-signals.js';
 
 export const next = [
-  // Runtime patterns
   {
-    score: 0.3,
-    name: 'runtimeVariables' as const,
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      // Core Next.js patterns
+      // Core Next.js-specific globals and identifiers
       /__NEXT_DATA__/,
       /__NEXT_LOADED_PAGES__/,
-      /next\/router|next\/link/,
-      /__next_app|__next_init/,
-      // Next.js 13+ patterns
-      /next\/navigation/,
-      /createNextRouteHandler/,
-      // App directory patterns
-      /page\.tsx?$/,
-      /layout\.tsx?$/,
-      /loading\.tsx?$/,
-      /error\.tsx?$/,
-    ],
-  },
-  // Runtime component patterns
-  {
-    score: 0.2,
-    name: 'componentsDirectives' as const,
-    runtime: [
-      // Built-in components
-      /next\/image/,
-      /next\/script/,
-      /next\/head/,
-      /next\/dynamic/,
-      /next\/font/,
-      // App router components
-      /'use client'/,
-      /'use server'/,
-      // Metadata
-      /generateMetadata/,
+      /window\.__NEXT_P\s*=/, // Next.js page loader
+      /__NEXT_CROSS_ORIGIN/,
+      /__next_.+/,
     ],
   },
   {
-    score: 0.2,
-    name: 'markupMarkers' as const,
+    name: 'dom-markers' as const,
+    score: 0.9,
     runtime: [
-      /data-nextjs/,
-      /next-route-announcer/,
-      /next-page/,
-      /__next-css/,
-      // Next.js specific class names
-      /__next/,
-      /next-error/,
-      /nprogress/,
+      // Next.js-specific DOM attributes and classes
+      /data-nextjs-page/,
+      /data-next-page/,
+      /data-next-page-transitions/,
+      /data-n-href/, // Next.js style preload marker
+      /data-next-font/,
     ],
   },
   {
-    score: 0.2,
-    name: 'inlineScripts' as const,
+    name: 'hydration' as const,
+    score: 0.8,
     runtime: [
-      // Data fetching
-      /getStaticProps/,
-      /getServerSideProps/,
-      /getInitialProps/,
-      // Routing
-      /useRouter|withRouter/,
-      /usePathname|useSearchParams/,
-      // Middleware
-      /_middleware/,
-      // Next.js 13+ features
-      /useSelectedLayoutSegment/,
-      /generateStaticParams/,
+      // Next.js-specific hydration markers
+      /__NEXT_HYDRATED_STATE__/,
+      /__NEXT_HYDRATE_MARKER__/,
+      /__NEXT_DROP_CLIENT_FILE__/,
     ],
   },
   {
-    score: 0.1,
-    name: 'buildOutput' as const,
-    runtime: [
-      // Build output
-      /\.next\//,
-      /next\.config\./,
-      /next-env\.d\.ts/,
-      // Build features
-      /optimizeFonts/,
-      /transpilePackages/,
-      /serverComponentsExternalPackages/,
-    ],
+    name: 'browser-check' as const,
+    score: 0.9,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          hasNextData: !!window.next,
+          hasNextRouteLoader: typeof window.__NEXT_P !== 'undefined',
+          hasNextRegistry: typeof window.__NEXT_LOADED_PAGES__ !== 'undefined',
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
-  {
-    score: 0.1,
-    name: 'routing' as const,
-    runtime: [
-      // File-based routing
-      /\[\.{3}\w+\]/, // catch-all routes
-      /\[\w+\]/, // dynamic routes
-      // App router
-      /route\.tsx?$/,
-      /loading\.tsx?$/,
-      /not-found\.tsx?$/,
-    ],
-  },
-  {
-    score: 0.1,
-    name: 'serverScripts' as const,
-    runtime: [
-      // Server actions
-      /'use server'/,
-      /formAction/,
-      // Data fetching
-      /revalidatePath/,
-      /revalidateTag/,
-      /unstable_noStore/,
-    ],
-  },
-  {
-    score: 0.1,
-    name: 'staticScripts' as const,
-    runtime: [
-      // SSR specific
-      /generateStaticParams/,
-      /generateMetadata/,
-      /cookies\(\)/,
-      /headers\(\)/,
-      /notFound\(\)/,
-      /redirect\(\)/,
-    ],
-  },
-  // Framework features detection
-  // With this approach we can use pattern group to increase the framework score and detect specific features.
-  // Has SSR
   {
     score: 0.3,
     name: 'ssr' as const,
@@ -159,20 +81,10 @@ export const next = [
   },
   // Generic SSR detection
   {
-    score: 0.1,
+    score: 0,
     name: 'ssr' as const,
     browser: async (page: Page, browser: Browser) => {
       return detectSSRSignals(page, browser);
     },
-  },
-  {
-    score: 0.2,
-    name: 'ssg' as const,
-    runtime: [/getStaticProps/, /getStaticPaths/],
-  },
-  {
-    score: 0.2,
-    name: 'isr' as const,
-    runtime: [/revalidate:\s*\d+/],
   },
 ];

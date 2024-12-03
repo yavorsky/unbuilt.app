@@ -25,8 +25,6 @@ export const esbuild = [
     score: 0.6,
     runtime: [
       // ESBuild's JSX implementation markers
-      /_jsxRuntime/,
-      /\$jsx\//,
       /__create_element__/,
       /\/\*\s*@jsxRuntime\s+classic\s*\*\//,
       /\/\*\s*@jsxImportSource\s+/,

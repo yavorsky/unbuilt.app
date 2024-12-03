@@ -1,60 +1,70 @@
+import { Page } from 'playwright';
+
 export const remix = [
   {
-    score: 0.2,
-    name: 'Runtime',
+    name: 'core' as const,
+    score: 1.0,
     runtime: [
-      /@remix-run\/react/,
-      /@remix-run\/node/,
-      /remix\.config/,
-      /entry\.client/,
-      /entry\.server/,
+      // Core Remix globals and identifiers
+      /__remixContext/,
+      /__remixManifest/,
+      /__remixRouteModules/,
+      /window\.__remixRouteModules/,
+      /__remix_entry__/,
     ],
   },
   {
-    score: 0.1,
-    name: 'Components',
+    name: 'dom-markers' as const,
+    score: 0.9,
     runtime: [
-      /Form|Link|Meta|Links|Scripts|LiveReload/,
-      /ScrollRestoration|useSubmit/,
-      /Outlet/,
+      // Remix-specific DOM attributes and markers
+      /data-remix-run/,
+      /data-remix-/,
+      /remix-pending/,
+      /remix-state/,
     ],
   },
   {
-    score: 0.2,
-    name: 'markup',
-    runtime: [/data-remix-/, /remix-prefix-/],
-  },
-  {
-    score: 0.2,
-    name: 'Features',
+    name: 'hydration' as const,
+    score: 0.8,
     runtime: [
-      /useLoaderData|useActionData/,
-      /useFetcher|useTransition/,
-      /useMatches|useParams/,
+      // Remix-specific hydration markers
+      /__remixContext\.state/,
+      /__remixContext\.url/,
+      /__remixContext\.matches/,
+      /__remixContext\.routeData/,
     ],
   },
   {
-    score: 0.2,
-    name: 'Builds',
-    runtime: [/remix\.config\.js/, /\.cache\/build/, /build\/index\.js/],
+    name: 'browser-check' as const,
+    score: 0.9,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Core Remix globals
+          hasRemixContext: typeof window.__remixContext !== 'undefined',
+          hasRemixManifest: typeof window.__remixManifest !== 'undefined',
+          hasRemixRouteModules:
+            typeof window.__remixRouteModules !== 'undefined',
+
+          // DOM markers
+          hasRemixDataElements: !!document.querySelector('[data-remix-run]'),
+          hasRemixStateElements: !!document.querySelector('[data-remix-state]'),
+
+          // Script markers
+          hasRemixScripts: Array.from(document.scripts).some(
+            (script) =>
+              script.src?.includes('entry.client') ||
+              script.getAttribute('data-remix-run') !== null
+          ),
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
   {
-    score: 0.2,
-    name: 'Routing',
-    runtime: [
-      /\[\$\w+\]\.tsx?/, // resource routes
-      /\[\.\.\.\w+\]\.tsx?/, // catch-all routes
-      /\[\w+\]\.tsx?/, // dynamic routes
-    ],
-  },
-  {
-    score: 0.2,
-    name: 'Data',
-    runtime: [/loader|action/, /headers|redirect/, /json|redirect/],
-  },
-  {
-    score: 0.2,
-    name: 'ssr',
-    runtime: [/entry\.server/, /handleRequest/, /handleDataRequest/],
+    name: 'chunks' as const,
+    score: 0.8,
+    filenames: [/remix\.config\./, /remix\.init\./],
   },
 ];
