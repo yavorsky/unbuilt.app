@@ -14,7 +14,7 @@ export function Results({ jobId }: { jobId: string }) {
   > | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [showAsJSON, setShowAsJSON] = useState(true);
+  const [showAsJSON, setShowAsJSON] = useState(false);
 
   const handleSwitchJSONChange = useCallback(() => {
     setShowAsJSON(!showAsJSON);

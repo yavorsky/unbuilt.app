@@ -1,12 +1,9 @@
 // lib/queueManager.ts
 import QueueService, { Queue, Job } from 'bull';
 import { BrowserManager } from './BrowserManager';
-import { AnalyzeResult, analyze } from '@unbuilt/analyzer';
+import { AnalyzeResult, OnProgressResult, analyze } from '@unbuilt/analyzer';
 import os from 'os';
-import {
-  OnProgress,
-  OnProgressResult,
-} from '../../../../packages/analyzer/build/progress';
+import { OnProgress } from '../../../../packages/analyzer/build/progress';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
@@ -114,7 +111,7 @@ export class QueueManager {
         url,
         timestamp: new Date().toISOString(),
         duration: 0,
-        result: {},
+        analysis: {},
       },
       opts
     );
