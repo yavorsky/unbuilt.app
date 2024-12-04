@@ -1,17 +1,21 @@
 // lib/queueManager.ts
 import QueueService, { Queue, Job } from 'bull';
 import { BrowserManager } from './BrowserManager';
-import { Analyzer } from '@unbuilt/analyzer';
+import { AnalyzeResult, OnProgressResult, analyze } from '@unbuilt/analyzer';
 import os from 'os';
+import { OnProgress } from '../../../../packages/analyzer/build/progress';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 
+type OnJobCompleted = (jobId: string, result: AnalyzeResult) => void;
+
 export class QueueManager {
   private static instance: QueueManager;
-  private queue: Queue | null = null;
+  private queue: Queue<OnProgressResult> | null = null;
   private browserManager: BrowserManager | null = null;
   private initializing: Promise<void> | null = null;
+  private onJobCompleted: OnJobCompleted | null = null;
 
   private constructor() {}
 
@@ -22,22 +26,26 @@ export class QueueManager {
     return QueueManager.instance;
   }
 
-  async initialize() {
+  async initialize({
+    onJobCompleted,
+  }: { onJobCompleted?: OnJobCompleted } = {}) {
     // Prevent multiple simultaneous initializations
     if (this.initializing) return this.initializing;
     if (this.queue) return;
 
+    this.onJobCompleted = onJobCompleted ?? null;
+
     this.initializing = (async () => {
       // Initialize queue
-      this.queue = new QueueService('website-analysis', {
+      this.queue = new QueueService<AnalyzeResult>('website-analysis', {
         redis: {
           host: process.env.REDIS_HOST || 'localhost',
           port: parseInt(process.env.REDIS_PORT || '6379'),
         },
         defaultJobOptions: {
-          removeOnComplete: 100,  // Keep last 100 completed jobs
-          removeOnFail: 100      // Keep last 100 failed jobs
-        }
+          removeOnComplete: 100, // Keep last 100 completed jobs
+          removeOnFail: 100, // Keep last 100 failed jobs
+        },
       });
 
       // Initialize browser manager
@@ -53,9 +61,13 @@ export class QueueManager {
 
         const page = await context.newPage();
         try {
-          const analyzer = new Analyzer(page, browser);
-          await analyzer.initialize()
-          const result = await analyzer.analyze(job.data.url);
+          const onProgress: OnProgress = (partialResult, progress) => {
+            job.update(partialResult);
+            job.progress(progress);
+          };
+
+          const result = await analyze(job.data.url, page, browser, onProgress);
+
           return result;
         } catch (e) {
           console.error('Analysis failed:', e);
@@ -68,6 +80,8 @@ export class QueueManager {
       // Set up event handlers
       this.queue.on('completed', (job, result) => {
         console.log(`Job ${job.id} completed:`, result);
+        // Consider moving to process callback and not store any result in redis
+        this.onJobCompleted?.(job.id.toString(), result);
       });
 
       this.queue.on('failed', (job, error) => {
@@ -88,14 +102,19 @@ export class QueueManager {
     this.initializing = null;
   }
 
-  async addJob(url: string) {
+  async addJob(url: string, opts: { jobId: string }) {
     if (!this.queue) {
       throw new Error('Queue not initialized');
     }
-    return this.queue.add({
-      url,
-      timestamp: new Date().toISOString()
-    });
+    return this.queue.add(
+      {
+        url,
+        timestamp: new Date().toISOString(),
+        duration: 0,
+        analysis: {},
+      },
+      opts
+    );
   }
 
   async getJob(jobId: string) {
@@ -132,7 +151,7 @@ export class QueueManager {
       active,
       completed,
       failed,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 
@@ -150,7 +169,7 @@ export interface AnalysisJob {
 export interface JobStatus {
   id: string;
   status: string;
-  result: any | null;
+  result: AnalyzeResult | null;
   progress: number;
   timestamp: Date;
   processedOn?: Date;

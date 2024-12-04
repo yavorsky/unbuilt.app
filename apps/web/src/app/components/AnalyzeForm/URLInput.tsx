@@ -1,12 +1,24 @@
-import { ChangeEvent, FC, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
-export const URLInput: FC<React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>> = (props) => {
+export const URLInput: FC<
+  React.DetailedHTMLProps<
+    React.InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >
+> = (props) => {
   const [url, setUrl] = useState('https://');
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleUrlUpdate = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    const url = `https://${value.replace(/h?t?t?p?s?\:?\/?\/?/, '').replace(/https\:\/\//, '')}`;
+    const url = `https://${value.replace(/h?t?t?p?s?:?\/?\/?/, '').replace(/https:\/\//, '')}`;
     setUrl(url);
   };
 

@@ -1,17 +1,27 @@
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { FC } from 'react';
 
-export const ConfidenceIndicator: FC<{ confidence: number }> = ({ confidence }) => {
+export const ConfidenceIndicator: FC<{ confidence: number }> = ({
+  confidence,
+}) => {
   const maxBlocks = 4;
-  const filledBlocks = Math.round((confidence / 5) * maxBlocks);
-  const percentage = Math.round((confidence / 5) * 100);
+  const filledBlocks = Math.min(
+    Math.round((confidence / 3) * maxBlocks),
+    maxBlocks
+  );
+  const percentage = Math.min(Math.round((confidence / 3) * 100), 100);
 
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger>
           <div className="flex items-center gap-2">
-            <span className="text-gray-400 text-sm">Confidence</span>
+            {/* <span className="text-gray-400 text-sm">Confidence</span> */}
             <div className="flex gap-1">
               {[...Array(maxBlocks)].map((_, i) => (
                 <div

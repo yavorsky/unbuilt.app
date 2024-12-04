@@ -1,5 +1,4 @@
 import { Page } from 'playwright';
-import fs from 'fs/promises';
 import { Resources } from '../resources.js';
 
 interface MinifierResult {
@@ -31,14 +30,29 @@ interface TranspilerResult {
   };
 }
 
-type SupportedBundler = 'webpack' | 'rollup' | 'vite' | 'parcel' | 'turbopack' | 'esbuild' | 'nx' | 'bazel' | 'bun' | 'gulp' | 'grunt' | 'brunch';
+type SupportedBundler =
+  | 'webpack'
+  | 'rollup'
+  | 'vite'
+  | 'parcel'
+  | 'turbopack'
+  | 'esbuild'
+  | 'nx'
+  | 'bazel'
+  | 'bun'
+  | 'gulp'
+  | 'grunt'
+  | 'brunch';
 
-type BuildPatterns = Record<SupportedBundler, {
-  runtime: RegExp[];
-  assets: RegExp[];
-  build: RegExp[];
-  modules: RegExp[];
-}>
+type BuildPatterns = Record<
+  SupportedBundler,
+  {
+    runtime: RegExp[];
+    assets: RegExp[];
+    build: RegExp[];
+    modules: RegExp[];
+  }
+>;
 
 export interface BuildFeatures {
   bundler: {
@@ -77,12 +91,10 @@ export class BuildFeaturesDetector {
       const allVars = Object.keys(window);
       return {
         // Vite markers
-        viteEnvVars: allVars.filter(key => key.startsWith('VITE_')),
-        viteMarkers: [
-          '__vite__mapDeps',
-          '__vite__base',
-          '__vite__import',
-        ].some(marker => window[marker as keyof Window] !== undefined),
+        viteEnvVars: allVars.filter((key) => key.startsWith('VITE_')),
+        viteMarkers: ['__vite__mapDeps', '__vite__base', '__vite__import'].some(
+          (marker) => window[marker as keyof Window] !== undefined
+        ),
 
         // Webpack markers
         webpackMarkers: [
@@ -91,20 +103,19 @@ export class BuildFeaturesDetector {
           '__webpack_require__',
           '__webpack_modules__',
           'webpack',
-        ].some(marker => window[marker as keyof Window] !== undefined),
+        ].some((marker) => window[marker as keyof Window] !== undefined),
 
         // Rollup markers
-        rollupMarkers: [
-          '__rollup__',
-          '__ROLLUP_LOADED_MODULES__',
-        ].some(marker => window[marker as keyof Window] !== undefined),
+        rollupMarkers: ['__rollup__', '__ROLLUP_LOADED_MODULES__'].some(
+          (marker) => window[marker as keyof Window] !== undefined
+        ),
 
         // Parcel markers
         parcelMarkers: [
           'parcelRequire',
           '__parcel__import__',
           'parcelModule',
-        ].some(marker => window[marker as keyof Window] !== undefined),
+        ].some((marker) => window[marker as keyof Window] !== undefined),
       };
     });
 
@@ -121,19 +132,19 @@ export class BuildFeaturesDetector {
         /__webpack_module__/,
         /webpackChunk/,
         /webpackJsonp/,
-        /webpack_require\.e/,  // Chunk loading
-        /webpack_require\.t/,  // Module mode
-        /webpack_require\.d/,  // Exports definition
-        /webpack_require\.o/,  // Object.prototype.hasOwnProperty
-        /webpack_require\.r/,  // Module.__esModule
+        /webpack_require\.e/, // Chunk loading
+        /webpack_require\.t/, // Module mode
+        /webpack_require\.d/, // Exports definition
+        /webpack_require\.o/, // Object.prototype.hasOwnProperty
+        /webpack_require\.r/, // Module.__esModule
       ],
       // Asset patterns
       assets: [
-        /\.[a-f0-9]{20}\.js$/,  // Content hash
-        /\.(js|css)\.[a-f0-9]{8}\.hot-update\./,  // HMR
-        /chunks?\/[a-zA-Z0-9]+\.[a-f0-9]+\.js/,   // Chunk naming
-        /runtime~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Runtime chunks
-        /vendors~[a-zA-Z0-9]+\.[a-f0-9]+\.js/,    // Vendor chunks
+        /\.[a-f0-9]{20}\.js$/, // Content hash
+        /\.(js|css)\.[a-f0-9]{8}\.hot-update\./, // HMR
+        /chunks?\/[a-zA-Z0-9]+\.[a-f0-9]+\.js/, // Chunk naming
+        /runtime~[a-zA-Z0-9]+\.[a-f0-9]+\.js/, // Runtime chunks
+        /vendors~[a-zA-Z0-9]+\.[a-f0-9]+\.js/, // Vendor chunks
       ],
       // Build output patterns
       build: [
@@ -144,11 +155,11 @@ export class BuildFeaturesDetector {
       ],
       // Module handling patterns
       modules: [
-        /modules\[\[[^\]]+\]\]/,  // Module arrays
+        /modules\[\[[^\]]+\]\]/, // Module arrays
         /defineProperty\(exports,\s*"__esModule"/,
         /Object\.defineProperty\(exports,\s*"__esModule"/,
         /typeof\s+Symbol\s*!==\s*"undefined"\s*&&\s*Symbol\.toStringTag/,
-      ]
+      ],
     };
 
     const patterns: BuildPatterns = {
@@ -187,7 +198,7 @@ export class BuildFeaturesDetector {
           /turbopack\.loadPage/,
           /turbopack\.register/,
           /eval\(\"require\"\)/,
-        ]
+        ],
       },
 
       rollup: {
@@ -202,10 +213,10 @@ export class BuildFeaturesDetector {
         ],
         // Asset patterns
         assets: [
-          /\-[a-f0-9]{8}\.js$/,  // Hash suffix
-          /assets\/[a-zA-Z0-9]+\-[a-f0-9]{8}\.js/,  // Asset naming
-          /chunk\-[a-zA-Z0-9]+\-[a-f0-9]{8}\.js/,   // Chunk naming
-          /bundle\.[a-f0-9]{8}\.js/,                 // Bundle naming
+          /\-[a-f0-9]{8}\.js$/, // Hash suffix
+          /assets\/[a-zA-Z0-9]+\-[a-f0-9]{8}\.js/, // Asset naming
+          /chunk\-[a-zA-Z0-9]+\-[a-f0-9]{8}\.js/, // Chunk naming
+          /bundle\.[a-f0-9]{8}\.js/, // Bundle naming
         ],
         // Build output patterns
         build: [
@@ -220,7 +231,7 @@ export class BuildFeaturesDetector {
           /import\.meta\.hot/,
           /export\s*{\s*[^}]+\s*}/,
           /import\s*{\s*[^}]+\s*}\s*from/,
-        ]
+        ],
       },
 
       vite: {
@@ -233,35 +244,35 @@ export class BuildFeaturesDetector {
           /__vite__base/,
           /__vite__import/,
           /__vite__injectQuery/,
-          /VITE_[A-Z_]+/,  // Environment variables
+          /VITE_[A-Z_]+/, // Environment variables
           /import\.meta\.env\.VITE_/,
           /import\.meta\.hot/,
           /@vite\/client/,
           /vite\/modulepreload-polyfill/,
           /vite\/preload-helper/,
-          /\?v=[a-zA-Z0-9]+/,  // Vite's query string pattern
+          /\?v=[a-zA-Z0-9]+/, // Vite's query string pattern
         ],
         // Asset patterns
         assets: [
           /\/assets\/[^"']+\.[a-z0-9]+\.js/, // Vite asset pattern
           /\.(js|css)\?t=\d+/, // Vite's timestamp query
           /\?used/, // Vite's used query parameter
-          /\?raw/,  // Vite's raw imports
-          /\?url/   // Vite's url imports
+          /\?raw/, // Vite's raw imports
+          /\?url/, // Vite's url imports
         ],
         // Build output patterns
         build: [
           /const\s+[a-zA-Z0-9_$]+\s*=\s*"[a-z0-9]+";?\s*\/\/\s*vite/i,
           /assets\/index\.[a-z0-9]+\.js/,
-          /assets\/vendor\.[a-z0-9]+\.js/
+          /assets\/vendor\.[a-z0-9]+\.js/,
         ],
         // Module handling patterns
         modules: [
           /import\.meta\.glob/,
           /import\.meta\.url/,
           /__vitePreload/,
-          /\?worker(_thread)?=/
-        ]
+          /\?worker(_thread)?=/,
+        ],
       },
 
       parcel: {
@@ -270,15 +281,15 @@ export class BuildFeaturesDetector {
           /parcelRequire/,
           /parcelModule/,
           /__parcel__import__/,
-          /\$[a-f0-9]{16}\$exports/,  // Parcel's unique export pattern
+          /\$[a-f0-9]{16}\$exports/, // Parcel's unique export pattern
           /parcel_sourcemap_/,
           /parcelRegister/,
         ],
         // Asset patterns
         assets: [
-          /\.[a-f0-9]{8}\.js$/,  // Content hash
-          /\.[a-f0-9]{8}\.hot-update\./,  // HMR
-          /\/[a-f0-9]{16}\.js/,  // Module ID
+          /\.[a-f0-9]{8}\.js$/, // Content hash
+          /\.[a-f0-9]{8}\.hot-update\./, // HMR
+          /\/[a-f0-9]{16}\.js/, // Module ID
           /\.parcel-cache/,
         ],
         // Build output patterns
@@ -346,7 +357,7 @@ export class BuildFeaturesDetector {
           /nx g @nrwl/,
           /nx affected/,
           /nx run-many/,
-        ]
+        ],
       },
 
       bazel: {
@@ -369,7 +380,7 @@ export class BuildFeaturesDetector {
           /exports_files\(\[/,
           /filegroup\(name = /,
           /js_library\(name = /,
-        ]
+        ],
       },
 
       bun: {
@@ -393,7 +404,7 @@ export class BuildFeaturesDetector {
           /Bun\.env\./,
           /process\.bun/,
           /bun(Import|Resolve)\(/,
-        ]
+        ],
       },
 
       // Legacy patterns. Confident detection is not accurate
@@ -408,19 +419,14 @@ export class BuildFeaturesDetector {
           /gulp\.series\(/,
           /gulp\.parallel\(/,
         ],
-        assets: [
-          /\.tmp\//,
-          /dist\//,
-          /build\//,
-          /\.gulp\-cache/,
-        ],
+        assets: [/\.tmp\//, /dist\//, /build\//, /\.gulp\-cache/],
         build: [],
         modules: [
           /gulp-[a-zA-Z-]+/,
           /require\('gulp-[^']+'\)/,
           /pipe\(([^)]+)\)/,
           /\.pipe\(/,
-        ]
+        ],
       },
 
       grunt: {
@@ -431,19 +437,14 @@ export class BuildFeaturesDetector {
           /grunt\.registerTask\(/,
           /grunt\.file\./,
         ],
-        assets: [
-          /\.grunt\//,
-          /dist\//,
-          /temp\//,
-          /tmp\//,
-        ],
+        assets: [/\.grunt\//, /dist\//, /temp\//, /tmp\//],
         build: [],
         modules: [
           /grunt-contrib-[a-zA-Z-]+/,
           /grunt-[a-zA-Z-]+/,
           /require\('grunt-[^']+'\)/,
           /loadNpmTasks\('grunt-[^']+'\)/,
-        ]
+        ],
       },
 
       brunch: {
@@ -459,15 +460,13 @@ export class BuildFeaturesDetector {
         ],
         assets: [
           // Brunch's asset patterns
-          /public\/[^\/]+\-[a-f0-9]{8}\.(js|css)$/,  // Fingerprinted assets
-          /app\.(js|css)$/,     // Main bundles
-          /vendor\.(js|css)$/,  // Vendor bundles
-          /\.(js|css)\.map$/,   // Source maps
-          /public\/assets\//,    // Asset directory
+          /public\/[^\/]+\-[a-f0-9]{8}\.(js|css)$/, // Fingerprinted assets
+          /app\.(js|css)$/, // Main bundles
+          /vendor\.(js|css)$/, // Vendor bundles
+          /\.(js|css)\.map$/, // Source maps
+          /public\/assets\//, // Asset directory
         ],
-        build: [
-          /\(function\(\) \{\s*window\.require\.register/,
-        ],
+        build: [/\(function\(\) \{\s*window\.require\.register/],
         modules: [
           // Module handling patterns
           /require\.register\(['"]([^'"]+)['"]/,
@@ -476,8 +475,8 @@ export class BuildFeaturesDetector {
           /module\.exports = /,
           /exports\.\w+ = /,
           /^require\.modules = /m,
-        ]
-      }
+        ],
+      },
     };
 
     const scores: Record<keyof typeof patterns, number> = {
@@ -498,14 +497,15 @@ export class BuildFeaturesDetector {
     // Check global markers
     if (globalMarkers.webpackMarkers) scores.webpack += 0.4;
     if (globalMarkers.rollupMarkers) scores.rollup += 0.4;
-    if (globalMarkers.viteMarkers || globalMarkers.viteEnvVars.length > 0) scores.vite += 0.4;
+    if (globalMarkers.viteMarkers || globalMarkers.viteEnvVars.length > 0)
+      scores.vite += 0.4;
     if (globalMarkers.parcelMarkers) scores.parcel += 0.4;
 
     // Helper function to check patterns
     const checkPatterns = <T extends keyof typeof patterns>(
       content: string,
       bundler: T,
-      category: keyof typeof patterns[T],
+      category: keyof (typeof patterns)[T],
       weight: number
     ) => {
       const bundlerPatternsList = patterns[bundler][category] as RegExp[];
@@ -521,11 +521,11 @@ export class BuildFeaturesDetector {
     // fs.writeFile('/Users/ayavorskyi/Developer/unbuilt/allScripts.js', allScripts);
 
     const resourceUrls = Array.from(this.resources.getAll())
-      .map(r => r.url || '')
+      .map((r) => r.url || '')
       .join('\n');
 
     // Check patterns for each bundler
-    Object.keys(patterns).forEach(bundler => {
+    Object.keys(patterns).forEach((bundler) => {
       const bundlerKey = bundler as keyof typeof patterns;
       // Runtime patterns are strong indicators
       checkPatterns(allScripts, bundlerKey, 'runtime', 0.25);
@@ -540,17 +540,21 @@ export class BuildFeaturesDetector {
     console.log(scores);
 
     // Normalize scores
-    Object.keys(scores).forEach(key => {
-      scores[key as keyof typeof scores] = Math.min(scores[key as keyof typeof scores], 1);
+    Object.keys(scores).forEach((key) => {
+      scores[key as keyof typeof scores] = Math.min(
+        scores[key as keyof typeof scores],
+        1
+      );
     });
 
     // Find the highest scoring bundler
-    const [[detectedBundler, maxScore]] = Object.entries(scores)
-      .sort(([, a], [, b]) => b - a);
+    const [[detectedBundler, maxScore]] = Object.entries(scores).sort(
+      ([, a], [, b]) => b - a
+    );
 
     return {
       name: maxScore > 0.3 ? detectedBundler : 'unknown',
-      confidence: maxScore
+      confidence: maxScore,
     };
   }
 
@@ -597,7 +601,7 @@ export class BuildFeaturesDetector {
         version: [
           /"version"\s*:\s*"([^"]+)"\s*,\s*"name"\s*:\s*"@babel\/runtime"/,
           /\/\*\s*@babel\/runtime\s+([^\s*]+)\s*\*\//,
-        ]
+        ],
       },
 
       swc: {
@@ -636,7 +640,7 @@ export class BuildFeaturesDetector {
         version: [
           /"version"\s*:\s*"([^"]+)"\s*,\s*"name"\s*:\s*"@swc\/core"/,
           /\/\*\s*@swc\/core\s+([^\s*]+)\s*\*\//,
-        ]
+        ],
       },
 
       typescript: {
@@ -678,7 +682,7 @@ export class BuildFeaturesDetector {
         version: [
           /\/\*\s*ts-version:\s*([^\s*]+)\s*\*\//,
           /"typescript"\s*:\s*"([^"]+)"/,
-        ]
+        ],
       },
 
       esbuild: {
@@ -714,8 +718,8 @@ export class BuildFeaturesDetector {
         version: [
           /"esbuild"\s*:\s*"([^"]+)"/,
           /\/\*\s*esbuild\s+([^\s*]+)\s*\*\//,
-        ]
-      }
+        ],
+      },
     };
 
     // Get all scripts content
@@ -727,10 +731,10 @@ export class BuildFeaturesDetector {
       transpilerPatterns: Record<string, RegExp[]>
     ) => {
       const weights = {
-        runtime: 0.4,    // Runtime helpers are strong indicators
-        modules: 0.3,    // Module transforms are good indicators
-        syntax: 0.2,     // Syntax transforms are supporting indicators
-        version: 0.1     // Version markers are weak indicators
+        runtime: 0.4, // Runtime helpers are strong indicators
+        modules: 0.3, // Module transforms are good indicators
+        syntax: 0.2, // Syntax transforms are supporting indicators
+        version: 0.1, // Version markers are weak indicators
       };
 
       let score = 0;
@@ -749,14 +753,20 @@ export class BuildFeaturesDetector {
     };
 
     // Calculate scores for each transpiler
-    const scores: Record<string, {
-      score: number;
-      features: Set<string>;
-      version?: string;
-    }> = {};
+    const scores: Record<
+      string,
+      {
+        score: number;
+        features: Set<string>;
+        version?: string;
+      }
+    > = {};
 
     for (const [transpiler, transpilerPatterns] of Object.entries(patterns)) {
-      const { score, features } = calculateScore(allScripts, transpilerPatterns);
+      const { score, features } = calculateScore(
+        allScripts,
+        transpilerPatterns
+      );
 
       // Try to detect version
       let version: string | undefined;
@@ -792,31 +802,24 @@ export class BuildFeaturesDetector {
         /__awaiter/,
         /_asyncToGenerator/,
       ],
-      optionalChaining: [
-        /\?\.|\?\[/,
-        /_optionalChain/,
-      ],
-      nullishCoalescing: [
-        /\?\?/,
-        /_nullishCoalesce/,
-      ],
-      privateMembers: [
-        /#\w+\s*[;=]/,
-        /_classPrivateField/,
-      ]
+      optionalChaining: [/\?\.|\?\[/, /_optionalChain/],
+      nullishCoalescing: [/\?\?/, /_nullishCoalesce/],
+      privateMembers: [/#\w+\s*[;=]/, /_classPrivateField/],
     };
 
     // Detect target ECMAScript version
     const detectTarget = (content: string): string => {
-      if (content.includes('async') && content.includes('await')) return 'ES2017';
+      if (content.includes('async') && content.includes('await'))
+        return 'ES2017';
       if (content.includes('=>')) return 'ES2015';
       if (content.includes('const') || content.includes('let')) return 'ES2015';
       return 'ES5';
     };
 
     // Find the transpiler with highest score
-    const [[mainTranspiler, details]] = Object.entries(scores)
-      .sort(([, a], [, b]) => b.score - a.score);
+    const [[mainTranspiler, details]] = Object.entries(scores).sort(
+      ([, a], [, b]) => b.score - a.score
+    );
 
     // Only consider detected if score is significant
     const isDetected = details.score > 0.3;
@@ -830,7 +833,7 @@ export class BuildFeaturesDetector {
           decorators: false,
           classProperties: false,
           asyncAwait: false,
-        }
+        },
       };
     }
 
@@ -838,7 +841,7 @@ export class BuildFeaturesDetector {
     const detectedFeatures = Object.entries(featurePatterns).reduce(
       (acc, [feature, patterns]) => ({
         ...acc,
-        [feature]: patterns.some(pattern => pattern.test(allScripts))
+        [feature]: patterns.some((pattern) => pattern.test(allScripts)),
       }),
       {} as Record<string, boolean>
     );
@@ -858,7 +861,7 @@ export class BuildFeaturesDetector {
       },
       target: {
         ecmaVersion: detectTarget(allScripts),
-      }
+      },
     };
   }
 
@@ -894,9 +897,9 @@ export class BuildFeaturesDetector {
         ],
         // Comment preservation
         comments: [
-          /\/\*![\s\S]*?\*\//,  // Important comments preserved
-          /^\/\*[@#][\s\S]*?\*\//m,  // License comments
-        ]
+          /\/\*![\s\S]*?\*\//, // Important comments preserved
+          /^\/\*[@#][\s\S]*?\*\//m, // License comments
+        ],
       },
 
       uglifyJS: {
@@ -927,8 +930,8 @@ export class BuildFeaturesDetector {
         ],
         // Comment handling
         comments: [
-          /\/\*[@#][\s\S]*?\*\//,  // License/important comments
-        ]
+          /\/\*[@#][\s\S]*?\*\//, // License/important comments
+        ],
       },
 
       esbuild: {
@@ -961,7 +964,7 @@ export class BuildFeaturesDetector {
           // esbuild preserves more comments by default
           /\/\*[\s\S]*?\*\//,
           /\/\/[^\n]*/,
-        ]
+        ],
       },
 
       swc: {
@@ -993,14 +996,17 @@ export class BuildFeaturesDetector {
           // swc comment preservation
           /\/\*![\s\S]*?\*\//,
           /^\/\/[/#][\s\S]*?$/m,
-        ]
-      }
+        ],
+      },
     };
 
     // Helper function to calculate pattern matches
-    const calculateMatches = (content: string, patternSet: RegExp[]): number => {
+    const calculateMatches = (
+      content: string,
+      patternSet: RegExp[]
+    ): number => {
       let matches = 0;
-      patternSet.forEach(pattern => {
+      patternSet.forEach((pattern) => {
         const found = content.match(pattern);
         matches += found ? found.length : 0;
       });
@@ -1012,30 +1018,41 @@ export class BuildFeaturesDetector {
 
     // Calculate metrics for code characteristics
     const metrics = {
-      averageLineLength: allScripts.split('\n')
-        .filter(line => line.trim().length > 0)
-        .reduce((sum, line) => sum + line.length, 0) / allScripts.split('\n').length,
+      averageLineLength:
+        allScripts
+          .split('\n')
+          .filter((line) => line.trim().length > 0)
+          .reduce((sum, line) => sum + line.length, 0) /
+        allScripts.split('\n').length,
 
       singleLetterVars: (allScripts.match(/\b[a-z]\b/g) || []).length,
 
-      hasSourceMap: Array.from(this.resources.getAll())
-          .some(r => r.url?.endsWith('.map')),
+      hasSourceMap: Array.from(this.resources.getAll()).some((r) =>
+        r.url?.endsWith('.map')
+      ),
 
-      preservedComments: (allScripts.match(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g) || []).length,
+      preservedComments: (
+        allScripts.match(/\/\*[\s\S]*?\*\/|\/\/[^\n]*/g) || []
+      ).length,
 
       // Check for specific optimizations
       optimizations: {
-        booleanOptimizations: (allScripts.match(/![01]\b|\+[!1]|\|\|[!1]/g) || []).length,
-        shortVarNames: (allScripts.match(/\b[a-z]\b|\b[a-z][0-9]\b/g) || []).length,
-        functionOptimizations: (allScripts.match(/[a-z]=(?:function|\([^)]*\)=>)/g) || []).length,
-      }
+        booleanOptimizations: (
+          allScripts.match(/![01]\b|\+[!1]|\|\|[!1]/g) || []
+        ).length,
+        shortVarNames: (allScripts.match(/\b[a-z]\b|\b[a-z][0-9]\b/g) || [])
+          .length,
+        functionOptimizations: (
+          allScripts.match(/[a-z]=(?:function|\([^)]*\)=>)/g) || []
+        ).length,
+      },
     };
 
     const scores = {
       terser: 0,
       uglifyJS: 0,
       esbuild: 0,
-      swc: 0
+      swc: 0,
     };
 
     // Score each minifier based on their patterns
@@ -1043,20 +1060,33 @@ export class BuildFeaturesDetector {
       const key = minifier as keyof typeof scores;
 
       // Check syntax patterns (highest weight)
-      const syntaxMatches = calculateMatches(allScripts, minifierPatterns.syntax);
+      const syntaxMatches = calculateMatches(
+        allScripts,
+        minifierPatterns.syntax
+      );
       scores[key] += (syntaxMatches / minifierPatterns.syntax.length) * 0.4;
 
       // Check naming patterns
-      const namingMatches = calculateMatches(allScripts, minifierPatterns.naming);
-      scores[key] += (namingMatches > 0 ? 0.3 : 0);
+      const namingMatches = calculateMatches(
+        allScripts,
+        minifierPatterns.naming
+      );
+      scores[key] += namingMatches > 0 ? 0.3 : 0;
 
       // Check optimization patterns
-      const optimizationMatches = calculateMatches(allScripts, minifierPatterns.optimization);
-      scores[key] += (optimizationMatches / minifierPatterns.optimization.length) * 0.2;
+      const optimizationMatches = calculateMatches(
+        allScripts,
+        minifierPatterns.optimization
+      );
+      scores[key] +=
+        (optimizationMatches / minifierPatterns.optimization.length) * 0.2;
 
       // Check comment patterns
-      const commentMatches = calculateMatches(allScripts, minifierPatterns.comments);
-      scores[key] += (commentMatches > 0 ? 0.1 : 0);
+      const commentMatches = calculateMatches(
+        allScripts,
+        minifierPatterns.comments
+      );
+      scores[key] += commentMatches > 0 ? 0.1 : 0;
     });
 
     // Adjust scores based on metrics
@@ -1078,26 +1108,30 @@ export class BuildFeaturesDetector {
     }
 
     // Normalize scores
-    Object.keys(scores).forEach(key => {
-      scores[key as keyof typeof scores] = Math.min(scores[key as keyof typeof scores], 1);
+    Object.keys(scores).forEach((key) => {
+      scores[key as keyof typeof scores] = Math.min(
+        scores[key as keyof typeof scores],
+        1
+      );
     });
 
     // Find the highest scoring minifier
-    const [[detectedMinifier, maxScore]] = Object.entries(scores)
-      .sort(([, a], [, b]) => b - a);
+    const [[detectedMinifier, maxScore]] = Object.entries(scores).sort(
+      ([, a], [, b]) => b - a
+    );
 
     // Determine features based on code analysis
     const features = {
       mangling: metrics.singleLetterVars > 50,
       compression: metrics.averageLineLength > 300,
       deadCodeElimination: metrics.optimizations.booleanOptimizations > 10,
-      sourceMap: metrics.hasSourceMap
+      sourceMap: metrics.hasSourceMap,
     };
 
     return {
       name: maxScore > 0.3 ? detectedMinifier : 'unknown',
       confidence: maxScore,
-      features
+      features,
     };
   }
 
@@ -1107,11 +1141,13 @@ export class BuildFeaturesDetector {
       .some((r) => r.url?.includes('chunk'));
 
     const hasTreeShaking = Array.from(this.resources.getAllScripts()).some(
-      (script) => script.includes('/*#__PURE__*/') || script.includes('/*@__PURE__*/')
+      (script) =>
+        script.includes('/*#__PURE__*/') || script.includes('/*@__PURE__*/')
     );
 
     const hasDynamicImports = Array.from(this.resources.getAllScripts()).some(
-      (script) => script.includes('import(') || script.includes('require.ensure')
+      (script) =>
+        script.includes('import(') || script.includes('require.ensure')
     );
 
     return {
@@ -1120,4 +1156,4 @@ export class BuildFeaturesDetector {
       codeSplitting: hasCodeSplitting,
     };
   }
-};
+}

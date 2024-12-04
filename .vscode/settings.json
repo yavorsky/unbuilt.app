@@ -8,5 +8,6 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
   },
+  "eslint.experimental.useFlatConfig": true,
   "eslint.workingDirectories": [{ "mode": "auto" }]
 }

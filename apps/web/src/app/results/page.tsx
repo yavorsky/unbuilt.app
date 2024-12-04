@@ -2,9 +2,9 @@ import { Results } from '../components/Results';
 import Link from 'next/link';
 
 export default function ResultsPage({
-  searchParams
+  searchParams,
 }: {
-  searchParams: { jobId?: string }
+  searchParams: { jobId?: string };
 }) {
   return (
     <main className="min-h-screen bg-gray-950 p-8">

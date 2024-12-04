@@ -1,7 +1,13 @@
 import { Page } from 'playwright';
 import { Resources } from '../resources.js';
 
-type ModuleTypeResult = 'esm' | 'commonjs' | 'amd' | 'umd' | 'systemjs' | 'unknown';
+type ModuleTypeResult =
+  | 'esm'
+  | 'commonjs'
+  | 'amd'
+  | 'umd'
+  | 'systemjs'
+  | 'unknown';
 type ModuleType = Exclude<ModuleTypeResult, 'unknown'>;
 
 type ModuleFeatures = {
@@ -11,7 +17,7 @@ type ModuleFeatures = {
   defaultExports?: boolean;
   reexports?: boolean;
   interopWithOtherSystems?: boolean;
-  mixedSystems?: ModuleType[],
+  mixedSystems?: ModuleType[];
 };
 
 export interface ModuleResult {
@@ -149,11 +155,17 @@ export class ModuleFeaturesDetector {
           ],
           score: 0.4,
         },
-        features: { patterns: [/root\[\s*['"][^'"]+['"]\s*\]\s*=\s*factory/], score: 0.3 },
+        features: {
+          patterns: [/root\[\s*['"][^'"]+['"]\s*\]\s*=\s*factory/],
+          score: 0.3,
+        },
       },
 
       systemjs: {
-        imports: { patterns: [/System\.register/, /SystemJS\.import/, /System\.set/], score: 0.4 },
+        imports: {
+          patterns: [/System\.register/, /SystemJS\.import/, /System\.set/],
+          score: 0.4,
+        },
         exports: { patterns: [] },
         features: { patterns: [/System\.config/], score: 0.4 },
       },
@@ -221,7 +233,6 @@ export class ModuleFeaturesDetector {
       }
     }
 
-
     return {
       type: detectedType,
       confidence: maxScore,
@@ -229,7 +240,10 @@ export class ModuleFeaturesDetector {
     };
   }
 
-  detectModuleFeatures(allScripts: string, entries: [ModuleType, number][]): ModuleFeatures {
+  detectModuleFeatures(
+    allScripts: string,
+    entries: [ModuleType, number][]
+  ): ModuleFeatures {
     const mixedSystems = entries
       .filter(([, score]) => score >= 0.3)
       .map(([type]) => type);
@@ -240,7 +254,9 @@ export class ModuleFeaturesDetector {
       namedExports: /export\s*{|exports\.\w+\s*=/.test(allScripts),
       defaultExports: /export\s+default|module\.exports\s*=/.test(allScripts),
       reexports: /export\s*\*\s*from|Object\.assign\(exports,/.test(allScripts),
-      interopWithOtherSystems: mixedSystems.length > 1 || /.__esModule|interopDefault|createCommonJS/.test(allScripts),
+      interopWithOtherSystems:
+        mixedSystems.length > 1 ||
+        /.__esModule|interopDefault|createCommonJS/.test(allScripts),
       mixedSystems,
     };
 
