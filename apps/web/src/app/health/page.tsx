@@ -7,7 +7,7 @@ export default function HealthPage() {
   const systemMemory = {
     total: os.totalmem(),
     free: os.freemem(),
-    used: os.totalmem() - os.freemem()
+    used: os.totalmem() - os.freemem(),
   };
 
   const memory = process.memoryUsage();
@@ -25,8 +25,8 @@ export default function HealthPage() {
       freeMemory: Math.round(systemMemory.free / 1024 / 1024) + 'MB',
       usedMemory: Math.round(systemMemory.used / 1024 / 1024) + 'MB',
       cpus: os.cpus().length,
-      uptime: Math.round(os.uptime() / 60) + ' minutes'
-    }
+      uptime: Math.round(os.uptime() / 60) + ' minutes',
+    },
   } as const;
 
   return <HealthMetrics data={metrics} />;

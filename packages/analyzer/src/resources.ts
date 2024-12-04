@@ -25,7 +25,20 @@ export interface ResourceAnalysis {
   };
 }
 
-export type ResourceType = 'document' | 'stylesheet' | 'image' | 'media' | 'font' | 'script' | 'texttrack' | 'xhr' | 'fetch' | 'eventsource' | 'websocket' | 'manifest' | 'other';
+export type ResourceType =
+  | 'document'
+  | 'stylesheet'
+  | 'image'
+  | 'media'
+  | 'font'
+  | 'script'
+  | 'texttrack'
+  | 'xhr'
+  | 'fetch'
+  | 'eventsource'
+  | 'websocket'
+  | 'manifest'
+  | 'other';
 
 export type Resource = {
   type: ResourceType;
@@ -40,6 +53,7 @@ type ScriptsMap = Map<string, string>;
 
 export class Resources {
   private page: Page;
+  private cache: Map<string, string> = new Map();
   private resourcesMap: ResourcesMap = new Map();
   private scriptsMap: ScriptsMap = new Map();
   constructor(page: Page) {
@@ -57,7 +71,15 @@ export class Resources {
         const response = await route.fetch();
         content = await response.text();
       }
-      this.set({ url: request.url(), size: 0, timing: Date.now(), type: resourceType as ResourceType }, content);
+      this.set(
+        {
+          url: request.url(),
+          size: 0,
+          timing: Date.now(),
+          type: resourceType as ResourceType,
+        },
+        content
+      );
 
       await route.continue();
     });
@@ -127,7 +149,13 @@ export class Resources {
   }
 
   getAllScriptsContent() {
-    return Array.from(this.getAllScripts()).join('\n');
+    const cached = this.cache.get('allScriptsContent');
+    if (typeof cached === 'string') {
+      return cached;
+    }
+    const result = Array.from(this.getAllScripts()).join('\n');
+    this.cache.set('allScriptsContent', result);
+    return result;
   }
 
   async analyze(): Promise<ResourceAnalysis> {
@@ -142,13 +170,15 @@ export class Resources {
       js: {
         count: jsResources.length,
         size: jsResources.reduce((sum, r) => sum + r.size, 0),
-        external: jsResources.filter((r) => !r.url.includes(this.page!.url())).length,
+        external: jsResources.filter((r) => !r.url.includes(this.page!.url()))
+          .length,
         inline: await this.countInlineScripts(),
       },
       css: {
         count: cssResources.length,
         size: cssResources.reduce((sum, r) => sum + r.size, 0),
-        external: cssResources.filter((r) => !r.url.includes(this.page!.url())).length,
+        external: cssResources.filter((r) => !r.url.includes(this.page!.url()))
+          .length,
         inline: await this.countInlineStyles(),
       },
       images: {
@@ -181,7 +211,9 @@ export class Resources {
   }
 
   private async countInlineScripts(): Promise<number> {
-    return this.page!.evaluate(() => document.querySelectorAll('script:not([src])').length);
+    return this.page!.evaluate(
+      () => document.querySelectorAll('script:not([src])').length
+    );
   }
 
   private async countInlineStyles(): Promise<number> {
@@ -190,7 +222,10 @@ export class Resources {
 
   private async countOptimizedImages(): Promise<number> {
     return this.page!.evaluate(
-      () => document.querySelectorAll('img[srcset], img[loading="lazy"], picture source').length
+      () =>
+        document.querySelectorAll(
+          'img[srcset], img[loading="lazy"], picture source'
+        ).length
     );
   }
 

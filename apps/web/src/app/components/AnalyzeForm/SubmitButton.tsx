@@ -11,4 +11,4 @@ export const SubmitButton: FC<{ isPending: boolean }> = ({ isPending }) => {
       {isPending ? 'Analyzing...' : 'Analyze Website'}
     </Button>
   );
-}
+};
