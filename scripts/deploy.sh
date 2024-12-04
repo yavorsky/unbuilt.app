@@ -14,4 +14,4 @@ yarn playwright install
 yarn turbo run build
 
 # Restart app
-pm2 restart ecosystem.config.js
+pm2 restart ecosystem.config.cjs
