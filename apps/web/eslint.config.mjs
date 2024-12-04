@@ -6,6 +6,9 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 export default [
   ...baseConfig,
   {
+    ignores: ['tailwind.config.js', 'postcss.config.js', '.next', 'node_modules'],
+  },
+  {
     files: ['**/*.ts', '**/*.tsx'],
     plugins: {
       '@next/next': nextPlugin,

@@ -6,7 +6,7 @@
     "dev": "sh ./scripts/setup-dev.sh",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "worker": "ts-node scripts/start-worker.ts"
   },
   "dependencies": {

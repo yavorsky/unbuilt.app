@@ -1,15 +1,15 @@
-import { OnProgressResult } from '@unbuilt/analyzer';
+import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
 import { FC, useEffect, useMemo, useState } from 'react';
-import { UILibrariesCard } from './cards/ui-libraries';
-import { FrameworkCard, MetaFrameworkCard } from './cards/framework';
-import { BuildCard, BundlerCard } from './cards/bundler';
-import { StylingCard } from './cards/styling';
-import { PerformanceCard } from './cards/performance';
+import { FrameworkCard } from './cards/framework';
+import { BundlerCard } from './cards/bundler';
 import { Progress } from '@/components/ui/progress';
 import { TranspilerCard } from './cards/transpiler';
 import { UILibraryCard } from './cards/ui-library';
 import MinifierCard from './cards/minifier';
 import ModulesCard from './cards/modules';
+import { JSLibrariesCard } from './cards/js-libraries';
+import { StylingLibrariesCard } from './cards/styling-libraries';
+import { StylingProcessorCard } from './cards/styling-processor';
 
 export const CardsResult: FC<{
   result: OnProgressResult;
@@ -28,7 +28,7 @@ export const CardsResult: FC<{
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   // Make each card to be sharable
-  const handleItemClick = (item: string) => {
+  const handleItemClick = (item: AnalysisKeys) => {
     setSelectedItem(item === selectedItem ? null : item);
     if (item !== selectedItem) {
       const url = new URL(window.location.href);
@@ -58,7 +58,10 @@ export const CardsResult: FC<{
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {result.analysis.bundler && (
-          <BundlerCard bundler={result.analysis.bundler} />
+          <BundlerCard
+            onCardSelect={handleItemClick}
+            bundler={result.analysis.bundler}
+          />
         )}
         {result.analysis.framework && (
           <FrameworkCard framework={result.analysis.framework} />
@@ -75,14 +78,19 @@ export const CardsResult: FC<{
         {result.analysis.modules && (
           <ModulesCard modules={result.analysis.modules} />
         )}
-        {/* {result.uiLib && <UILibrariesCard uiLib={result.uiLib} />}
-        {result.metaFramework && (
-          <MetaFrameworkCard metaFramework={result.metaFramework} />
+        {result.analysis.jsLibraries && (
+          <JSLibrariesCard jsLibraries={result.analysis.jsLibraries} />
         )}
-        {result.styling && <StylingCard styling={result.styling} />}
-        {result.performance && (
-          <PerformanceCard performance={result.performance} />
-        )} */}
+        {result.analysis.stylingLibraries && (
+          <StylingLibrariesCard
+            stylingLibraries={result.analysis.stylingLibraries}
+          />
+        )}
+        {result.analysis.stylingProcessor && (
+          <StylingProcessorCard
+            stylingProcessor={result.analysis.stylingProcessor}
+          />
+        )}
       </div>
     </div>
   );

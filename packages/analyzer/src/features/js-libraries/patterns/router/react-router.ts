@@ -1,9 +1,5 @@
 import { Page } from 'playwright';
 
-function hasHistoryModifications(history: History): boolean {
-  return 'listen' in history && 'block' in history;
-}
-
 export const reactRouter = [
   {
     name: 'coreRuntime' as const,
@@ -38,7 +34,7 @@ export const reactRouter = [
             !!window.$RR,
 
           // Check for history object modifications
-          hasHistory: hasHistoryModifications(window.history),
+          hasHistory: 'listen' in window.history && 'block' in window.history,
 
           // Check for common router properties on any global object
           hasRouterProps: Object.values(window).some(

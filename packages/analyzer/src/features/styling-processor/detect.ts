@@ -9,18 +9,14 @@ export const detect = async (
   browser: Browser,
   resources: Resources
 ) => {
-  const { result: preprocessorResult } = await calculateResults(
-    resources,
-    page,
-    browser,
-    preprocessorPatterns
-  );
-  const { result: cssInJsResult } = await calculateResults(
-    resources,
-    page,
-    browser,
-    cssInJsPatterns
-  );
+  const {
+    result: preprocessorResult,
+    getAllResultsWithConfidence: getAllPreprocessorResultsWithConfidence,
+  } = await calculateResults(resources, page, browser, preprocessorPatterns);
+  const {
+    result: cssInJsResult,
+    getAllResultsWithConfidence: getAllCssInJsResultsWithConfidence,
+  } = await calculateResults(resources, page, browser, cssInJsPatterns);
 
   const processorType =
     preprocessorResult.confidence > cssInJsResult.confidence
@@ -29,12 +25,17 @@ export const detect = async (
   const processorResult =
     processorType === 'preprocessor' ? preprocessorResult : cssInJsResult;
 
+  const secondaryMatches = new Set();
+  secondaryMatches.add(getAllPreprocessorResultsWithConfidence(0.3, true));
+  secondaryMatches.add(getAllCssInJsResultsWithConfidence(0.3, true));
+
   return {
-    type: 'styling',
+    type: 'styling-processor',
     processor: {
       name: processorResult.name,
       type: processorType,
       confidence: processorResult.confidence,
     },
+    secondaryMatches,
   };
 };

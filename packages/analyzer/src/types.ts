@@ -13,3 +13,5 @@ export type OnProgressResult = {
     ? Partial<AnalyzeResult[K]>
     : AnalyzeResult[K];
 };
+
+export type AnalysisKeys = keyof OnProgressResult['analysis'];

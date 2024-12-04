@@ -18,6 +18,6 @@ export const detect = async (
   return {
     name: result.name,
     confidence: result.confidence,
-    libraries: getAllResultsWithConfidence(0.3),
+    otherLibraries: getAllResultsWithConfidence(0.3, true),
   };
 };

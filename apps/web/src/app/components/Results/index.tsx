@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { getJobStatus } from '../../../actions';
 import { CardsResult } from './cards-result';
 import { JSONResult } from './json-result';
-import { Progress } from '@/components/ui/progress';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 

@@ -1,7 +1,7 @@
 'use client';
 
 type Status = 'healthy' | 'unhealthy';
-interface HealthMetrics {
+interface HealthMetricsData {
   status: Status;
   memory: {
     heapUsed: string;
@@ -18,12 +18,13 @@ interface HealthMetrics {
   };
 }
 
-export function HealthMetrics({ data }: { data: HealthMetrics }) {
-
+export function HealthMetrics({ data }: { data: HealthMetricsData }) {
   // Calculate memory usage percentage
-  const memoryUsagePercent = parseInt(data.memory.heapUsed) / parseInt(data.memory.heapTotal) * 100;
-  const systemMemoryUsagePercent = parseInt(data.system.usedMemory) / parseInt(data.system.totalMemory) * 100;
-
+  const memoryUsagePercent =
+    (parseInt(data.memory.heapUsed) / parseInt(data.memory.heapTotal)) * 100;
+  const systemMemoryUsagePercent =
+    (parseInt(data.system.usedMemory) / parseInt(data.system.totalMemory)) *
+    100;
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
@@ -47,7 +48,9 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
         <div className="grid gap-6 md:grid-cols-2">
           {/* Memory Usage */}
           <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">Memory Usage</h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              Memory Usage
+            </h3>
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
@@ -57,8 +60,11 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
               <div className="h-2 rounded-full bg-gray-200">
                 <div
                   className={`h-2 rounded-full transition-all duration-500 ${
-                    memoryUsagePercent > 80 ? 'bg-red-500' :
-                    memoryUsagePercent > 60 ? 'bg-yellow-500' : 'bg-green-500'
+                    memoryUsagePercent > 80
+                      ? 'bg-red-500'
+                      : memoryUsagePercent > 60
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
                   }`}
                   style={{ width: `${memoryUsagePercent}%` }}
                 />
@@ -68,11 +74,15 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">Heap Used</div>
-                <div className="text-lg font-semibold">{data.memory.heapUsed}</div>
+                <div className="text-lg font-semibold">
+                  {data.memory.heapUsed}
+                </div>
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">Heap Total</div>
-                <div className="text-lg font-semibold">{data.memory.heapTotal}</div>
+                <div className="text-lg font-semibold">
+                  {data.memory.heapTotal}
+                </div>
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">RSS</div>
@@ -80,14 +90,18 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">External</div>
-                <div className="text-lg font-semibold">{data.memory.external}</div>
+                <div className="text-lg font-semibold">
+                  {data.memory.external}
+                </div>
               </div>
             </div>
           </div>
 
           {/* System Resources */}
           <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">System Resources</h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900">
+              System Resources
+            </h3>
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
@@ -97,8 +111,11 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
               <div className="h-2 rounded-full bg-gray-200">
                 <div
                   className={`h-2 rounded-full transition-all duration-500 ${
-                    systemMemoryUsagePercent > 80 ? 'bg-red-500' :
-                    systemMemoryUsagePercent > 60 ? 'bg-yellow-500' : 'bg-green-500'
+                    systemMemoryUsagePercent > 80
+                      ? 'bg-red-500'
+                      : systemMemoryUsagePercent > 60
+                        ? 'bg-yellow-500'
+                        : 'bg-green-500'
                   }`}
                   style={{ width: `${systemMemoryUsagePercent}%` }}
                 />
@@ -108,11 +125,15 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
             <div className="grid grid-cols-2 gap-4">
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">Total Memory</div>
-                <div className="text-lg font-semibold">{data.system.totalMemory}</div>
+                <div className="text-lg font-semibold">
+                  {data.system.totalMemory}
+                </div>
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">Free Memory</div>
-                <div className="text-lg font-semibold">{data.system.freeMemory}</div>
+                <div className="text-lg font-semibold">
+                  {data.system.freeMemory}
+                </div>
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">CPU Cores</div>
@@ -120,7 +141,9 @@ export function HealthMetrics({ data }: { data: HealthMetrics }) {
               </div>
               <div className="rounded-lg bg-gray-50 p-3">
                 <div className="text-sm text-gray-500">Uptime</div>
-                <div className="text-lg font-semibold">{data.system.uptime}</div>
+                <div className="text-lg font-semibold">
+                  {data.system.uptime}
+                </div>
               </div>
             </div>
           </div>
