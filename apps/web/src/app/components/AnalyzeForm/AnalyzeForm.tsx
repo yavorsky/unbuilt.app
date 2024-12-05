@@ -20,7 +20,7 @@ export const AnalyzeForm = () => {
 
   return (
     <form action={formAction} className="space-y-4">
-      <div className="flex w-full max-w-sm items-center space-x-2 mb-2">
+      <div className="flex w-full items-around space-x-2 mb-2">
         <URLInput name="url" id="url" required />
         <SubmitButton isPending={isPending} />
       </div>

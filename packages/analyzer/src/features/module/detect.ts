@@ -15,12 +15,12 @@ export const detect = async (
     patterns
   );
 
-  const moduleSystems = getAllResultsWithConfidence(0.3);
+  const secondaryMatches = getAllResultsWithConfidence(0.3, true);
 
   return {
     name: result.name,
     confidence: result.confidence,
-    moduleSystems,
-    mixedResults: Object.keys(moduleSystems).length > 1,
+    secondaryMatches,
+    mixedResults: Object.keys(secondaryMatches).length > 1,
   };
 };
