@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from '@/components/ui/card';
 import Image from 'next/image';
-import { AnalyzeForm } from './components/AnalyzeForm/AnalyzeForm';
+import { AnalyzeForm } from './components/analyzer-form/analyze-form';
 
 export default function TechStackAnalyzer() {
   return (

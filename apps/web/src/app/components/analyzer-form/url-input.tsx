@@ -51,7 +51,7 @@ export const URLInput: FC<
       onChange={handleUrlUpdate}
       value={url}
       placeholder="https://unbuilt.app"
-      className="block w-full px-3 text-white outline-none border border-gray-500 py-2 rounded-md focus:border-indigo-500 "
+      className="block w-full px-3 text-foreground outline-none border border-gray-500 py-2 rounded-md focus:border-indigo-500 "
     />
   );
 };

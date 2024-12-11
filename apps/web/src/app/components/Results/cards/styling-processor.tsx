@@ -5,7 +5,7 @@ import {
   cssInJsPatterns,
   preprocessorPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Paintbrush2 } from 'lucide-react';
 
@@ -18,7 +18,7 @@ export const StylingProcessorCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ stylingProcessor, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="stylingProcessor"
       analysis={stylingProcessor}
       supportedOptions={supportedOptions}

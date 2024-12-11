@@ -30,5 +30,8 @@ fi
 # Install dependencies
 yarn install;
 
+# Install playwright
+yarn playwright install --with-deps;
+
 # Start development server
 npx next dev;

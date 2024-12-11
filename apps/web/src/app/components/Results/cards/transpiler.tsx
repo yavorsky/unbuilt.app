@@ -4,7 +4,7 @@ import {
   AnalyzeResult,
   transpilerPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { FileCode2 } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export const TranspilerCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ transpiler, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="transpiler"
       supportedOptions={supportedOptions}
       Icon={FileCode2}

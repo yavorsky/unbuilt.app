@@ -4,7 +4,7 @@ import {
   AnalyzeResult,
   frameworkPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Boxes } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export const FrameworkCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ framework, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="framework"
       supportedOptions={supportedOptions}
       analysis={framework}

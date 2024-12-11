@@ -7,7 +7,7 @@ import {
   ChevronUp,
   LucideProps,
 } from 'lucide-react';
-import { ConfidenceIndicator } from '../../ConfidenceIndicator';
+import { ConfidenceIndicator } from '../../../confidence-indicator';
 import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
 import { capitalize } from 'lodash-es';
 import {
@@ -15,9 +15,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import LoaderText from '../../loader-text';
+import LoaderText from '../../../loader-text';
 
-export function AnalysisCard<
+export function SingleResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
   A extends AnalyzeResult['analysis'][N] | null,
 >({

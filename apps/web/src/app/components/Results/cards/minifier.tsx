@@ -5,7 +5,7 @@ import {
   AnalyzeResult,
   minifierPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 
 const supportedOptions = Object.keys(minifierPatterns).map(capitalize);
@@ -15,7 +15,7 @@ export const MinifierCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ minifier, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="minifier"
       analysis={minifier}
       Icon={Minimize2}

@@ -4,7 +4,7 @@ import {
   AnalyzeResult,
   bundlerPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Box } from 'lucide-react';
 
@@ -15,7 +15,7 @@ export const BundlerCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ bundler, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="bundler"
       supportedOptions={supportedOptions}
       analysis={bundler}

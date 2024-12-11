@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { redirect } from 'next/navigation';
 import { analyzeWebsite } from '../../../actions';
-import { URLInput } from './URLInput';
-import { SubmitButton } from './SubmitButton';
+import { URLInput } from './url-input';
+import { SubmitButton } from './submit-button';
 
 export const AnalyzeForm = () => {
   const [state, formAction, isPending] = useFormState(analyzeWebsite, {
@@ -26,7 +26,7 @@ export const AnalyzeForm = () => {
       </div>
 
       <p className="text-sm text-gray-500">
-        Unbuilt app is currently in development phase. Some results could be
+        Unbuilt.app is currently in development phase. Some results could be
         wrong.
       </p>
       {state?.error && <p className="text-red-500">{state.error}</p>}

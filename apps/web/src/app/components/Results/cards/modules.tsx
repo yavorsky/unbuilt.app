@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { AnalysisKeys, AnalyzeResult, modulePatterns } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Combine } from 'lucide-react';
 
@@ -11,7 +11,7 @@ export const ModulesCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ modules, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="modules"
       analysis={modules}
       Icon={Combine}

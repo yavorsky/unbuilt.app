@@ -5,7 +5,7 @@ import {
   AnalyzeResult,
   uiLibraryPatterns,
 } from '@unbuilt/analyzer';
-import { AnalysisCard } from './single-result-card';
+import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 
 const supportedOptions = Object.keys(uiLibraryPatterns).map(capitalize);
@@ -15,7 +15,7 @@ export const UILibraryCard: FC<{
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ uiLibrary, onCardSelect }) => {
   return (
-    <AnalysisCard
+    <SingleResultAnalysisCard
       name="uiLibrary"
       analysis={uiLibrary}
       Icon={Component}
