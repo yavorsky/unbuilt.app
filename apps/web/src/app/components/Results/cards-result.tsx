@@ -90,6 +90,7 @@ export const CardsResult: FC<{
         {result.analysis.stylingLibraries && (
           <StylingLibrariesCard
             stylingLibraries={result.analysis.stylingLibraries}
+            onCardSelect={handleItemClick}
           />
         )}
         <StylingProcessorCard
