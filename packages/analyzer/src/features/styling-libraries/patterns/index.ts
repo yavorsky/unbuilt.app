@@ -4,7 +4,7 @@ import { chakra } from './chakra.js';
 import { foundation } from './foundation.js';
 import { lucide } from './lucide.js';
 import { mui } from './mui.js';
-import { shadcdn } from './shadcdn.js';
+import { shadcn } from './shadcn.js';
 import { tailwind } from './tailwind.js';
 
 export const patterns = {
@@ -14,6 +14,6 @@ export const patterns = {
   foundation,
   lucide,
   mui,
-  shadcdn,
+  shadcn,
   tailwind,
 };

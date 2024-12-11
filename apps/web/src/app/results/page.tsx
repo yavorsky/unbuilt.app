@@ -1,4 +1,4 @@
-import { Results } from '../components/Results';
+import { Results } from '../components/results';
 import Link from 'next/link';
 
 export default function ResultsPage({

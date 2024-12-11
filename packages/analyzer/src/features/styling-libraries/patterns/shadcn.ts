@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-export const shadcdn = [
+export const shadcn = [
   {
     name: 'compilation' as const,
     score: 0.2,
