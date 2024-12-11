@@ -1,16 +1,18 @@
 import { Browser, Page } from 'playwright';
-import { detect as detectBundler } from './features/bundler/detect.js';
-import { detect as detectFramework } from './features/framework/detect.js';
-import { detect as detectMinifier } from './features/minifier/detect.js';
-import { detect as detectStylingProcessor } from './features/styling-processor/detect.js';
-import { detect as detectModules } from './features/module/detect.js';
-import { detect as detectUILibrary } from './features/ui-library/detect.js';
-import { detect as detectJSLibraries } from './features/js-libraries/detect.js';
-import { detect as detectStylingLibraries } from './features/styling-libraries/detect.js';
-import { detect as detectTranspiler } from './features/transpiler/detect.js';
 import { Resources } from './resources.js';
-import { getStats } from './features/stats.js';
 import { createProgressTracker, OnProgress } from './progress.js';
+import {
+  detectBundler,
+  detectFramework,
+  detectJSLibraries,
+  detectMinifier,
+  detectModules,
+  detectStylingLibraries,
+  detectStylingProcessor,
+  detectTranspiler,
+  detectUILibrary,
+  getStats,
+} from './features/index.js';
 
 export const analyze = async (
   url: string,

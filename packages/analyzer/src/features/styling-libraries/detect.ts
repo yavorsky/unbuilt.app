@@ -8,16 +8,15 @@ export const detect = async (
   browser: Browser,
   resources: Resources
 ) => {
-  const { result, getAllResultsWithConfidence } = await calculateResults(
+  const { getAllResultsWithConfidence } = await calculateResults(
     resources,
     page,
     browser,
     patterns
   );
+  const items = getAllResultsWithConfidence(0.3);
 
   return {
-    name: result.name,
-    confidence: result.confidence,
-    otherLibraries: getAllResultsWithConfidence(0.3, true),
+    items,
   };
 };

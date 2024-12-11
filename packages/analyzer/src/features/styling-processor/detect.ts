@@ -31,11 +31,9 @@ export const detect = async (
 
   return {
     type: 'styling-processor',
-    processor: {
-      name: processorResult.name,
-      type: processorType,
-      confidence: processorResult.confidence,
-    },
+    name: processorResult.name,
+    variant: processorType,
+    confidence: processorResult.confidence,
     secondaryMatches,
   };
 };

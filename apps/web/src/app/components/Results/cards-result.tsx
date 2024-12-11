@@ -33,9 +33,9 @@ export const CardsResult: FC<{
     if (item !== selectedItem) {
       const url = new URL(window.location.href);
       url.hash = item;
-      window.history.pushState({}, '', url.toString());
+      // window.history.pushState({}, '', url.toString());
     } else {
-      window.history.pushState({}, '', window.location.pathname);
+      // window.history.pushState({}, '', window.location.pathname);
     }
   };
 
@@ -57,40 +57,46 @@ export const CardsResult: FC<{
         </a>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {result.analysis.bundler && (
-          <BundlerCard
-            onCardSelect={handleItemClick}
-            bundler={result.analysis.bundler}
-          />
-        )}
-        {result.analysis.framework && (
-          <FrameworkCard framework={result.analysis.framework} />
-        )}
-        {result.analysis.transpiler && (
-          <TranspilerCard transpiler={result.analysis.transpiler} />
-        )}
-        {result.analysis.uiLibrary && (
-          <UILibraryCard uiLibrary={result.analysis.uiLibrary} />
-        )}
-        {result.analysis.minifier && (
-          <MinifierCard minifier={result.analysis.minifier} />
-        )}
-        {result.analysis.modules && (
-          <ModulesCard modules={result.analysis.modules} />
-        )}
+        <BundlerCard
+          bundler={result.analysis.bundler}
+          onCardSelect={handleItemClick}
+        />
+        <FrameworkCard
+          framework={result.analysis.framework}
+          onCardSelect={handleItemClick}
+        />
+        <TranspilerCard
+          transpiler={result.analysis.transpiler}
+          onCardSelect={handleItemClick}
+        />
+
+        <UILibraryCard
+          uiLibrary={result.analysis.uiLibrary}
+          onCardSelect={handleItemClick}
+        />
+
+        <MinifierCard
+          minifier={result.analysis.minifier}
+          onCardSelect={handleItemClick}
+        />
+
+        <ModulesCard
+          modules={result.analysis.modules}
+          onCardSelect={handleItemClick}
+        />
         {result.analysis.jsLibraries && (
           <JSLibrariesCard jsLibraries={result.analysis.jsLibraries} />
         )}
         {result.analysis.stylingLibraries && (
           <StylingLibrariesCard
             stylingLibraries={result.analysis.stylingLibraries}
+            onCardSelect={handleItemClick}
           />
         )}
-        {result.analysis.stylingProcessor && (
-          <StylingProcessorCard
-            stylingProcessor={result.analysis.stylingProcessor}
-          />
-        )}
+        <StylingProcessorCard
+          stylingProcessor={result.analysis.stylingProcessor}
+          onCardSelect={handleItemClick}
+        />
       </div>
     </div>
   );

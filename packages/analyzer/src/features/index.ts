@@ -1,0 +1,21 @@
+export { detect as detectBundler } from './bundler/detect.js';
+export { detect as detectFramework } from './framework/detect.js';
+export { detect as detectMinifier } from './minifier/detect.js';
+export { detect as detectStylingProcessor } from './styling-processor/detect.js';
+export { detect as detectModules } from './module/detect.js';
+export { detect as detectUILibrary } from './ui-library/detect.js';
+export { detect as detectJSLibraries } from './js-libraries/detect.js';
+export { detect as detectStylingLibraries } from './styling-libraries/detect.js';
+export { detect as detectTranspiler } from './transpiler/detect.js';
+export { getStats } from './getStats.js';
+
+export { patterns as bundlerPatterns } from './bundler/patterns/index.js';
+export { patterns as frameworkPatterns } from './framework/patterns/index.js';
+export { patterns as minifierPatterns } from './minifier/patterns/index.js';
+export { cssInJsPatterns } from './styling-processor/patterns/css-in-js/index.js';
+export { preprocessorPatterns } from './styling-processor/patterns/preprocessor/index.js';
+export { patterns as modulePatterns } from './module/patterns/index.js';
+export { patterns as uiLibraryPatterns } from './ui-library/patterns/index.js';
+export * from './js-libraries/patterns/index.js';
+export { patterns as stylingLibraryPatterns } from './styling-libraries/patterns/index.js';
+export { patterns as transpilerPatterns } from './transpiler/patterns/index.js';

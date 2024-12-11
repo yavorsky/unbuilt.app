@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svgjs="http://svgjs.dev/svgjs" width="32" height="32"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="rgb(25, 32, 60)"></rect>
+
+  <!-- Stylized "U" shape formed by building blocks -->
+  <rect x="8" y="8" width="4" height="12" fill="rgb(129, 140, 248)" opacity="0.3"></rect>
+  <rect x="20" y="8" width="4" height="12" fill="rgb(129, 140, 248)" opacity="0.3"></rect>
+  <rect x="8" y="20" width="16" height="4" fill="rgb(129, 140, 248)" opacity="0.3"></rect>
+
+  <!-- Animated building blocks (shown as separate elements) -->
+  <rect x="8" y="16" width="4" height="4" fill="rgb(129, 140, 248)"></rect>
+  <rect x="20" y="12" width="4" height="4" fill="rgb(129, 140, 248)"></rect>
+  <rect x="14" y="20" width="4" height="4" fill="rgb(129, 140, 248)"></rect>
+</svg><style>@media (prefers-color-scheme: light) { :root { filter: none; } }
+@media (prefers-color-scheme: dark) { :root { filter: none; } }
+</style></svg>
