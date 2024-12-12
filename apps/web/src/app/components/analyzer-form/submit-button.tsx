@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { PackageSearch, Loader2 } from 'lucide-react';
+import { Loader2, ChevronRight } from 'lucide-react';
 import { FC } from 'react';
 
 export const SubmitButton: FC<{ isPending: boolean }> = ({ isPending }) => {
@@ -14,7 +14,7 @@ export const SubmitButton: FC<{ isPending: boolean }> = ({ isPending }) => {
       {isPending ? (
         <Loader2 className="h-5 w-5 animate-spin text-white" />
       ) : (
-        <PackageSearch className="h-5 w-5 text-white" />
+        <ChevronRight className="h-5 w-5 text-white" />
       )}
     </Button>
   );
