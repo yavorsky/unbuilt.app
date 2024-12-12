@@ -2,39 +2,42 @@
 
 import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
-import { JobId } from 'bull';
 import { AnalysisManager } from './lib/AnalysisManager';
 
-type AnalyzeState = { error: string | null; jobId?: JobId };
+type AnalyzeState = { error: string | null; analysisId?: string };
 
 export async function analyzeWebsite(
   prevState: AnalyzeState,
   formData: FormData
 ): Promise<AnalyzeState> {
   try {
-    const url = formData.get('url');
+    let url = formData.get('url');
 
     if (!url || typeof url !== 'string') {
       return { error: 'URL is required' };
+    }
+
+    if (!url.startsWith('https://')) {
+      url = `https://${url}`;
     }
 
     const manager = AnalysisManager.getInstance();
     const id = await manager.startAnalysis(url);
 
     revalidatePath('/results');
-    return { error: null, jobId: id };
+    return { error: null, analysisId: id };
   } catch (error) {
     console.error('Analysis failed:', error);
     return { error: 'Failed to analyze website' };
   }
 }
 
-export async function getJobStatus(jobId: string) {
+export async function getJobStatus(analysisId: string) {
   try {
     const queueManager = QueueManager.getInstance();
     await queueManager.initialize();
 
-    const job = await queueManager.getJob(jobId);
+    const job = await queueManager.getJob(analysisId);
 
     if (!job) {
       throw new Error('Job not found');
@@ -58,7 +61,7 @@ export async function getJobStatus(jobId: string) {
   } catch (error) {
     console.error('Status check failed:', error);
     return {
-      id: jobId,
+      id: analysisId,
       status: 'failed',
       result: null,
       progress: 0,

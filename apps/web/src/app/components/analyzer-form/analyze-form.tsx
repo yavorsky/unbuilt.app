@@ -13,8 +13,8 @@ export const AnalyzeForm = () => {
   });
 
   useEffect(() => {
-    if (state.jobId) {
-      redirect(`/results?jobId=${state.jobId}`);
+    if (state.analysisId) {
+      redirect(`/analysis/${state.analysisId}`);
     }
   }, [state]);
 

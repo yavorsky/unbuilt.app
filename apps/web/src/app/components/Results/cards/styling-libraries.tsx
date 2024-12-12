@@ -11,7 +11,7 @@ import { capitalize } from 'lodash-es';
 const supportedOptions = Object.keys(stylingLibraryPatterns).map(capitalize);
 
 export const StylingLibrariesCard: FC<{
-  stylingLibraries: AnalyzeResult['analysis']['stylingLibraries'];
+  stylingLibraries: AnalyzeResult['analysis']['stylingLibraries'] | undefined;
   onCardSelect: (label: AnalysisKeys) => void;
 }> = ({ stylingLibraries, onCardSelect }) => {
   return (
