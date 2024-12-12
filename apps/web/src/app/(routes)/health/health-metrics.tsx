@@ -27,14 +27,14 @@ export function HealthMetrics({ data }: { data: HealthMetricsData }) {
     100;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen p-8">
       <div className="mx-auto max-w-7xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">System Health</h1>
+          <h1 className="text-3xl font-bold">System Health</h1>
         </div>
 
         {/* Status Card */}
-        <div className="mb-8 rounded-lg bg-white p-6 shadow-sm">
+        <div className="mb-8 rounded-lg p-6 shadow-sm">
           <div className="flex items-center space-x-4">
             <div
               className={`h-4 w-4 rounded-full ${
@@ -47,10 +47,8 @@ export function HealthMetrics({ data }: { data: HealthMetricsData }) {
 
         <div className="grid gap-6 md:grid-cols-2">
           {/* Memory Usage */}
-          <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">
-              Memory Usage
-            </h3>
+          <div className="rounded-lg p-6 shadow-sm">
+            <h3 className="mb-4 text-lg font-semibold">Memory Usage</h3>
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
@@ -72,24 +70,24 @@ export function HealthMetrics({ data }: { data: HealthMetricsData }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Heap Used</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm">Heap Used</div>
                 <div className="text-lg font-semibold">
                   {data.memory.heapUsed}
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Heap Total</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm">Heap Total</div>
                 <div className="text-lg font-semibold">
                   {data.memory.heapTotal}
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">RSS</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm">RSS</div>
                 <div className="text-lg font-semibold">{data.memory.rss}</div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">External</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm ">External</div>
                 <div className="text-lg font-semibold">
                   {data.memory.external}
                 </div>
@@ -98,10 +96,8 @@ export function HealthMetrics({ data }: { data: HealthMetricsData }) {
           </div>
 
           {/* System Resources */}
-          <div className="rounded-lg bg-white p-6 shadow-sm">
-            <h3 className="mb-4 text-lg font-semibold text-gray-900">
-              System Resources
-            </h3>
+          <div className="rounded-lg p-6 shadow-sm">
+            <h3 className="mb-4 text-lg font-semibold">System Resources</h3>
 
             <div className="mb-4">
               <div className="mb-2 flex justify-between text-sm">
@@ -123,24 +119,24 @@ export function HealthMetrics({ data }: { data: HealthMetricsData }) {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Total Memory</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm ">Total Memory</div>
                 <div className="text-lg font-semibold">
                   {data.system.totalMemory}
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Free Memory</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm ">Free Memory</div>
                 <div className="text-lg font-semibold">
                   {data.system.freeMemory}
                 </div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">CPU Cores</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm ">CPU Cores</div>
                 <div className="text-lg font-semibold">{data.system.cpus}</div>
               </div>
-              <div className="rounded-lg bg-gray-50 p-3">
-                <div className="text-sm text-gray-500">Uptime</div>
+              <div className="rounded-lg p-3">
+                <div className="text-sm">Uptime</div>
                 <div className="text-lg font-semibold">
                   {data.system.uptime}
                 </div>

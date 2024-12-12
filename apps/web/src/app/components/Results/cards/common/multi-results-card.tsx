@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Card, CardContent } from '@/components/ui';
 import {
   ChevronDown,
@@ -22,7 +22,6 @@ export function MultiResultAnalysisCard<
 >({
   name,
   analysis,
-  supportedOptions,
   onCardSelect,
   Icon,
 }: {
@@ -36,8 +35,8 @@ export function MultiResultAnalysisCard<
   const isLoading = !analysis;
 
   // Separate libraries into primary and secondary based on confidence
-  const allLibraries =
-    analysis && 'items' in analysis
+  const allLibraries = useMemo(() => {
+    return analysis && 'items' in analysis
       ? [
           ...Object.entries(analysis?.items).map(([name, data]) => ({
             name,
@@ -45,16 +44,27 @@ export function MultiResultAnalysisCard<
           })),
         ]
       : [];
+  }, [analysis]);
 
-  const primaryLibraries = allLibraries
-    .filter((lib) => lib.confidence >= 1)
-    .sort((a, b) => b.confidence - a.confidence);
-  const secondaryLibraries = allLibraries.filter((lib) => lib.confidence < 1);
+  const primaryLibraries = useMemo(
+    () =>
+      allLibraries
+        .filter((lib) => lib.confidence >= 1)
+        .sort((a, b) => b.confidence - a.confidence),
+    [allLibraries]
+  );
+  const secondaryLibraries = useMemo(
+    () => allLibraries.filter((lib) => lib.confidence < 1),
+    [allLibraries]
+  );
 
   const hasSecondaryResults = secondaryLibraries.length > 0;
 
   return (
-    <Card className="bg-gray-900 border-gray-800 hover:border-indigo-500 transition-all duration-300 min-w-36">
+    <Card
+      className="bg-gray-900 border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+      onClick={() => onCardSelect(name)}
+    >
       <CardContent className="p-0">
         <div className="border-b border-gray-800">
           <div className="flex items-center gap-3">

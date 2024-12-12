@@ -1,8 +1,14 @@
 import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
-import { FC, useEffect, useMemo, useState } from 'react';
+import {
+  ChangeEvent,
+  FC,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { FrameworkCard } from './cards/framework';
 import { BundlerCard } from './cards/bundler';
-import { Progress } from '@/components/ui/progress';
 import { TranspilerCard } from './cards/transpiler';
 import { UILibraryCard } from './cards/ui-library';
 import MinifierCard from './cards/minifier';
@@ -10,16 +16,35 @@ import ModulesCard from './cards/modules';
 import { JSLibrariesCard } from './cards/js-libraries';
 import { StylingLibrariesCard } from './cards/styling-libraries';
 import { StylingProcessorCard } from './cards/styling-processor';
+import Link from 'next/link';
+import { ChevronRight, Loader2 } from 'lucide-react';
+import { Button, Input } from '@/components/ui';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { useFormState } from 'react-dom';
+import { analyzeWebsite } from '@/actions';
+import { redirect } from 'next/navigation';
+import { LogoIcon } from '../icons/logo';
+import FocusedInput from '../focused-input';
+import { ResultsBreadcrumb } from './results-breadcrumb';
 
 export const CardsResult: FC<{
-  result: OnProgressResult;
-  progress: number;
+  result: OnProgressResult | null;
+  progress: number | null;
   isLoading: boolean;
-}> = ({ result, isLoading, progress }) => {
+}> = ({ result, isLoading }) => {
   const truncatedUrl = useMemo(() => {
+    if (!result) {
+      return '';
+    }
     const url = new URL(result.url);
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-  }, [result.url]);
+  }, [result?.url]);
 
   useEffect(() => {
     document.title = `Unbuilt ${truncatedUrl}`;
@@ -28,73 +53,74 @@ export const CardsResult: FC<{
   const [selectedItem, setSelectedItem] = useState<string | null>(null);
 
   // Make each card to be sharable
-  const handleItemClick = (item: AnalysisKeys) => {
+  const handleItemClick = useCallback((item: AnalysisKeys) => {
     setSelectedItem(item === selectedItem ? null : item);
     if (item !== selectedItem) {
       const url = new URL(window.location.href);
       url.hash = item;
-      // window.history.pushState({}, '', url.toString());
-    } else {
-      // window.history.pushState({}, '', window.location.pathname);
     }
-  };
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto">
-      {isLoading && (
-        <div className="flex items-center justify-center mt-20 max-w-7xl mx-auto">
-          <Progress value={progress ?? 0} />
+      <div className="mb-16 mt-8 flex items-center justify-center max-w-7xl mx-auto">
+        <div className="flex-1 flex items-center justify-center">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem className="text-xl">
+                <BreadcrumbLink asChild>
+                  <Link href="/">
+                    <LogoIcon size={40} />
+                  </Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              {truncatedUrl ? (
+                <ResultsBreadcrumb url={truncatedUrl} />
+              ) : (
+                <Loader2 className="h-5 w-5 mx-16 animate-spin text-white" />
+              )}
+            </BreadcrumbList>
+          </Breadcrumb>
         </div>
-      )}
-      <div className="mb-8 flex items-center justify-center max-w-7xl mx-auto">
-        <a
-          href={result.url}
-          target="_blank"
-          className="text-white font-bold text-3xl"
-          rel="noreferrer"
-        >
-          {truncatedUrl}
-        </a>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <BundlerCard
-          bundler={result.analysis.bundler}
+          bundler={result?.analysis.bundler}
           onCardSelect={handleItemClick}
         />
         <FrameworkCard
-          framework={result.analysis.framework}
+          framework={result?.analysis.framework}
           onCardSelect={handleItemClick}
         />
         <TranspilerCard
-          transpiler={result.analysis.transpiler}
+          transpiler={result?.analysis.transpiler}
           onCardSelect={handleItemClick}
         />
 
         <UILibraryCard
-          uiLibrary={result.analysis.uiLibrary}
+          uiLibrary={result?.analysis.uiLibrary}
           onCardSelect={handleItemClick}
         />
 
         <MinifierCard
-          minifier={result.analysis.minifier}
+          minifier={result?.analysis.minifier}
           onCardSelect={handleItemClick}
         />
 
         <ModulesCard
-          modules={result.analysis.modules}
+          modules={result?.analysis.modules}
           onCardSelect={handleItemClick}
         />
-        {result.analysis.jsLibraries && (
-          <JSLibrariesCard jsLibraries={result.analysis.jsLibraries} />
-        )}
-        {result.analysis.stylingLibraries && (
-          <StylingLibrariesCard
-            stylingLibraries={result.analysis.stylingLibraries}
-            onCardSelect={handleItemClick}
-          />
-        )}
+
+        <JSLibrariesCard jsLibraries={result?.analysis.jsLibraries} />
+
+        <StylingLibrariesCard
+          stylingLibraries={result?.analysis.stylingLibraries}
+          onCardSelect={handleItemClick}
+        />
         <StylingProcessorCard
-          stylingProcessor={result.analysis.stylingProcessor}
+          stylingProcessor={result?.analysis.stylingProcessor}
           onCardSelect={handleItemClick}
         />
       </div>
