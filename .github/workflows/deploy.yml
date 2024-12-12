@@ -20,8 +20,9 @@ jobs:
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
           script: |
-            cd /home/server/unbuilt-app
-            git pull origin main
-            yarn install
-            yarn turbo run build
-            pm2 restart ecosystem.config.cjs
+            cd /home/server/unbuilt-app && \
+            git pull origin main && \
+            yarn install && \
+            yarn turbo run build && \
+            pm2 restart ecosystem.config.cjs || \
+            echo "Deployment failed at one of the steps" && exit 1
