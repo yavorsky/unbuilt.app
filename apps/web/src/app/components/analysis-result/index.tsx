@@ -3,9 +3,8 @@
 import { useEffect, useState } from 'react';
 import { getJobStatus } from '../../../actions';
 import { CardsResult } from './cards-result';
-import { Loader2 } from 'lucide-react';
 
-export function Results({ analysisId }: { analysisId: string }) {
+export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [jobStatus, setJobStatus] = useState<Awaited<
     ReturnType<typeof getJobStatus>
   > | null>(null);

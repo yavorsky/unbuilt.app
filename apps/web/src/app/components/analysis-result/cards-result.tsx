@@ -1,12 +1,5 @@
 import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
-import {
-  ChangeEvent,
-  FC,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { FrameworkCard } from './cards/framework';
 import { BundlerCard } from './cards/bundler';
 import { TranspilerCard } from './cards/transpiler';
@@ -17,8 +10,7 @@ import { JSLibrariesCard } from './cards/js-libraries';
 import { StylingLibrariesCard } from './cards/styling-libraries';
 import { StylingProcessorCard } from './cards/styling-processor';
 import Link from 'next/link';
-import { ChevronRight, Loader2 } from 'lucide-react';
-import { Button, Input } from '@/components/ui';
+import { Loader2 } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,18 +18,14 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { useFormState } from 'react-dom';
-import { analyzeWebsite } from '@/actions';
-import { redirect } from 'next/navigation';
 import { LogoIcon } from '../icons/logo';
-import FocusedInput from '../focused-input';
-import { ResultsBreadcrumb } from './results-breadcrumb';
+import { URLBreadcrumb } from './url-breadcrumb';
 
 export const CardsResult: FC<{
   result: OnProgressResult | null;
   progress: number | null;
   isLoading: boolean;
-}> = ({ result, isLoading }) => {
+}> = ({ result }) => {
   const truncatedUrl = useMemo(() => {
     if (!result) {
       return '';
@@ -76,7 +64,7 @@ export const CardsResult: FC<{
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               {truncatedUrl ? (
-                <ResultsBreadcrumb url={truncatedUrl} />
+                <URLBreadcrumb url={truncatedUrl} />
               ) : (
                 <Loader2 className="h-5 w-5 mx-16 animate-spin text-white" />
               )}

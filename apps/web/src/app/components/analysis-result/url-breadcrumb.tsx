@@ -5,7 +5,7 @@ import { useFormState } from 'react-dom';
 import { analyzeWebsite } from '@/actions';
 import { redirect } from 'next/navigation';
 
-export const ResultsBreadcrumb: FC<{ url: string }> = ({ url }) => {
+export const URLBreadcrumb: FC<{ url: string }> = ({ url }) => {
   const [newUrl, setNewUrl] = useState(url);
   const handleNewUrlChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
