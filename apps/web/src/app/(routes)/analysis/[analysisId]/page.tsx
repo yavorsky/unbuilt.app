@@ -1,4 +1,4 @@
-import { Results } from '../../../components/results';
+import { AnalysisResult } from '../../../components/analysis-result';
 
 export default function ResultsPage({
   params,
@@ -10,7 +10,7 @@ export default function ResultsPage({
   return (
     <main className="min-h-screen p-8">
       {params.analysisId ? (
-        <Results analysisId={params.analysisId} />
+        <AnalysisResult analysisId={params.analysisId} />
       ) : (
         <p>No analysis job ID provided</p>
       )}
