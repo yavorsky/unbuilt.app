@@ -25,4 +25,4 @@ jobs:
             yarn install && \
             yarn turbo run build && \
             pm2 restart ecosystem.config.cjs || \
-            echo "Deployment failed at one of the steps" && exit 1
+            { echo "Deployment failed at one of the steps"; exit 1; }
