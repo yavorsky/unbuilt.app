@@ -4,7 +4,8 @@ import { createProgressTracker, OnProgress } from './progress.js';
 import {
   detectBundler,
   detectFramework,
-  detectJSLibraries,
+  detectHttpClient,
+  detectTranslations,
   detectMinifier,
   detectModules,
   detectStylingLibraries,
@@ -12,6 +13,9 @@ import {
   detectTranspiler,
   detectUILibrary,
   getStats,
+  detectStateManagement,
+  detectDatesLibrary,
+  detectRouter,
 } from './features/index.js';
 
 export const analyze = async (
@@ -49,14 +53,23 @@ export const analyze = async (
   onProgress({ modules });
   const uiLibrary = await detectUILibrary(page, browser, resources);
   onProgress({ uiLibrary });
-  const jsLibraries = await detectJSLibraries(page, browser, resources);
-  onProgress({ jsLibraries });
+  const httpClient = await detectHttpClient(page, browser, resources);
+  onProgress({ httpClient });
+  const stateManagement = await detectStateManagement(page, browser, resources);
+  onProgress({ stateManagement });
+  const dates = await detectDatesLibrary(page, browser, resources);
+  onProgress({ dates });
+  const router = await detectRouter(page, browser, resources);
+  onProgress({ router });
   const stylingLibraries = await detectStylingLibraries(
     page,
     browser,
     resources
   );
   onProgress({ stylingLibraries });
+
+  const translations = await detectTranslations(page, browser, resources);
+  onProgress({ translations });
 
   const stats = await getStats(page);
   onProgress({ stats });
@@ -75,8 +88,12 @@ export const analyze = async (
       minifier,
       stylingProcessor,
       modules,
+      router,
+      dates,
+      translations,
+      stateManagement,
       uiLibrary,
-      jsLibraries,
+      httpClient,
       stylingLibraries,
       stats,
     },
