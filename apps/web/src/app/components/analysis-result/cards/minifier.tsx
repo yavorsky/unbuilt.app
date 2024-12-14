@@ -24,5 +24,3 @@ export const MinifierCard: FC<{
     />
   );
 };
-
-export default MinifierCard;
