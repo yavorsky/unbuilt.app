@@ -20,5 +20,3 @@ export const ModulesCard: FC<{
     />
   );
 };
-
-export default ModulesCard;

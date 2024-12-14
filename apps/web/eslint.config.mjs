@@ -12,11 +12,6 @@ export default [
     files: ['**/*.ts', '**/*.tsx'],
     plugins: {
       '@next/next': nextPlugin,
-    },
-  },
-  {
-    files: ['/*.tsx'],
-    plugins: {
       'react': reactPlugin,
       'react-hooks': reactHooksPlugin,
     },
