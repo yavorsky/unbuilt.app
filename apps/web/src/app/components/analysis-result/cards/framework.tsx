@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import {
-  AnalysisKeys,
-  AnalyzeResult,
-  frameworkPatterns,
-} from '@unbuilt/analyzer';
+import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
+import { framework } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Boxes } from 'lucide-react';
 
-const supportedOptions = Object.keys(frameworkPatterns).map(capitalize);
+const supportedOptions = Object.keys(framework.patterns).map(capitalize);
 
 export const FrameworkCard: FC<{
   framework: AnalyzeResult['analysis']['framework'] | undefined;
@@ -24,5 +21,3 @@ export const FrameworkCard: FC<{
     />
   );
 };
-
-export default FrameworkCard;

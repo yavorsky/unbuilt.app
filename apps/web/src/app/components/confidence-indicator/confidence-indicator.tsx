@@ -27,7 +27,7 @@ export const ConfidenceIndicator: FC<{ confidence: number }> = ({
                 <div
                   key={i}
                   className={`w-3 h-3 rounded-sm transition-colors duration-300 ${
-                    i < filledBlocks ? 'bg-indigo-500' : 'bg-gray-700'
+                    i < filledBlocks ? 'bg-indigo-500/70' : 'bg-gray-700'
                   }`}
                 />
               ))}

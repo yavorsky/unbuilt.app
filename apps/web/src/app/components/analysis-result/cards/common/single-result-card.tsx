@@ -1,7 +1,6 @@
 import { useState, FC } from 'react';
-import { Card, CardContent } from '@/components/ui';
+import { Card, CardContent, CardHeader } from '@/components/ui';
 import {
-  Box,
   LoaderCircle,
   ChevronDown,
   ChevronUp,
@@ -38,11 +37,47 @@ export function SingleResultAnalysisCard<
 
   return (
     <Card
-      className="bg-gray-900 border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+      className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
       onClick={() => onCardSelect(name)}
     >
+      <CardHeader className="space-y-1 py-4 pb-4">
+        <div className="flex justify-between items-start">
+          {analysis && 'name' in analysis ? (
+            <>
+              <div>
+                <p className="text-sm text-slate-400">{capitalize(name)}</p>
+                <div className="flex items-center gap-3 mt-1">
+                  {isLoading ? (
+                    <LoaderCircle className="h-6 w-6 text-indigo-400 animate-spin" />
+                  ) : (
+                    <Icon className="h-6 w-6 text-indigo-400" />
+                  )}
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                      {capitalize(analysis.name)}
+                    </h3>
+                    {/* <Badge
+                  variant="outline"
+                  className="text-xs bg-slate-700 text-slate-200 border-0"
+                >
+                  v{version}
+                </Badge> */}
+                  </div>
+                </div>
+              </div>
+              <ConfidenceIndicator confidence={analysis.confidence} />
+              {/* <Badge
+                variant="outline"
+                className={`${confidence.color} text-white border-0`}
+              >
+                {confidence.level} confidence
+              </Badge> */}
+            </>
+          ) : null}
+        </div>
+      </CardHeader>
       <CardContent className="p-0">
-        <div className="border-b border-gray-800">
+        {/* <div className="border-b border-gray-800">
           <div className="flex items-center gap-3">
             <div className="p-3 bg-indigo-500/10 ">
               {isLoading ? (
@@ -55,17 +90,17 @@ export function SingleResultAnalysisCard<
               {capitalize(name)}
             </h3>
           </div>
-        </div>
+        </div> */}
 
         <div className="p-6 space-y-4">
           {analysis && 'name' in analysis ? (
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
+              {/* <div className="flex justify-between items-center">
                 <span className="text-gray-300 text-xl">{analysis.name}</span>
                 <div className="flex items-center gap-2">
                   <ConfidenceIndicator confidence={analysis.confidence} />
                 </div>
-              </div>
+              </div> */}
 
               {'secondaryMatches' in analysis &&
                 Object.keys(analysis.secondaryMatches).length > 0 && (

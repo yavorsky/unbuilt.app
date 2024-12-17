@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import {
-  AnalysisKeys,
-  AnalyzeResult,
-  transpilerPatterns,
-} from '@unbuilt/analyzer';
+import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { FileCode2 } from 'lucide-react';
+import { transpiler } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(transpilerPatterns).map(capitalize);
+const supportedOptions = Object.keys(transpiler.patterns).map(capitalize);
 
 export const TranspilerCard: FC<{
   transpiler: AnalyzeResult['analysis']['transpiler'] | undefined;
@@ -24,5 +21,3 @@ export const TranspilerCard: FC<{
     />
   );
 };
-
-export default TranspilerCard;

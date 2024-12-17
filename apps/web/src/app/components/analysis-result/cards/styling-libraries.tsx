@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import {
-  AnalysisKeys,
-  AnalyzeResult,
-  stylingLibraryPatterns,
-} from '@unbuilt/analyzer';
+import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
 import { MultiResultAnalysisCard } from './common/multi-results-card';
 import { Paintbrush } from 'lucide-react';
 import { capitalize } from 'lodash-es';
+import { stylingLibraries } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(stylingLibraryPatterns).map(capitalize);
+const supportedOptions = Object.keys(stylingLibraries.patterns).map(capitalize);
 
 export const StylingLibrariesCard: FC<{
   stylingLibraries: AnalyzeResult['analysis']['stylingLibraries'] | undefined;

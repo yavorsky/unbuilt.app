@@ -4,7 +4,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es2022",
     "noEmit": false,
     "declaration": true,
     "declarationMap": true,
@@ -13,5 +13,5 @@
     "outDir": "./build"
   },
   "extends": "../../tsconfig.json",
-  "include": ["src", "types"]
+  "include": ["src"]
 }

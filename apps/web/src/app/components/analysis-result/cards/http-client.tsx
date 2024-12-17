@@ -1,14 +1,11 @@
 import { FC } from 'react';
-import {
-  AnalysisKeys,
-  AnalyzeResult,
-  httpClientPatterns,
-} from '@unbuilt/analyzer';
+import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Network } from 'lucide-react';
+import { httpClient } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(httpClientPatterns).map(capitalize);
+const supportedOptions = Object.keys(httpClient.patterns).map(capitalize);
 
 export const HTTPClientCard: FC<{
   httpClient: AnalyzeResult['analysis']['httpClient'] | undefined;

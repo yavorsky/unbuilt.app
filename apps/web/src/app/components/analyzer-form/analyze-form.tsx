@@ -25,7 +25,7 @@ export const AnalyzeForm = () => {
         <SubmitButton isPending={isPending} />
       </div>
 
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-foreground/20">
         Unbuilt.app is currently in development phase. Some results could be
         wrong.
       </p>
