@@ -59,7 +59,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
     <div className="relative flex items-center">
       {isFocused && !skipBackground && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 transition-opacity duration-200"
+          className="fixed inset-0 bg-black/50 z-20 transition-opacity duration-200"
           onClick={handleOverlayClick}
         />
       )}
@@ -69,7 +69,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
           ref={inputRef}
           value={value}
           onChange={onChange}
-          className={`relative z-50 bg-transparent text-white text-xl border-none outline-none p-0 pr-8 focus:ring-0
+          className={`relative z-30 bg-transparent text-white text-xl border-none outline-none p-0 pr-8 focus:ring-0
              transition-all duration-200
             ${className}`}
           onFocus={handleFocus}
@@ -87,7 +87,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
       </div>
       {withSubmit && (
         <Button
-          className="absolute -right-6 bg-transparent mt-1 px-2 py-2 z-50"
+          className="absolute -right-6 bg-transparent mt-1 px-2 py-2 z-30"
           variant="secondary"
           type="submit"
         >
