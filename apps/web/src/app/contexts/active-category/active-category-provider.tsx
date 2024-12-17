@@ -18,7 +18,7 @@ export function ActiveCategoryProvider({ children }: { children: ReactNode }) {
     (categoryId: AnalysisKeys) => {
       const params = new URLSearchParams(searchParams);
       params.set('category', categoryId);
-      router.push(`?${params.toString()}`);
+      router.push(`?${params.toString()}`, { scroll: false });
     },
     [router, searchParams]
   );

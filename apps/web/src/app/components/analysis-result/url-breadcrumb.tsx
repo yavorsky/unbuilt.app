@@ -20,7 +20,8 @@ export const URLBreadcrumb: FC<{
   variant?: 'large' | 'medium';
   skipSubmit?: boolean;
   skipBackground?: boolean;
-}> = ({ url, variant, skipBackground, skipSubmit }) => {
+  className?: string;
+}> = ({ url, variant, skipBackground, skipSubmit, className }) => {
   const [newUrl, setNewUrl] = useState(url);
   const { activeCategory } = useActiveCategory();
   const handleNewUrlChange = useCallback(
@@ -71,7 +72,7 @@ export const URLBreadcrumb: FC<{
     variant === 'large' ? 'text-3xl font-bold text-white' : 'text-m text-white';
 
   return (
-    <BreadcrumbItem className={textClass}>
+    <BreadcrumbItem className={`${textClass} ${className}`}>
       <form action={formAction} className="flex items-center">
         <FocusedInput
           type="text"

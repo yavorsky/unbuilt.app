@@ -49,7 +49,7 @@ export const AppNavigation = () => {
                         className="flex items-center justify-center text-lg font-semibold text-foreground"
                       >
                         <LogoIcon size={40} />
-                        <span className="ml-2">
+                        <span className="ml-2 hidden sm:inline">
                           Unbuilt
                           <span className="text-foreground/80">.app</span>
                         </span>
@@ -58,8 +58,9 @@ export const AppNavigation = () => {
                   </BreadcrumbItem>
                   {truncatedUrl && (
                     <>
-                      <BreadcrumbSeparator />
+                      <BreadcrumbSeparator className="hidden md:inline" />
                       <URLBreadcrumb
+                        className="hidden md:inline"
                         skipSubmit={!!activeCategory}
                         skipBackground
                         variant="medium"
@@ -67,8 +68,8 @@ export const AppNavigation = () => {
                       />
                       {activeCategory && (
                         <>
-                          <BreadcrumbSeparator className="-ml-3" />
-                          <span className="text-foreground text-lg">
+                          <BreadcrumbSeparator className="-ml-3 hidden md:inline" />
+                          <span className="text-foreground text-lg hidden md:inline">
                             {capitalize(activeCategory)}
                           </span>
                         </>
