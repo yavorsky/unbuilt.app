@@ -14,7 +14,7 @@ const LoaderText: FC<{ supportedOptions: string[]; interval?: number }> = ({
     }, interval);
 
     return () => clearInterval(intervalResult);
-  }, [supportedOptions.length]);
+  }, [supportedOptions.length, interval]);
 
   return (
     <div className="space-y-2">

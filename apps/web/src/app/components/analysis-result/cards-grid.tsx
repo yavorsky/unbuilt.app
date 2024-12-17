@@ -1,5 +1,5 @@
 import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo } from 'react';
 import { FrameworkCard } from './cards/framework';
 import { BundlerCard } from './cards/bundler';
 import { TranspilerCard } from './cards/transpiler';
@@ -8,27 +8,20 @@ import { MinifierCard } from './cards/minifier';
 import { ModulesCard } from './cards/modules';
 import { StylingLibrariesCard } from './cards/styling-libraries';
 import { StylingProcessorCard } from './cards/styling-processor';
-import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
-import { LogoIcon } from '../icons/logo';
+import { Breadcrumb, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { URLBreadcrumb } from './url-breadcrumb';
 import { HTTPClientCard } from './cards/http-client';
 import { StateManagementCard } from './cards/state-management';
 import { DatesCard } from './cards/dates';
 import { RouterCard } from './cards/router';
+import { useActiveCategory } from '@/app/contexts/active-category';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
   progress: number | null;
   isLoading: boolean;
-}> = ({ result }) => {
+}> = ({ result, isLoading }) => {
   const truncatedUrl = useMemo(() => {
     if (!result) {
       return '';
@@ -36,47 +29,50 @@ export const CardsGrid: FC<{
     const url = new URL(result.url);
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
   }, [result]);
+  const { updateActiveCategory } = useActiveCategory();
+
+  const actionLabel = isLoading ? 'Unbuilding' : 'Unbuilt';
 
   useEffect(() => {
-    document.title = `Unbuilt ${truncatedUrl}`;
-  }, [truncatedUrl]);
+    document.title = `${actionLabel} ${truncatedUrl}`;
+  }, [truncatedUrl, actionLabel]);
 
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
+  const formattedDate = useMemo(() => {
+    if (!result?.timestamp) {
+      return null;
+    }
+    const date = new Date(result.timestamp);
+    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+  }, [result]);
 
   // Make each card to be sharable
   const handleItemClick = useCallback(
     (item: AnalysisKeys) => {
-      setSelectedItem(item === selectedItem ? null : item);
-      if (item !== selectedItem) {
-        const url = new URL(window.location.href);
-        url.hash = item;
-      }
+      updateActiveCategory(item);
     },
-    [selectedItem]
+    [updateActiveCategory]
   );
 
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="pb-8 border-b border-gray-900 flex items-center justify-center max-w-7xl mx-auto">
-        <div className="flex-1 flex items-center justify-center">
+      <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
+        <div className="flex-1 flex items-center justify-start">
           <Breadcrumb>
             <BreadcrumbList>
-              <BreadcrumbItem className="text-xl">
-                <BreadcrumbLink asChild>
-                  <Link href="/">
-                    <LogoIcon size={40} />
-                  </Link>
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
+              <h3 className="text-foreground text-3xl">{actionLabel}</h3>
               {truncatedUrl ? (
-                <URLBreadcrumb url={truncatedUrl} />
+                <URLBreadcrumb variant="large" url={truncatedUrl} />
               ) : (
                 <Loader2 className="h-5 w-5 mx-16 animate-spin text-white" />
               )}
             </BreadcrumbList>
           </Breadcrumb>
         </div>
+        <span className="text-foreground/50 mt-4 h-6">
+          {formattedDate && (
+            <>Tech stack results based on the analysis from {formattedDate}.</>
+          )}
+        </span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
         {/* First row - two items */}

@@ -62,7 +62,7 @@ export function MultiResultAnalysisCard<
 
   return (
     <Card
-      className="bg-gray-900 border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+      className="bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
       onClick={() => onCardSelect(name)}
     >
       <CardContent className="p-0">
