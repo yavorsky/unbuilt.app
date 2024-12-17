@@ -1,37 +1,39 @@
-import React, {
+import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form';
+import { Input } from '@/components/ui';
+import { Label } from '@/components/ui/label';
+import {
   ChangeEvent,
+  DetailedHTMLProps,
   FC,
+  InputHTMLAttributes,
   useCallback,
   useEffect,
   useRef,
-  useState,
 } from 'react';
 
 export const URLInput: FC<
-  React.DetailedHTMLProps<
-    React.InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  >
+  DetailedHTMLProps<InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>
 > = (props) => {
-  const [url, setUrl] = useState('https://');
+  const { changeUrl, url, touched } = useAnalysisForm();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleUrlUpdate = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    const url = `https://${value.replace(/h?t?t?p?s?:?\/?\/?/, '').replace(/https:\/\//, '')}`;
-    setUrl(url);
-  };
-
   const forceCursorToEnd = useCallback(() => {
-    if (inputRef.current && url === 'https://') {
+    if (inputRef.current && !touched) {
       inputRef.current.setSelectionRange(url.length, url.length);
     }
-  }, [url]);
+  }, [url, touched]);
+
+  const handleUrlUpdate = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      changeUrl(e.currentTarget.value);
+    },
+    [changeUrl]
+  );
 
   useEffect(() => {
     inputRef.current?.focus();
     forceCursorToEnd();
-  }, []);
+  }, [forceCursorToEnd]);
 
   const handleFocus = () => {
     forceCursorToEnd();
@@ -42,16 +44,24 @@ export const URLInput: FC<
   };
 
   return (
-    <input
-      {...props}
-      ref={inputRef}
-      type="url"
-      onFocus={handleFocus}
-      onClick={handleClick}
-      onChange={handleUrlUpdate}
-      value={url}
-      placeholder="https://unbuilt.app"
-      className="block w-full px-3 text-foreground outline-none border border-gray-500 py-2 rounded-md focus:border-indigo-500 "
-    />
+    <div className="relative w-full">
+      <Label
+        htmlFor="url"
+        className="absolute left-3 top-1/2 -translate-y-1/2 text-base pointer-events-none text-foreground/50"
+      >
+        https://
+      </Label>
+      <Input
+        {...props}
+        ref={inputRef}
+        type="text"
+        id="url"
+        onFocus={handleFocus}
+        onClick={handleClick}
+        onChange={handleUrlUpdate}
+        value={url}
+        className="block w-full pr-3 pl-16 text-base text-foreground outline-none border border-gray-500 py-5 rounded-md focus:border-indigo-500 "
+      />
+    </div>
   );
 };

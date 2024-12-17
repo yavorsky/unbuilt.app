@@ -1,0 +1,28 @@
+{
+  "name": "@unbuilt/resources",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
+    }
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src"
+  },
+  "peerDependencies": {
+    "playwright": "^1.48.1"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artem Yavorskyi",
+    "email": "aqson@me.com"
+  }
+}

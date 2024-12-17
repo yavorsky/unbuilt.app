@@ -1,22 +1,22 @@
 import { Browser, Page } from 'playwright';
-import { Resources } from './resources.js';
 import { createProgressTracker, OnProgress } from './progress.js';
 import {
-  detectBundler,
-  detectFramework,
-  detectHttpClient,
-  detectTranslations,
-  detectMinifier,
-  detectModules,
-  detectStylingLibraries,
-  detectStylingProcessor,
-  detectTranspiler,
-  detectUILibrary,
+  bundler,
+  framework,
+  httpClient,
+  translations,
+  minifier,
+  modules,
+  stylingLibraries,
+  stylingProcessor,
+  transpiler,
+  uiLibrary,
+  stateManagement,
+  dates,
+  router,
   getStats,
-  detectStateManagement,
-  detectDatesLibrary,
-  detectRouter,
-} from './features/index.js';
+} from '@unbuilt/features';
+import { Resources } from '@unbuilt/resources';
 
 export const analyze = async (
   url: string,
@@ -34,42 +34,50 @@ export const analyze = async (
     timeout: 15000,
   });
 
-  const onProgress = createProgressTracker(url, handleProgress, startedAt, 10);
-  const bundler = await detectBundler(page, browser, resources);
-  onProgress({ bundler });
-  const transpiler = await detectTranspiler(page, browser, resources);
-  onProgress({ transpiler });
-  const framework = await detectFramework(page, browser, resources);
-  onProgress({ framework });
-  const minifier = await detectMinifier(page, browser, resources);
-  onProgress({ minifier });
-  const stylingProcessor = await detectStylingProcessor(
+  const onProgress = createProgressTracker(url, handleProgress, startedAt, 14);
+  const bundlerAnalysis = await bundler.detect(page, browser, resources);
+  onProgress({ bundler: bundlerAnalysis });
+  const transpilerAnalysis = await transpiler.detect(page, browser, resources);
+  onProgress({ transpiler: transpilerAnalysis });
+  const frameworkAnalysis = await framework.detect(page, browser, resources);
+  onProgress({ framework: frameworkAnalysis });
+  const minifierAnalysis = await minifier.detect(page, browser, resources);
+  onProgress({ minifier: minifierAnalysis });
+  const stylingProcessorAnalysis = await stylingProcessor.detect(
     page,
     browser,
     resources
   );
-  onProgress({ stylingProcessor });
-  const modules = await detectModules(page, browser, resources);
-  onProgress({ modules });
-  const uiLibrary = await detectUILibrary(page, browser, resources);
-  onProgress({ uiLibrary });
-  const httpClient = await detectHttpClient(page, browser, resources);
-  onProgress({ httpClient });
-  const stateManagement = await detectStateManagement(page, browser, resources);
-  onProgress({ stateManagement });
-  const dates = await detectDatesLibrary(page, browser, resources);
-  onProgress({ dates });
-  const router = await detectRouter(page, browser, resources);
-  onProgress({ router });
-  const stylingLibraries = await detectStylingLibraries(
+  onProgress({ stylingProcessor: stylingProcessorAnalysis });
+  const modulesAnalysis = await modules.detect(page, browser, resources);
+  onProgress({ modules: modulesAnalysis });
+  const uiLibraryAnalysis = await uiLibrary.detect(page, browser, resources);
+  onProgress({ uiLibrary: uiLibraryAnalysis });
+  const httpClientAnalysis = await httpClient.detect(page, browser, resources);
+  onProgress({ httpClient: httpClientAnalysis });
+  const stateManagementAnalysis = await stateManagement.detect(
     page,
     browser,
     resources
   );
-  onProgress({ stylingLibraries });
+  onProgress({ stateManagement: stateManagementAnalysis });
+  const datesAnalysis = await dates.detect(page, browser, resources);
+  onProgress({ dates: datesAnalysis });
+  const routerAnalysis = await router.detect(page, browser, resources);
+  onProgress({ router: routerAnalysis });
+  const stylingLibrariesAnalysis = await stylingLibraries.detect(
+    page,
+    browser,
+    resources
+  );
+  onProgress({ stylingLibraries: stylingLibrariesAnalysis });
 
-  const translations = await detectTranslations(page, browser, resources);
-  onProgress({ translations });
+  const translationsAnalysis = await translations.detect(
+    page,
+    browser,
+    resources
+  );
+  onProgress({ translations: translationsAnalysis });
 
   const stats = await getStats(page);
   onProgress({ stats });
@@ -82,19 +90,19 @@ export const analyze = async (
     timestamp: finishedAt.toISOString(),
     duration,
     analysis: {
-      bundler,
-      transpiler,
-      framework,
-      minifier,
-      stylingProcessor,
-      modules,
-      router,
-      dates,
-      translations,
-      stateManagement,
-      uiLibrary,
-      httpClient,
-      stylingLibraries,
+      bundler: bundlerAnalysis,
+      transpiler: transpilerAnalysis,
+      framework: frameworkAnalysis,
+      minifier: minifierAnalysis,
+      stylingProcessor: stylingProcessorAnalysis,
+      modules: modulesAnalysis,
+      router: routerAnalysis,
+      dates: datesAnalysis,
+      translations: translationsAnalysis,
+      stateManagement: stateManagementAnalysis,
+      uiLibrary: uiLibraryAnalysis,
+      httpClient: httpClientAnalysis,
+      stylingLibraries: stylingLibrariesAnalysis,
       stats,
     },
   };
