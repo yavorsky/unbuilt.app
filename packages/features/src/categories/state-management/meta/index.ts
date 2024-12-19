@@ -6,17 +6,15 @@ import { pinia } from './pinia.js';
 import { recoil } from './recoil.js';
 import { redux } from './redux.js';
 import { valtio } from './valtio.js';
-import { xState } from './x-state.js';
 import { zustand } from './zustand.js';
 
-export const patterns = {
-  jotai,
+export const meta = {
   effector,
+  jotai,
   mobx,
   ngrx,
   pinia,
   recoil,
-  xState,
   redux,
   valtio,
   zustand,

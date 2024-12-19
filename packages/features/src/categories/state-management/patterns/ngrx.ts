@@ -1,114 +1,103 @@
 import { Page } from 'playwright';
 
+// NgRx store internal types
+interface NgRxAction {
+  type: string;
+  __ngrx_marker?: boolean;
+}
+
+interface NgRxReducer {
+  __ngrx_reducer?: boolean;
+  (state: unknown, action: NgRxAction): unknown;
+}
+
+interface NgRxStore {
+  dispatch: (action: NgRxAction) => void;
+  select: (selector: () => void) => unknown;
+  addReducer?: (feature: string, reducer: NgRxReducer) => void;
+  replaceReducer?: (reducer: NgRxReducer) => void;
+  ['@@observable']?: () => unknown;
+}
+
+interface NgRxGlobals {
+  __ngrx_store__?: NgRxStore;
+  __ngrx_effects__?: boolean;
+  __ngrx_store_devtools__?: unknown;
+}
+
 export const ngrx = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core NgRx imports (includes minified variants)
-      /["']@ngrx\/store["']/,
-      /["']@ngrx\/(?:effects|entity|component-store|data|router-store)["']/,
+      // NgRx's unique store creation pattern
+      /function\s+createReducerFactory\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+(?:\w+)\s*=\s*combineReducers\s*\([^)]*\)/,
 
-      // Store setup patterns
-      /StoreModule\.forRoot\s*\(/,
-      /StoreModule\.forFeature\s*\(/,
-      /EffectsModule\.forRoot\s*\(/,
-      /EffectsModule\.forFeature\s*\(/,
+      // NgRx's specific action creation pattern
+      /function\s+createAction\s*\([^)]*\)\s*\{\s*return\s*(?:function\s*\([^)]*\)|[^=]+=>)\s*\{\s*return\s*\{\s*type:/,
 
-      // Core decorators and functions
-      /createEffect\s*\(\s*\(\s*\)/,
-      /createAction\s*\(/,
-      /createReducer\s*\(/,
-      /createFeatureSelector\s*\(/,
-      /createSelector\s*\(/,
+      // NgRx's unique effect decoration
+      /@Effect\s*\(\s*\)\s*\w+\$?\s*=\s*this\.actions\$\.pipe\s*\(/,
 
-      // Internal NgRx markers
-      /__NGRX_STORE__/,
-      /__REDUX_DEVTOOLS_EXTENSION__/,
-      /STORE_DEVTOOLS/,
+      // NgRx's specific store module implementation
+      /StoreModule\.forRoot\s*\(\s*\{\s*(?:\w+\s*:\s*\w+(?:,\s*)?)*\}\s*\)/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for NgRx Store
-          hasStore:
-            !!window.__NGRX_STORE__ || !!window.__STORE__ || !!window.ngrxStore,
+        const isNgRxStore = (obj: unknown): obj is NgRxStore => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
 
-          // Check for Redux DevTools integration
-          hasDevTools:
-            !!window.__REDUX_DEVTOOLS_EXTENSION__ || !!window.__NGRX_DEVTOOLS__,
+          const store = obj as Partial<NgRxStore>;
 
-          // Check for Effects
-          hasEffects: !!window.__NGRX_EFFECTS__ || !!window.__EFFECTS__,
-
-          // Check for Router Store
-          hasRouter: !!window.__NGRX_ROUTER__ || !!window.__ROUTER_STORE__,
+          return (
+            typeof store.dispatch === 'function' &&
+            typeof store.select === 'function' &&
+            // Check for NgRx's specific store features
+            (typeof store['@@observable'] === 'function' ||
+              typeof store.addReducer === 'function' ||
+              typeof store.replaceReducer === 'function')
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        const globalObj = window as Window & NgRxGlobals;
+
+        return !!(
+          globalObj.__ngrx_store__ ||
+          globalObj.__ngrx_effects__ ||
+          globalObj.__ngrx_store_devtools__ ||
+          Object.values(globalObj).some(isNgRxStore)
+        );
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'effects' as const,
+    score: 0.3,
     runtime: [
-      // Action patterns
-      /props<\{[^}]+\}>\(\)/,
-      /on\s*\([^,]+,\s*\([^)]+\)\s*=>/,
-      /dispatch\s*\(/,
-      /type:\s*['"][A-Z\s[\]]+['"]/,
+      // NgRx's unique effect creation patterns
+      /function\s+createEffect\s*\(\s*source\$\s*,\s*config\)\s*\{\s*return\s*source\$\.pipe\s*\(/,
 
-      // Effect patterns
-      /createEffect\s*\(\s*\(\)/,
-      /ofType\s*\(/,
-      /\pipe\s*\(/,
-      /mergeMap\s*\(/,
-      /switchMap\s*\(/,
-      /exhaustMap\s*\(/,
+      // NgRx's specific effect registration
+      /\w+\s*=\s*createEffect\s*\(\s*\(\s*\)\s*=>\s*this\.\w+\$\.pipe\s*\(/,
 
-      // Entity patterns
-      /EntityState/,
-      /EntityAdapter/,
-      /createEntityAdapter/,
-
-      // Internal implementation details
-      /\._state/,
-      /\._reducers/,
-      /\._effects/,
-      /\._actions/,
-
-      // Common error messages
-      /action.*must.*have.*type/i,
-      /reducer.*not.*found/i,
-      /effect.*not.*found/i,
-      /store.*not.*provided/i,
+      // NgRx's unique effect decorator implementation
+      /function\s+Effect\s*\(\s*\)\s*\{\s*return\s*function\s*\(\s*target\s*,\s*propertyName\s*\)\s*\{/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // NgRx package patterns
-      /@ngrx\/\w+/,
-      /ngrx-\w+\.js$/i,
-      /ngrx\.[a-f0-9]+\.js$/i,
+    name: 'selectors' as const,
+    score: 0.3,
+    runtime: [
+      // NgRx's unique selector creation
+      /function\s+createSelector\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+selectors\s*=\s*arguments/,
 
-      // Common NgRx file patterns
-      /(?:store|state)\.module\.ts$/i,
-      /\.(?:actions|reducer|effects|selectors)\.ts$/i,
-      /\.store\.ts$/i,
+      // NgRx's specific memoization implementation
+      /function\s+defaultMemoize\s*\(\s*projectFn\s*,\s*isArgumentsEqual\s*\)\s*\{\s*(?:let|var)\s+lastArguments\s*=\s*null/,
 
-      // Feature module patterns
-      /\+state\//i,
-      /store\//i,
-      /effects\//i,
-      /reducers\//i,
-
-      // Common Angular bundle patterns
-      /main\.[a-f0-9]+\.js$/i,
-      /chunk\.[a-f0-9]+\.js$/i,
-      /vendor\.[a-f0-9]+\.js$/i,
-      /polyfills\.[a-f0-9]+\.js$/i,
+      // NgRx's unique feature selector pattern
+      /createFeatureSelector\s*\(\s*['"`]\w+['"`]\s*\)/,
     ],
   },
 ];

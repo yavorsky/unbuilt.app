@@ -3,111 +3,73 @@ import { Page } from 'playwright';
 export const redux = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Redux imports (includes minified variants)
-      /["'](?:r|re|red)ux["']/,
-      /["']@(?:r|re|red)uxjs\/toolkit["']/,
-      /["'](?:r|re|red)ux-(?:thunk|saga|observable)["']/,
+      // Redux's unique store implementation with currentReducer and currentState
+      /function\s+createStore\s*\([^)]*\)\s*\{\s*(?:var|let|const)\s+currentReducer\s*=\s*reducer(?:\s*;)?\s*(?:var|let|const)\s+currentState\s*=\s*preloadedState/,
 
-      // Common Redux functions that survive minification
-      /create[Ss]tore\s*\(/,
-      /configure[Ss]tore\s*\(/,
-      /create[Ss]lice\s*\(/,
-      /create[Rr]educer\s*\(/,
-      /create[Aa]ction\s*\(/,
-      /combine[Rr]educers\s*\(/,
+      // Redux's unique isPlainObject check used internally
+      /function\s+isPlainObject\s*\(obj\)\s*\{\s*if\s*\(typeof\s+obj\s*!==\s*['"]object['"]\s*\|\|\s*obj\s*===\s*null\)\s*return\s*false/,
 
-      // React-Redux integration
-      /(?:use[Ss]elector|use[Dd]ispatch|connect)\s*\(/,
-      /[Pp]rovider.*[Ss]tore=/,
+      // Redux's specific store enhancer pattern
+      /if\s*\(typeof\s+enhancer\s*!==\s*['"]undefined['"]\)\s*\{\s*if\s*\(typeof\s+enhancer\s*!==\s*['"]function['"]\)\s*\{\s*throw/,
 
-      // Internal Redux markers
-      /__redux__/,
-      /\$redux/,
-      /__REDUX_DEVTOOLS_EXTENSION__/,
+      // Redux's unique action type validation
+      /if\s*\(\s*typeof\s+action\.type\s*===\s*['"]undefined['"]\s*\)\s*\{\s*throw\s+new\s+Error\s*\(['"](Actions|Reducers)[^'"]*['"]\)/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Redux DevTools
-          hasDevTools:
-            !!window.__REDUX_DEVTOOLS_EXTENSION__ ||
-            !!window.__RDT__ ||
-            !!window.__REDUX_DEV__,
-
-          // Check for store
-          hasStore:
-            !!window.__REDUX_STORE__ ||
-            !!window.__RDX_STORE__ ||
-            !!window.store,
-
-          // Check for Redux namespace
-          hasRedux: !!window.Redux || !!window.redux || !!window.rdx,
-
-          // Check for React-Redux
-          hasReactRedux:
-            !!window.ReactRedux || !!window.reactRedux || !!window.rr,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to typecheck window keys
+        const hasReduxStore = (obj: any) => {
+          return (
+            obj &&
+            typeof obj.dispatch === 'function' &&
+            typeof obj.subscribe === 'function' &&
+            typeof obj.getState === 'function' &&
+            typeof obj.replaceReducer === 'function' &&
+            // Check for Redux-specific store implementation details
+            obj.dispatch.toString().includes('currentState') &&
+            // @ts-expect-error Symbol type is not recognized by TypeScript in node env
+            typeof obj[Symbol.observable] === 'function'
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        const hasReduxDevTools = !!(
+          window.__REDUX_DEVTOOLS_EXTENSION__?.connect &&
+          window.__REDUX_DEVTOOLS_EXTENSION__.connections &&
+          window.__REDUX_DEVTOOLS_EXTENSION__.send
+        );
+
+        return hasReduxDevTools || Object.values(window).some(hasReduxStore);
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'toolkit' as const,
+    score: 0.3,
     runtime: [
-      // Action patterns that survive minification
-      /type:\s*["'][A-Z_]+["']/,
-      /payload:/,
-      /dispatch\s*\(\s*[{[]/,
+      // RTK's unique createSlice implementation details
+      /createSlice\s*\(\s*\{\s*name:\s*[^,]+,\s*initialState:[^,]+,\s*reducers:\s*\{[\s\S]*\}\s*\}\)/,
 
-      // Reducer patterns
-      /(?:state\s*,\s*action)\s*=>/,
-      /return\s*{\s*\.\.\.state/,
-      /\[\s*action\.type\s*\]/,
-      /switch\s*\(\s*action\.type\s*\)/,
+      // RTK's specific Immer integration pattern
+      /produce\s*\(\s*state\s*,\s*(?:function\s*\([^)]*\)|[^,]+)\s*=>\s*\{\s*state\./,
 
-      // Internal implementation details
-      /\._state/,
-      /\._reducers/,
-      /\._actions/,
-      /\._dispatch/,
-      /\._subscribers/,
-
-      // Middleware patterns
-      /apply[Mm]iddleware\s*\(/,
-      /thunk[Ww]ith[Ee]xtra[Aa]rgument/,
-
-      // Common error messages
-      /reducer/i,
-      /dispatch/i,
-      /action.*type.*required/i,
-      /store.*already.*exists/i,
+      // RTK's unique createEntityAdapter implementation
+      /createEntityAdapter\s*\(\s*\{\s*selectId:\s*(?:function\s*\([^)]*\)|[^,]+)\s*=>\s*[^,]+(?:,\s*sortComparer:\s*(?:function\s*\([^)]*\)|[^}]+))?\s*\}\)/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Standard filenames
-      /(?:r|re|red)ux(?:\.min)?\.js$/i,
-      /@reduxjs\/toolkit/i,
-      /(?:r|re|red)ux-\w+\.js$/i,
+    name: 'reactRedux' as const,
+    score: 0.3,
+    runtime: [
+      // React-Redux's unique Subscription implementation
+      /function\s+createSubscription\s*\(store\)\s*\{\s*(?:var|let|const)\s+unsubscribe\s*;\s*function\s+onStateChange\s*\(\)/,
 
-      // Build output patterns
-      /\b(?:redux|store|reducer)\.[a-f0-9]+\.js$/i,
+      // React-Redux's specific store validation
+      /function\s+checkStoreShape\s*\(store\)\s*\{\s*(?:var|const|let)\s+missingMethods\s*=\s*\[\s*(?:['"]getState['"],?\s*['"]dispatch['"],?\s*['"]subscribe['"]\s*)*\]\.filter\(/,
 
-      // Common Redux-related filenames
-      /store\.?\w*\.js$/i,
-      /reducer(?:s)?\.?\w*\.js$/i,
-      /action(?:s)?\.?\w*\.js$/i,
-      /slice(?:s)?\.?\w*\.js$/i,
-
-      // Vendor chunks
-      /vendors?[-~.]\w*\.js$/i,
-      /commons[-~.]\w*\.js$/i,
-      /main[-~.]\w*\.js$/i,
+      // React-Redux's unique batch implementation
+      /function\s+batch\s*\(callback\)\s*\{\s*return\s*callback\(\)\s*\}/,
     ],
   },
 ];

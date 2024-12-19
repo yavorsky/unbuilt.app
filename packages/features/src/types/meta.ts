@@ -13,5 +13,5 @@ export interface Meta {
   website: string;
   description: string;
   // Consider moving to react-agnostic approach if we'll have issues in node environment.
-  Icon: React.FC<LogoProps>;
+  Icon: React.FC<LogoProps> | null;
 }

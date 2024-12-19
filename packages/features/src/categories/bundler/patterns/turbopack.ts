@@ -31,18 +31,6 @@ export const turbopack = [
     ],
   },
   {
-    name: 'turbopack-hmr' as const,
-    score: 0.8,
-    runtime: [
-      // HMR patterns that survive minification
-      /(hot\/signal)/,
-      /(hot\/update)/,
-      // Look for HMR-specific structures
-      /\.hot\s*\.\s*accept\s*\(/,
-      /TURBOPACK_CHUNK_UPDATE/, // Constants usually preserved
-    ],
-  },
-  {
     name: 'turbopack-runtime' as const,
     score: 0.7,
     runtime: [

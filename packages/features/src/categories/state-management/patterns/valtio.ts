@@ -1,113 +1,89 @@
 import { Page } from 'playwright';
 
+interface ProxyObject {
+  $$valtioProxy?: boolean;
+  $$valtioTarget?: object;
+}
+
+interface ValtioRef<T = unknown> extends ProxyObject {
+  current: T;
+  subscribe: (callback: (nextValue: T) => void) => () => void;
+}
+
 export const valtio = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Valtio imports (includes minified variants)
-      /["'](?:v|va|val)tio["']/,
-      /["'](?:v|va|val)tio\/(?:utils|vanilla|devtools)["']/,
+      // Valtio's unique proxy creation pattern
+      /function\s+proxy\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+notifyUpdate\s*=\s*createNotifyUpdate\s*\([^)]*\)/,
 
-      // Core Valtio functions that survive minification
-      /proxy\s*\(/,
-      /useSnapshot\s*\(/,
-      /subscribe\s*\(/,
-      /watch\s*\(/,
-      /derive\s*\(/,
-      /proxyWithComputed\s*\(/,
-      /ref\s*\(/,
+      // Valtio's specific snapshot implementation
+      /function\s+snapshot\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+snapValue\s*=\s*getUntracked\s*\([^)]*\)/,
 
-      // Utility functions
-      /subscribeKey\s*\(/,
-      /devtools\s*\(/,
-      /proxyWithHistory\s*\(/,
+      // Valtio's unique subscription system
+      /function\s+subscribe\s*\(\s*proxy\s*,\s*callback\s*,\s*notifyInSync\s*\)\s*\{\s*(?:const|let|var)\s+listeners/,
 
-      // Internal Valtio markers
-      /__VALTIO__/,
-      /\$valtio/,
-      /ProxyHandlerSymbol/,
+      // Valtio's specific proxy handler implementation
+      /createProxyHandler\s*=\s*\(\s*notifyUpdate\s*,\s*isRoot\s*\)\s*=>\s*\(\s*\{\s*get\s*,\s*set\s*,\s*deleteProperty/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Valtio DevTools
-          hasDevTools:
-            !!window.__VALTIO_DEVTOOLS_EXTENSION__ ||
-            !!window.__VALTIO_DEV__ ||
-            !!window.__VDT__,
+        const isValtioProxy = (obj: unknown): obj is ProxyObject => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
 
-          // Check for store/proxy
-          hasStore:
-            !!window.__VALTIO__ || !!window.__VAL__ || !!window.valtioStore,
-
-          // Check for internal markers
-          hasMarkers: !!window.__PROXY_STATE__ || !!window.__STATE_PROXY__,
-
-          // Check for proxy handler
-          hasProxy:
-            typeof window.Proxy === 'function' &&
-            !!window.__VALTIO_PROXY_HANDLER__,
+          return !!(
+            (obj as ProxyObject).$$valtioProxy ||
+            (obj as ProxyObject).$$valtioTarget ||
+            // Check for hidden Valtio properties
+            Object.getOwnPropertyDescriptor(obj, '__handlers') ||
+            Object.getOwnPropertyDescriptor(obj, '__listeners')
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        const isValtioRef = (obj: unknown): obj is ValtioRef => {
+          if (!isValtioProxy(obj)) return false;
+
+          return (
+            'current' in obj &&
+            typeof (obj as ValtioRef).subscribe === 'function'
+          );
+        };
+
+        return Object.values(window).some(
+          (obj) => isValtioProxy(obj) || isValtioRef(obj)
+        );
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'derivedState' as const,
+    score: 0.3,
     runtime: [
-      // Proxy usage patterns
-      /new\s+Proxy\s*\(/,
-      /\[\$\]/,
-      /\[Symbol\.for\(['"]/,
+      // Valtio's unique derived state implementation
+      /function\s+derive\s*\(\s*fn\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+pending\s*=\s*false/,
 
-      // Common state update patterns
-      /state\.[a-zA-Z]+\s*=/,
-      /snapshot\s*\(/,
-      /subscribe\s*\(\s*\w+\s*,/,
+      // Valtio's specific proxyWithComputed implementation
+      /function\s+proxyWithComputed\s*\(\s*target\s*,\s*computedFns\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+computedTarget/,
 
-      // Internal implementation details
-      /\.__handlers/,
-      /\.__listeners/,
-      /\.__version/,
-      /\.__src/,
-      /\.__snapshot/,
-
-      // Common error patterns
-      /proxy.*required/i,
-      /cannot.*subscribe/i,
-      /invalid.*snapshot/i,
-      /reference.*circular/i,
+      // Valtio's unique ref implementation
+      /function\s+ref\s*\(\s*value\s*\)\s*\{\s*return\s*proxy\s*\(\s*\{\s*current:\s*value\s*\}\s*\)/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Standard filenames
-      /(?:v|va|val)tio(?:\.min)?\.js$/i,
-      /valtio\/(?:utils|vanilla|devtools)/i,
-      /valtio-\w+\.js$/i,
+    name: 'reactBindings' as const,
+    score: 0.3,
+    runtime: [
+      // Valtio's specific useSnapshot implementation
+      /function\s+useSnapshot\s*\(\s*proxyObject\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+\[\s*,\s*forceUpdate\s*\]\s*=\s*useReducer/,
 
-      // Build output patterns
-      /\b(?:valtio|proxy|state)\.[a-f0-9]+\.js$/i,
+      // Valtio's unique subscribeKey implementation
+      /function\s+subscribeKey\s*\(\s*proxy\s*,\s*key\s*,\s*callback\s*\)\s*\{\s*return\s*subscribe\s*\(\s*proxy\s*,\s*\(\s*ops\s*\)/,
 
-      // Common Valtio-related filenames
-      /store\.?\w*\.js$/i,
-      /stores?\/\w+\.js$/i,
-      /proxy\.?\w*\.js$/i,
-      /state\.?\w*\.js$/i,
-      /use[A-Z]\w+Store\.js$/i,
-
-      // Common directory patterns
-      /stores?\/proxies?\//i,
-      /stores?\/states?\//i,
-
-      // Vendor chunks
-      /vendors?[-~.]\w*\.js$/i,
-      /commons[-~.]\w*\.js$/i,
-      /main[-~.]\w*\.js$/i,
+      // Valtio's specific devtools integration
+      /function\s+devtools\s*\(\s*proxyObject\s*,\s*name\s*\)\s*\{\s*(?:const|let|var)\s+extension\s*=\s*window\.__REDUX_DEVTOOLS_EXTENSION__/,
     ],
   },
 ];

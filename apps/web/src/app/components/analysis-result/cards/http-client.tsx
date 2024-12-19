@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
+import { httpClient as httpClientFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Network } from 'lucide-react';
-import { httpClient as httpClientFeature } from '@unbuilt/features';
 
 const supportedOptions = Object.keys(httpClientFeature.patterns).map(
   capitalize
