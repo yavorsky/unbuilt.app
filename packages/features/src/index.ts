@@ -18,3 +18,4 @@ export * from './utils/index.js';
 
 // Additional metadata we can extract during analysis
 export { getStats } from './get-stats.js';
+export * from './types/index.js';

@@ -10,6 +10,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "allowJs": true,
+    "jsx": "preserve",
     "outDir": "./build"
   },
   "extends": "../../tsconfig.json",

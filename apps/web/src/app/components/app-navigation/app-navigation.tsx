@@ -24,7 +24,7 @@ import { capitalize } from 'lodash-es';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
-  const { activeCategory } = useActiveCategory();
+  const { activeCategoryLabel } = useActiveCategory();
 
   const truncatedUrl = useMemo(() => {
     if (!activeAnalysis?.url) {
@@ -61,16 +61,16 @@ export const AppNavigation = () => {
                       <BreadcrumbSeparator className="hidden md:inline" />
                       <URLBreadcrumb
                         className="hidden md:inline"
-                        skipSubmit={!!activeCategory}
+                        skipSubmit={!!activeCategoryLabel}
                         skipBackground
                         variant="medium"
                         url={truncatedUrl}
                       />
-                      {activeCategory && (
+                      {activeCategoryLabel && (
                         <>
                           <BreadcrumbSeparator className="-ml-3 hidden md:inline" />
                           <span className="text-foreground text-lg hidden md:inline">
-                            {capitalize(activeCategory)}
+                            {activeCategoryLabel}
                           </span>
                         </>
                       )}

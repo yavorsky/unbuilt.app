@@ -3,48 +3,46 @@ import { Page } from 'playwright';
 export const axios = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core imports and instances
-      /["']a?xios["']/,
-      /axios\.create\(/,
-      /axios\.request\(/,
+      /["']axios["']/,
+      /axios\.create\(\s*\{/,
+      /axios\.request\(\s*\{/,
 
-      // Core methods and props
-      /\.[gp][eou][ts]t?\(/, // Matches .get( .post( .put( etc
-      /\.defaults\./,
-      /\.interceptors\./,
+      // Axios-specific error handling
+      /isAxiosError\s*\(/,
+      /axios\.isCancel\s*\(/,
 
-      // Request config signatures
-      /baseURL:/,
-      /withCredentials:/,
-      /responseType:/,
-      /Authorization:\s*['"](Bearer|Basic)/,
+      // Axios-specific interceptors
+      /axios\.interceptors\.[^.]+\.(request|response)/,
 
-      // Response signatures
-      /\.response\.data/,
-      /\.response\.status/,
-      /\.response\.headers/,
+      // Axios response specific patterns
+      /\.(?:response|data|status|headers|config)(?:\s*as\s+AxiosResponse)?/,
 
-      // Error handling
-      /isAxiosError/,
-      /\.isCancel/,
+      // CancelToken specific to Axios
+      /axios\.CancelToken\.source\(\)/,
+      /new\s+axios\.CancelToken\s*\(/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        return (
-          !!window.axios || // Global axios instance
-          !!window.Axios || // Constructor exposed
-          !!window.$http || // Vue axios alias
-          // Check for common axios properties on any global axios-like object
-          Object.values(window).some(
-            (obj) =>
-              obj &&
-              typeof obj === 'function' &&
-              'interceptors' in obj &&
-              'defaults' in obj &&
-              'get' in obj &&
-              'post' in obj
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to type-check axios object
+        const findAxios = (obj: any): boolean => {
+          return (
+            obj &&
+            typeof obj === 'function' &&
+            obj.interceptors &&
+            obj.defaults &&
+            obj.create &&
+            obj.isAxiosError &&
+            obj.CancelToken
+          );
+        };
+
+        return !!(
+          // Check for axios-specific signatures
+          (
+            (window.axios && findAxios(window.axios)) ||
+            Object.values(window).some(findAxios)
           )
         );
       });
@@ -52,46 +50,36 @@ export const axios = [
   },
   {
     name: 'patterns' as const,
-    score: 0.2,
+    score: 0.3,
     runtime: [
-      // Common axios config patterns
-      /headers:\s*\{/,
-      /params:\s*\{/,
-      /data:\s*\{/,
-      /timeout:\s*\d+/,
+      // Axios-specific config patterns with type annotations
+      /(?:AxiosRequestConfig|AxiosResponse|AxiosInstance|AxiosError)[<\s]/,
 
-      // Transformers
-      /transformRequest/,
-      /transformResponse/,
+      // Axios-specific interceptor patterns
+      /\.interceptors\.request\.use\(\s*(?:async\s*)?\([^)]*\)\s*=>/,
+      /\.interceptors\.response\.use\(\s*(?:async\s*)?\([^)]*\)\s*=>/,
 
-      // Error handling patterns
-      /catch\s*\(\s*(?:error|err|e)\s*\)\s*{\s*(?:if\s*\()?.*?[Aa]xios/,
-      /if\s*\(\s*error\.response\)/,
+      // Axios-specific error handling
+      /catch\s*\(\s*(?:error|err|e)\s*\)\s*{\s*(?:if\s*\()?error\.isAxiosError/,
+      /if\s*\(\s*error\.isAxiosError\s*\)/,
 
-      // Interceptors
-      /\.interceptors\.[^.]+\.(use|eject)/,
-      /request\.use\(/,
-      /response\.use\(/,
+      // Axios-specific request patterns
+      /axios\s*\(\s*\{\s*(?:method|url|baseURL|headers|data|params):/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Standard filenames
-      /axios(?:\.min)?\.js$/i,
-      /axios-\w+\.js$/i,
+      // Axios-specific library files
+      /\/axios(?:\.min)?\.js$/i,
 
-      // Common project patterns
-      /api(?:-)?client\.js$/i,
-      /http(?:-)?client\.js$/i,
-      /axios(?:-)?instance\.js$/i,
-      /axios(?:-)?config\.js$/i,
+      // Axios-specific configuration files
+      /axios\.config\.js$/i,
+      /axios-instance\.js$/i,
 
-      // Common chunk names
-      /\baxios\.[a-f0-9]+\.js$/i,
-      /\bapi\.[a-f0-9]+\.js$/i,
-      /\bhttp\.[a-f0-9]+\.js$/i,
+      // Build output specific to axios
+      /\baxios\.[a-f0-9]{8}\.js$/i, // Build hash pattern
     ],
   },
 ];

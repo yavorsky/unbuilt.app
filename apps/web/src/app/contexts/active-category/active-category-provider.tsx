@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import { ActiveCategoryContext } from './active-category-context';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AnalysisKeys } from '@unbuilt/analyzer';
+import { getCategoryLabel } from '@/app/utils/getCategoryLabel';
 
 export function ActiveCategoryProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -30,7 +31,12 @@ export function ActiveCategoryProvider({ children }: { children: ReactNode }) {
   }, [router, searchParams]);
 
   const value = useMemo(() => {
-    return { activeCategory, updateActiveCategory, clearActiveCategory };
+    return {
+      activeCategory,
+      activeCategoryLabel: getCategoryLabel(activeCategory),
+      updateActiveCategory,
+      clearActiveCategory,
+    };
   }, [activeCategory, updateActiveCategory, clearActiveCategory]);
 
   return (

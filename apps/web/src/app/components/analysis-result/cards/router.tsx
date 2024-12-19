@@ -9,15 +9,13 @@ const supportedOptions = Object.keys(router.patterns).map(capitalize);
 
 export const RouterCard: FC<{
   router: AnalyzeResult['analysis']['router'] | undefined;
-  onCardSelect: (label: AnalysisKeys) => void;
-}> = ({ router, onCardSelect }) => {
+}> = ({ router }) => {
   return (
     <SingleResultAnalysisCard
       name="router"
       supportedOptions={supportedOptions}
       analysis={router}
       Icon={Calendar}
-      onCardSelect={onCardSelect}
     />
   );
 };
