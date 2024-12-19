@@ -1,109 +1,109 @@
 import { Page } from 'playwright';
 
+// Jotai internal types
+interface JotaiAtom<Value = unknown> {
+  init?: Value;
+  read?: (get: () => void) => Value | Promise<Value>;
+  write?: (get: () => void, set: () => void, update: unknown) => void;
+  debugLabel?: string;
+}
+
+interface JotaiStore {
+  get: (atom: JotaiAtom) => unknown;
+  set: (atom: JotaiAtom, update: unknown) => void;
+  sub: (atom: JotaiAtom, callback: () => void) => () => void;
+}
+
+interface JotaiGlobals {
+  __JOTAI_DEBUG_LABEL_MAP__?: Map<string, string>;
+  __JOTAI_DEVTOOLS_GLOBAL_HOOK__?: unknown;
+}
+
 export const jotai = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Jotai imports (includes minified variants)
-      /["'](?:j|jo|jot)ai["']/,
-      /["'](?:j|jo|jot)ai\/(?:utils|devtools|babel)["']/,
+      // Jotai's unique atom creation pattern
+      /function\s+atom\s*\(\s*initialValue\s*,\s*read\s*,\s*write\s*\)\s*\{\s*(?:const|let|var)\s+config\s*=\s*\{\s*init:/,
 
-      // Core atom functions that survive minification
-      /atom\s*\(/,
-      /atomWith\w+\s*\(/,
-      /useAtom\s*\(/,
-      /useAtomValue\s*\(/,
-      /useSetAtom\s*\(/,
-      /useAtomCallback\s*\(/,
+      // Jotai's specific provider implementation
+      /function\s+Provider\s*\(\s*\{\s*children\s*,\s*store\s*\}\s*\)\s*\{\s*(?:const|let|var)\s+providerStore\s*=\s*store\s*\|\|\s*createStore\s*\(\)/,
 
-      // Provider and utils
-      /Provider\s*(?:value|store)?\s*=/,
-      /atomFamily\s*\(/,
-      /selectAtom\s*\(/,
-      /splitAtom\s*\(/,
+      // Jotai's unique derived atom pattern
+      /function\s+selectAtom\s*\(\s*anAtom\s*,\s*selector\s*,\s*equalityFn\s*\)\s*\{\s*return\s*atom\s*\(/,
 
-      // Internal Jotai markers
-      /__JOTAI__/,
-      /\$jotai/,
-      /RESET/,
+      // Jotai's specific store creation
+      /function\s+createStore\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+atomValues\s*=\s*new\s+Map/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Jotai DevTools
-          hasDevTools:
-            !!window.__JOTAI_DEVTOOLS_EXTENSION__ ||
-            !!window.__JOTAI_DEBUG__ ||
-            !!window.__JDT__,
+        const isJotaiAtom = (obj: unknown): obj is JotaiAtom => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
 
-          // Check for store
-          hasStore:
-            !!window.__JOTAI__ || !!window.__JOT__ || !!window.jotaiStore,
+          const atom = obj as Partial<JotaiAtom>;
 
-          // Check for Provider
-          hasProvider: !!window.JotaiProvider || !!window.jotaiProvider,
-
-          // Check for internal APIs
-          hasApi:
-            typeof window.createStore === 'function' ||
-            typeof window.atom === 'function',
+          return !!(
+            (atom.read !== undefined || atom.init !== undefined) &&
+            (atom.debugLabel === undefined ||
+              typeof atom.debugLabel === 'string')
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        const isJotaiStore = (obj: unknown): obj is JotaiStore => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
+
+          const store = obj as Partial<JotaiStore>;
+
+          return !!(
+            typeof store.get === 'function' &&
+            typeof store.set === 'function' &&
+            typeof store.sub === 'function'
+          );
+        };
+
+        const globalObj = window as Window & JotaiGlobals;
+
+        return !!(
+          globalObj.__JOTAI_DEBUG_LABEL_MAP__ ||
+          globalObj.__JOTAI_DEVTOOLS_GLOBAL_HOOK__ ||
+          Object.values(globalObj).some(
+            (obj) => isJotaiAtom(obj) || isJotaiStore(obj)
+          )
+        );
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'atomUtils' as const,
+    score: 0.3,
     runtime: [
-      // Atom creation and usage patterns
-      /atom\s*\(\s*null\)/,
-      /atom\s*\(\s*\(get\)\s*=>/,
-      /atomWith\w+\s*\(\s*[\w\d]+\s*,/,
+      // Jotai's unique atom utilities
+      /function\s+splitAtom\s*\(\s*anAtom\s*,\s*keyExtractor\s*\)\s*\{\s*return\s*atom\s*\(/,
 
-      // Common utility patterns
-      /get\s*\(\s*\w+Atom\)/,
-      /scope\s*\(/,
-      /loadable\s*\(/,
+      // Jotai's specific focus atom implementation
+      /function\s+focusAtom\s*\(\s*anAtom\s*,\s*(?:getter|focus)\s*\)\s*\{\s*return\s*atom\s*\(/,
 
-      // Internal implementation details
-      /\._value/,
-      /\._promise/,
-      /\._mounted/,
-      /\._listeners/,
-      /\._debugLabel/,
-      /\._registry/,
-
-      // Common error messages and debug patterns
-      /atom.*not.*found/i,
-      /invalid.*atom/i,
-      /cannot.*read.*value/i,
-      /debugLabel:/,
+      // Jotai's unique atom family pattern
+      /function\s+atomFamily\s*\(\s*initializeAtom\s*,\s*areEqual\s*\)\s*\{\s*(?:const|let|var)\s+atoms\s*=\s*new\s+Map/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Standard filenames
-      /(?:j|jo|jot)ai(?:\.min)?\.js$/i,
-      /jotai\/(?:utils|devtools|babel)/i,
-      /jotai-\w+\.js$/i,
+    name: 'hooks' as const,
+    score: 0.3,
+    runtime: [
+      // Jotai's specific hook implementations
+      /function\s+useAtom\s*\(\s*atom\s*,\s*scope\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*useStore\s*\(/,
 
-      // Build output patterns
-      /\b(?:jotai|atom)\.[a-f0-9]+\.js$/i,
+      // Jotai's unique atom value subscription
+      /function\s+useAtomValue\s*\(\s*atom\s*,\s*scope\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*useStore\s*\(/,
 
-      // Common Jotai-related filenames
-      /atoms?\.?\w*\.js$/i,
-      /atoms?\/\w+\.js$/i,
-      /use[A-Z]\w+Atom\.js$/i,
-      /[a-z]+Atom\.js$/i,
-
-      // Vendor chunks that might contain Jotai
-      /vendors?[-~.]\w*\.js$/i,
-      /commons[-~.]\w*\.js$/i,
-      /main[-~.]\w*\.js$/i,
+      // Jotai's specific atom setter implementation
+      /function\s+useSetAtom\s*\(\s*atom\s*,\s*scope\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*useStore\s*\(/,
     ],
   },
 ];

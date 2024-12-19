@@ -1,110 +1,88 @@
 import { Page } from 'playwright';
 
+// Zustand store types
+interface StoreApi<T> {
+  setState: (partial: Partial<T> | ((state: T) => Partial<T>)) => void;
+  getState: () => T;
+  subscribe: (listener: (state: T, prevState: T) => void) => () => void;
+  destroy: () => void;
+}
+
+interface CreateStoreImpl {
+  initStore?: (createState: unknown) => unknown;
+  ['$$typeof']?: symbol;
+}
+
+interface ZustandStore extends StoreApi<unknown>, CreateStoreImpl {}
+
 export const zustand = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Zustand imports (includes minified variants)
-      /["'](?:z|zu|zus)tand["']/,
-      /["'](?:z|zu|zus)tand\/(?:middleware|vanilla|devtools)["']/,
+      // Zustand's unique store creation implementation
+      /function\s+createStore\s*\(\s*createState\s*\)\s*\{\s*(?:let|var)\s+state;\s*(?:const|let|var)\s+listeners\s*=\s*new\s+Set\(\)/,
 
-      // Core Zustand functions that survive minification
-      /create\s*\(\s*\(?(?:set|get)\)?/,
-      /createStore\s*\(/,
-      /useStore\s*\(/,
-      /setState\s*\(/,
-      /getState\s*\(/,
+      // Zustand's specific setState implementation
+      /function\s+setState\s*\(\s*partial\s*,\s*replace\s*\)\s*\{\s*(?:const|let|var)\s+nextState\s*=\s*typeof\s+partial\s*===\s*['"]function['"]\s*\?\s*partial\(state\)\s*:\s*partial/,
 
-      // Middleware patterns
-      /persist\s*\(/,
-      /devtools\s*\(/,
-      /immer\s*\(/,
-      /subscribeWithSelector\s*\(/,
+      // Zustand's unique subscription system
+      /function\s+subscribe\s*\(\s*listener\s*\)\s*\{\s*listeners\.add\s*\(\s*listener\s*\);\s*return\s*\(\s*\)\s*=>\s*listeners\.delete\s*\(\s*listener\s*\)/,
 
-      // Internal Zustand markers
-      /__ZUSTAND__/,
-      /\$zustand/,
-      /createImpl/,
+      // Zustand's specific store initialization pattern
+      /initStore\s*=\s*\(\s*createState\s*\)\s*=>\s*\{\s*(?:const|let|var)\s+store\s*=\s*createStore\s*\(\s*createState\s*\)/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Zustand DevTools
-          hasDevTools:
-            !!window.__ZUSTAND_DEVTOOLS_EXTENSION__ ||
-            !!window.__ZUSTAND_DEV__ ||
-            !!window.__ZDT__,
+        const isZustandStore = (obj: unknown): obj is ZustandStore => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
 
-          // Check for store
-          hasStore:
-            !!window.__ZUSTAND__ || !!window.__ZUS__ || !!window.zustandStore,
+          const store = obj as Partial<ZustandStore>;
 
-          // Check for persist middleware
-          hasPersist:
-            !!window.zustandPersist ||
-            !!window.__ZUSTAND_PERSIST__ ||
-            !!window.__ZUS_PERSIST__,
+          const hasStoreApi =
+            typeof store.setState === 'function' &&
+            typeof store.getState === 'function' &&
+            typeof store.subscribe === 'function' &&
+            typeof store.destroy === 'function';
 
-          // Check for internal APIs
-          hasApi:
-            typeof window.createStore === 'function' ||
-            typeof window.create === 'function',
+          const hasZustandMarkers =
+            store.initStore !== undefined || store['$$typeof'] !== undefined;
+
+          return hasStoreApi && hasZustandMarkers;
         };
-        return Object.values(markers).some(Boolean);
+
+        return Object.values(window).some(isZustandStore);
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'middleware' as const,
+    score: 0.3,
     runtime: [
-      // Store creation and usage patterns
-      /set\s*\(\s*\(?state\)?/,
-      /get\s*\(\s*\)/,
-      /subscribe\s*\(/,
-      /produce\s*\(/,
+      // Zustand's unique middleware implementation
+      /function\s+devtools\s*\(\s*fn\s*,\s*options\s*\)\s*\{\s*return\s*\(\s*set\s*,\s*get\s*,\s*api\s*\)\s*=>\s*\{\s*(?:const|let|var)\s+originalState/,
 
-      // Common state update patterns
-      /set\s*\(\s*\(state\)\s*=>\s*\({/,
-      /set\s*\(\s*\(state\)\s*=>\s*produce/,
-      /produce\s*\(\s*state/,
+      // Zustand's specific persist middleware
+      /function\s+persist\s*\(\s*config\s*,\s*options\s*\)\s*\{\s*return\s*\(\s*set\s*,\s*get\s*,\s*api\s*\)\s*=>\s*\{\s*(?:let|var|const)\s+state/,
 
-      // Internal implementation details
-      /\._listeners/,
-      /\._state/,
-      /\._hasHydrated/,
-      /\._persist/,
-
-      // Common error messages
-      /selector/i,
-      /middleware/i,
-      /store.*already.*exists/i,
-      /cannot.*set.*state/i,
+      // Zustand's unique immer integration
+      /function\s+immer\s*\(\s*config\s*\)\s*\{\s*return\s*\(\s*set\s*,\s*get\s*,\s*api\s*\)\s*=>\s*config\s*\(\s*\(\s*fn\s*\)\s*=>/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Standard filenames
-      /(?:z|zu|zus)tand(?:\.min)?\.js$/i,
-      /zustand\/middleware/i,
-      /zustand\/vanilla/i,
+    name: 'reactBindings' as const,
+    score: 0.3,
+    runtime: [
+      // Zustand's specific selector implementation
+      /function\s+shallow\s*\(\s*objA\s*,\s*objB\s*\)\s*\{\s*if\s*\(\s*Object\.is\s*\(\s*objA\s*,\s*objB\s*\)\s*\)\s*\{\s*return\s*true/,
 
-      // Build output patterns
-      /\b(?:zustand|store)\.[a-f0-9]+\.js$/i,
+      // Zustand's unique hook implementation
+      /function\s+useStore\s*\(\s*api\s*,\s*selector\s*\)\s*\{\s*(?:const|let|var)\s+\[\s*cache\s*,\s*setCache\s*\]\s*=\s*useState\s*\(\s*\(\s*\)\s*=>\s*selector\s*\(\s*api\.getState\s*\(\s*\)\s*\)\s*\)/,
 
-      // Common Zustand-related filenames
-      /store\.?\w*\.js$/i,
-      /stores?\/\w+\.js$/i,
-      /use[A-Z]\w+Store\.js$/i,
-      /[a-z]+Store\.js$/i,
-
-      // Vendor chunks
-      /vendors?[-~.]\w*\.js$/i,
-      /commons[-~.]\w*\.js$/i,
-      /main[-~.]\w*\.js$/i,
+      // Zustand's specific context implementation
+      /function\s+createContext\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+ZustandContext\s*=\s*React\.createContext\s*\(/,
     ],
   },
 ];

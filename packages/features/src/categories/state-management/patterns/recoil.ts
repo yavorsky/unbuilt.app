@@ -1,117 +1,104 @@
 import { Page } from 'playwright';
 
+// Recoil internal types
+interface RecoilAtom<T = unknown> {
+  key: string;
+  __recoilKey?: number;
+  defaultValue: T;
+}
+
+interface RecoilSelector<T = unknown> {
+  key: string;
+  get: (opts: { get: () => void }) => T;
+  __recoilSelector?: boolean;
+}
+
+interface RecoilStore {
+  getState?: () => void;
+  replaceState?: () => void;
+  subscribeToTransactions?: () => void;
+  addTransactionMetadata?: () => void;
+}
+
+interface RecoilGlobals {
+  __RECOIL_STATE__?: RecoilStore;
+  __RECOIL_DEVTOOLS_EXTENSION__?: unknown;
+  __RECOIL_DEBUG_LABEL_MAP__?: Map<string, string>;
+}
+
 export const recoil = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Recoil imports (includes minified variants)
-      /["'](?:r|re|rec)oil["']/,
-      /["'](?:r|re|rec)oil\/(?:utils|devtools)["']/,
+      // Recoil's unique atom creation pattern
+      /function\s+atom\s*\(\s*\{\s*key\s*:\s*[^,]+,\s*default\s*:/,
 
-      // Core Recoil functions that survive minification
-      /RecoilRoot/,
-      /atom\s*\(/,
-      /selector\s*\(/,
-      /atomFamily\s*\(/,
-      /selectorFamily\s*\(/,
+      // Recoil's specific selector implementation
+      /function\s+selector\s*\(\s*\{\s*key\s*:\s*[^,]+,\s*get\s*:/,
 
-      // Hook patterns
-      /useRecoilState\s*\(/,
-      /useRecoilValue\s*\(/,
-      /useSetRecoilState\s*\(/,
-      /useResetRecoilState\s*\(/,
-      /useRecoilCallback\s*\(/,
+      // Recoil's unique atom family pattern
+      /function\s+atomFamily\s*\(\s*\{\s*key\s*:[^,]+,\s*default\s*:/,
 
-      // Internal Recoil markers
-      /__RECOIL_DEVTOOLS_EXTENSION__/,
-      /__RECOIL_STATE__/,
-      /RecoilEnv/,
+      // Recoil's specific core initialization
+      /function\s+RecoilRoot\s*\(\s*\{\s*(?:initializeState|override)\s*:/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Recoil DevTools
-          hasDevTools:
-            !!window.__RECOIL_DEVTOOLS_EXTENSION__ ||
-            !!window.__RECOIL_DEBUG__ ||
-            !!window.__RDT__,
+        const isRecoilValue = (
+          obj: unknown
+        ): obj is RecoilAtom | RecoilSelector => {
+          if (!obj || typeof obj !== 'object') {
+            return false;
+          }
 
-          // Check for store
-          hasStore:
-            !!window.__RECOIL_STATE__ ||
-            !!window.__RECOIL__ ||
-            !!window.recoilStore,
+          const value = obj as Partial<RecoilAtom & RecoilSelector>;
 
-          // Check for environment
-          hasEnv: !!window.RecoilEnv || !!window.__RECOIL_ENV__,
-
-          // Check for core functions
-          hasApi:
-            typeof window.RecoilRoot === 'function' ||
-            typeof window.atom === 'function',
+          return !!(
+            typeof value.key === 'string' &&
+            (value.__recoilKey !== undefined ||
+              value.__recoilSelector !== undefined ||
+              (typeof value.get === 'function' && 'defaultValue' in value))
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        const globalObj = window as Window & RecoilGlobals;
+
+        return !!(
+          globalObj.__RECOIL_STATE__ ||
+          globalObj.__RECOIL_DEVTOOLS_EXTENSION__ ||
+          globalObj.__RECOIL_DEBUG_LABEL_MAP__ ||
+          Object.values(globalObj).some(isRecoilValue)
+        );
       });
     },
   },
   {
-    name: 'patterns' as const,
-    score: 0.2,
+    name: 'stateManagement' as const,
+    score: 0.3,
     runtime: [
-      // Atom and selector patterns
-      /default:\s*\w+/,
-      /key:\s*["']\w+["']/,
-      /get\s*\(\s*\{\s*get\s*\}\s*\)/,
-      /set\s*\(\s*\{\s*[gs]et\s*\}\s*,/,
+      // Recoil's unique transaction system
+      /function\s+Snapshot\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+(?:store|getState|replaceState)\s*=/,
 
-      // Common patterns in usage
-      /waitForAll\s*\(/,
-      /waitForAny\s*\(/,
-      /waitForNone\s*\(/,
-      /noWait\s*\(/,
+      // Recoil's specific state management
+      /function\s+applyAtomValueWrites\s*\(\s*store\s*,\s*writes\s*\)\s*\{/,
 
-      // Internal implementation details
-      /\._state/,
-      /\._contents/,
-      /\._effects/,
-      /\._loadable/,
-      /\._version/,
-
-      // Common error messages
-      /duplicate.*atom/i,
-      /invalid.*selector/i,
-      /missing.*key/i,
-      /RecoilRoot.*missing/i,
+      // Recoil's unique cache implementation
+      /function\s+setInvalidateMemoizedSnapshot\s*\(\s*(?:store|state)\s*\)\s*\{/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Standard filenames
-      /(?:r|re|rec)oil(?:\.min)?\.js$/i,
-      /recoil\/utils/i,
-      /recoil-\w+\.js$/i,
+    name: 'hooks' as const,
+    score: 0.3,
+    runtime: [
+      // Recoil's specific hook implementations
+      /function\s+useRecoilState\s*\(\s*recoilState\s*\)\s*\{\s*(?:const|let|var)\s+\[value\s*,\s*setValue\]\s*=/,
 
-      // Build output patterns
-      /\b(?:recoil|atom|selector)\.[a-f0-9]+\.js$/i,
+      // Recoil's unique transaction observation
+      /function\s+useRecoilTransactionObserver\s*\(\s*callback\s*\)\s*\{/,
 
-      // Common Recoil-related filenames
-      /atoms?\.?\w*\.js$/i,
-      /selectors?\.?\w*\.js$/i,
-      /(?:atom|selector)s?\/\w+\.js$/i,
-      /recoil[A-Z]\w+\.js$/i,
-      /use[A-Z]\w+(?:Atom|Selector)\.js$/i,
-
-      // Common directory patterns
-      /(?:store|state)s?\/atoms?\//i,
-      /(?:store|state)s?\/selectors?\//i,
-
-      // Vendor chunks
-      /vendors?[-~.]\w*\.js$/i,
-      /commons[-~.]\w*\.js$/i,
-      /main[-~.]\w*\.js$/i,
+      // Recoil's specific callback hooks
+      /function\s+useRecoilCallback\s*\(\s*(?:fn|callback)\s*,\s*deps\s*\)\s*\{/,
     ],
   },
 ];
