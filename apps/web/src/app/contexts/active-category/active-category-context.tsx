@@ -5,6 +5,7 @@ import { createContext } from 'react';
 
 type ActiveCategoryContextType = {
   activeCategory: AnalysisKeys | null;
+  activeCategoryLabel: string | null;
   updateActiveCategory: (activeCategory: AnalysisKeys) => void;
   clearActiveCategory: () => void;
 };

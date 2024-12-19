@@ -3,122 +3,69 @@ import { Page } from 'playwright';
 export const apollo = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core Apollo imports
-      /["']@apollo\/client["']/,
-      /["']apollo-client["']/,
-      /["']apollo-boost["']/,
+      // Core Apollo specific imports
+      /["']@apollo\/client(?:\/|["'])/, // Matches both regular and minified imports
 
-      // Client creation
-      /new\s+ApolloClient\s*\(/,
-      /createApolloClient/,
-      /ApolloProvider\b/,
+      // Client creation - specific to Apollo
+      /new\s+ApolloClient\s*\({/, // Added { to avoid false positives
+      /ApolloProvider[\s>]/, // Added > for JSX detection
 
-      // Core operations
-      /useQuery\s*\(/,
-      /useMutation\s*\(/,
-      /useLazyQuery\s*\(/,
-      /useSubscription\s*\(/,
+      // Apollo-specific hooks
+      /(?:^|\s|return\s+)useQuery\s*<?\s*(?:\{|$)/, // More specific pattern for useQuery
+      /(?:^|\s|return\s+)useMutation\s*<?\s*(?:\{|$)/,
+      /(?:^|\s|return\s+)useLazyQuery\s*<?\s*(?:\{|$)/,
+      /(?:^|\s|return\s+)useSubscription\s*<?\s*(?:\{|$)/,
 
-      // GraphQL patterns
-      /gql\s*`/,
-      /gql\s*\(/,
-      /graphql\s*`/,
-      /fragments:/,
+      // Apollo-specific GraphQL template tag
+      /gql\s*`[\s\S]*?`/, // Matches complete gql template literals
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Apollo Client
-          hasApollo:
-            !!window.__APOLLO_CLIENT__ ||
-            !!window.apollo ||
-            !!window.ApolloClient,
-
-          // Check for dev tools
-          hasDevTools: !!window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__,
-
-          // Check for state
-          hasState: !!window.__APOLLO_STATE__,
-
-          // Check for client initialization
-          hasCache: !!window.InMemoryCache || !!window.ApolloCache,
-        };
-        return Object.values(markers).some(Boolean);
+        return !!(
+          // Check for Apollo-specific global markers
+          (
+            window.__APOLLO_CLIENT__ ||
+            window.__APOLLO_DEVTOOLS_GLOBAL_HOOK__ ||
+            window.__APOLLO_STATE__
+          )
+        );
       });
     },
   },
   {
     name: 'patterns' as const,
-    score: 0.2,
+    score: 0.3,
     runtime: [
-      // Cache configuration
-      /InMemoryCache\s*\(/,
-      /typePolicies:/,
-      /possibleTypes:/,
-      /dataIdFromObject:/,
+      // Apollo-specific cache configuration
+      /new\s+InMemoryCache\s*\(/,
 
-      // Link configuration
-      /HttpLink\s*\(/,
-      /ApolloLink\.from\s*\(/,
-      /WebSocketLink\s*\(/,
-      /errorLink/,
-      /authLink/,
-      /retryLink/,
+      // Apollo-specific link configuration
+      /new\s+HttpLink\s*\({[^}]*uri:/, // More specific HttpLink pattern
+      /ApolloLink\.from\s*\(\s*\[/, // More specific link composition
+      /new\s+WebSocketLink\s*\({/,
 
-      // Error handling
-      /onError\s*\(\s*\{/,
-      /errorPolicy:/,
-      /networkError:/,
-      /graphQLErrors:/,
+      // Apollo-specific cache operations
+      /(?:client|cache)\s*\.\s*(?:read|write)(?:Query|Fragment)\s*\(/,
 
-      // Common operations
-      /client\.query\s*\(/,
-      /client\.mutate\s*\(/,
-      /client\.subscribe\s*\(/,
-
-      // Cache operations
-      /writeQuery\s*\(/,
-      /readQuery\s*\(/,
-      /writeFragment\s*\(/,
-      /readFragment\s*\(/,
-
-      // Field policies
-      /merge:\s*function/,
-      /read:\s*function/,
-      /keyArgs:/,
+      // Apollo-specific error handling
+      /onError\s*\(\s*\{\s*(?:graphQLErrors|networkError):/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library files
-      /apollo(?:-client)?(?:\.min)?\.js$/i,
+      // Apollo-specific library files
       /@apollo\/client/i,
-      /apollo-\w+\.js$/i,
+      /apollo-client(?:\.min)?\.js$/i,
 
-      // Common integration patterns
-      /apollo(?:-)?config\.js$/i,
-      /apollo(?:-)?client\.js$/i,
-      /graphql(?:-)?client\.js$/i,
+      // Apollo configuration files
+      /apollo\.config\.js$/i,
 
-      // Common project patterns
-      /graphql\/client/i,
-      /graphql\/queries/i,
-      /graphql\/mutations/i,
-      /\.(?:graphql|gql)$/i,
-
-      // Build output patterns
-      /\bapollo\.[a-f0-9]+\.js$/i,
-      /\bgraphql\.[a-f0-9]+\.js$/i,
-      /\bqueries\.[a-f0-9]+\.js$/i,
-
-      // Common folder structures
-      /services\/apollo/i,
-      /lib\/apollo/i,
-      /config\/apollo/i,
+      // Common Apollo project patterns that are unlikely to conflict
+      /\bapollo\.[a-f0-9]{8}\.js$/i, // Build hash pattern
     ],
   },
 ];

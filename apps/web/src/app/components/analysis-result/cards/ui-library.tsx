@@ -1,22 +1,21 @@
 import { FC } from 'react';
 import { Component } from 'lucide-react';
-import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalyzeResult } from '@unbuilt/analyzer';
+import { uiLibrary as uiLibraryFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
-import { uiLibrary } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(uiLibrary.patterns).map(capitalize);
+const supportedOptions = Object.keys(uiLibraryFeature.patterns).map(capitalize);
 
 export const UILibraryCard: FC<{
   uiLibrary: AnalyzeResult['analysis']['uiLibrary'] | undefined;
-  onCardSelect: (label: AnalysisKeys) => void;
-}> = ({ uiLibrary, onCardSelect }) => {
+}> = ({ uiLibrary }) => {
   return (
     <SingleResultAnalysisCard
       name="uiLibrary"
       analysis={uiLibrary}
       Icon={Component}
-      onCardSelect={onCardSelect}
+      meta={uiLibraryFeature?.meta}
       supportedOptions={supportedOptions}
     />
   );

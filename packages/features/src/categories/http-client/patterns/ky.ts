@@ -3,102 +3,86 @@ import { Page } from 'playwright';
 export const ky = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core imports and instances
-      /["']ky["']/,
-      /["']ky-universal["']/,
-      /ky\.create\(/,
-      /ky\.extend\(/,
+      // Core Ky-specific imports
+      /import\s+(?:\* as\s+)?ky\s+from\s+['"](?:ky|ky-universal)['"]/,
+      /require\s*\(\s*['"](?:ky|ky-universal)['"]\s*\)/,
 
-      // HTTP methods with ky's unique chaining
-      /ky(?:\.default)?\.(?:get|post|put|patch|delete|head)\s*\([^)]*\)\.(?:json|text|blob|arrayBuffer|formData)\s*\(/,
-      /ky\s*\([^)]*\)\.(?:json|text|blob|arrayBuffer|formData)\s*\(/,
+      // Ky-specific instance creation
+      /ky\.(?:create|extend)\s*\(\s*\{[^}]*(?:prefixUrl|throwHttpErrors|retry):/,
 
-      // Ky-specific options
-      /prefixUrl:/,
-      /retry:\s*(?:\d+|\{)/,
-      /throwHttpErrors:/,
-      /searchParams:/,
-      /credentials:/,
-      /hooks:/,
+      // Ky's unique method chaining patterns
+      /ky(?:\.default)?\s*\([^)]*\)\.(?:json|text|blob|arrayBuffer|formData)\s*\(\s*\)/,
+      /ky(?:\.default)?\.(?:get|post|put|patch|delete|head)\s*\([^)]*\)\.(?:json|text|blob|arrayBuffer|formData)\s*\(\s*\)/,
+
+      // Ky-specific options that don't exist in other libraries
+      /throwHttpErrors:\s*(?:true|false)/,
+      /prefixUrl:\s*(?:['"`]|new URL)/,
+      /hooks:\s*\{\s*(?:beforeRequest|afterResponse|beforeRetry|beforeError):/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for global ky
-          hasKy: typeof window.ky === 'function' && 'extend' in window.ky,
-
-          // Check for extended instances
-          hasExtended: Object.values(window).some(
-            (obj) =>
-              obj &&
-              typeof obj === 'function' &&
-              'extend' in obj &&
-              'create' in obj
-          ),
-
-          // Check for ky's modifications to fetch
-          hasFetchExtensions:
-            typeof window.fetch === 'function' &&
-            window.fetch.toString().includes('ky'),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to type-check ky object
+        const isKyInstance = (obj: any) => {
+          return (
+            obj &&
+            typeof obj === 'function' &&
+            'extend' in obj &&
+            'create' in obj &&
+            obj.toString().includes('ky')
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        return !!(
+          // Check for Ky-specific features
+          (
+            (window.ky && isKyInstance(window.ky)) ||
+            Object.values(window).some(
+              (obj) => isKyInstance(obj) && 'HTTPError' in obj
+            )
+          )
+        );
       });
     },
   },
   {
     name: 'patterns' as const,
-    score: 0.2,
+    score: 0.3,
     runtime: [
-      // Hook patterns
-      /beforeRequest:\s*\[/,
-      /afterResponse:\s*\[/,
-      /beforeRetry:\s*\[/,
-      /beforeError:\s*\[/,
+      // Ky-specific hook patterns
+      /beforeRequest:\s*\[\s*async\s*\([^)]*\)\s*=>\s*\{[^}]*\}\s*\]/,
+      /afterResponse:\s*\[\s*async\s*\([^)]*\)\s*=>\s*\{[^}]*\}\s*\]/,
 
-      // Response type handling
-      /\.json\s*\(\s*\{/,
-      /\.text\s*\(\s*\{/,
-      /\.blob\s*\(\s*\{/,
-      /\.arrayBuffer\s*\(\s*\{/,
-      /\.formData\s*\(\s*\{/,
+      // Ky-specific error handling
+      /if\s*\(\s*error\s+instanceof\s+ky\.HTTPError\s*\)/,
+      /throw\s+new\s+ky\.HTTPError\s*\(/,
 
-      // Error handling patterns
-      /HTTPError\b/,
-      /TimeoutError\b/,
-      /if\s*\(\s*error instanceof HTTPError\s*\)/,
+      // Ky-specific retry configuration
+      /retry:\s*\{\s*(?:limit|methods|statusCodes|afterStatusCodes):/,
 
-      // Common configurations
-      /timeout:\s*\d+/,
-      /retry:\s*\{[^}]*\}/,
-      /onDownloadProgress:/,
+      // Ky-specific progress monitoring
+      /onDownloadProgress:\s*\(\s*\{\s*percent\s*\}\s*\)\s*=>/,
+      /onUploadProgress:\s*\(\s*\{\s*percent\s*\}\s*\)\s*=>/,
+
+      // Ky-specific search params handling
+      /searchParams:\s*(?:new\s+URLSearchParams|new\s+URL|['"`]|{)/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library files
-      /ky(?:\.min)?\.js$/i,
-      /ky-universal/i,
-      /node_modules\/ky\//i,
+      // Ky-specific library files
+      /(?:^|\/)ky(?:\.min)?\.js$/i,
+      /(?:^|\/)ky-universal(?:\.min)?\.js$/i,
 
-      // Common integration patterns
-      /api(?:-)?client\.js$/i,
-      /http(?:-)?client\.js$/i,
-      /ky(?:-)?instance\.js$/i,
-      /ky(?:-)?config\.js$/i,
+      // Ky-specific configuration files
+      /ky-instance\.js$/i,
+      /ky-config\.js$/i,
 
-      // Build output patterns
-      /\bky\.[a-f0-9]+\.js$/i,
-      /\bapi\.[a-f0-9]+\.js$/i,
-      /\bhttp\.[a-f0-9]+\.js$/i,
-
-      // Common project patterns
-      /services\/api/i,
-      /utils\/http/i,
-      /lib\/ky/i,
+      // Build output specific to Ky
+      /\bky\.[a-f0-9]{8}\.js$/i, // Build hash pattern
     ],
   },
 ];

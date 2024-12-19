@@ -7,7 +7,7 @@ import {
   LucideProps,
 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalyzeResult } from '@unbuilt/analyzer';
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/collapsible';
 import { ConfidenceIndicator } from '@/app/components/confidence-indicator';
 import { capitalize } from 'lodash-es';
+import { useActiveCategory } from '@/app/contexts/active-category';
 
 export function MultiResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
@@ -22,17 +23,17 @@ export function MultiResultAnalysisCard<
 >({
   name,
   analysis,
-  onCardSelect,
   Icon,
 }: {
   name: N;
   analysis: A | undefined;
   supportedOptions: string[];
   Icon: FC<LucideProps>;
-  onCardSelect: (label: AnalysisKeys) => void;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isLoading = !analysis;
+
+  const { updateActiveCategory } = useActiveCategory();
 
   // Separate libraries into primary and secondary based on confidence
   const allLibraries = useMemo(() => {
@@ -63,7 +64,7 @@ export function MultiResultAnalysisCard<
   return (
     <Card
       className="bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
-      onClick={() => onCardSelect(name)}
+      onClick={() => updateActiveCategory(name)}
     >
       <CardContent className="p-0">
         <div className="border-b border-gray-800">

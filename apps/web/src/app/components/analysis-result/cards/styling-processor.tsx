@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Paintbrush2 } from 'lucide-react';
@@ -11,15 +11,13 @@ const supportedOptions = Object.keys(stylingProcessor.cssInJsPatterns)
 
 export const StylingProcessorCard: FC<{
   stylingProcessor: AnalyzeResult['analysis']['stylingProcessor'] | undefined;
-  onCardSelect: (label: AnalysisKeys) => void;
-}> = ({ stylingProcessor, onCardSelect }) => {
+}> = ({ stylingProcessor }) => {
   return (
     <SingleResultAnalysisCard
       name="stylingProcessor"
       analysis={stylingProcessor}
       supportedOptions={supportedOptions}
       Icon={Paintbrush2}
-      onCardSelect={onCardSelect}
     />
   );
 };

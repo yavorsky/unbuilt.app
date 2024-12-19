@@ -18,7 +18,8 @@
     "lint": "eslint src"
   },
   "dependencies": {
-    "@unbuilt/resources": "^0.1.0"
+    "@unbuilt/resources": "^0.1.0",
+    "react": "^18"
   },
   "peerDependencies": {
     "playwright": "^1.48.1"

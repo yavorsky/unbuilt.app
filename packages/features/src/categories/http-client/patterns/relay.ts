@@ -3,115 +3,96 @@ import { Page } from 'playwright';
 export const relay = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core imports
-      /["']relay-runtime["']/,
-      /["']react-relay["']/,
-      /["']relay-compiler["']/,
-      /from\s+["']relay-compiler["']/,
+      // Relay-specific imports
+      /import\s+(?:\* as\s+)?(?:Relay|Environment|Network)\s+from\s+['"]relay-runtime['"]/,
+      /import\s+\{[^}]*(?:useFragment|usePaginationFragment|useRefetchableFragment)[^}]*\}\s+from\s+['"]react-relay['"]/,
 
-      // Environment setup
-      /RelayEnvironment\b/,
-      /createEnvironment/,
-      /new\s+Environment\s*\(/,
-      /RelayEnvironmentProvider/,
+      // Relay-specific environment setup
+      /new\s+Environment\s*\(\s*\{[^}]*store:/,
+      /RelayEnvironmentProvider\s+environment/,
 
-      // Core hooks and HOCs
-      /useFragment\s*\(/,
-      /useLazyLoadQuery\s*\(/,
-      /usePaginationFragment\s*\(/,
-      /useRefetchableFragment\s*\(/,
-      /useSubscription\s*\(/,
-      /useMutation\s*\(/,
+      // Relay-specific hooks with type parameters
+      /use(?:Fragment|LazyLoadQuery|PaginationFragment|RefetchableFragment)\s*<[^>]*>/,
 
-      // Relay specific patterns
-      /graphql\s*`[^`]*\b(?:fragment|query|mutation|subscription)\b/,
-      /@refetchable\b/,
-      /@pagination\b/,
-      /@argumentDefinitions\b/,
+      // Relay-specific directives in GraphQL
+      /graphql\s*`[^`]*@(?:refetchable|pagination|argumentDefinitions|connection)\b[^`]*`/,
+
+      // Relay-specific generated artifacts
+      /\$\$\w+_fragment_ref$/,
+      /\$\$\w+_ref$/,
+      /\$\$\w+_graphql$/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Relay runtime
-          hasRelay:
-            !!window.__RELAY_PAYLOADS__ ||
-            !!window.__RELAY_DEBUG__ ||
-            !!window.Relay,
+        const hasRelayMarkers =
+          !!window.__RELAY_PAYLOADS__ ||
+          !!window.__RELAY_STORE__ ||
+          !!window.__RELAY_ENVIRONMENT__;
 
-          // Check for store
-          hasStore: !!window.__RELAY_STORE__ || !!window.RelayModernStore,
-
-          // Check for environment
-          hasEnvironment: !!window.__RELAY_ENVIRONMENT__,
+        const hasRelayStore = () => {
+          try {
+            // Check for Relay-specific store properties
+            return Object.values(window).some(
+              (obj) =>
+                obj &&
+                typeof obj === 'object' &&
+                'holdGC' in obj &&
+                'releasingGC' in obj &&
+                'getStore' in obj &&
+                'getNetwork' in obj
+            );
+          } catch {
+            return false;
+          }
         };
-        return Object.values(markers).some(Boolean);
+
+        return hasRelayMarkers || hasRelayStore();
       });
     },
   },
   {
     name: 'patterns' as const,
-    score: 0.2,
+    score: 0.3,
     runtime: [
-      // Store operations
-      /commitPayload\s*\(/,
-      /commitUpdate\s*\(/,
-      /getStore\s*\(/,
-      /invalidateStore\s*\(/,
+      // Relay-specific store operations
+      /(?:store|environment)\.(?:retain|publish|lookup|notify|subscribe|holdGC|releaseGC)\s*\(/,
 
-      // Network layer
-      /Network\.create\s*\(/,
-      /fetchQuery\s*\(/,
-      /requestSubscription\s*\(/,
+      // Relay-specific network layer
+      /Network\.create\s*\(\s*(?:async\s*)?\([^)]*\)\s*=>\s*\{[^}]*\}\s*\)/,
 
-      // Common patterns in fragments
-      /@connection\b/,
-      /@relay\b/,
-      /@inline\b/,
-      /@skip\b/,
-      /@include\b/,
+      // Relay-specific mutation patterns
+      /commitMutation\s*\(\s*environment\s*,\s*\{[^}]*optimisticResponse:/,
+      /useMutation\s*<\s*\w+Mutation\s*>/,
 
-      // Error handling and updates
-      /onCompleted\s*:/,
-      /onError\s*:/,
-      /optimisticResponse\s*:/,
-      /optimisticUpdater\s*:/,
-      /updater\s*:/,
+      // Relay-specific compiler output
+      /import\s+\w+\$data\s+from\s+['"]\.\/__generated__/,
+      /type\s+\w+\$key\s*=/,
 
-      // Compiler artifacts
-      /\$refType\b/,
-      /\$fragmentType\b/,
-      /\$fragmentRef\b/,
+      // Relay-specific fragment patterns
+      /@refetchable\s*\(\s*queryName:\s*["']\w+["']\s*\)/,
+      /@connection\s*\(\s*key:\s*["']\w+["']\s*\)/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library and config files
-      /relay(?:\.min)?\.js$/i,
-      /relay-compiler\b/,
-      /relay\.config\.js$/i,
-      /\.graphql\.js$/i,
-      /\.relay\.js$/i,
+      // Relay-specific generated files
+      /\/__generated__\/.*\.graphql\.ts$/i,
+      /\.relay\.generated\.[jt]s$/i,
 
-      // Generated files
-      /__generated__\//,
-      /\.graphql\.ts$/i,
-      /\.relay\.generated/i,
+      // Relay-specific configuration
+      /relay\.config\.[jt]s$/i,
+      /relay-compiler\.json$/i,
 
-      // Common project patterns
-      /relay\/environment/i,
-      /relay\/network/i,
-      /mutations\//i,
-      /fragments\//i,
-      /queries\//i,
+      // Relay-specific build artifacts
+      /relay-runtime(?:\.min)?\.js$/i,
+      /react-relay(?:\.min)?\.js$/i,
 
-      // Build outputs
-      /\brelay\.[a-f0-9]+\.js$/i,
-      /\bgraphql\.[a-f0-9]+\.js$/i,
-      /\bqueries\.[a-f0-9]+\.js$/i,
+      // Relay-specific file structure
+      /(?:^|\/)relay\/(?:environment|network|store)/i,
     ],
   },
 ];

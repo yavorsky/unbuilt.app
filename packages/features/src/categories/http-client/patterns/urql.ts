@@ -3,112 +3,91 @@ import { Page } from 'playwright';
 export const urql = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.4,
     runtime: [
-      // Core imports
-      /["']urql["']/,
-      /["']@urql\/\w+["']/,
-      /["']@urql\/(?:core|preact|svelte|exchange|vue)["']/,
+      // urql-specific imports
+      /import\s+\{[^}]*(?:createClient|Provider|useQuery|Client)[^}]*\}\s+from\s+['"]urql['"]/,
+      /import\s+[^'"\n]+from\s+['"]@urql\/(?:core|exchange-[^'"]+)['"]/,
 
-      // Client creation and provider
-      /createClient\s*\(/,
-      /Client\s*\(/,
-      /Provider\b.*\bclient=/,
-      /URQLProvider/,
+      // urql-specific client creation and provider
+      /createClient\s*\(\s*\{[^}]*url:/,
+      /(?:Provider|URQLProvider)\s+value=\{\{?\s*client\s*\}?\}/,
 
-      // Core hooks and operations
-      /useQuery\s*\(/,
-      /useMutation\s*\(/,
-      /useSubscription\s*\(/,
-      /useClient\s*\(/,
+      // urql-specific hooks with type parameters
+      /use(?:Query|Mutation|Subscription)\s*<[^>]*>\s*\(\s*graphql`/,
 
-      // Exchange configuration
-      /exchanges:\s*\[/,
-      /fetchExchange/,
-      /cacheExchange/,
-      /dedupExchange/,
-      /retryExchange/,
+      // urql-specific exchanges
+      /exchanges:\s*\[\s*(?:dedupExchange|cacheExchange|fetchExchange|retryExchange|subscriptionExchange)/,
+      /from\s+['"]@urql\/exchange-[^'"]+['"]/,
+
+      // urql-specific request policies
+      /requestPolicy:\s*['"](?:cache-first|cache-only|network-only|cache-and-network)['"]/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Urql client
-          hasUrql: !!window.urql || !!window.__URQL_DATA__,
+        const hasUrqlMarkers =
+          !!window.__URQL_DATA__ || !!window.__URQL_DEVTOOLS_HOOK__;
 
-          // Check for devtools
-          hasDevTools: !!window.__URQL_DEVTOOLS_HOOK__,
-
-          // Check for exchanges
-          hasExchanges: Object.keys(window).some(
-            (key) =>
-              key.includes('Exchange') && typeof window[key] === 'function'
-          ),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to type-check urql object
+        const isUrqlClient = (obj: any) => {
+          return (
+            obj &&
+            typeof obj === 'object' &&
+            'executeQuery' in obj &&
+            'executeMutation' in obj &&
+            'createRequestOperation' in obj
+          );
         };
-        return Object.values(markers).some(Boolean);
+
+        return (
+          hasUrqlMarkers ||
+          Object.values(window).some((obj) => isUrqlClient(obj))
+        );
       });
     },
   },
   {
     name: 'patterns' as const,
-    score: 0.2,
+    score: 0.3,
     runtime: [
-      // Request policies
-      /requestPolicy:/,
-      /(?:cache-first|cache-only|network-only|cache-and-network)/,
+      // urql-specific client operations
+      /client\.(?:executeQuery|executeMutation|executeSubscription)\s*\(\s*createRequest\s*\(/,
 
-      // Cache operations
-      /cache\.(?:resolve|invalidate|updateQuery)/,
-      /cache\.(?:read|write)Fragment/,
+      // urql-specific exchange patterns
+      /(?:forward|operations\$)\.pipe\s*\(\s*map\s*\(\s*\{\s*operation\s*\}\s*=>/,
 
-      // Common patterns in queries
-      /\.executeQuery\s*\(/,
-      /\.executeMutation\s*\(/,
-      /\.executeSubscription\s*\(/,
+      // urql-specific cache operations
+      /cache\.(?:resolveRequestInformation|invalidate|updateQuery)\s*\(/,
+      /cache\.(?:read|write)Fragment\s*\(\s*\{[^}]*id:/,
 
-      // Error handling
-      /error\.graphQLErrors/,
-      /error\.networkError/,
-      /error\.message/,
+      // urql-specific error handling
+      /error\.(?:graphQLErrors|networkError|response)\?/,
 
-      // Exchange patterns
-      /forward\s*\(/,
-      /operations\$/,
-      /\.pipe\s*\(/,
+      // urql-specific subscription handling
+      /subscriptionExchange\s*\(\s*\{\s*forwardSubscription/,
 
-      // Common configurations
-      /url:\s*["'].*?graphql["']/,
-      /suspense:\s*true/,
-      /preferGetMethod:/,
+      // urql-specific operation context
+      /context:\s*\{\s*(?:requestPolicy|url|preferGetMethod):/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library files
-      /urql(?:\.min)?\.js$/i,
-      /@urql\/\w+/i,
-      /urql-\w+\.js$/i,
+      // urql-specific library files
+      /(?:^|\/)urql(?:\.min)?\.js$/i,
+      /@urql\/(?:core|exchange-[^/]+)(?:\.min)?\.js$/i,
 
-      // Common integration patterns
-      /urql(?:-)?client\.js$/i,
-      /urql(?:-)?config\.js$/i,
-      /graphql(?:-)?client\.js$/i,
+      // urql-specific configuration
+      /urql\.config\.[jt]s$/i,
+      /urql-client\.[jt]s$/i,
 
-      // Exchange files
-      /exchanges?\//i,
-      /\.exchange\.js$/i,
+      // urql-specific exchanges
+      /(?:^|\/)exchanges?\/[^/]+\.(?:js|ts)$/i,
+      /\.exchange\.[jt]s$/i,
 
-      // Common project patterns
-      /graphql\/client/i,
-      /graphql\/queries/i,
-      /graphql\/mutations/i,
-      /\.graphql$/i,
-
-      // Build output patterns
-      /\burql\.[a-f0-9]+\.js$/i,
-      /\bgraphql\.[a-f0-9]+\.js$/i,
-      /\bexchanges\.[a-f0-9]+\.js$/i,
+      // Build output specific to urql
+      /\burql\.[a-f0-9]{8}\.js$/i,
     ],
   },
 ];
