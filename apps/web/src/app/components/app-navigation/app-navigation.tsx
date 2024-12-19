@@ -20,7 +20,6 @@ import { GithubIcon } from '../icons/github';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useActiveCategory } from '@/app/contexts/active-category';
-import { capitalize } from 'lodash-es';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
