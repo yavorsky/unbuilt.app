@@ -5,50 +5,49 @@ export const tanstackRouter = [
     name: 'coreRuntime' as const,
     score: 0.3,
     runtime: [
-      // Core imports (including minified variants)
-      /["']@tanstack\/router["']/,
-      /["']@tanstack\/router-core["']/,
-      /["']@tanstack\/router-devtools["']/,
+      // Core package imports (including minified variants)
+      /["']@t(?:anstack)?[/\\-]router(?:-(?:core|devtools))?["']/,
 
-      // Router creation and configuration
-      /createRouter\s*\(/,
-      /createRoutesFromElements\s*\(/,
-      /createReactRouter\s*\(/,
-      /createMemoryHistory\s*\(/,
-      /createBrowserHistory\s*\(/,
+      // TanStack-specific router creation (minification resistant)
+      /(?:create|init)(?:React)?Router\s*\(\s*\{(?:\s*defaultPreload:|routeTree:)/,
+      /(?:create|init)RouterWithConfig\s*\(\s*\{/,
+      /routeTree\s*=\s*(?:builder|rootRoute)\.(?:createRoute|addChildren)/,
 
-      // Core components
-      /RouterProvider\b/,
-      /\bRoute\b/,
-      /\bOutlet\b/,
-      /\bLink\b/,
+      // TanStack-specific hooks (minification resistant)
+      /use(?:Router|Search|RouterContext|RouterState|RouterDevtools)\s*\(/,
+      /\[\w+\]=\{(?:useRouter|useSearch|useRouterState)\}/,
 
-      // Hooks and utilities
-      /useRouter\s*\(/,
-      /useMatch\s*\(/,
-      /useNavigate\s*\(/,
-      /useSearch\s*\(/,
-      /useParams\s*\(/,
+      // Internal markers unique to TanStack
+      /__TANSTACK_ROUTER_(?:STATE|HISTORY|DEVTOOLS)__/,
+      /\$TS_ROUTER\$/,
+      /\[RouterCacheKey\]/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for TanStack Router globals
-          hasRouter:
+          // Check for TanStack-specific globals
+          hasTanStackMarkers:
             !!window.__TANSTACK_ROUTER_STATE__ ||
-            !!window.__TANSTACK_ROUTER_HISTORY__,
+            !!window.__TANSTACK_ROUTER_HISTORY__ ||
+            !!window.__TANSTACK_ROUTER_DEVTOOLS__,
 
-          // Check for devtools
-          hasDevTools: !!window.__TANSTACK_ROUTER_DEVTOOLS__,
-
-          // Check for router instance
-          hasInstance: Object.values(window).some(
+          // Check for TanStack Router specific exports and properties
+          hasTanStackInstance: Object.values(window).some(
             (obj) =>
               obj &&
               typeof obj === 'object' &&
-              'latestLocation' in obj &&
-              'subscribe' in obj &&
-              'navigate' in obj
+              // Core router instance properties
+              (('latestLocation' in obj &&
+                'subscribe' in obj &&
+                'navigate' in obj) ||
+                // Router state properties
+                ('routeTree' in obj &&
+                  'matches' in obj &&
+                  'pendingMatches' in obj) ||
+                // Router builder properties
+                ('routeBuilder' in obj &&
+                  'createRoute' in obj &&
+                  'addChildren' in obj))
           ),
         };
         return Object.values(markers).some(Boolean);
@@ -59,62 +58,40 @@ export const tanstackRouter = [
     name: 'patterns' as const,
     score: 0.2,
     runtime: [
-      // Route configuration patterns
-      /path:\s*["']\//,
-      /element:\s*[<\w]/,
-      /errorElement:\s*[<\w]/,
-      /loader[Fn]?:\s*async/,
+      // TanStack-specific route definitions (minification resistant)
+      /createFileRoute\s*\(\s*['"][/\w]+['"]\s*,?\s*\{/,
+      /createLazyFileRoute\s*\(\s*['"][/\w]+['"]\s*,?\s*\{/,
+      /createRootRoute\s*\(\s*\{(?:\s*component:|beforeLoad:)/,
 
-      // Type-safe patterns specific to TanStack Router
-      /createRoute\s*\(/,
-      /createRootRoute\s*\(/,
-      /createFileRoute\s*\(/,
-      /createLazyFileRoute\s*\(/,
+      // TanStack-specific type validation patterns
+      /parse(?:Search|Params)With\s*\(\s*z\./,
+      /validate(?:Search|Params)\s*:\s*z\./,
 
-      // Search params and validation
-      /parseSearchWith\s*\(/,
-      /validateSearch\s*\(/,
-      /parseParams\s*\(/,
-      /validateParams\s*\(/,
+      // Internal implementation details (minification resistant)
+      /\[NAVIGATE_OPTIONS_KEY\]/,
+      /\[ROUTER_STATE_KEY\]/,
+      /RouterStateKey/,
+      /pendingNavigationController/,
+      /routerStateRef/,
 
-      // Internal implementation details
-      /notFound\s*\(/,
-      /dehydrate\s*\(/,
-      /hydrate\s*\(/,
-
-      // Error handling
-      /RouterError\b/,
-      /isRouterError\s*\(/,
-      /getRouterError\s*\(/,
+      // Unique TanStack features
+      /maybePreloadRoute\s*\(/,
+      /createRouteConfig\s*\(/,
+      /buildRequestMatch\s*\(/,
+      /getRouterState\s*\(/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library files
-      /@tanstack\/router/i,
-      /tanstack-router/i,
-      /router\.[jt]sx?$/i,
+      // TanStack-specific chunks
+      /@tanstack[\\/]router(?:-(?:core|devtools))?[-.]\w+\.js$/i,
+      /tanstack-router[-.]\w+\.js$/i,
 
-      // Route files
-      /routes\/\$?\w+\.[jt]sx?$/i,
-      /\.?route\.[jt]sx?$/i,
-      /\$?\w+\.route\.[jt]sx?$/i,
-
-      // Common project patterns
-      /routes?\/index\.[jt]sx?$/i,
-      /routes?\/root\.[jt]sx?$/i,
-      /routes?\/config\.[jt]sx?$/i,
-
-      // Build output patterns
-      /\brouter\.[a-f0-9]+\.js$/i,
-      /\broutes\.[a-f0-9]+\.js$/i,
-      /chunk-router\.[a-f0-9]+\.js$/i,
-
-      // Generated files
+      // TanStack route file patterns (more specific than general routing)
+      /\$?[\w-]+\.route\.[jt]sx?$/i,
       /routeTree\.gen\.[jt]sx?$/i,
-      /\.generated\.[jt]sx?$/i,
     ],
   },
 ];

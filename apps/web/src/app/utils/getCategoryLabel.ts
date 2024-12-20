@@ -6,7 +6,7 @@ import { AnalyzeResult } from '@unbuilt/analyzer';
 const categoryLabelsMap: Record<keyof AnalyzeResult['analysis'], string> = {
   bundler: 'Bundler',
   dates: 'Dates Library',
-  framework: 'UI Framework',
+  framework: 'Framework',
   httpClient: 'HTTP Client',
   uiLibrary: 'UI Library',
   minifier: 'Minifier',
