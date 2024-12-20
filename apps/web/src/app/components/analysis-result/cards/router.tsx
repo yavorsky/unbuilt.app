@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
+import { router as routerFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { capitalize } from 'lodash-es';
 import { Calendar } from 'lucide-react';
-import { router } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(router.patterns).map(capitalize);
+const supportedOptions = Object.keys(routerFeature.patterns).map(capitalize);
 
 export const RouterCard: FC<{
   router: AnalyzeResult['analysis']['router'] | undefined;
@@ -15,6 +15,7 @@ export const RouterCard: FC<{
       name="router"
       supportedOptions={supportedOptions}
       analysis={router}
+      meta={routerFeature?.meta}
       Icon={Calendar}
     />
   );

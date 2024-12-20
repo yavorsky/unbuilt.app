@@ -5,45 +5,39 @@ export const reactRouter = [
     name: 'coreRuntime' as const,
     score: 0.3,
     runtime: [
-      // Core imports (including minified variants)
-      /["']r(?:eact)?-router(?:-dom)?["']/,
-      /["']@remix-run\/router["']/,
+      // Core package imports (including minified variants)
+      /["'](?:@?[rR](?:eact)?[-.]?[rR]outer(?:[-.]?[dD]om)?|@remix-run\/router)["']/,
 
-      // Core components with flexible casing and potential renaming
-      /(?:Browser|Hash|Memory|Static)?Router\b/,
-      /(?:Nav)?Link\b/,
-      /\bRoute[s]?\b/,
-      /\bOutlet\b/,
+      // React Router specific hooks (minification resistant)
+      /\buse(?:[NnLlPpRrSsMmHh]|Nav|Loc|Par|Route?|Search|Match|Href)\w*\s*\(/,
 
-      // Hook patterns that survive minification
-      /use(?:Navigate|Location|Params|Routes?|SearchParams|Match|Href)\s*\(/,
-
-      // Internal markers that survive minification
-      /__REACT_ROUTER_HISTORY__/,
-      /__REACT_ROUTER_GLOBAL_HISTORY__/,
-      /\$\$HISTORY\$\$/,
-      /__ROUTER_CONTEXT__/,
+      // Internal markers unique to React Router (survive minification)
+      /__R(?:EACT_ROUTER|R)_(?:HISTORY|CONTEXT|LOCATION)__/,
+      /\$R(?:R|outer)\$/,
+      /\[\w+\]=\{(?:useLocation|useNavigate|useParams)\}/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for router global markers that survive minification
+          // Check for React Router specific global markers (minification resistant)
           hasRouter:
             !!window.__REACT_ROUTER_HISTORY__ ||
             !!window.__RR_HISTORY__ ||
-            !!window.$RR,
+            !!window.$RR ||
+            !!window.$router,
 
-          // Check for history object modifications
-          hasHistory: 'listen' in window.history && 'block' in window.history,
-
-          // Check for common router properties on any global object
-          hasRouterProps: Object.values(window).some(
+          // Check for React Router specific exports (survives most minification)
+          hasRouterExports: Object.values(window).some(
             (obj) =>
               obj &&
               typeof obj === 'object' &&
-              'Router' in obj &&
-              'Route' in obj &&
-              'Link' in obj
+              // Check for multiple hooks to increase confidence
+              (('useNavigate' in obj && 'useLocation' in obj) ||
+                ('useParams' in obj && 'useRoutes' in obj) ||
+                // Check for core router functionality
+                ('createBrowserRouter' in obj && 'RouterProvider' in obj) ||
+                // Check for data router APIs
+                ('useLoaderData' in obj && 'useActionData' in obj))
           ),
         };
         return Object.values(markers).some(Boolean);
@@ -54,57 +48,34 @@ export const reactRouter = [
     name: 'patterns' as const,
     score: 0.2,
     runtime: [
-      // Route configuration that survives minification
-      /\{\s*path:\s*["']/,
-      /\{\s*element:/,
-      /\{\s*index:\s*!0\}/,
-      /\{\s*errorElement:/,
+      // React Router specific route configuration (minification resistant)
+      /(?:create|use)[BHM]?\w*Router\s*\(\s*\[/,
+      /RouterProvider\s*\{\s*router:/,
+      /\[\w+\]=(\w+)\(\{basename:/,
 
-      // Navigation patterns resistant to minification
-      /\.push\s*\(\s*\{/,
-      /\.replace\s*\(\s*\{/,
-      /\.go\s*\(\s*-?\d+\)/,
+      // Data router patterns unique to React Router (minification resistant)
+      /(?:loader|action)Data\s*[=:]\s*await\s*\w+\(/,
+      /\buse(?:Loader|Action|Revalidator|Navigation|Matches)\w*\s*\(/,
 
-      // Common route param patterns
-      /\/:\w+/,
-      /\/\*/,
-      /\/\+/,
+      // Common React Router prop patterns (survive minification)
+      /\{(?:\w+:)*\s*(?:errorElement|loader|action|handle|shouldRevalidate)\}/,
 
-      // Data router patterns that survive minification
-      /\b(?:loader|action):\s*async/,
-      /use(?:Loader|Action)Data\s*\(/,
-      /useRevalidator\s*\(/,
-
-      // Common internal properties
-      /\._location/,
-      /\._routes/,
-      /\._state/,
+      // Internal React Router properties (minification resistant)
+      /\._(?:routes?|router|state|location)_/,
+      /\[UNSAFE_NavigationContext\]/,
+      /\[DataRouterContext\]/,
+      /\[DataRouterStateContext\]/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Library chunks (including hash patterns)
-      /r(?:eact)?-router[-.]\w+\.js$/i,
-      /router\.?\w+\.js$/i,
-      /routing\.?\w+\.js$/i,
-
-      // Build tool output patterns
-      /\brouter\.[a-f0-9]+\.js$/i,
-      /\broutes?\.[a-f0-9]+\.js$/i,
-      /\bpages?\.[a-f0-9]+\.js$/i,
-      /chunk\.[a-f0-9]+\.js$/i,
-
-      // Common project structure patterns
-      /routes?[/\\]/i,
-      /pages?[/\\]/i,
-      /router[/\\]/i,
-      /navigation[/\\]/i,
-
-      // Generated route files
-      /\.route\.\w+\.js$/i,
-      /generated.*routes?/i,
+      // React Router specific chunk patterns (case insensitive)
+      /(?:@?(?:react-)?router(?:-dom)?|@remix-run\/router)[-.]\w+\.js$/i,
+      /(?:browser|hash|memory)-?router[-.]\w+\.js$/i,
+      /router-provider[-.]\w+\.js$/i,
+      /data-router[-.]\w+\.js$/i,
     ],
   },
 ];
