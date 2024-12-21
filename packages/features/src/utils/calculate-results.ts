@@ -24,7 +24,7 @@ export interface CalculationResult<
   T extends Record<string, Pattern<string>[]>,
 > {
   result: {
-    name: keyof T;
+    name: keyof T | 'unknown';
     confidence: number;
     matched: Set<AllPatternNames<T>>;
   };
@@ -90,7 +90,8 @@ export async function calculateResults<
   resources: Resources,
   page: Page,
   browser: Browser,
-  patterns: T
+  patterns: T,
+  minConfidence: number = 0.3
 ): Promise<CalculationResult<T>> {
   const results = await Promise.all(
     Object.entries(patterns).map(async ([name, patternList]) => {
@@ -127,9 +128,17 @@ export async function calculateResults<
     return acc;
   }, initialResults);
 
-  const highestResult = results.reduce((prev, current) =>
+  let highestResult = results.reduce((prev, current) =>
     prev.confidence > current.confidence ? prev : current
   );
+
+  if (highestResult.confidence < minConfidence) {
+    highestResult = {
+      name: 'unknown',
+      confidence: 0,
+      matched: new Set(),
+    };
+  }
 
   return {
     result: {
