@@ -58,9 +58,11 @@ export function SingleResultAnalysisCard<
   const resultMeta = meta?.[analysis.name];
   const ResultIcon = resultMeta?.Icon ?? Icon;
 
+  const isUnknown = analysis.name === 'unknown';
+
   return (
     <Card
-      className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+      className={`max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40 ${isUnknown ? 'opacity-70' : ''}`}
       onClick={() => updateActiveCategory(name)}
     >
       <CardHeader className="space-y-1 py-4 pb-4">
@@ -75,8 +77,12 @@ export function SingleResultAnalysisCard<
                   className="h-6 w-6 text-indigo-400"
                 />
                 <div className="flex items-center gap-2">
-                  <h3 className="text-2xl font-bold tracking-tight text-foreground">
-                    {resultMeta?.name ?? capitalize(analysis.name)}
+                  <h3
+                    className={`${isUnknown ? 'font-normal' : 'font-bold'} text-2xl tracking-tight text-foreground`}
+                  >
+                    {isUnknown
+                      ? 'Unknown'
+                      : (resultMeta?.name ?? capitalize(analysis.name))}
                   </h3>
                   {/* <Badge
                   variant="outline"
@@ -115,19 +121,25 @@ export function SingleResultAnalysisCard<
                   <CollapsibleContent className="pl-4 space-y-1 mt-2">
                     {Object.entries(analysis.secondaryMatches)
                       .sort(([, a], [, b]) => b.confidence - a.confidence)
-                      .map(([name, match]) => (
-                        <div
-                          key={name}
-                          className="flex justify-between items-center text-sm"
-                        >
-                          <span className="text-gray-400">{name}</span>
-                          <div className="flex items-center gap-2">
-                            <ConfidenceIndicator
-                              confidence={match.confidence}
-                            />
+                      .map(([name, match]) => {
+                        const resultMeta = meta?.[name];
+
+                        return (
+                          <div
+                            key={name}
+                            className="flex justify-between items-center text-sm"
+                          >
+                            <span className="text-gray-400">
+                              {resultMeta?.name ?? capitalize(name)}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <ConfidenceIndicator
+                                confidence={match.confidence}
+                              />
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                   </CollapsibleContent>
                 </Collapsible>
               )}
