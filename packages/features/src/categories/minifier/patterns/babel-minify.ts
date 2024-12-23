@@ -3,45 +3,55 @@ export const babelMinify = [
     name: 'compilation' as const,
     score: 0.2,
     runtime: [
-      // Babel-minify specific function wrapping
-      /"use strict";(?:\s*var\s+\w+\s*=\s*)?function\s*\(/,
-      /Object\.defineProperty\(exports,\s*"__esModule"/,
+      // Babel-minify specific helper functions
+      // These are more unique to Babel's transforms
+      /_createSuper\(\s*[a-zA-Z_$][\w$]*\s*\)/,
+      /_isNativeReflectConstruct\(\s*\)/,
+      /_createForOfIteratorHelper\(/,
 
-      // Babel-minify variable patterns
-      /_\w+\d+/, // Underscore prefix with number suffix
-      /\b[A-Z]\w*_\b/, // Capital with underscore suffix
-      /\$[A-Z]\w*\b/, // Dollar prefix with capital
+      // Babel class transformation patterns
+      // More specific to avoid conflicts with other transpilers
+      /function\s+_createClass\(Constructor,\s*protoProps(?:\s*,\s*staticProps)?\)\s*{/,
+      /function\s+_classCallCheck\(instance,\s*Constructor\)\s*{/,
 
-      // Class transformation patterns
-      /_classCallCheck\(/,
-      /_createClass\(/,
-      /_possibleConstructorReturn\(/,
+      // Babel decorator patterns with more specific context
+      /_initializerDefineProperty\(\s*this\s*,\s*[a-zA-Z_$][\w$]*\s*,\s*_descriptor/,
+      /_defineProperty\(this,\s*[a-zA-Z_$][\w$]*\s*,\s*_descriptor\./,
 
-      // Babel-minify's module wrapping
-      /module\.exports\s*=\s*(?:void\s*)?/,
-      /exports\.default\s*=\s*/,
+      // Babel-specific module transforms
+      // Added more context to avoid false positives
+      /Object\.defineProperty\(exports,\s*"__esModule",\s*{\s*value:\s*true\s*}\)/,
+      /exports\.__esModule\s*=\s*true/,
 
-      // Specific to Babel decorators
-      /_decorate\(/,
-      /_initializerDefineProperty\(/,
+      // Babel-specific async/await helpers
+      /_asyncToGenerator\(\s*function\s*\*/,
+      /_awaitAsyncGenerator\(/,
 
-      // Babel-specific constant folding
-      /\|\|\s*void\s*0/,
-      /===?\s*void\s*0/,
+      // Babel-specific variable declarations
+      // More restrictive to avoid common patterns
+      /var\s+_ref\d+\s*=\s*_asyncToGenerator\(/,
+      /var\s+_super\s*=\s*_getPrototypeOf\(/,
 
-      // Source map pattern
-      /\/\/# sourceMappingURL=data:application\/json;charset=utf-8;base64,/,
+      // Source map pattern specific to Babel's output
+      /\/\/# sourceMappingURL=data:application\/json;base64,[A-Za-z0-9+/]+=*/,
     ],
   },
   {
     name: 'chunks' as const,
     score: 0.3,
-    // Not a high chance someone called it like this, but still possible
-    filenames: [/\.babel\.min\.js$/, /\.babili\.js$/, /babel-min\.js$/],
+    // More specific to babel-minify
+    filenames: [
+      /\.babel\.min\.js$/,
+      /\.babili\.js$/,
+      /(?:^|\/)babel-min\.[a-f0-9]{8}\.js$/,
+    ],
   },
   {
     name: 'chunks' as const,
-    score: 0.2,
-    filenames: [/\.min\.js$/, /\.[a-f0-9]{8}\.js$/],
+    score: 0.1, // Reduced score as these are less specific
+    filenames: [
+      /\.min\.[a-f0-9]{8}\.js$/, // More specific hash pattern
+      /\.[a-f0-9]{8}\.min\.js$/, // Alternative hash position
+    ],
   },
 ];

@@ -5,68 +5,81 @@ export const mui = [
     name: 'compilation' as const,
     score: 0.2,
     runtime: [
-      // Core class patterns (minified-friendly)
-      /(?:mui|Mui)[A-Z][\w-]*/,
-      /(?:[^a-zA-Z]|^)Mui(?:Button|Box|Grid|Paper|Card|Dialog|Menu|List|Tab)/,
+      // MUI's specific component classnames
+      /MuiButtonBase-(?:root|focusVisible|disabled|colorPrimary|colorSecondary)/,
+      /MuiButton-(?:containedPrimary|outlinedSecondary|textSuccess|sizeLarge|fullWidth)/,
 
-      // Common minified patterns
-      /[a-zA-Z]\.mui/,
-      /\.mui-[\w-]+/,
-      /css-[\w-]+/,
+      // MUI's unique component structure attributes
+      /data-mui-color-scheme="(?:light|dark)"/,
+      /data-mui-internal-clone-element="true"/,
 
-      // Emotion-based classnames (MUI v5)
-      /css-[\w-]{5,}/,
-      /private-[\w-]{5,}/,
+      // MUI's emotion-based specific patterns
+      /private-mui-(?:x-id|focusVisible|hidden|root|colorAction)/,
+      /StyledEngineProvider\s+injectFirst/,
 
-      // Theme and styling (minified-friendly)
-      /createTheme|useTheme|makeStyles/,
-      /ThemeProvider/,
-      /withStyles/,
-      /sx:/,
+      // MUI's specific theme tokens
+      /var\(--mui-(?:palette|typography|spacing|shadows|shape|zIndex|transitions)-[^)]+\)/,
 
-      // MUI internals that survive minification
-      /__mui/,
-      /mui-[a-z0-9]{5,}/,
-      /\[\&_\.Mui/,
-      /\[data-mui-/,
+      // MUI's specific component imports
+      /import\s+{\s*(?:\w+\s*,\s*)*\w+\s*}\s+from\s+["']@mui\/(?:material|system|base|joy-ui|icons-material)["']/,
 
-      // Common props that survive minification
-      /component=/,
-      /variant=/,
-      /elevation=/,
-      /severity=/,
-      /color=/,
+      // MUI's specific style overrides
+      /components:\s*{\s*MuiButton:\s*{[^}]+}\s*}/,
+      /styleOverrides:\s*{\s*root:\s*{[^}]+}\s*}/,
+
+      // MUI's specific system props
+      /data-mui-base-(?:button|select|slider|switch|tabs|input)/,
+      /aria-(?:owns|controls|haspopup|expanded)="mui-[^"]+"/,
+
+      // MUI's specific Portal implementation
+      /id="modal-[^"]+"\s+role="presentation"\s+class="MuiModal-root/,
+      /id="menu-[^"]+"\s+role="menu"\s+class="MuiMenu-list/,
+
+      // MUI's specific theme customization
+      /createTheme\(\{\s*palette:\s*{\s*primary:\s*{[^}]+}\s*}\s*\}/,
+      /ThemeProvider\s+theme=\{(?:darkTheme|lightTheme|customTheme)\}/,
+
+      // MUI's specific error messages
+      /Material-UI:/,
+      /MUI: /,
+
+      // MUI's specific CSS injection order
+      /data-mui-inject-first="true"/,
+      /data-emotion="mui(?:-[a-z]+)?"/,
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 0.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for any MUI-like classes (including minified)
-          hasMuiClasses:
-            document.querySelector('*[class*="mui-"], *[class*="Mui"]') !==
-            null,
+          // Check for MUI's specific component structure
+          hasMuiComponents: [
+            '.MuiButtonBase-root[tabindex="0"]',
+            '.MuiButton-containedPrimary',
+            '.MuiMenuItem-dense',
+            '.MuiInputBase-input',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Emotion classes (survives minification)
-          hasEmotionClasses:
-            document.querySelector('*[class^="css-"]') !== null,
+          // Check for MUI's emotion implementation
+          hasEmotionStructure: [
+            'style[data-emotion="mui"]',
+            'style[data-emotion="mui-baseButton"]',
+            '[data-mui-internal-clone-element]',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Data attributes (often preserved in minification)
-          hasMuiAttributes:
-            document.querySelector('[data-mui], [aria-labelledby]') !== null,
+          // Check for MUI's portal implementation
+          hasPortals: [
+            '#modal-root [role="presentation"].MuiModal-root',
+            '#menu-root [role="menu"].MuiMenu-list',
+            '#popover-root [role="tooltip"].MuiTooltip-popper',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Common MUI DOM structures
-          hasCommonStructures: !!(
-            document.querySelector('button.MuiButton') ||
-            document.querySelector('div.MuiPaper') ||
-            document.querySelector('div.MuiGrid') ||
-            document.querySelector('div[role="presentation"]') ||
-            document.querySelector('div[role="dialog"]')
-          ),
-
-          // Style tags (Emotion/MUI specific)
-          hasStyleTags: !!(
-            document.querySelector('style[data-emotion]') ||
-            document.querySelector('style[data-mui-color-scheme]')
-          ),
+          // Check for MUI's theme tokens
+          hasThemeTokens: getComputedStyle(
+            document.documentElement
+          ).cssText.includes('--mui-'),
         };
 
         return Object.values(markers).some(Boolean);
@@ -77,13 +90,28 @@ export const mui = [
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // These patterns usually survive minification in imports
-      /mui/,
-      /material/,
-      /\.mui\./,
-      /mui\.[a-f0-9]+\.js$/,
-      /material\.[a-f0-9]+\.js$/,
-      /chunk\.[\w-]+\.js$/, // Check content for MUI patterns
+      // MUI core package files
+      /@mui\/(?:material|system|base|joy-ui)\/(?:esm|umd|cjs)\//,
+      /@mui\/material(?:@[\d.]+)?\/(?:Button|Modal|Menu|Tabs|TextField)/,
+
+      // MUI build artifacts
+      /mui-(?:production|development)-bundle\.[a-f0-9]{8}\.js$/,
+      /mui-base-(?:auto|manual)\.(?:esm|umd)\.js$/,
+
+      // MUI icon package files
+      /@mui\/icons-material\/(?:[A-Z][a-zA-Z]+Icon)$/,
+
+      // MUI theme files
+      /mui-theme\.(?:js|ts)$/,
+      /theme\.mui\.(?:js|ts)$/,
+
+      // MUI style injection
+      /emotion-(?:cache|element)-mui\.js$/,
+      /StyledEngine-mui\.[a-f0-9]{8}\.js$/,
+
+      // MUI specific chunks
+      /chunk-mui-(?:core|utils|icons)-[a-f0-9]{8}\.js$/,
+      /vendors-mui-[a-z-]+\.[a-f0-9]{8}\.js$/,
     ],
   },
 ];

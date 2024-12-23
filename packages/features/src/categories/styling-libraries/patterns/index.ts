@@ -5,7 +5,7 @@ import { foundation } from './foundation.js';
 import { lucide } from './lucide.js';
 import { mui } from './mui.js';
 import { shadcn } from './shadcn.js';
-import { tailwind } from './tailwind.js';
+import { tailwindCSS } from './tailwind-css.js';
 
 export const patterns = {
   antDesign,
@@ -15,5 +15,5 @@ export const patterns = {
   lucide,
   mui,
   shadcn,
-  tailwind,
+  tailwindCSS,
 };

@@ -28,6 +28,10 @@ export const lucide = [
       /stroke-linecap="round"/,
       /stroke-linejoin="round"/,
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 0.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {

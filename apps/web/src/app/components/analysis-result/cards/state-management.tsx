@@ -18,7 +18,7 @@ export const StateManagementCard: FC<{
       supportedOptions={supportedOptions}
       analysis={stateManagement}
       Icon={LucideStore}
-      meta={stateManagementFeature?.meta}
+      meta={stateManagementFeature.meta}
     />
   );
 };

@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@unbuilt/resources": "^0.1.0",
+    "lucide-react": "^0.468.0",
     "react": "^18"
   },
   "peerDependencies": {
