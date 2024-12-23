@@ -15,7 +15,7 @@ export default function Root() {
   return (
     <AnalysisFormProvider initialUrl="">
       <div className="flex flex-col p-8 pt-20">
-        <div className="text-center mt-16 mb-32">
+        <div className="text-center mt-16 mb-16">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Image
               src="/icon.svg"

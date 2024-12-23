@@ -16,7 +16,7 @@ export const detect = async (
   );
 
   return {
-    type: 'httpClient',
+    type: 'stateManagement',
     name: result.name,
     confidence: result.confidence,
     secondaryMatches: getAllResultsWithConfidence(0.3, true),

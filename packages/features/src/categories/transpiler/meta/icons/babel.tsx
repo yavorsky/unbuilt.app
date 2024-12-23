@@ -23,3 +23,4 @@ export const BabelLogo = ({
     </svg>
   );
 };
+export default BabelLogo;

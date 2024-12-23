@@ -5,59 +5,52 @@ export const shadcn = [
     name: 'compilation' as const,
     score: 0.2,
     runtime: [
-      // Core shadcn/ui class patterns (using Tailwind)
-      /(?:^|\s)(?:hover|focus|active|disabled|group|data|aria|state)-/,
+      // shadcn-specific component naming conventions
+      /data-\[tw-(?:accordion|alert-dialog|aspect-ratio|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context-menu|dialog|dropdown-menu|hover-card|input|label|menubar|navigation-menu|popover|progress|radio-group|scroll-area|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)\]/,
 
-      // Common shadcn component classes
-      /\b(?:relative|absolute|flex|inline-flex|grid|hidden)\b/,
+      // shadcn's unique class naming pattern for variants
+      /class=["'](?:[^"']*\s)?(?:destructive|outline|secondary|ghost|link)(?:\s[^"']*)?["']/,
 
-      // shadcn specific class combinations
-      /items-center/,
-      /justify-center/,
-      /gap-[0-9]/,
+      // shadcn's specific React imports (only matches shadcn's component structure)
+      /from\s+["']@\/components\/ui\/(?:accordion|alert-dialog|aspect-ratio|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context-menu|dialog|dropdown-menu|hover-card|input|label|menubar|navigation-menu|popover|progress|radio-group|scroll-area|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)["']/,
 
-      // Radix UI primitives (used by shadcn)
-      /radix-(?:state|side|placeholder|popper)/,
-      /data-\[(?:state|side|placeholder|popper)/,
+      // shadcn's theme configuration imports
+      /from\s+["']@\/components\/ui\/themes\/(?:light|dark)["']/,
 
-      // Common component class patterns
-      /(?:^|\s)(?:scroll-area|select-none|inline-flex|button|dropdown|dialog|toast|tabs)/,
+      // shadcn's specific hook patterns
+      /use(?:Toast|Dialog|Sheet|Command|Dropdown|HoverCard|Tabs)Context/,
 
-      // Lucide icons (commonly used with shadcn)
-      /lucide-react/,
-      /lucide-icon/,
+      // shadcn's specific component configuration
+      /\{[\s\S]*variant:\s*(?:"(?:destructive|outline|secondary|ghost|link)"|'(?:destructive|outline|secondary|ghost|link)')/,
 
-      // Component-specific classes
-      /data-\[state=(?:open|closed)\]/,
-      /data-\[side=(?:top|bottom|left|right)\]/,
-      /data-\[orientation=(?:horizontal|vertical)\]/,
+      // shadcn's component registry patterns
+      /registry\.json/,
+      /components\.json/,
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 0.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Radix primitives usage
-          hasRadixAttributes:
-            !!document.querySelector('[data-radix-popper-content-wrapper]') ||
-            !!document.querySelector('[role="dialog"][data-state]'),
+          // Check only for shadcn's specific data attributes and structures
+          hasShadcnComponents: [
+            '[data-tw-accordion]',
+            '[data-tw-alert-dialog]',
+            '[data-tw-hover-card]',
+            '[data-tw-dropdown-menu]',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Check for common shadcn class patterns
-          hasShadcnClasses:
+          // Check for shadcn's specific variant classes
+          hasVariants:
             document.querySelector(
-              '[class*="scroll-area"], [class*="select-none"]'
+              '[class*="destructive"][class*="hover:bg-destructive/90"]'
             ) !== null,
 
-          // Check for Radix state attributes
-          hasStateAttributes:
-            document.querySelector(
-              '[data-state="open"], [data-state="closed"]'
-            ) !== null,
-
-          // Check for common component structures
-          hasComponents: !!(
-            document.querySelector('[role="dialog"]') ||
-            document.querySelector('[role="combobox"]') ||
-            document.querySelector('[role="tooltip"]')
-          ),
+          // Check for shadcn's specific theme attributes
+          hasThemeConfig:
+            document.querySelector('[data-shadcn-theme]') !== null,
         };
 
         return Object.values(markers).some(Boolean);
@@ -65,20 +58,20 @@ export const shadcn = [
     },
   },
   {
-    name: 'files' as const,
+    name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Component files
-      /components\/ui\//,
-      /shadcn\/ui/,
+      // shadcn's specific component files
+      /(?:^|\/)@shadcn\/ui\/(?:accordion|alert-dialog|aspect-ratio|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context-menu|dialog|dropdown-menu|hover-card|input|label|menubar|navigation-menu|popover|progress|radio-group|scroll-area|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)$/,
 
-      // Common file patterns
-      /\.shadcn\.ts$/,
-      /components\.style\.ts$/,
+      // shadcn's configuration files
+      /components\.json$/,
+      /registry\.json$/,
+      /shadcn\.config\.ts$/,
 
-      // Build output
-      /shadcn-ui\.[a-f0-9]+\.js$/,
-      /ui-components\.[a-f0-9]+\.js$/,
+      // shadcn's specific build outputs
+      /shadcn-ui\.registry\.[a-f0-9]{8}\.js$/,
+      /shadcn-components\.[a-f0-9]{8}\.js$/,
     ],
   },
 ];

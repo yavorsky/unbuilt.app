@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const RemixLogo = ({
+const RemixLogo = ({
   width = 24,
   height = 24,
   color = '#000000',
@@ -23,3 +23,4 @@ export const RemixLogo = ({
     </svg>
   );
 };
+export default RemixLogo;

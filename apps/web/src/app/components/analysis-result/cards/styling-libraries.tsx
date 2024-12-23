@@ -1,11 +1,13 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
+import { stylingLibraries as stylingLibrariesFeture } from '@unbuilt/features';
 import { MultiResultAnalysisCard } from './common/multi-results-card';
 import { Paintbrush } from 'lucide-react';
 import { capitalize } from 'lodash-es';
-import { stylingLibraries } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(stylingLibraries.patterns).map(capitalize);
+const supportedOptions = Object.keys(stylingLibrariesFeture.patterns).map(
+  capitalize
+);
 
 export const StylingLibrariesCard: FC<{
   stylingLibraries: AnalyzeResult['analysis']['stylingLibraries'] | undefined;
@@ -13,9 +15,11 @@ export const StylingLibrariesCard: FC<{
   return (
     <MultiResultAnalysisCard
       name="stylingLibraries"
+      label="Styling Libraries"
       analysis={stylingLibraries}
       Icon={Paintbrush}
       supportedOptions={supportedOptions}
+      meta={stylingLibrariesFeture?.meta}
     />
   );
 };

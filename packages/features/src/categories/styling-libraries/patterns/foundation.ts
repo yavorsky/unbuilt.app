@@ -5,73 +5,80 @@ export const foundation = [
     name: 'compilation' as const,
     score: 0.2,
     runtime: [
-      // Core Foundation classes
-      /foundation-/,
-      /(?:^|\s)(?:grid-x|grid-y|cell|grid-container)/,
-      /(?:^|\s)(?:button|callout|card|menu|top-bar|off-canvas)/,
+      // Foundation's specific XY Grid system
+      /grid-(?:margin|padding)-(?:x|y)(?:\s|$)/,
+      /cell-(?:block|block-container|block-y)(?:\s|$)/,
+      /xy-grid-(?:container|frame|cell)(?:\s|$)/,
 
-      // Grid system
-      /(?:^|\s)(?:small-\d+|medium-\d+|large-\d+)/,
-      /(?:^|\s)(?:align-(?:center|right|justify|spaced))/,
-      /(?:^|\s)(?:shrink|grow|auto)/,
+      // Foundation's unique responsive classes
+      /(?:^|\s)(?:medium|large|xlarge|xxlarge)-(?:expand|unstack|offset|push|pull)-\d+(?:\s|$)/,
+      /(?:^|\s)responsive-embed-(?:widescreen|panorama|square|portrait)(?:\s|$)/,
 
-      // Component patterns
-      /(?:^|\s)(?:dropdown|reveal|tooltip|accordion|tabs)/,
-      /data-(?:dropdown|tooltip|tabs|accordion)/,
-      /data-open|data-close|data-toggle/,
+      // Foundation's specific data attributes
+      /data-(?:whatinput|whatintent|interchange|equalizer-watch|magellan)(?:=|$)/,
+      /data-(?:abide|accordion|dropdown|drilldown|responsive-accordion-tabs|responsive-tabs)(?:=|$)/,
 
-      // Common utility classes
-      /(?:^|\s)(?:float-(?:left|right|center))/,
-      /(?:^|\s)(?:show-for-|hide-for-)/,
-      /(?:^|\s)(?:clearfix|visible|invisible)/,
+      // Foundation's plugin initialization
+      /Foundation\.(?:Abide|Accordion|Dropdown|DropdownMenu|Equalizer|Interchange|Magellan|OffCanvas|Orbit|ResponsiveMenu|ResponsiveToggle|Reveal|Slider|SmoothScroll|Sticky|Tabs|Toggler|Tooltip|ResponsiveAccordionTabs)\(/,
 
-      // Motion UI
-      /motion-ui/,
-      /(?:^|\s)(?:slide-in-|slide-out-|fade-in|fade-out)/,
+      // Foundation's unique component classes
+      /off-canvas-(?:content|absolute|fixed|reveal|overlap-(?:left|right|top|bottom))(?:\s|$)/,
+      /drilldown-(?:submenu|submenu-cover|subitem|current|parent)(?:\s|$)/,
+      /orbit-(?:container|wrapper|slides|slide|bullets|previous|next|figure)(?:\s|$)/,
 
-      // JavaScript initialization
-      /\$\(document\)\.foundation\(/,
-      /Foundation\.(?:Reveal|Dropdown|Tooltip)/,
+      // Foundation's specific utility classes
+      /(?:^|\s)show-for-(?:sr|landscape|portrait)(?:-only)?(?:\s|$)/,
+      /(?:^|\s)hide-for-(?:sr|landscape|portrait)(?:-only)?(?:\s|$)/,
 
-      // Common minified patterns
-      /\[data-whatinput=/,
-      /is-active/,
-      /is-open/,
-      /is-visible/,
+      // Foundation's specific form validation
+      /form-error\s+is-visible-(?:abide|equalizer|magellan)(?:\s|$)/,
+      /is-invalid-(?:input|label|container)-abide(?:\s|$)/,
+
+      // Foundation's specific JavaScript events
+      /'(?:closeme|resizeme|scrollme|mutate|toggled|sticky\.zf|magellan)\.zf/,
+      /'(?:down|up|left|right)\.zf\.(?:drilldown|accordion|dropdown)'/,
+
+      // Foundation's specific motion classes
+      /mui-(?:enter|leave|slide|fade|hinge|spin|scale)(?:-(?:active|from|to))?(?:\s|$)/,
+      /(?:^|\s)is-(?:animating|entering|leaving|active|complete)-mui(?:\s|$)/,
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 0.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Grid system checks
-          hasGridSystem:
-            document.querySelector('.grid-x, .grid-y, .cell') !== null,
+          // Check for Foundation's specific component structure
+          hasFoundationComponents: [
+            '.off-canvas-absolute[data-off-canvas]',
+            '.orbit-container[data-orbit]',
+            '.drilldown[data-drilldown]',
+            '.accordion-menu[data-accordion-menu]',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Component checks
-          hasComponents: !!(
-            document.querySelector('.button') ||
-            document.querySelector('.callout') ||
-            document.querySelector('.menu') ||
-            document.querySelector('.top-bar')
-          ),
+          // Check for Foundation's specific JavaScript plugins
+          hasFoundationPlugins:
+            typeof window.Foundation !== 'undefined' &&
+            ['Abide', 'Dropdown', 'OffCanvas', 'Orbit'].some(
+              (plugin) => typeof window.Foundation[plugin] === 'function'
+            ),
 
-          // Data attributes
-          hasDataAttributes:
-            document.querySelector(
-              '[data-dropdown], [data-tooltip], [data-accordion]'
-            ) !== null,
+          // Check for Foundation's XY Grid implementation
+          hasXYGrid: [
+            '.grid-x.grid-margin-x',
+            '.cell.medium-offset-2',
+            '.grid-y.grid-padding-y',
+            '.xy-grid-container',
+          ].some((selector) => document.querySelector(selector) !== null),
 
-          // Foundation global object
-          hasFoundation: typeof window.Foundation !== 'undefined',
-
-          // Common utility classes
-          hasUtilities:
-            document.querySelector(
-              '.float-left, .float-right, .clearfix, .show-for-medium'
-            ) !== null,
-
-          // XY Grid specific
-          hasXYGrid:
-            document.querySelector('.grid-margin-x, .grid-margin-y') !== null,
+          // Check for Foundation's unique data attributes
+          hasFoundationData: [
+            '[data-whatinput]',
+            '[data-interchange]',
+            '[data-magellan]',
+            '[data-abide]',
+          ].some((selector) => document.querySelector(selector) !== null),
         };
 
         return Object.values(markers).some(Boolean);
@@ -79,22 +86,29 @@ export const foundation = [
     },
   },
   {
-    name: 'files' as const,
+    name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Core files
-      /foundation(?:-sites)?/,
-      /foundation\.(?:min\.)?(?:js|css)$/,
+      // Foundation core files with version patterns
+      /foundation-sites@[0-9.]+\/dist\/(?:js|css)\/foundation(?:\.min)?\.(?:js|css)$/,
+      /foundation-sites\/dist\/(?:js|css)\/plugins\/foundation\.(?:[a-z]+)\.(?:js|css)$/,
 
-      // Common build outputs
-      /foundation\.[a-f0-9]+\.(?:js|css)$/,
+      // Foundation's specific build outputs
+      /foundation\.(?:core|grid|typography|forms|controls)\.(?:min\.)?(?:js|css)$/,
+      /foundation-float\.(?:min\.)?css$/,
+      /foundation-prototype\.(?:min\.)?css$/,
+      /foundation-rtl\.(?:min\.)?css$/,
 
-      // Motion UI
-      /motion-ui/,
+      // Foundation's specific plugins
+      /foundation\.(?:abide|accordion|drilldown|dropdown|equalizer|interchange|magellan|offcanvas|orbit|responsivemenu|reveal|slider|smoothscroll|sticky|tabs|toggler|tooltip)\.js$/,
 
-      // Chunk names
-      /foundation-[\w-]+\.js$/,
-      /chunk-foundation-[\w-]+\.js$/,
+      // Foundation's motion UI files
+      /motion-ui\/dist\/motion-ui(?:\.min)?\.(?:js|css)$/,
+      /foundation-motion-ui\.(?:min\.)?(?:js|css)$/,
+
+      // Foundation's customization files
+      /_foundation-settings\.scss$/,
+      /foundation-custom\.scss$/,
     ],
   },
 ];
