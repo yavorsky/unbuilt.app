@@ -1,19 +1,9 @@
-import { FC, useMemo, useState } from 'react';
+import { FC, Suspense, useMemo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
 import { Meta } from '@unbuilt/features';
-import {
-  ChevronDown,
-  ChevronUp,
-  LoaderCircle,
-  LucideProps,
-} from 'lucide-react';
+import { LucideProps } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { AnalyzeResult } from '@unbuilt/analyzer';
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 import { ConfidenceIndicator } from '@/app/components/confidence-indicator';
 import { capitalize } from 'lodash-es';
 import { useActiveCategory } from '@/app/contexts/active-category';
@@ -107,7 +97,9 @@ export function MultiResultAnalysisCard<
                   className="flex justify-between items-center"
                 >
                   <Badge>
-                    <ResultIcon className="mr-2" />
+                    <Suspense>
+                      <ResultIcon className="mr-2" />
+                    </Suspense>
                     <span className="text-gray-300 text-xl">
                       {resultMeta?.name ?? capitalize(library.name)}
                     </span>

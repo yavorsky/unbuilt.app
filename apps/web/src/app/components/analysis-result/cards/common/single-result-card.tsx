@@ -1,4 +1,4 @@
-import { useState, FC } from 'react';
+import { useState, FC, Suspense } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
 import { ChevronDown, ChevronUp, LucideProps } from 'lucide-react';
 import { ConfidenceIndicator } from '../../../confidence-indicator';
@@ -75,11 +75,13 @@ export function SingleResultAnalysisCard<
             <div>
               <p className="text-sm text-slate-400">{label}</p>
               <div className="flex items-center gap-3 mt-1">
-                <ResultIcon
-                  width={18}
-                  height={18}
-                  className="h-6 w-6 text-indigo-400"
-                />
+                <Suspense>
+                  <ResultIcon
+                    width={18}
+                    height={18}
+                    className="h-6 w-6 text-indigo-400"
+                  />
+                </Suspense>
                 <div className="flex items-center gap-2">
                   <h3
                     className={`${isUnknown ? 'font-normal' : 'font-bold'} text-2xl tracking-tight text-foreground`}
