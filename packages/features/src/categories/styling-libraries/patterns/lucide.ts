@@ -3,60 +3,45 @@ import { Page } from 'playwright';
 export const lucide = [
   {
     name: 'compilation' as const,
-    score: 0.2,
+    score: 0.6,
     runtime: [
-      // Lucide imports and package names
-      /lucide-react/,
-      /from\s+["']lucide/,
-      /import\s*\{[^}]*\}\s*from\s*["']lucide/,
+      // Optimized imports - combined patterns with length limits
+      /(?:from\s+["']lucide|import\s*\{[^}]{1,200}\}\s*from\s*["']lucide)(?:-react)?\b/,
 
-      // Common icon usage patterns
-      /\<(Camera|User|Settings|ChevronDown|Menu|Search|Bell|Home|Plus|X|Check)/,
+      // Optimized icon usage - consolidated common icons with boundary
+      /\<(?:Camera|User|Settings|ChevronDown|Menu|Search|Bell|Home|Plus|X|Check)\b/,
 
-      // Lucide specific props and attributes
-      /strokeWidth=["|']\d+["|']/,
-      /size=["|']\d+["|']/,
-      /color=["|'][^"']+["|']/,
+      // Optimized class patterns - combined with boundary
+      /lucide-[a-zA-Z-]{1,30}\b/,
 
-      // Common class pattern with icons
-      /lucide-icon/,
-      /lucide-[a-zA-Z-]+/,
-
-      // SVG patterns specific to Lucide
-      /currentColor/,
-      /stroke-[2-3]/,
-      /stroke-linecap="round"/,
-      /stroke-linejoin="round"/,
+      // Optimized SVG patterns - consolidated with boundaries
+      /(?:stroke-(?:[23]|linecap="round"|linejoin="round")|currentColor)\b/,
     ],
   },
   {
     name: 'browser' as const,
-    score: 0.4,
+    score: 0.7,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Lucide SVG attributes
-          hasLucideAttributes: !!(
-            document.querySelector('svg[stroke="currentColor"]') &&
-            document.querySelector('svg[fill="none"]') &&
-            document.querySelector('svg[stroke-width="2"]')
-          ),
+          // Optimized attribute check - single query with multiple attributes
+          hasLucideAttributes:
+            document.querySelector(
+              'svg[stroke="currentColor"][fill="none"][stroke-width="2"]'
+            ) !== null,
 
-          // Check for common Lucide class names
+          // Class check - already optimal
           hasLucideClasses:
             document.querySelector('[class*="lucide-"]') !== null,
 
-          // Check for Lucide SVG structure
-          hasLucideSVGStructure: Array.from(
-            document.querySelectorAll('svg')
-          ).some(
-            (svg) =>
-              svg.getAttribute('stroke-linecap') === 'round' &&
-              svg.getAttribute('stroke-linejoin') === 'round'
-          ),
+          // Optimized SVG structure check - more efficient query
+          hasLucideSVGStructure:
+            document.querySelector(
+              'svg[stroke-linecap="round"][stroke-linejoin="round"]'
+            ) !== null,
 
-          // Check global Lucide object
-          hasLucideGlobal: !!window.lucide,
+          // Global check - simplified
+          hasLucideGlobal: typeof window.lucide === 'object',
         };
 
         return Object.values(markers).some(Boolean);
@@ -67,16 +52,15 @@ export const lucide = [
     name: 'files' as const,
     score: 0.2,
     filenames: [
-      // Package files
-      /lucide(?:-react)?/,
-      /lucide\.[a-f0-9]+\.js$/,
+      // Optimized package files - combined patterns with boundaries
+      /lucide(?:-react)?(?:\.[a-f0-9]{8})?\.js$/,
 
-      // Chunk names
-      /chunk-lucide-[\w-]+\.js$/,
-      /icons\.[a-f0-9]+\.js$/,
+      // Optimized chunk names - added length limits
+      /chunk-lucide-[\w-]{1,30}\.js$/,
+      /icons\.[a-f0-9]{8}\.js$/,
 
-      // Common build outputs
-      /vendor\.lucide\.[a-f0-9]+\.js$/,
+      // Optimized build outputs - added hash length limit
+      /vendor\.lucide\.[a-f0-9]{8}\.js$/,
     ],
   },
 ];

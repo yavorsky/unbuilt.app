@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getJobStatus } from '../../../actions';
 import { CardsGrid } from './cards-grid';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
@@ -13,8 +13,16 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  const isCheckingRef = useRef(false);
+  const timeoutRef = useRef<number | null>(null);
+
   useEffect(() => {
     const checkStatus = async () => {
+      if (isCheckingRef.current) {
+        return;
+      }
+      isCheckingRef.current = true;
+
       const jobStatus = await getJobStatus(analysisId);
 
       if (jobStatus.error) {
@@ -30,13 +38,24 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
       }
 
       if (jobStatus.status !== 'completed' && jobStatus.status !== 'failed') {
-        setTimeout(checkStatus, 200);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        timeoutRef.current = window.setTimeout(checkStatus, 2000);
       } else {
         setIsLoading(false);
       }
+      isCheckingRef.current = false;
     };
 
     checkStatus();
+
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    };
   }, [analysisId, updateActiveAnalysis]);
 
   useEffect(() => {

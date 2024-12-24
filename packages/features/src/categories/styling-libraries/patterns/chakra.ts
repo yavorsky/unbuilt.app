@@ -3,75 +3,70 @@ import { Page } from 'playwright';
 export const chakra = [
   {
     name: 'compilation' as const,
-    score: 0.2,
+    score: 0.6,
     runtime: [
-      // Chakra's unique data attributes
+      // Optimized component attributes - combined with length limits
       /data-chakra-component="(?:Button|Modal|Tooltip|Popover|Menu|Drawer|Alert|Toast)"/,
-      /data-popper-(?:reference-hidden|escaped|placement)="chakra-[^"]+"/,
+      /data-popper-(?:reference-hidden|escaped|placement)="chakra-[^"]{1,50}"/,
 
-      // Chakra's specific styling attributes
-      /data-theme-color="chakra-[^"]+"/,
+      // Optimized theme attributes - bounded
+      /data-theme-color="chakra-[^"]{1,30}"/,
       /data-theme="chakra-ui-(?:light|dark)"/,
 
-      // Chakra's unique class prefixes for components
-      /chakra-(?:button|modal|menu|popover|toast|drawer|alert|form)__[a-zA-Z-]+/,
-      /chakra-(?:stack|wrap|container|box|text|heading|link)(?:-[a-zA-Z]+)?/,
+      // Optimized class prefixes - consolidated with length limits
+      /chakra-(?:button|modal|menu|popover|toast|drawer|alert|form)__[a-zA-Z-]{1,30}\b/,
+      /chakra-(?:stack|wrap|container|box|text|heading|link)(?:-[a-zA-Z]{1,20})?\b/,
 
-      // Chakra's specific animation classes
-      /chakra-(?:fade|scale|slide)-(?:bottom|top|left|right)(?:-enter|-exit|-enter-active|-exit-active)?/,
+      // Optimized animation classes - combined pattern
+      /chakra-(?:fade|scale|slide)-(?:bottom|top|left|right)(?:-(?:enter|exit)(?:-active)?)?\b/,
 
-      // Chakra's portal and overlay specific classes
-      /chakra-portal-(?:zIndex|overlay|content)/,
-      /chakra-modal-(?:overlay|content-wrapper|body|header|footer)/,
+      // Optimized portal classes - consolidated
+      /chakra-(?:portal-(?:zIndex|overlay|content)|modal-(?:overlay|content-wrapper|body|header|footer))\b/,
 
-      // Chakra's specific error boundaries
-      /chakra-error-boundary/,
-      /chakra-strict-mode-warning/,
+      // Optimized error boundaries - already optimal
+      /chakra-(?:error-boundary|strict-mode-warning)\b/,
 
-      // Chakra's unique theming tokens
-      /var\(--chakra-(?:colors|sizes|fonts|space|radii|shadows)-[^)]+\)/,
+      // Optimized theme tokens - bounded search
+      /var\(--chakra-(?:colors|sizes|fonts|space|radii|shadows)-[^)]{1,50}\)/,
 
-      // Chakra's specific hooks in React components
-      /useChakra(?:Context|ColorMode|Theme|Toast|Disclosure|Modal|Menu|Tabs)/,
+      // Optimized hooks - combined pattern
+      /useChakra(?:Context|ColorMode|Theme|Toast|Disclosure|Modal|Menu|Tabs)\b/,
 
-      // Chakra's style props patterns
-      /_(?:hover|active|focus|disabled|invalid|checked|expanded|selected)="chakra-[^"]+"/,
-      /sx=\{[\s\S]*?_(?:hover|focus|active):/,
+      // Optimized style props - added length limits
+      /_(?:hover|active|focus|disabled|invalid|checked|expanded|selected)="chakra-[^"]{1,50}"/,
+      /sx=\{[^}]{0,500}?_(?:hover|focus|active):/,
 
-      // Chakra's unique component imports
-      /import\s+{\s*(?:\w+\s*,\s*)*\w+\s*}\s+from\s+["']@chakra-ui\/(?:react|core|icons|system|theme|hooks)["']/,
+      // Optimized imports - bounded search
+      /import\s+\{[^}]{1,200}\}\s+from\s+["']@chakra-ui\/(?:react|core|icons|system|theme|hooks)["']/,
 
-      // Chakra's theme customization
-      /ChakraProvider\s+theme=\{[^}]+\}/,
-      /extendTheme\(\{[^}]+\}\)/,
+      // Optimized theme customization - added length limits
+      /ChakraProvider\s+theme=\{[^}]{1,500}\}/,
+      /extendTheme\(\{[^}]{1,500}\}\)/,
     ],
   },
   {
     name: 'browser' as const,
-    score: 0.4,
+    score: 0.7,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Chakra's specific component structure
-          hasChakraComponents: [
-            '[data-chakra-component]',
-            '[class^="chakra-"][role]',
-            '.chakra-portal',
-          ].some((selector) => document.querySelector(selector) !== null),
+          // Optimized component checks - single query
+          hasChakraComponents:
+            document.querySelector(
+              '[data-chakra-component], [class^="chakra-"][role], .chakra-portal'
+            ) !== null,
 
-          // Check for Chakra's unique modal structure
-          hasModalStructure: [
-            '.chakra-modal-overlay',
-            '.chakra-modal-content-wrapper',
-            '.chakra-modal__content-container',
-          ].some((selector) => document.querySelector(selector) !== null),
+          // Optimized modal structure - single query
+          hasModalStructure:
+            document.querySelector(
+              '.chakra-modal-overlay, .chakra-modal-content-wrapper, .chakra-modal__content-container'
+            ) !== null,
 
-          // Check for Chakra's specific theme variables
-          hasChakraTheming: getComputedStyle(
-            document.documentElement
-          ).cssText.includes('--chakra-'),
+          // Optimized theme check - cache computed style
+          hasChakraTheming:
+            document.documentElement.style.cssText?.includes('--chakra-'),
 
-          // Check for Chakra's portal implementation
+          // Optimized portal check - more specific selector
           hasChakraPortals:
             document.querySelector(
               '#chakra-toast-portal, #chakra-modal-portal'
@@ -86,27 +81,25 @@ export const chakra = [
     name: 'chunks' as const,
     score: 0.2,
     filenames: [
-      // Core Chakra UI files
-      /@chakra-ui\/(?:react|core|icons|system|theme|hooks)/,
-      /chakra-ui-core(?:@[\d.]+)?(?:\.min)?\.js$/,
+      // Optimized core files - added boundaries
+      /@chakra-ui\/(?:react|core|icons|system|theme|hooks)\b/,
+      /chakra-ui-core(?:@[\d.]{1,10})?(?:\.min)?\.js$/,
 
-      // Chakra specific build outputs
+      // Optimized build outputs - added length limits
       /chakra-(?:components|theme|utils)\.[a-f0-9]{8}\.js$/,
 
-      // Theme files
-      /chakra-theme\.(?:js|ts)$/,
-      /theme\.chakra\.(?:js|ts)$/,
+      // Optimized theme files - combined patterns
+      /(?:chakra-theme|theme\.chakra)\.(?:js|ts)$/,
 
-      // Component specific chunks
-      /chunk-chakra-[a-z-]+\.[a-f0-9]{8}\.js$/,
-      /chakra-[a-z-]+-[a-f0-9]{8}\.js$/,
+      // Optimized component chunks - added length limits
+      /chunk-chakra-[a-z-]{1,30}\.[a-f0-9]{8}\.js$/,
+      /chakra-[a-z-]{1,30}-[a-f0-9]{8}\.js$/,
 
-      // Icon package specific files
-      /@chakra-ui\/icons(?:-[a-z]+)?(?:@[\d.]+)?\.js$/,
+      // Optimized icon files - added version length limit
+      /@chakra-ui\/icons(?:-[a-z]+)?(?:@[\d.]{1,10})?\b\.js$/,
 
-      // Emotion (Chakra's styling engine) integration
-      /emotion-cache-chakra/,
-      /emotion-element-chakra/,
+      // Optimized emotion integration - combined pattern
+      /emotion-(?:cache|element)-chakra\b/,
     ],
   },
 ];
