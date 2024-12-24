@@ -12,8 +12,6 @@ import { BreadcrumbItem } from '@/components/ui/breadcrumb';
 import FocusedInput from '../focused-input';
 import { useFormState } from 'react-dom';
 import { analyzeWebsite } from '@/actions';
-import { redirect } from 'next/navigation';
-import { useActiveCategory } from '@/app/contexts/active-category';
 
 export const URLBreadcrumb: FC<{
   url: string;
@@ -23,7 +21,6 @@ export const URLBreadcrumb: FC<{
   className?: string;
 }> = ({ url, variant, skipBackground, skipSubmit, className }) => {
   const [newUrl, setNewUrl] = useState(url);
-  const { activeCategory } = useActiveCategory();
   const handleNewUrlChange = useCallback(
     (evt: ChangeEvent<HTMLInputElement>) => {
       setNewUrl(evt.currentTarget.value);
@@ -32,7 +29,7 @@ export const URLBreadcrumb: FC<{
   );
   const isUrlChanged = newUrl !== url;
 
-  const [state, formAction, isPending] = useFormState(analyzeWebsite, {
+  const [, formAction, isPending] = useFormState(analyzeWebsite, {
     error: null,
   });
 
