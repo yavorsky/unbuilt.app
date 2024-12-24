@@ -44,7 +44,11 @@ export function SingleResultAnalysisCard<
         onClick={() => updateActiveCategory(name)}
       >
         <CardHeader className="space-y-1 py-4 pb-4">
-          <div className="flex justify-between items-start">{label}</div>
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-400">{label}</p>
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           <div className="p-6 space-y-4">

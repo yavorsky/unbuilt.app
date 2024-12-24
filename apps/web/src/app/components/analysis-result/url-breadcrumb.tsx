@@ -52,15 +52,6 @@ export const URLBreadcrumb: FC<{
   }, [isUrlChanged, url]);
 
   useEffect(() => {
-    if (state.analysisId) {
-      // In case user updated the URL, we need to redirect to the new analysis with selected category
-      // Not sure if it needed, but at least we'll preserve the state user created.
-      const categoryStr = activeCategory ? `/${activeCategory}` : '';
-      redirect(`/analysis/${state.analysisId}${categoryStr}`);
-    }
-  }, [state, activeCategory]);
-
-  useEffect(() => {
     return () => {
       if (blurTimeoutRef.current !== null) {
         clearTimeout(blurTimeoutRef.current);

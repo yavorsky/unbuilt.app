@@ -1,3 +1,5 @@
+'use client';
+
 import { FC, useEffect, useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Breadcrumb, BreadcrumbList } from '@/components/ui/breadcrumb';

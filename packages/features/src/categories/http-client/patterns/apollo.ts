@@ -6,20 +6,20 @@ export const apollo = [
     score: 0.4,
     runtime: [
       // Core Apollo specific imports
-      /["']@apollo\/client(?:\/|["'])/, // Matches both regular and minified imports
+      /["']@apollo\/client(?:\/|["']){0,100}/, // Matches both regular and minified imports
 
       // Client creation - specific to Apollo
       /new\s+ApolloClient\s*\({/, // Added { to avoid false positives
       /ApolloProvider[\s>]/, // Added > for JSX detection
 
       // Apollo-specific hooks
-      /(?:^|\s|return\s+)useQuery\s*<?\s*(?:\{|$)/, // More specific pattern for useQuery
+      /(?:^|\s|return\s)useQuery\s*<?(?:\{|$)/, // More specific pattern for useQuery
       /(?:^|\s|return\s+)useMutation\s*<?\s*(?:\{|$)/,
       /(?:^|\s|return\s+)useLazyQuery\s*<?\s*(?:\{|$)/,
       /(?:^|\s|return\s+)useSubscription\s*<?\s*(?:\{|$)/,
 
       // Apollo-specific GraphQL template tag
-      /gql\s*`[\s\S]*?`/, // Matches complete gql template literals
+      /gql\s*`[^`]*`/, // Matches complete gql template literals
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -42,7 +42,7 @@ export const apollo = [
       /new\s+InMemoryCache\s*\(/,
 
       // Apollo-specific link configuration
-      /new\s+HttpLink\s*\({[^}]*uri:/, // More specific HttpLink pattern
+      /new\s+HttpLink\s*\(\{[^}]{0,300}uri:/, // More specific HttpLink pattern
       /ApolloLink\.from\s*\(\s*\[/, // More specific link composition
       /new\s+WebSocketLink\s*\({/,
 

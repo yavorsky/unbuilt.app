@@ -94,7 +94,7 @@ export function MultiResultAnalysisCard<
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="px-6 py-0">
+        <div className="px-6 pt-0 pb-6">
           {/* Primary Results */}
           <div className="space-y-3">
             {primaryLibraries.map((library) => {
