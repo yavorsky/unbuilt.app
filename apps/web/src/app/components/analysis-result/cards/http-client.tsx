@@ -2,12 +2,10 @@ import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { httpClient as httpClientFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { Network } from 'lucide-react';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(httpClientFeature.patterns).map(
-  capitalize
-);
+const supportedOptions = getResultsName(httpClientFeature.meta);
 
 export const HTTPClientCard: FC<{
   httpClient: AnalyzeResult['analysis']['httpClient'] | undefined;
@@ -18,7 +16,7 @@ export const HTTPClientCard: FC<{
       supportedOptions={supportedOptions}
       analysis={httpClient}
       Icon={Network}
-      meta={httpClientFeature?.meta}
+      meta={httpClientFeature.meta}
     />
   );
 };

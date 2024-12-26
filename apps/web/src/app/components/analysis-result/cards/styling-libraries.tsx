@@ -3,11 +3,9 @@ import { AnalyzeResult } from '@unbuilt/analyzer';
 import { stylingLibraries as stylingLibrariesFeture } from '@unbuilt/features';
 import { MultiResultAnalysisCard } from './common/multi-results-card';
 import { Paintbrush } from 'lucide-react';
-import { capitalize } from 'lodash-es';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(stylingLibrariesFeture.patterns).map(
-  capitalize
-);
+const supportedOptions = getResultsName(stylingLibrariesFeture.meta);
 
 export const StylingLibrariesCard: FC<{
   stylingLibraries: AnalyzeResult['analysis']['stylingLibraries'] | undefined;

@@ -3,13 +3,7 @@ export interface IconProps {
   className?: string;
 }
 
-export const GithubIcon = ({
-  size = 32,
-  className = '',
-}: IconProps & {
-  blockColor?: string;
-  backgroundColor?: string;
-}) => {
+export const GithubIcon = ({ size = 32, className = '' }: IconProps) => {
   return (
     <svg
       className={`fill-foreground ${className}`}

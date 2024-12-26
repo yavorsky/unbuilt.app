@@ -20,10 +20,12 @@ import { GithubIcon } from '../icons/github';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useActiveCategory } from '@/app/contexts/active-category';
+import { usePathname } from 'next/navigation';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
   const { activeCategoryLabel } = useActiveCategory();
+  const pathname = usePathname();
 
   const truncatedUrl = useMemo(() => {
     if (!activeAnalysis?.url) {
@@ -83,7 +85,7 @@ export const AppNavigation = () => {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-800"
+                    className={`inline-flex h-9 rounded-md px-4 py-2 text-sm text-white/${pathname === '/' ? 100 : 70} hover:text-white`}
                     href="/"
                   >
                     Analyze
@@ -92,7 +94,7 @@ export const AppNavigation = () => {
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-800"
+                    className={`inline-flex h-9 px-4 py-2 text-sm text-white/${pathname === '/technologies' ? 100 : 70} hover:text-white`}
                     href="/technologies"
                   >
                     Technologies
@@ -100,11 +102,14 @@ export const AppNavigation = () => {
                 </NavigationMenuItem>
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-transparent px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-800 focus:outline-none disabled:pointer-events-none disabled:opacity-50"
+                    className="inline-flex h-9 px-4 py-2 text-sm"
                     href="https://github.com/yavorsky/unbuilt.app"
                     target="_blank"
                   >
-                    <GithubIcon size={20} />
+                    <GithubIcon
+                      size={20}
+                      className="fill-foreground/80 hover:fill-foreground"
+                    />
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               </NavigationMenuList>

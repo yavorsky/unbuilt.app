@@ -4,7 +4,7 @@ import { ReactNode, useCallback, useMemo } from 'react';
 import { ActiveCategoryContext } from './active-category-context';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { AnalysisKeys } from '@unbuilt/analyzer';
-import { getCategoryLabel } from '@/app/utils/getCategoryLabel';
+import { getCategoryLabel } from '@/app/utils/get-category-label';
 
 export function ActiveCategoryProvider({ children }: { children: ReactNode }) {
   const router = useRouter();

@@ -38,7 +38,7 @@ export default function Root() {
 
         <div className="flex-0 flex justify-center items-center relative">
           <Card className="w-full max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 transition-all duration-100 h-48 z-10 flex flex-col justify-around">
-            <CardHeader className="pb-2 mb-0">
+            <CardHeader className="pb-3 mb-0">
               <CardDescription className="text-foreground/40">
                 Fill the page url you want to be <b>unbuilt</b>
               </CardDescription>
