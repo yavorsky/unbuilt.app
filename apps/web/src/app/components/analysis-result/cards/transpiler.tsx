@@ -2,12 +2,10 @@ import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { transpiler as transpilerFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { FileCode2 } from 'lucide-react';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(transpilerFeature.patterns).map(
-  capitalize
-);
+const supportedOptions = getResultsName(transpilerFeature.meta);
 
 export const TranspilerCard: FC<{
   transpiler: AnalyzeResult['analysis']['transpiler'] | undefined;
@@ -16,9 +14,9 @@ export const TranspilerCard: FC<{
     <SingleResultAnalysisCard
       name="transpiler"
       supportedOptions={supportedOptions}
-      Icon={FileCode2}
       analysis={transpiler}
-      meta={transpilerFeature?.meta}
+      meta={transpilerFeature.meta}
+      Icon={FileCode2}
     />
   );
 };

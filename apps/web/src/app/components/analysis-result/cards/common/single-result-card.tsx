@@ -11,7 +11,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import LoaderText from '../../../loader-text';
-import { getCategoryLabel } from '@/app/utils/getCategoryLabel';
+import { getCategoryLabel } from '@/app/utils/get-category-label';
 import { useActiveCategory } from '@/app/contexts/active-category';
 
 export function SingleResultAnalysisCard<

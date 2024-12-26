@@ -2,12 +2,10 @@ import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { stateManagement as stateManagementFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { LucideStore } from 'lucide-react';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(stateManagementFeature.patterns).map(
-  capitalize
-);
+const supportedOptions = getResultsName(stateManagementFeature.meta);
 
 export const StateManagementCard: FC<{
   stateManagement: AnalyzeResult['analysis']['stateManagement'] | undefined;

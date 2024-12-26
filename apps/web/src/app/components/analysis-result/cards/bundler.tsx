@@ -2,10 +2,10 @@ import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { bundler as bundlerFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { Box } from 'lucide-react';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(bundlerFeature.patterns).map(capitalize);
+const supportedOptions = getResultsName(bundlerFeature.meta);
 
 export const BundlerCard: FC<{
   bundler: AnalyzeResult['analysis']['bundler'] | undefined;

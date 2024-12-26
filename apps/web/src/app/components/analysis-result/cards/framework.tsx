@@ -2,12 +2,10 @@ import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { framework as frameworkFeatures } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { Boxes } from 'lucide-react';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(frameworkFeatures.patterns).map(
-  capitalize
-);
+const supportedOptions = getResultsName(frameworkFeatures.meta);
 
 export const FrameworkCard: FC<{
   framework: AnalyzeResult['analysis']['framework'] | undefined;
@@ -18,7 +16,7 @@ export const FrameworkCard: FC<{
       supportedOptions={supportedOptions}
       analysis={framework}
       Icon={Boxes}
-      meta={frameworkFeatures?.meta}
+      meta={frameworkFeatures.meta}
     />
   );
 };

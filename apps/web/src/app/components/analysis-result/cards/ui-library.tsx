@@ -3,9 +3,9 @@ import { Component } from 'lucide-react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { uiLibrary as uiLibraryFeature } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
+import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = Object.keys(uiLibraryFeature.patterns).map(capitalize);
+const supportedOptions = getResultsName(uiLibraryFeature.meta);
 
 export const UILibraryCard: FC<{
   uiLibrary: AnalyzeResult['analysis']['uiLibrary'] | undefined;
@@ -15,7 +15,7 @@ export const UILibraryCard: FC<{
       name="uiLibrary"
       analysis={uiLibrary}
       Icon={Component}
-      meta={uiLibraryFeature?.meta}
+      meta={uiLibraryFeature.meta}
       supportedOptions={supportedOptions}
     />
   );
