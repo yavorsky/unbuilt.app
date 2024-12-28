@@ -3,6 +3,7 @@ import { LogoProps } from '../../../../types/meta.js';
 const DocusaurusLogo = ({
   width = 24,
   height = 24,
+  color = '#3ECC5F',
   className = '',
 }: LogoProps) => {
   const calculatedHeight = height || width;
@@ -14,6 +15,7 @@ const DocusaurusLogo = ({
       width={width}
       height={calculatedHeight}
       viewBox="0 0 24 24"
+      fill={color}
       className={className}
     >
       <title>Docusaurus</title>

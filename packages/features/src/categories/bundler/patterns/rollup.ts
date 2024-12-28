@@ -1,3 +1,5 @@
+import { Page } from 'playwright';
+
 export const rollup = [
   {
     name: 'core' as const,
@@ -15,6 +17,26 @@ export const rollup = [
       // Rollup's specific define property helper
       /Object\.defineProperty\s*\(\s*exports,\s*['"]__esModule['"],\s*\{\s*value:\s*true\s*\}\s*\);\s*\/\*\s*Rollup\s*/,
     ],
+  },
+  // This is shared between Rollup and Vite
+  {
+    score: 0.7,
+    name: 'imports' as const,
+    runtime: [
+      /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
+      /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      // Dynamic imports
+      /__import__\s*\(\s*["']\.\/chunk/,
+      // From patterns
+      /from\s*["']\.\/chunk-[A-Z0-9]{8}\.js["']/,
+      /from\s*["']\.\/chunk-[a-z0-9]{8}\.js["']/,
+    ],
+  },
+  // This is shared between Rollup and Vite
+  {
+    score: 0.6,
+    name: 'exports' as const,
+    runtime: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
   },
   {
     name: 'chunkLoading' as const,
@@ -43,5 +65,29 @@ export const rollup = [
       // Rollup's unique module loading pattern
       /var\s*registry\s*=\s*\{\};\s*var\s*deleted\s*=\s*\{\};\s*function\s*register\s*\(\s*id,\s*exports\s*\)\s*\{\s*deleted\[id\]\s*=\s*false;/,
     ],
+  },
+  {
+    name: 'chunks' as const,
+    score: 0.9,
+    filenames: [
+      /chunk-[A-Z0-9]{8}\.js$/,
+      /chunk-[a-z0-9]{8}\.js$/, // Lowercase variant
+      /chunk-[A-Z0-9]{6,12}\.js$/, // Variable length hashes
+    ],
+  },
+  {
+    name: 'browser' as const,
+    score: 1.4,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          hasChunks: !!document.querySelector('script[src*="chunk-"]'),
+          hasSystemRegister:
+            typeof window.System !== 'undefined' && !!window.System.register,
+          hasDynamicImports: !!window.__import__,
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
 ];

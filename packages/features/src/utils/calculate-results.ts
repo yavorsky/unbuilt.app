@@ -40,7 +40,8 @@ async function processPatterns<Names extends string>(
   patterns: Pattern<Names>[],
   resources: Resources,
   page: Page,
-  browser: Browser
+  browser: Browser,
+  debug: boolean = false
 ): Promise<{ totalScore: number; matchedPatterns: Set<Names> }> {
   const content = resources.getAllScriptsContent();
   const filenames = Array.from(resources.getAllScriptsNames());
@@ -53,30 +54,77 @@ async function processPatterns<Names extends string>(
   for (const pattern of patterns) {
     if (pattern.runtime) {
       for (const runtimePattern of pattern.runtime) {
-        if (runtimePattern.test(content)) {
+        let matched = false;
+        try {
+          matched = runtimePattern.test(content);
+        } catch (e) {
+          console.error(
+            `Error while running filename pattern for ${pattern.name}`,
+            e
+          );
+        }
+
+        if (matched) {
           result.totalScore += pattern.score;
           result.matchedPatterns.add(pattern.name);
+          if (debug) {
+            console.log(
+              'Matched: ',
+              pattern.name,
+              pattern.score,
+              runtimePattern,
+              ' runtime'
+            );
+          }
         }
       }
     }
 
     if (pattern.filenames) {
-      for (const runtimePattern of pattern.filenames) {
-        const matched = filenames.some((filename) =>
-          runtimePattern.test(filename)
-        );
+      for (const filenamePattern of pattern.filenames) {
+        let matched = false;
+        try {
+          matched = filenames.some((filename) =>
+            filenamePattern.test(filename)
+          );
+        } catch (e) {
+          console.error(
+            `Error while running filename pattern for ${pattern.name}`,
+            e
+          );
+        }
         if (matched) {
           result.totalScore += pattern.score;
           result.matchedPatterns.add(pattern.name);
+          if (debug) {
+            console.log(
+              'Matched: ',
+              pattern.name,
+              pattern.score,
+              filenamePattern,
+              ' filename'
+            );
+          }
         }
       }
     }
 
     if (pattern.browser) {
-      const isMatched = await pattern.browser(page, browser);
+      let isMatched = false;
+      try {
+        isMatched = await pattern.browser(page, browser);
+      } catch (e) {
+        console.error(
+          `Error while running browser pattern for ${pattern.name}`,
+          e
+        );
+      }
       if (isMatched) {
         result.totalScore += pattern.score;
         result.matchedPatterns.add(pattern.name);
+        if (debug) {
+          console.log('Matched: ', pattern.name, pattern.score, 'Browser');
+        }
       }
     }
   }
@@ -91,7 +139,8 @@ export async function calculateResults<
   page: Page,
   browser: Browser,
   patterns: T,
-  minConfidence: number = 0.3
+  minConfidence: number = 0.3,
+  debug: boolean = false
 ): Promise<CalculationResult<T>> {
   const results = await Promise.all(
     Object.entries(patterns).map(async ([name, patternList]) => {
@@ -99,7 +148,8 @@ export async function calculateResults<
         patternList,
         resources,
         page,
-        browser
+        browser,
+        debug
       );
       return {
         name,

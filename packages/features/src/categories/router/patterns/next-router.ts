@@ -2,15 +2,19 @@ import { Page } from 'playwright';
 
 export const nextRouter = [
   {
-    name: 'coreRuntime' as const,
+    name: 'core' as const,
     score: 0.3,
     runtime: [
-      // Next.js specific package imports (minification resistant)
       /["'](?:next\/(?:navigation|router|link|dist\/client\/router)|n\/r)["']/,
-
-      // Next.js Router internal markers (survive minification)
       /__NEXT_(?:DATA|P|C|HAS_REWRITE|ROUTER|HISTORY|OPTIMISTIC)__/,
-      /\$(?:N|Next|nr|N_)/,
+    ],
+  },
+  {
+    name: 'runtime' as const,
+    score: 0.3,
+    runtime: [
+      // Next.js Router internal markers (survive minification)
+      /\$(?:Next|nr|N_)/,
       /window\.__N(?:_DATA|EXT|_P)/,
 
       // Next.js specific hooks (minified variants)

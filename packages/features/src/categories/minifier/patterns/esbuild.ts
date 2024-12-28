@@ -3,6 +3,8 @@ export const esbuild = [
     name: 'compilation' as const,
     score: 0.2,
     runtime: [
+      /(?:var|let|const)\s+[a-z]\s*=\s*(?:class|function)/,
+      /(?:var|let|const)\s+[a-z]\s*=\s*\([a-z]\)\s*=>/, // Arrow functions
       // esbuild's specific module system patterns
       // More specific CommonJS handling
       /__commonJS\(\{\s*(?:"[^"]+"|'[^']+')\s*:\s*\(module(?:\s*,\s*exports)?\)\s*=>\s*\{/,

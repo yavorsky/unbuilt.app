@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { getJobStatus } from '../../../actions';
 import { CardsGrid } from './cards-grid';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
+import { useActiveCategory } from '@/app/contexts/active-category';
 
 export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [jobStatus, setJobStatus] = useState<Awaited<
@@ -64,6 +65,8 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
     };
   }, [clearActiveAnalysis]);
 
+  const { updateActiveCategory } = useActiveCategory();
+
   if (error) {
     return (
       <div className="p-4 bg-red-50 text-red-700 rounded">
@@ -74,7 +77,7 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" onClick={() => updateActiveCategory(null)}>
       <CardsGrid
         result={jobStatus?.result ?? null}
         progress={jobStatus?.progress ?? null}

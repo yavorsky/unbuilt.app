@@ -1,4 +1,5 @@
 import { angularRouter } from './angular-router.js';
+import { gatsbyRouter } from './gatsby-router.js';
 import { nextRouter } from './next-router.js';
 import { qwikRouter } from './qwik-router.js';
 import { reactRouter } from './react-router.js';
@@ -10,6 +11,7 @@ export const meta = {
   tanstackRouter,
   angularRouter,
   nextRouter,
+  gatsbyRouter,
   qwikRouter,
   reactRouter,
   remixRouter,

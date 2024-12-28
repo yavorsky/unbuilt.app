@@ -1,47 +1,53 @@
 export const typescript = [
   {
-    name: 'core' as const,
+    name: 'core',
     score: 1,
     runtime: [
-      // TypeScript's unique generator implementation
-      /function\s*__generator\s*\(thisArg,\s*body\)\s*\{\s*var\s*_\s*=\s*\{\s*label:\s*0,\s*sent:\s*function\(\)\s*\{\s*if\s*\(t\[0\]\s*&\s*1\)/,
+      // TSC-only class transformation with preserve flag
+      /var\s+\w+\s*=\s*\/\*\*\s*@preserve\s*@class\s*\*\/\s*function/,
 
-      // TypeScript's unique async/await implementation
-      /function\s*__await\s*\(v\)\s*\{\s*return\s*this\s*instanceof\s*__await\s*\?\s*\(this\.v\s*=\s*v,\s*this\)\s*:\s*new\s*__await\s*\(v\)\s*\}/,
+      // TypeScript's unique namespace IIFE pattern
+      /var\s+(\w+);\s*\(\s*function\s*\(\1\)\s*\{[^}]*\}\s*\)\s*\(\1\s*\|\|\s*\(\1\s*=\s*\{\}\)\s*\);/,
 
-      // TypeScript's specific array spread implementation
-      /function\s*__spreadArray\s*\(to,\s*from,\s*pack\)\s*\{\s*if\s*\(pack\s*\|\|\s*arguments\.length\s*===\s*2\)\s*for\s*\(var\s*i\s*=\s*0,\s*l\s*=\s*from\.length,\s*ar;\s*i\s*<\s*l;\s*i\+\+\)/,
+      // TypeScript-only enum with reverse mapping (highly specific to TSC)
+      /\}\)\(\w+\s*\|\|\s*\(\w+\s*=\s*\{\}\)\);\s*var\s+\w+;\s*\(\s*function\s*\(\w+\)\s*\{\s*\w+\[\w+\[\"\w+\"\]\s*=\s*\d+\]\s*=\s*\"\w+\";/,
 
-      // TypeScript's unique read helper
-      /function\s*__read\s*\(o,\s*n\)\s*\{\s*var\s*m\s*=\s*typeof\s*Symbol\s*===\s*"function"\s*&&\s*o\[Symbol\.iterator\];?\s*if\s*\(!m\)\s*return\s*o;/,
+      // TSC-specific static property initialization
+      /Object\.defineProperty\(\w+,\s*\"\w+\",\s*\{\s*enumerable:\s*true,\s*configurable:\s*true,\s*writable:\s*true,\s*value:\s*\{\s*[^}]+\}\s*\}\);(?:\s*\/\*\*\s*@class\s*\*\/)?/,
+
+      // TypeScript-only assignment pattern for namespaces
+      /var\s+\w+\s*=\s*\{\};?\s*\(\s*function\s*\(\w+\)\s*\{[^}]*\}\s*\)\s*\(\w+\s*\|\|\s*\(\w+\s*=\s*\{\}\)\);/,
+
+      // TypeScript-specific module augmentation pattern
+      /\(\s*function\s*\(factory\)\s*\{\s*if\s*\(typeof\s*module\s*===\s*"object"\s*&&\s*typeof\s*module\.exports\s*===\s*"object"\)\s*{\s*var\s*v\s*=\s*factory\([^)]*\);\s*if\s*\(v\s*!==\s*undefined\)\s*module\.exports\s*=\s*v;\s*}\s*else\s*if\s*\(typeof\s*define\s*===\s*"function"\s*&&\s*define\.amd\)\s*{\s*define\([^)]*\);\s*}\s*}\)\s*\(/,
     ],
   },
   {
-    name: 'decoratorsAndMetadata' as const,
+    name: 'decoratorsAndMetadata',
     score: 1,
     runtime: [
-      // TypeScript's unique decorator implementation
-      /function\s*__decorate\s*\(decorators,\s*target,\s*key,\s*desc\)\s*\{\s*var\s*c\s*=\s*arguments\.length,\s*r\s*=\s*c\s*<\s*3\s*\?\s*target/,
+      // TypeScript-specific parameter decorator pattern (unique to tsc)
+      /Reflect\.getMetadata\(\"design:paramtypes\"/,
 
-      // TypeScript's specific metadata implementation
-      /function\s*__metadata\s*\(metadataKey,\s*metadataValue\)\s*\{\s*if\s*\(typeof\s*Reflect\s*===\s*"object"\s*&&\s*typeof\s*Reflect\.metadata\s*===\s*"function"\)/,
+      // TypeScript-only property decorator pattern
+      /Reflect\.getMetadata\(\"design:type\"/,
 
-      // TypeScript's parameter decorator helper
-      /function\s*__param\s*\(paramIndex,\s*decorator\)\s*\{\s*return\s*function\s*\(target,\s*key\)\s*\{\s*decorator\(target,\s*key,\s*paramIndex\);?\s*\}/,
+      // TypeScript's unique metadata format
+      /\[\s*__metadata\(\s*\"design:type\",\s*[^)]+\),\s*__metadata\(\s*\"design:paramtypes\",\s*\[[^\]]+\]\)\s*\]/,
     ],
   },
   {
-    name: 'moduleSystem' as const,
+    name: 'moduleSystem',
     score: 1,
     runtime: [
-      // TypeScript's unique module helpers
-      /function\s*__createBinding\s*\(o,\s*m,\s*k,\s*k2\)\s*\{\s*if\s*\(k2\s*===\s*undefined\)\s*k2\s*=\s*k;?\s*(?:var\s*desc|Object\.defineProperty)/,
+      // TypeScript's unique module interop pattern
+      /if\s*\(typeof\s*module\s*===\s*\"object\"\s*&&\s*typeof\s*module.exports\s*===\s*\"object\"\)\s*{\s*var\s*v\s*=\s*factory\([^)]*typeof\s*require\s*===\s*\"function\"\s*\?\s*require\s*:\s*[^)]*\);\s*if\s*\(v\s*!==\s*undefined\)\s*module\.exports\s*=\s*v;\s*}/,
 
-      // TypeScript's specific import helpers
-      /function\s*__importStar\s*\(mod\)\s*\{\s*if\s*\(mod\s*&&\s*mod\.__esModule\)\s*return\s*mod;\s*var\s*result\s*=\s*\{\};?\s*if\s*\(mod\s*!=\s*null\)/,
+      // TypeScript-specific dynamic import handling
+      /Promise\.resolve\(\)\.then\(\(\)\s*=>\s*__importStar\(require\([^)]+\)\)\)/,
 
-      // TypeScript's unique export star helper
-      /function\s*__exportStar\s*\(m,\s*o\)\s*\{\s*for\s*\(var\s*p\s*in\s*m\)\s*if\s*\(p\s*!==\s*"default"\s*&&\s*!\s*Object\.prototype\.hasOwnProperty\.call\(o,\s*p\)\)/,
+      // TypeScript's namespace export pattern
+      /exports\.\w+\s*=\s*void\s*0;\s*var\s+\w+\s*=\s*require\([^)]+\);\s*exports\.\w+\s*=\s*\w+\.default/,
     ],
   },
 ];

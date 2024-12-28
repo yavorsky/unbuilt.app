@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const BrunchLogo = ({
+const BrunchLogo = ({
   width = 50,
   height = 18,
   color = '#3F894A',
@@ -26,3 +26,4 @@ export const BrunchLogo = ({
     </svg>
   );
 };
+export default BrunchLogo;

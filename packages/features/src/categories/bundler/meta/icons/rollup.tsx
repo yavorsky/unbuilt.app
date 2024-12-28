@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const RollupLogo = ({
+const RollupLogo = ({
   width = 24,
   height = 24,
   color = '#EC4A3F',
@@ -23,3 +23,4 @@ export const RollupLogo = ({
     </svg>
   );
 };
+export default RollupLogo;
