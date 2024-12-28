@@ -23,3 +23,4 @@ export const GatsbyLogo = ({
     </svg>
   );
 };
+export default GatsbyLogo;

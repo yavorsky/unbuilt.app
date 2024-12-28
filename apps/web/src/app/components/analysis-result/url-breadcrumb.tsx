@@ -57,7 +57,9 @@ export const URLBreadcrumb: FC<{
   }, []);
 
   const textClass =
-    variant === 'large' ? 'text-3xl font-bold text-white' : 'text-m text-white';
+    variant === 'large'
+      ? 'text-3xl font-bold text-white'
+      : 'text-lg text-white';
 
   return (
     <BreadcrumbItem className={`${textClass} ${className}`}>

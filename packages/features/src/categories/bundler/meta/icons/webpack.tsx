@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const WebpackLogo = ({
+const WebpackLogo = ({
   width = 24,
   height = 24,
   color = '#8DD6F9',
@@ -23,3 +23,4 @@ export const WebpackLogo = ({
     </svg>
   );
 };
+export default WebpackLogo;

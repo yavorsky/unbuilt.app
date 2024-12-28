@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const TurbopackLogo = ({
+const TurbopackLogo = ({
   width = 24,
   height = 24,
   gradient = { start: '#0096FF', end: '#FF1E56' },
@@ -47,3 +47,4 @@ export const TurbopackLogo = ({
     </svg>
   );
 };
+export default TurbopackLogo;

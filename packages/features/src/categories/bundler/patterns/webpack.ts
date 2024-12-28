@@ -1,3 +1,5 @@
+import { Page } from 'playwright';
+
 export const webpack = [
   {
     name: 'core' as const,
@@ -14,7 +16,7 @@ export const webpack = [
   },
   {
     name: 'chunks' as const,
-    score: 0.9,
+    score: 1.2,
     runtime: [
       // Webpack-specific chunk patterns
       /webpackJsonp/,
@@ -102,5 +104,17 @@ export const webpack = [
       /chunks\/\w+\.[a-f0-9]{8,}\.js$/,
       // Removing most generic bundle patterns
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 1.4,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          webpackJsonp: !!window.webpackJsonp,
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
 ];

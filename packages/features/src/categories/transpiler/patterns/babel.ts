@@ -3,11 +3,38 @@ export const babel = [
     name: 'core' as const,
     score: 1,
     runtime: [
+      // Babel still adds these even with modern preset-env
+      /\s*"use strict";\s*Object\.defineProperty\(exports,\s*"__esModule"/,
+
+      // Common import transformations (still present with modern targets)
+      /Object\.defineProperty\(exports,\s*"__esModule",\s*{\s*value:\s*true\s*}\)/,
+
       // Babel's unique runtime namespace
       /babelHelpers\.[a-zA-Z]+/,
 
       // Babel-specific module type markers with version comment
       /@babel\/runtime\/helpers\//,
+
+      // Decorators
+      /_initializerDefineProperty\(/,
+      /_applyDecoratedDescriptor\(/,
+
+      // Babel's specific async helper pattern
+      /regeneratorRuntime\.wrap\(function\s+_callee\(/,
+      /regeneratorRuntime\.mark\(function\s+_callee\(/,
+
+      // Babel object spread
+      /_objectSpread\(/,
+      /_objectSpread2\(/,
+
+      // Babel sourcemap patterns
+      /\/\/# sourceMappingURL=data:application\/json;charset=utf-8;base64,.*?["']babel/,
+
+      // Common module wrapper pattern
+      /\(function\s*\([^)]*\)\s*\{\s*"use strict";\s*Object\.defineProperty\(exports,/,
+
+      // Import meta transform (still applied in modern preset-env)
+      /__filename,\s*__dirname,\s*require,\s*module,\s*exports,\s*__filename,\s*__dirname/,
 
       // Babel's unique typeof helper implementation
       /_typeof\s*=\s*function\s*\(obj\)\s*\{\s*return\s*typeof\s*obj\s*;?\s*\}/,

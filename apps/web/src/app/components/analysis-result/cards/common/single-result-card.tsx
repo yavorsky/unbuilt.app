@@ -41,7 +41,10 @@ export function SingleResultAnalysisCard<
     return (
       <Card
         className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
-        onClick={() => updateActiveCategory(name)}
+        onClick={(evt) => {
+          evt.stopPropagation();
+          updateActiveCategory(name);
+        }}
       >
         <CardHeader className="space-y-1 py-4 pb-4">
           <div className="flex justify-between items-start">
@@ -67,7 +70,10 @@ export function SingleResultAnalysisCard<
   return (
     <Card
       className={`max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40 ${isUnknown ? 'opacity-70' : ''}`}
-      onClick={() => updateActiveCategory(name)}
+      onClick={(evt) => {
+        evt.stopPropagation();
+        updateActiveCategory(name);
+      }}
     >
       <CardHeader className="space-y-1 py-4 pb-4">
         <div className="flex justify-between items-start">
@@ -100,19 +106,14 @@ export function SingleResultAnalysisCard<
               </div>
             </div>
             <ConfidenceIndicator confidence={analysis.confidence} />
-            {/* <Badge
-                variant="outline"
-                className={`${confidence.color} text-white border-0`}
-              >
-                {confidence.level} confidence
-              </Badge> */}
           </>
         </div>
       </CardHeader>
       <CardContent className="p-0">
         <div className="p-6 space-y-4">
           <div className="space-y-2">
-            {'secondaryMatches' in analysis &&
+            {!isUnknown &&
+              'secondaryMatches' in analysis &&
               Object.keys(analysis.secondaryMatches).length > 0 && (
                 <Collapsible open={isOpen} onOpenChange={setIsOpen}>
                   <CollapsibleTrigger className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-300 transition-colors">

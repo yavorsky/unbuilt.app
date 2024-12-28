@@ -55,7 +55,10 @@ export function MultiResultAnalysisCard<
     return (
       <Card
         className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
-        onClick={() => updateActiveCategory(name)}
+        onClick={(evt) => {
+          evt.stopPropagation();
+          updateActiveCategory(name);
+        }}
       >
         <CardHeader className="space-y-1 py-4 pb-4">
           <div className="flex justify-between items-start">{label}</div>
@@ -69,10 +72,15 @@ export function MultiResultAnalysisCard<
     );
   }
 
+  const noLibrariesDetected = !primaryLibraries.length;
+
   return (
     <Card
-      className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
-      onClick={() => updateActiveCategory(name)}
+      className={`max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40 ${noLibrariesDetected ? 'opacity-70' : ''}`}
+      onClick={(evt) => {
+        evt.stopPropagation();
+        updateActiveCategory(name);
+      }}
     >
       <CardHeader className="space-y-1 py-4 pb-4">
         <div className="flex justify-between items-start">
@@ -87,29 +95,35 @@ export function MultiResultAnalysisCard<
         <div className="px-6 pt-0 pb-6">
           {/* Primary Results */}
           <div className="space-y-3">
-            {primaryLibraries.map((library) => {
-              const resultMeta = meta?.[library.name];
-              const ResultIcon = resultMeta?.Icon ?? Icon;
+            {!noLibrariesDetected ? (
+              primaryLibraries.map((library) => {
+                const resultMeta = meta?.[library.name];
+                const ResultIcon = resultMeta?.Icon ?? Icon;
 
-              return (
-                <div
-                  key={library.name}
-                  className="flex justify-between items-center"
-                >
-                  <Badge>
-                    <Suspense>
-                      <ResultIcon className="mr-2" />
-                    </Suspense>
-                    <span className="text-gray-300 text-xl">
-                      {resultMeta?.name ?? capitalize(library.name)}
-                    </span>
-                  </Badge>
-                  <div className="flex items-center gap-2">
-                    <ConfidenceIndicator confidence={library.confidence} />
+                return (
+                  <div
+                    key={library.name}
+                    className="flex justify-between items-center"
+                  >
+                    <Badge>
+                      <Suspense>
+                        <ResultIcon className="mr-2" />
+                      </Suspense>
+                      <span className="text-gray-300 text-xl">
+                        {resultMeta?.name ?? capitalize(library.name)}
+                      </span>
+                    </Badge>
+                    <div className="flex items-center gap-2">
+                      <ConfidenceIndicator confidence={library.confidence} />
+                    </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })
+            ) : (
+              <span className="text-foreground/70 text-xl">
+                No libraries detected
+              </span>
+            )}
           </div>
         </div>
       </CardContent>

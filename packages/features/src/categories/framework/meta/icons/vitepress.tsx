@@ -3,6 +3,7 @@ import { LogoProps } from '../../../../types/meta.js';
 export const VitePressLogo = ({
   width = 24,
   height = 24,
+  color = 'rgb(62,99,221)',
   className = '',
 }: LogoProps) => {
   const calculatedHeight = height || width;
@@ -13,6 +14,7 @@ export const VitePressLogo = ({
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={calculatedHeight}
+      fill={color}
       viewBox="0 0 24 24"
       className={className}
     >

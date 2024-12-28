@@ -1,47 +1,84 @@
+import { Page } from 'playwright';
+
 export const esbuild = [
   {
     name: 'core' as const,
-    score: 1.0,
+    score: 0.3,
     runtime: [
-      // esbuild's unique module conversion helpers
-      /var\s*__toESM\s*=\s*\((?:mod|module)\)\s*=>\s*\{\s*return\s*mod\s*&&\s*mod\.__esModule\s*\?\s*mod\s*:\s*\{\s*default:\s*mod\s*\}\s*\};?/,
+      // esbuild's unique module initialization with void 0 (unique to esbuild)
+      /function\s+\w+\(\w+\)\s*{\s*var\s+\w+\s*=\s*\w+\[\w+\];\s*if\s*\(void\s*0\s*!==\s*\w+\)\s*return\s*\w+\.exports/,
 
-      // esbuild's specific CommonJS implementation
-      /var\s*__commonJS\s*=\s*\(cb,\s*mod\)\s*=>\s*\(\)\s*=>\s*\(mod\s*\|\|\s*cb\(\(\)\s*=>\s*mod\)\)\s*;?/,
+      // esbuild's specific module facade pattern (not used by other bundlers)
+      /\w+\s*=\s*Object\.getPrototypeOf\s*\?\s*function\(\w+\)\s*{\s*return\s*Object\.getPrototypeOf\(\w+\)\s*}\s*:\s*function\(\w+\)\s*{\s*return\s*\w+\.__proto__\s*}/,
 
-      // esbuild-specific banner comment format
-      /\/\*\s*esbuild-plugin(?::|-)[\w\-]+\s*\*\//,
+      // esbuild's unique prototype chain handling
+      /for\s*\(var\s+\w+\s*=\s*2\s*&\s*\w+\s*&&\s*\w+;\s*"object"\s*==\s*typeof\s+\w+\s*&&\s*!~\w+\.indexOf\(\w+\);\s*\w+\s*=\s*\w+\(\w+\)\)/,
+    ],
+  },
+  {
+    name: 'imports' as const,
+    score: 0.3,
+    runtime: [
+      // esbuild's multi-variable declarations pattern (unique)
+      /var\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+\w+\s*=\s*{}/,
 
-      // esbuild's unique module namespace creation
-      /var\s*__create_require\s*=\s*\(\)\s*=>\s*\{\s*var\s*e\s*=\s*\{\};\s*return\s*\(\w+\)\s*=>\s*\(e\[\w+\]\s*\|\|\s*\{\}\);\s*\};?/,
+      // esbuild's unique chunk naming pattern
+      /from\s+["']\.\/((?!chunks\/)[^"']+)\.[A-Za-z0-9]{8}\.js["']/,
+
+      // esbuild's characteristic import grouping
+      /import\s*{\s*[_$]\s+as\s+[a-z],\s*[_$]\s+as\s+[a-z].*?}\s*from/,
     ],
   },
   {
     name: 'moduleSystem' as const,
-    score: 1.0,
+    score: 0.2,
     runtime: [
-      // esbuild's specific CommonJS to ESM conversion
-      /var\s*__toCommonJS\s*=\s*\(mod\)\s*=>\s*\{\s*return\s*\{\s*__proto__:\s*null,\s*\[\w+\]:\s*true,\s*default:\s*mod\s*\}\s*\};?/,
+      // esbuild's unique getter pattern with cache
+      /\w+\.n\s*=\s*function\(\w+\)\s*{\s*var\s+\w+\s*=\s*\w+\s*&&\s*\w+\.__esModule\s*\?\s*function\(\)\s*{\s*return\s*\w+\.default\s*}\s*:\s*function\(\)\s*{\s*return\s*\w+\s*};\s*return\s*\w+\.d\(\w+,\s*{\s*a:\s*\w+\s*}\),\s*\w+\s*}/,
 
-      // esbuild's unique export handling
-      /var\s*__export\s*=\s*\(target,\s*all\)\s*=>\s*\{\s*for\s*\(var\s*name\s*in\s*all\)\s*__defProp\(target,\s*name,\s*\{\s*get:\s*\(\)\s*=>\s*all\[name\],\s*enumerable:\s*true\s*\}\)\s*\};?/,
+      // esbuild's specific require implementation with hasOwnProperty
+      /\w+\.o\s*=\s*function\(\w+,\s*\w+\)\s*{\s*return\s*Object\.prototype\.hasOwnProperty\.call\(\w+,\s*\w+\)\s*}/,
 
-      // esbuild's specific re-export implementation
-      /var\s*__reExport\s*=\s*\(target,\s*mod,\s*secondary\)\s*=>\s*\{\s*for\s*\(var\s*key\s*in\s*mod\)\s*if\s*\(!secondary\s*&&\s*target\s*&&\s*target\.hasOwnProperty\(key\)\)/,
+      // esbuild's unique version getter (not present in other bundlers)
+      /\w+\.rv\s*=\s*function\(\)\s*{\s*return\s*["'][0-9.]+["']\s*}/,
     ],
   },
   {
-    name: 'jsxFeatures' as const,
-    score: 1.0,
-    runtime: [
-      // esbuild's unique JSX fragment handling
-      /\/\*\s*@jsxRuntime\s+automatic\s*\*\/\s*\/\*\s*@jsxImportSource\s+react\s*\*\//,
+    name: 'browser' as const,
+    score: 0.4,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const evidence = {
+          // Check for esbuild's unique module system functions
+          hasEsbuildModuleSystem: Object.keys(window).some((key) => {
+            const obj = window[key];
+            return (
+              obj &&
+              typeof obj.n === 'function' &&
+              typeof obj.o === 'function' &&
+              typeof obj.rv === 'function' &&
+              obj.o.toString().includes('Object.prototype.hasOwnProperty.call')
+            );
+          }),
 
-      // esbuild's specific JSX factory implementation
-      /var\s*__jsx\s*=\s*\(\s*type,\s*props,\s*key,\s*source\)\s*=>\s*\{\s*return\s*\{\s*type,\s*props,\s*key,\s*__source:\s*source\s*\}\s*\};?/,
+          // Check for esbuild's specific file naming
+          hasEsbuildChunks: Array.from(
+            document.querySelectorAll('script')
+          ).some(
+            (s) =>
+              /\.[A-Za-z0-9]{8}\.js$/.test(s.src) && !s.src.includes('chunk-')
+          ),
 
-      // esbuild's JSX dev tools integration
-      /\/\*\s*@jsxDevRuntime\s+development\s*\*\//,
-    ],
+          // Check for esbuild's unique module initialization
+          hasVoid0Check: Array.from(document.querySelectorAll('script')).some(
+            (s) =>
+              s.textContent?.includes('if(void 0!==') ||
+              s.textContent?.includes('if (void 0!==')
+          ),
+        };
+
+        return Object.values(evidence).some(Boolean);
+      });
+    },
   },
 ];
