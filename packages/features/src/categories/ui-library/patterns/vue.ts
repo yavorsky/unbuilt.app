@@ -4,7 +4,7 @@ export const vue = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Vue global and runtime
       /Vue\s*\.\s*createApp/,
       /new\s+Vue\s*\(/,
@@ -25,7 +25,7 @@ export const vue = [
   {
     name: 'rendering' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core directives
       /v-if|v-show|v-for/,
       /v-model|v-bind|v-on/,
@@ -42,7 +42,7 @@ export const vue = [
   {
     name: 'reactivity' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Vue 2 reactivity
       /\$data|\$props/,
       /\$watch|\$set|\$delete/,
@@ -58,7 +58,7 @@ export const vue = [
   {
     name: 'components' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Component definition
       /Vue\.component\s*\(/,
       /defineComponent\s*\(/,
@@ -74,7 +74,7 @@ export const vue = [
   {
     name: 'routing' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Vue Router
       /createRouter|useRouter/,
       /RouterView|RouterLink/,

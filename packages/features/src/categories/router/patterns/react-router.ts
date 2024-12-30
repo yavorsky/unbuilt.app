@@ -4,7 +4,7 @@ export const reactRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core package imports (including minified variants)
       /["'](?:@?[rR](?:eact)?[-.]?[rR]outer(?:[-.]?[dD]om)?|@remix-run\/router)["']/,
 
@@ -47,7 +47,7 @@ export const reactRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // React Router specific route configuration (minification resistant)
       /(?:create|use)[BHM]?\w*Router\s*\(\s*\[/,
       /RouterProvider\s*\{\s*router:/,

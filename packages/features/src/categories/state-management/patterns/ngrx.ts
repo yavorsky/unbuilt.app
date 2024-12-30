@@ -29,7 +29,7 @@ export const ngrx = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // NgRx's unique store creation pattern
       /function\s+createReducerFactory\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+(?:\w+)\s*=\s*combineReducers\s*\([^)]*\)/,
 
@@ -75,7 +75,7 @@ export const ngrx = [
   {
     name: 'effects' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // NgRx's unique effect creation patterns
       /function\s+createEffect\s*\(\s*source\$\s*,\s*config\)\s*\{\s*return\s*source\$\.pipe\s*\(/,
 
@@ -89,7 +89,7 @@ export const ngrx = [
   {
     name: 'selectors' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // NgRx's unique selector creation
       /function\s+createSelector\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+selectors\s*=\s*arguments/,
 

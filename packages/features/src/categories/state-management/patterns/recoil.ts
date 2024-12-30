@@ -30,7 +30,7 @@ export const recoil = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Recoil's unique atom creation pattern
       /function\s+atom\s*\(\s*\{\s*key\s*:\s*[^,]+,\s*default\s*:/,
 
@@ -76,7 +76,7 @@ export const recoil = [
   {
     name: 'stateManagement' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Recoil's unique transaction system
       /function\s+Snapshot\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+(?:store|getState|replaceState)\s*=/,
 
@@ -90,7 +90,7 @@ export const recoil = [
   {
     name: 'hooks' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Recoil's specific hook implementations
       /function\s+useRecoilState\s*\(\s*recoilState\s*\)\s*\{\s*(?:const|let|var)\s+\[value\s*,\s*setValue\]\s*=/,
 

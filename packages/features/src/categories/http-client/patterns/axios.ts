@@ -4,7 +4,7 @@ export const axios = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       /["']axios["']/,
       /axios\.create\(\s*\{/,
       /axios\.request\(\s*\{/,
@@ -51,7 +51,7 @@ export const axios = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Axios-specific config patterns with type annotations
       /(?:AxiosRequestConfig|AxiosResponse|AxiosInstance|AxiosError)[<\s]/,
 

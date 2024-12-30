@@ -4,7 +4,7 @@ export const vueI18n = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Vue I18n initialization and imports
       /createI18n\(/,
       /vue-i18n/,
@@ -54,7 +54,7 @@ export const vueI18n = [
   {
     name: 'formats' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Translation syntax patterns
       /\{\s*\$t\([^)]+\)\s*\}/,
       /\{\s*count\s*\}/,
@@ -80,7 +80,7 @@ export const vueI18n = [
   {
     name: 'components' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // SFC i18n custom blocks
       /<i18n\s+lang=["']json["']>/,
       /<i18n\s+locale=["'][a-z-]+["']>/,

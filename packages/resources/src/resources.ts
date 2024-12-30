@@ -12,6 +12,8 @@ export class Resources {
   private cache: Map<string, string> = new Map();
   private resourcesMap: ResourcesMap = new Map();
   private scriptsMap: ScriptsMap = new Map();
+  private stylesheetsMap: ScriptsMap = new Map();
+  private documentsMap: ScriptsMap = new Map();
   constructor(page: Page) {
     this.page = page;
   }
@@ -23,7 +25,11 @@ export class Resources {
 
       let content = null;
       // Intercept JS content
-      if (resourceType === 'script') {
+      if (
+        resourceType === 'script' ||
+        resourceType === 'stylesheet' ||
+        resourceType === 'document'
+      ) {
         const response = await route.fetch();
         content = await response.text();
       }
@@ -72,7 +78,19 @@ export class Resources {
     });
 
     if (content) {
-      this.scriptsMap.set(resource.url, content);
+      if (resource.type === 'script') {
+        this.scriptsMap.set(resource.url, content);
+        return;
+      }
+      if (resource.type === 'stylesheet') {
+        this.stylesheetsMap.set(resource.url, content);
+        return;
+      }
+      if (resource.type === 'document') {
+        this.documentsMap.set(resource.url, content);
+        return;
+      }
+      console.warn('Unknown resource type', resource.type);
     }
   }
 
@@ -100,6 +118,14 @@ export class Resources {
     return this.scriptsMap.values();
   }
 
+  getAllStylesheets() {
+    return this.stylesheetsMap.values();
+  }
+
+  getAllDocuments() {
+    return this.documentsMap.values();
+  }
+
   getAllScriptsNames() {
     return this.scriptsMap.keys();
   }
@@ -111,6 +137,26 @@ export class Resources {
     }
     const result = Array.from(this.getAllScripts()).join('\n');
     this.cache.set('allScriptsContent', result);
+    return result;
+  }
+
+  getAllStylesheetsContent() {
+    const cached = this.cache.get('allStylesheetsContent');
+    if (typeof cached === 'string') {
+      return cached;
+    }
+    const result = Array.from(this.getAllStylesheets()).join('\n');
+    this.cache.set('allStylesheetsContent', result);
+    return result;
+  }
+
+  getAllDocumentsContent() {
+    const cached = this.cache.get('allDocumentsContent');
+    if (typeof cached === 'string') {
+      return cached;
+    }
+    const result = Array.from(this.getAllDocuments()).join('\n');
+    this.cache.set('allDocumentsContent', result);
     return result;
   }
 
@@ -148,22 +194,6 @@ export class Resources {
         preloaded: await this.countPreloadedFonts(),
       },
     };
-  }
-
-  calculateConfidence(patterns: string[]): number {
-    let matches = 0;
-    const scriptsArr = Array.from(this.scriptsMap.keys());
-
-    for (const pattern of patterns) {
-      for (const script of scriptsArr) {
-        if (script.includes(pattern)) {
-          matches++;
-          break;
-        }
-      }
-    }
-
-    return matches / patterns.length;
   }
 
   private async countInlineScripts(): Promise<number> {

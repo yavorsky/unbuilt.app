@@ -4,7 +4,7 @@ export const reactIntl = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core FormatJS/react-intl imports and components
       /IntlProvider/,
       /FormattedMessage/,
@@ -56,7 +56,7 @@ export const reactIntl = [
   {
     name: 'formatting' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Number formatting
       /style:\s*["'](?:decimal|currency|percent|unit)["']/,
       /minimumFractionDigits/,

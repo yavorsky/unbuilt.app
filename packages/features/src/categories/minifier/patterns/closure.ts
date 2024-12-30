@@ -2,7 +2,7 @@ export const closure = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Closure's specific module system
       // More specific module patterns with context
       /goog\.module\(\s*(?:'[^']+'|"[^"]+")\s*\)(?:\.declareNamespace\([^)]+\))?/,

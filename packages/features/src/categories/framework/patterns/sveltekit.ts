@@ -4,7 +4,7 @@ export const sveltekit = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core SvelteKit identifiers
       /__sveltekit/,
       /\$app\/navigation/,
@@ -16,7 +16,7 @@ export const sveltekit = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // SvelteKit's unique data attributes
       /data-sveltekit-/,
       /data-sveltekit-prefetch/,
@@ -27,7 +27,7 @@ export const sveltekit = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // SvelteKit-specific state management
       /__sveltekit_hydrate/,
       /__sveltekit_data/,
@@ -55,7 +55,7 @@ export const sveltekit = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [/__sveltekit_ssr/],
+    scripts: [/__sveltekit_ssr/],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {

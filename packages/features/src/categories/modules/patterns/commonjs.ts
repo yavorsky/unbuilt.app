@@ -2,7 +2,7 @@ export const commonjs = [
   {
     name: 'staticRequires' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Standard require calls
       /require\s*\(\s*["'][^"']+["']\s*\)/, // require("module")
       /require\s*\(\s*`[^`]+`\s*\)/, // require(`module`)
@@ -18,7 +18,7 @@ export const commonjs = [
   {
     name: 'dynamicRequires' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Dynamic require patterns
       /require\s*\(\s*\w+\s*\)/, // require(variable)
       /require\s*\(\s*\w+\s*\+\s*["'][^"']*["']\)/, // require(variable + "string")
@@ -33,7 +33,7 @@ export const commonjs = [
   {
     name: 'exports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // module.exports assignments
       /module\.exports\s*=\s*[^;]+/, // module.exports = something
       /module\s*\[\s*["']exports["']\s*\]\s*=/, // module['exports'] =

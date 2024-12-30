@@ -4,7 +4,7 @@ export const chakra = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized component attributes - combined with length limits
       /data-chakra-component="(?:Button|Modal|Tooltip|Popover|Menu|Drawer|Alert|Toast)"/,
       /data-popper-(?:reference-hidden|escaped|placement)="chakra-[^"]{1,50}"/,

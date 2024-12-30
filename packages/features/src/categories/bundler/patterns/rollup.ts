@@ -4,7 +4,7 @@ export const rollup = [
   {
     name: 'core' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Rollup's unique module factory pattern
       /var\s*\w+\s*=\s*\(function\s*\(exports\)\s*\{\s*['"]use strict['"]\s*;\s*\/\*\s*Rollup\s*[^*]*\*\//i,
 
@@ -22,7 +22,7 @@ export const rollup = [
   {
     score: 0.7,
     name: 'imports' as const,
-    runtime: [
+    scripts: [
       /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
       /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
       // Dynamic imports
@@ -36,12 +36,12 @@ export const rollup = [
   {
     score: 0.6,
     name: 'exports' as const,
-    runtime: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
+    scripts: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
   },
   {
     name: 'chunkLoading' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Rollup's unique chunk loading implementation
       /function\s*loadBundle\s*\(\s*bundle\s*\)\s*\{\s*return\s*Promise\.all\(Object\.keys\(bundle\)\.map\(\(\s*key\s*\)\s*=>\s*\{/,
 
@@ -55,7 +55,7 @@ export const rollup = [
   {
     name: 'dynamicImports' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Rollup's unique dynamic import implementation
       /function\s*_interopNamespace\s*\(\s*e\s*\)\s*\{\s*if\s*\(e\s*&&\s*e\.__esModule\)\s*return\s*e;\s*var\s*n\s*=\s*Object\.create\s*\(null\);\s*if\s*\(e\)\s*\{\s*Object\.keys\s*\(e\)\.forEach\s*\(/,
 

@@ -4,7 +4,7 @@ export const nextRouter = [
   {
     name: 'core' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       /["'](?:next\/(?:navigation|router|link|dist\/client\/router)|n\/r)["']/,
       /__NEXT_(?:DATA|P|C|HAS_REWRITE|ROUTER|HISTORY|OPTIMISTIC)__/,
     ],
@@ -12,7 +12,7 @@ export const nextRouter = [
   {
     name: 'runtime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Next.js Router internal markers (survive minification)
       /\$(?:Next|nr|N_)/,
       /window\.__N(?:_DATA|EXT|_P)/,
@@ -65,7 +65,7 @@ export const nextRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Next.js internal patterns (minification resistant)
       /[A-Za-z]\.__N(?:=|ext)|__N_SSG|__N_SSP/,
       /window\.__N(?:_STATE|EXT_P|_CROSS)/,

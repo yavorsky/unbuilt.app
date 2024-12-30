@@ -4,7 +4,7 @@ export const superagent = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Superagent-specific imports
       /import\s+(?:\* as\s+)?(?:superagent|request)\s+from\s+['"]superagent['"]/,
       /require\s*\(\s*['"]superagent['"]\s*\)/,
@@ -46,7 +46,7 @@ export const superagent = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Superagent-specific form data handling
       /\.field\s*\(['"][^'"]+['"],\s*[^)]+\)\.field\s*\(/, // Multiple field chaining
       /\.attach\s*\(['"][^'"]+['"],\s*(?:new FormData\(\)|[^)]+,\s*['"][^'"]+['"])\)/,

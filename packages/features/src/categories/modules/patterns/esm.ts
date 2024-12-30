@@ -2,7 +2,7 @@ export const esm = [
   {
     name: 'staticImports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Standard import declarations
       /import\s+\{[^}]+\}\s*from/, // import { something } from
       /import\s+\w+\s*,\s*\{[^}]+\}\s*from/, // import default, { named } from
@@ -20,7 +20,7 @@ export const esm = [
   {
     name: 'dynamicImports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Dynamic import expressions
       /import\s*\([^)]+\)/, // import("module")
       /import\s*\(["'][^"']+["']\)/, // import("./path")
@@ -37,7 +37,7 @@ export const esm = [
   {
     name: 'exports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Named exports
       /export\s+(?:const|let|var|class|function|interface|type)\s+\w+/, // export const x
       /export\s+\{[^}]+\}/, // export { x, y }

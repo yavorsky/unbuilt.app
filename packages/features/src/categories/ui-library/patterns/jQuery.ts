@@ -4,7 +4,7 @@ export const jQuery = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // jQuery core detection
       /jQuery|\$\.fn\.|jquery/,
       /\$\([\s\S]*?\)\./,
@@ -21,7 +21,7 @@ export const jQuery = [
   {
     name: 'domManipulation' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Element selection and traversal
       /\$\(['"][\s\S]*['"]\)\.(?:find|closest|parent|children|siblings)/,
       /\.(?:prev|next|filter|not|has|is|contains)/,
@@ -33,7 +33,7 @@ export const jQuery = [
   {
     name: 'events' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Event handling
       /\.(?:on|off|one|bind|unbind|delegate|undelegate|trigger|live|die)/,
       /\.(?:click|submit|hover|focus|blur|change|keyup|keydown|mouseenter|mouseleave)/,
@@ -45,7 +45,7 @@ export const jQuery = [
   {
     name: 'effects' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Animation and effects
       /\.(?:show|hide|toggle|slideDown|slideUp|slideToggle)/,
       /\.(?:fadeIn|fadeOut|fadeTo|fadeToggle)/,
@@ -57,7 +57,7 @@ export const jQuery = [
   {
     name: 'ajax' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Ajax methods
       /\$\.(?:ajax|get|post|getJSON|getScript)/,
       /\.(?:load|serialize|serializeArray)/,

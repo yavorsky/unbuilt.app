@@ -4,7 +4,7 @@ export const apollo = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Core Apollo specific imports
       /["']@apollo\/client(?:\/|["']){0,100}/, // Matches both regular and minified imports
 
@@ -37,7 +37,7 @@ export const apollo = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Apollo-specific cache configuration
       /new\s+InMemoryCache\s*\(/,
 

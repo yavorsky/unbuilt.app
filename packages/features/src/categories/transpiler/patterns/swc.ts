@@ -2,7 +2,7 @@ export const swc = [
   {
     name: 'core' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // SWC's unique helper namespace
       /@swc\/helpers\//,
       /_swc_core__/,
@@ -20,7 +20,7 @@ export const swc = [
   {
     name: 'classFeatures' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // SWC's unique private field implementations
       /function\s*_class_private_field_loose_base\s*\(receiver,\s*privateKey\)\s*\{\s*if\s*\(!Object\.prototype\.hasOwnProperty\.call\s*\(receiver,\s*privateKey\)\)\s*\{\s*throw/,
 
@@ -37,7 +37,7 @@ export const swc = [
   {
     name: 'transformFeatures' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // SWC's unique iterator implementation
       /function\s*_create_for_of_iterator_helper_loose\s*\(o\)\s*\{\s*var\s*i\s*=\s*0;\s*if\s*\(typeof\s*Symbol\s*===\s*"undefined"\)/,
 

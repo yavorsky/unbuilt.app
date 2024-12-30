@@ -4,7 +4,7 @@ export const storybook = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Storybook-specific globals and identifiers that survive minification
       /window\.__STORYBOOK_CLIENT_API__/,
       /window\.__STORYBOOK_STORY_STORE__/,
@@ -16,7 +16,7 @@ export const storybook = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Storybook-specific DOM markers and attributes
       /data-storybook(-.*)?/,
       /storybook-iframe/,
@@ -29,7 +29,7 @@ export const storybook = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Storybook state management and runtime markers
       /__STORYBOOK_STATE__/,
       /window\.__STORYBOOK_MANAGER__/,
@@ -63,7 +63,7 @@ export const storybook = [
   {
     score: 0.3,
     name: 'addons' as const,
-    runtime: [
+    scripts: [
       // Storybook addons patterns
       /STORYBOOK_ADDON_STATE/,
       /STORYBOOK_ADDON_ACTIONS/,

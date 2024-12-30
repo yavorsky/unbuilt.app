@@ -4,7 +4,7 @@ export const astro = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Astro-specific globals and identifiers that survive minification
       /Astro\.self/,
       /astro:js/,
@@ -17,7 +17,7 @@ export const astro = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Astro-specific attributes and islands
       /astro-island/,
       /data-astro-cid-/,
@@ -29,7 +29,7 @@ export const astro = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Astro hydration markers
       /astro:after-hydration/,
       /astro:before-hydration/,
@@ -62,7 +62,7 @@ export const astro = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [
+    scripts: [
       // Astro SSR patterns
       /astro:only/,
       /data-astro-source/,

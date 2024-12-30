@@ -4,7 +4,7 @@ export const urql = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // urql-specific imports
       /import\s+\{[^}]*(?:createClient|Provider|useQuery|Client)[^}]*\}\s+from\s+['"]urql['"]/,
       /import\s+[^'"\n]+from\s+['"]@urql\/(?:core|exchange-[^'"]+)['"]/,
@@ -49,7 +49,7 @@ export const urql = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // urql-specific client operations
       /client\.(?:executeQuery|executeMutation|executeSubscription)\s*\(\s*createRequest\s*\(/,
 

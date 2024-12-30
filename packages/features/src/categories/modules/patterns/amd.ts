@@ -2,7 +2,7 @@ export const amd = [
   {
     name: 'definePatterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Basic define patterns
       /define\s*\(\s*["'][^"']+["']\s*,\s*\[/, // Named module with dependencies
       /define\s*\(\s*\[[^\]]*\]\s*,\s*function/, // Anonymous module with dependencies
@@ -21,7 +21,7 @@ export const amd = [
   {
     name: 'exports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Return object exports
       /return\s*\{\s*[^}]*\}/, // return { ... }
       /return\s*\(\s*\{\s*[^}]*\}\s*\)/, // return ({ ... })
@@ -48,7 +48,7 @@ export const amd = [
   {
     name: 'dynamicExports' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Dynamic property assignment
       /Object\.defineProperty\s*\(\s*exports\s*,/,
       /Object\.defineProperties\s*\(\s*exports\s*,/,

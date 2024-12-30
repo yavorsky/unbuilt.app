@@ -4,7 +4,7 @@ export const jsJoda = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core classes (Java-style naming)
       /LocalDate(?:Time)?/,
       /ZonedDateTime/,
@@ -49,7 +49,7 @@ export const jsJoda = [
   {
     name: 'formatting' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Formatting patterns
       /DateTimeFormatter\./,
       /DateTimeFormatterBuilder\./,

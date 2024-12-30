@@ -24,7 +24,7 @@ export const pinia = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Pinia's unique store creation pattern
       /function\s+defineStore\s*\(\s*idOrOptions\s*,\s*setup\s*,\s*setupOptions\s*\)\s*\{\s*let\s+id\s*;?\s*let\s+options;?\s*(?:const|let|var)\s+isSetupStore/,
 
@@ -80,7 +80,7 @@ export const pinia = [
   {
     name: 'storeFeatures' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Pinia's unique state subscription system
       /function\s+addSubscription\s*\(\s*(?:subscriptions|store)\s*,\s*callback\s*,\s*detached\s*,\s*onCleanup\s*\)\s*\{\s*(?:const|let|var)\s+removeSubscription/,
 
@@ -94,7 +94,7 @@ export const pinia = [
   {
     name: 'devtools' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Pinia's unique devtools integration
       /function\s+addStoreToDevtools\s*\(\s*app\s*,\s*store\s*\)\s*\{\s*if\s*\(typeof\s*window\s*!==\s*['"]undefined['"]/,
 

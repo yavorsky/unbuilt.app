@@ -23,7 +23,7 @@ export const jotai = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Jotai's unique atom creation pattern
       /function\s+atom\s*\(\s*initialValue\s*,\s*read\s*,\s*write\s*\)\s*\{\s*(?:const|let|var)\s+config\s*=\s*\{\s*init:/,
 
@@ -81,7 +81,7 @@ export const jotai = [
   {
     name: 'atomUtils' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Jotai's unique atom utilities
       /function\s+splitAtom\s*\(\s*anAtom\s*,\s*keyExtractor\s*\)\s*\{\s*return\s*atom\s*\(/,
 
@@ -95,7 +95,7 @@ export const jotai = [
   {
     name: 'hooks' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Jotai's specific hook implementations
       /function\s+useAtom\s*\(\s*atom\s*,\s*scope\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*useStore\s*\(/,
 

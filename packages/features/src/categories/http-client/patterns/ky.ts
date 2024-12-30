@@ -4,7 +4,7 @@ export const ky = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Core Ky-specific imports
       /import\s+(?:\* as\s+)?ky\s+from\s+['"](?:ky|ky-universal)['"]/,
       /require\s*\(\s*['"](?:ky|ky-universal)['"]\s*\)/,
@@ -49,7 +49,7 @@ export const ky = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Ky-specific hook patterns
       /beforeRequest:\s*\[\s*async\s*\([^)]*\)\s*=>\s*\{[^}]*\}\s*\]/,
       /afterResponse:\s*\[\s*async\s*\([^)]*\)\s*=>\s*\{[^}]*\}\s*\]/,

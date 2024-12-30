@@ -4,7 +4,7 @@ export const redux = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Redux's unique store implementation with currentReducer and currentState
       /function\s+createStore\s*\([^)]*\)\s*\{\s*(?:var|let|const)\s+currentReducer\s*=\s*reducer(?:\s*;)?\s*(?:var|let|const)\s+currentState\s*=\s*preloadedState/,
 
@@ -47,7 +47,7 @@ export const redux = [
   {
     name: 'toolkit' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // RTK's unique createSlice implementation details
       /createSlice\s*\(\s*\{\s*name:\s*[^,]+,\s*initialState:[^,]+,\s*reducers:\s*\{[\s\S]*\}\s*\}\)/,
 
@@ -61,7 +61,7 @@ export const redux = [
   {
     name: 'reactRedux' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // React-Redux's unique Subscription implementation
       /function\s+createSubscription\s*\(store\)\s*\{\s*(?:var|let|const)\s+unsubscribe\s*;\s*function\s+onStateChange\s*\(\)/,
 

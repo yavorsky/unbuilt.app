@@ -4,7 +4,7 @@ export const mui = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Optimized component classnames - combined patterns with boundaries
       /MuiButtonBase-(?:root|focusVisible|disabled|color(?:Primary|Secondary))\b/,
       /MuiButton-(?:contained(?:Primary)|outlined(?:Secondary)|text(?:Success)|size(?:Large)|fullWidth)\b/,
@@ -34,7 +34,6 @@ export const mui = [
 
       // Optimized theme customization - added limits
       /createTheme\(\{\s*palette:\s*\{\s*primary:\s*\{[^}]{1,500}\}\s*\}\s*\}/,
-      /ThemeProvider\s+theme=\{(?:dark|light|custom)Theme\}/,
 
       // Optimized error messages - combined
       /(?:Material-UI|MUI):\s/,

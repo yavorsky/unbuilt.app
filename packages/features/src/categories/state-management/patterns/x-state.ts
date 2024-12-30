@@ -27,7 +27,7 @@ export const xState = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // XState's unique machine creation pattern
       /function\s+createMachine\s*\(\s*config\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+machine\s*=\s*new\s+StateNode\s*\(/,
 
@@ -87,7 +87,7 @@ export const xState = [
   {
     name: 'stateMachine' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // XState's unique state matching implementation
       /function\s+matchState\s*\(\s*state\s*,\s*patterns\s*,\s*defaultValue\s*\)\s*\{\s*(?:const|let|var)\s+resolvedState\s*=\s*toStateValue\s*\(/,
 
@@ -101,7 +101,7 @@ export const xState = [
   {
     name: 'actorSystem' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // XState's specific actor implementation
       /function\s+createActor\s*\(\s*behavior\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+actor\s*=\s*new\s+Actor\s*\(/,
 

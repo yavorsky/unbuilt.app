@@ -4,7 +4,7 @@ export const moment = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Global Moment object
       /moment(?:\.|\[)/,
       /moment\.version/,
@@ -55,7 +55,7 @@ export const moment = [
   {
     name: 'localization' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Common locale patterns
       /weekdays|months/,
       /dayOfMonthOrdinalParse/,

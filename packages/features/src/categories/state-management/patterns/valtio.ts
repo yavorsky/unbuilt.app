@@ -14,7 +14,7 @@ export const valtio = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Valtio's unique proxy creation pattern
       /function\s+proxy\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+notifyUpdate\s*=\s*createNotifyUpdate\s*\([^)]*\)/,
 
@@ -61,7 +61,7 @@ export const valtio = [
   {
     name: 'derivedState' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Valtio's unique derived state implementation
       /function\s+derive\s*\(\s*fn\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+pending\s*=\s*false/,
 
@@ -75,7 +75,7 @@ export const valtio = [
   {
     name: 'reactBindings' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Valtio's specific useSnapshot implementation
       /function\s+useSnapshot\s*\(\s*proxyObject\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+\[\s*,\s*forceUpdate\s*\]\s*=\s*useReducer/,
 

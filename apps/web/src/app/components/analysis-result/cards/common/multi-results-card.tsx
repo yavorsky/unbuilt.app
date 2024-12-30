@@ -106,9 +106,11 @@ export function MultiResultAnalysisCard<
                     className="flex justify-between items-center"
                   >
                     <Badge>
-                      <Suspense>
-                        <ResultIcon className="mr-2" />
-                      </Suspense>
+                      <div className="w-5 flex justify-center items-center">
+                        <Suspense>
+                          <ResultIcon className="mr-2" />
+                        </Suspense>
+                      </div>
                       <span className="text-gray-300 text-xl">
                         {resultMeta?.name ?? capitalize(library.name)}
                       </span>

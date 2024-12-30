@@ -4,7 +4,7 @@ export const svelteRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // SvelteKit Router specific imports (minification resistant)
       /["']@sveltejs\/kit(?:\/navigation|\/routing|\/runtime\/client)["']/,
       /["']sveltejs\/kit(?:\/package\.json|\/client\.js)["']/,
@@ -76,7 +76,7 @@ export const svelteRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // SvelteKit specific data loading (minification resistant)
       /load\s*\(\s*\{\s*(?:params|url|route|depends)\s*\}/,
       /handle\s*\(\s*\{\s*event\s*,\s*resolve\s*\}\s*\)/,

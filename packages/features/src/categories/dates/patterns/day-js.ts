@@ -4,7 +4,7 @@ export const dayJs = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Day.js function and namespace
       /dayjs(?:\.|\()/,
       /(?:import|require)\s+dayjs/,
@@ -49,7 +49,7 @@ export const dayJs = [
   {
     name: 'plugins' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Plugin-specific methods
       /\.(?:quarter|isoWeek|isoWeekday|isoWeekYear)/,
       /\.(?:toArray|toObject|toJSON|unix)/,

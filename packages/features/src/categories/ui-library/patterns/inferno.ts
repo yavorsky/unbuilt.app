@@ -4,7 +4,7 @@ export const inferno = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Inferno
       /\binferno\b/i,
       /from\s+["']inferno["']/,
@@ -23,7 +23,7 @@ export const inferno = [
   {
     name: 'components' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Component classes
       /Component\s*\{\s*render\s*\(/,
       /PureComponent/,
@@ -41,7 +41,7 @@ export const inferno = [
   {
     name: 'hooks' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // React-like hooks
       /useState\s*\(/,
       /useEffect\s*\(/,
@@ -56,7 +56,7 @@ export const inferno = [
   {
     name: 'routing' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Inferno Router
       /InfernoRouter/,
       /Route\s*\{/,
@@ -72,7 +72,7 @@ export const inferno = [
   {
     name: 'compatibility' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // React compatibility
       /inferno-compat/,
       /createReactClass/,

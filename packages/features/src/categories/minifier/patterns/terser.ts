@@ -2,7 +2,7 @@ export const terser = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Terser's unique module wrapper pattern with strict mode
       // More specific to avoid false positives with other minifiers
       /\(\s*function\s*\(\s*\w+\s*,\s*\w+\s*,\s*\w+\s*\)\s*\{\s*["']use strict["']\s*;(?:\s*var\s+\w+\s*=\s*\w+\.exports\s*=\s*\{\})?/,
@@ -44,7 +44,7 @@ export const terser = [
   {
     name: 'sourcemaps' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Terser's specific sourcemap patterns with more context
       /\/\/# sourceMappingURL=data:application\/json;charset=utf-8;base64,[A-Za-z0-9+/=]+$/,
       /\/\*# sourceMappingURL=(?!data:).*?\.map(?:\.json)?\s*\*\/$/,

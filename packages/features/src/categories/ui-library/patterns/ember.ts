@@ -4,7 +4,7 @@ export const ember = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Ember
       /\bEmber\b|\bEmber\./,
       /ember-cli/,
@@ -23,7 +23,7 @@ export const ember = [
   {
     name: 'components' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Component patterns
       /extend\s*\(\s*['"]Component['"]\)/,
       /Ember\.Component\.extend/,
@@ -41,7 +41,7 @@ export const ember = [
   {
     name: 'templates' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Handlebars templates
       /\{\{#if\}\}|\{\{#each\}\}/,
       /\{\{#unless\}\}|\{\{#with\}\}/,
@@ -58,7 +58,7 @@ export const ember = [
   {
     name: 'routing' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Router patterns
       /Router\.map\s*\(/,
       /this\.route\(/,
@@ -75,7 +75,7 @@ export const ember = [
   {
     name: 'data' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Ember Data
       /DS\.Store/,
       /DS\.RecordArray/,

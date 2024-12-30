@@ -4,7 +4,7 @@ export const antDesign = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized message/notification system - combined patterns with non-capturing groups
       /ant-message-(?:notice|loading|success|error|warning|info)(?:-content)?/,
       /ant-notification-(?:notice|info|success|error|warning|close|btn)/,

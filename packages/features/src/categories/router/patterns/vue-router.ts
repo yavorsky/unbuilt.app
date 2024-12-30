@@ -4,7 +4,7 @@ export const vueRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Vue Router specific package signatures
       /["']vue-router["']/,
       /["']@vue\/router["']/,
@@ -71,7 +71,7 @@ export const vueRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Vue Router's unique navigation guards
       /beforeRouteEnter\s*\(\s*to\s*,\s*from\s*,\s*next\s*\)/,
       /beforeRouteUpdate\s*\(\s*to\s*,\s*from\)/,

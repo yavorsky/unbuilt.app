@@ -2,7 +2,7 @@ export const sucrase = [
   {
     name: 'core' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Sucrase's unique module transformation pattern (with specific variable naming)
       /createCommonjsModule\s*\(\s*function\s*\(module,\s*exports\)\s*\{\s*"use strict";\s*Object\.defineProperty\(exports,\s*"__esModule",\s*\{\s*value:\s*true\s*\}\);?\s*exports\.__/,
 
@@ -16,7 +16,7 @@ export const sucrase = [
   {
     name: 'transforms' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Sucrase's unique ES wrapper implementation
       /function\s*__esWrapper\s*\(\)\s*\{\s*var\s*\$\$exports\s*=\s*\{\};\s*\$\$exports\.__esModule\s*=\s*true/,
 

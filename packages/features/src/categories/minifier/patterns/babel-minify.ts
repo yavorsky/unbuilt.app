@@ -2,7 +2,7 @@ export const babelMinify = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Babel-minify specific helper functions
       // These are more unique to Babel's transforms
       /_createSuper\(\s*[a-zA-Z_$][\w$]*\s*\)/,

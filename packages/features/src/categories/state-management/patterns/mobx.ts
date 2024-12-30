@@ -4,7 +4,7 @@ export const mobx = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // MobX's unique observable creation implementation
       /function\s+createAtom\s*\(\s*name\s*,\s*onBecomeObserved(?:Handler)?\s*,\s*onBecomeUnobserved(?:Handler)?\)\s*\{\s*return\s*new\s+Atom\s*\(/,
 
@@ -47,7 +47,7 @@ export const mobx = [
   {
     name: 'decorators' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // MobX's specific decorator implementation
       /function\s+createPropDecorator\s*\(\s*[^)]*\)\s*\{\s*(?:return\s+)?function\s+decorator\s*\([^)]*\)\s*\{\s*(?:var|const|let)\s+descriptor\s*=\s*arguments/,
 
@@ -61,7 +61,7 @@ export const mobx = [
   {
     name: 'reactIntegration' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // MobX-React's specific observer implementation
       /function\s+makeComponentReactive\s*\(\s*(?:render|target|baseComponent)\s*\)\s*\{\s*(?:var|const|let)\s+(?:reaction|dispose|rendering|isRenderingPending)\s*=/,
 

@@ -19,7 +19,7 @@ export const zustand = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Zustand's unique store creation implementation
       /function\s+createStore\s*\(\s*createState\s*\)\s*\{\s*(?:let|var)\s+state;\s*(?:const|let|var)\s+listeners\s*=\s*new\s+Set\(\)/,
 
@@ -60,7 +60,7 @@ export const zustand = [
   {
     name: 'middleware' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Zustand's unique middleware implementation
       /function\s+devtools\s*\(\s*fn\s*,\s*options\s*\)\s*\{\s*return\s*\(\s*set\s*,\s*get\s*,\s*api\s*\)\s*=>\s*\{\s*(?:const|let|var)\s+originalState/,
 
@@ -74,7 +74,7 @@ export const zustand = [
   {
     name: 'reactBindings' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Zustand's specific selector implementation
       /function\s+shallow\s*\(\s*objA\s*,\s*objB\s*\)\s*\{\s*if\s*\(\s*Object\.is\s*\(\s*objA\s*,\s*objB\s*\)\s*\)\s*\{\s*return\s*true/,
 

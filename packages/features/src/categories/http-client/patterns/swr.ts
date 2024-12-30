@@ -4,7 +4,7 @@ export const swr = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // SWR-specific imports
       /import\s+\{[^}]*useSWR[^}]*\}\s+from\s+['"]swr['"]/,
       /import\s+\{[^}]*useSWRConfig[^}]*\}\s+from\s+['"]swr['"]/,
@@ -52,7 +52,7 @@ export const swr = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // SWR-specific cache operations
       /unstable_serialize\s*\(\s*\[[^\]]*\]\s*\)/,
 

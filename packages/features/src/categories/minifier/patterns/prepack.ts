@@ -2,7 +2,7 @@ export const prepack = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Prepack's unique initialization patterns
       // More specific require pattern with context
       /__prepack_require__\(\s*[0-9]+\s*\)\.default/,

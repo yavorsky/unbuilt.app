@@ -2,7 +2,7 @@ export const esbuild = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       /(?:var|let|const)\s+[a-z]\s*=\s*(?:class|function)/,
       /(?:var|let|const)\s+[a-z]\s*=\s*\([a-z]\)\s*=>/, // Arrow functions
       // esbuild's specific module system patterns
@@ -47,7 +47,7 @@ export const esbuild = [
   {
     name: 'sourcemaps' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // More specific sourcemap patterns
       /\/\/# sourceMappingURL=data:application\/json;base64,[A-Za-z0-9+/=]+?(?:[A-Za-z0-9+/=]*?esbuild[A-Za-z0-9+/=]*?)$/,
       /\/\*# sourceMappingURL=(?!data:).*?\.map\.js(?:\?v=\w+)?\s*\*\/$/,

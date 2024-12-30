@@ -4,7 +4,7 @@ export const nuxt = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core Nuxt globals and identifiers
       /__NUXT__/,
       /window\.__NUXT__/,
@@ -15,7 +15,7 @@ export const nuxt = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Nuxt-specific DOM attributes and markers
       /data-n-head/,
       /data-n-head-ssr/,
@@ -26,7 +26,7 @@ export const nuxt = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Nuxt-specific hydration markers
       /__NUXT_STATE__/,
       /__NUXT_LOADED__/,

@@ -4,7 +4,7 @@ export const relay = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Relay-specific imports
       /import\s+(?:\* as\s+)?(?:Relay|Environment|Network)\s+from\s+['"]relay-runtime['"]/,
       /import\s+\{[^}]*(?:useFragment|usePaginationFragment|useRefetchableFragment)[^}]*\}\s+from\s+['"]react-relay['"]/,
@@ -55,7 +55,7 @@ export const relay = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Relay-specific store operations
       /(?:store|environment)\.(?:retain|publish|lookup|notify|subscribe|holdGC|releaseGC)\s*\(/,
 
