@@ -4,7 +4,7 @@ export const react = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // React core
       /(?:window\.)?React/,
       /__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
@@ -25,7 +25,7 @@ export const react = [
   {
     name: 'rendering' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // React DOM
       /ReactDOM(?:\.|\[)/,
       /(?:render|hydrate|createRoot)\s*\(/,
@@ -43,7 +43,7 @@ export const react = [
   {
     name: 'jsxCompiled' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // JSX runtime
       /jsx\s*=\s*react\.jsx/,
       /_jsx\(/,
@@ -64,7 +64,7 @@ export const react = [
   {
     name: 'hooks' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Core hooks
       /(?:React\.|[\W])use(?:State|Effect|Context|Reducer|Ref)\W/,
       // Additional hooks
@@ -80,7 +80,7 @@ export const react = [
   {
     name: 'components' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Core component APIs
       /React\.(?:Component|PureComponent|Fragment)/,
       /(?:React\.|[\W])(?:memo|lazy|Suspense|forwardRef)\(/,
@@ -97,7 +97,7 @@ export const react = [
   {
     name: 'reconciler' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // React Fiber
       /__reactFiber/,
       /ReactCurrentOwner/,

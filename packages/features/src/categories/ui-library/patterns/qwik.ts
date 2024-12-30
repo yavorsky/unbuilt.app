@@ -4,7 +4,7 @@ export const qwik = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Qwik imports and runtime
       /from\s+["']@builder\.io\/qwik["']/,
       /qwikloader/,
@@ -23,7 +23,7 @@ export const qwik = [
   {
     name: 'rendering' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core rendering
       /q:render/,
       /q:slot/,
@@ -41,7 +41,7 @@ export const qwik = [
   {
     name: 'components' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Component patterns
       /component\$\s*\(/,
       /useTask\$\s*\(/,
@@ -58,7 +58,7 @@ export const qwik = [
   {
     name: 'optimization' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Lazy loading
       /\.lazy/,
       /noSerialize/,
@@ -74,7 +74,7 @@ export const qwik = [
   {
     name: 'serverPatterns' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Server$ functions
       /server\$\s*\(/,
       /routeLoader\$/,

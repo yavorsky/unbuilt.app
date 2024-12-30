@@ -4,7 +4,7 @@ export const shadcn = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized data attribute pattern - consolidated into a single regex with non-capturing groups
       /data-\[tw-(?:accordion|alert|aspect|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context|dialog|dropdown|hover|input|label|menubar|navigation|popover|progress|radio|scroll|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)\]/,
 

@@ -1,13 +1,12 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { capitalize } from 'lodash-es';
 import { Paintbrush2 } from 'lucide-react';
-import { stylingProcessor } from '@unbuilt/features';
+import { stylingProcessor as stylingProcessorFeature } from '@unbuilt/features';
 
-const supportedOptions = Object.keys(stylingProcessor.cssInJsPatterns)
-  .concat(Object.keys(stylingProcessor.preprocessorPatterns))
-  .map(capitalize);
+const supportedOptions = Object.keys(
+  stylingProcessorFeature.cssInJsMeta
+).concat(Object.keys(stylingProcessorFeature.preprocessorMeta));
 
 export const StylingProcessorCard: FC<{
   stylingProcessor: AnalyzeResult['analysis']['stylingProcessor'] | undefined;
@@ -18,6 +17,10 @@ export const StylingProcessorCard: FC<{
       analysis={stylingProcessor}
       supportedOptions={supportedOptions}
       Icon={Paintbrush2}
+      meta={{
+        ...stylingProcessorFeature.cssInJsMeta,
+        ...stylingProcessorFeature.preprocessorMeta,
+      }}
     />
   );
 };

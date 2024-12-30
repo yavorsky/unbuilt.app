@@ -4,7 +4,7 @@ export const webpack = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core webpack module system - highly specific patterns
       /__webpack_require__/,
       /__webpack_modules__/,
@@ -17,7 +17,7 @@ export const webpack = [
   {
     name: 'chunks' as const,
     score: 1.2,
-    runtime: [
+    scripts: [
       // Webpack-specific chunk patterns
       /webpackJsonp/,
       /webpackChunk/,
@@ -29,7 +29,7 @@ export const webpack = [
   {
     name: 'harmony' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Webpack-specific ES Module compatibility
       /__webpack_require__\.[rdot]/,
       /__webpack_dynamic_require__/,
@@ -40,7 +40,7 @@ export const webpack = [
   {
     name: 'hmr' as const,
     score: 0.7,
-    runtime: [
+    scripts: [
       // Webpack-specific HMR patterns
       /webpackHotUpdate/,
       /__webpack_require__\.hmr/,
@@ -52,7 +52,7 @@ export const webpack = [
   {
     name: 'async' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Webpack-specific async patterns
       /webpackAsyncContext/,
       // Only webpack-specific chunk name comments
@@ -63,7 +63,7 @@ export const webpack = [
   {
     name: 'runtime' as const,
     score: 0.5,
-    runtime: [
+    scripts: [
       // Webpack-specific runtime patterns
       /webpack\/runtime/,
       /webpack\/bootstrap/,
@@ -74,7 +74,7 @@ export const webpack = [
   {
     name: 'assets' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Webpack-specific asset patterns
       /__webpack_require__\.p/,
       // These asset patterns might be too generic - consider removing
@@ -84,7 +84,7 @@ export const webpack = [
   {
     name: 'development' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Webpack-specific development patterns
       /webpack-dev-server/,
       /webpackDevServer/,

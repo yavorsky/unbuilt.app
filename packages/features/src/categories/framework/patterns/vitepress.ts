@@ -4,7 +4,7 @@ export const vitepress = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // VitePress-specific globals and identifiers
       /__VITEPRESS_/,
       /window\.__VP_/,
@@ -17,7 +17,7 @@ export const vitepress = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // VitePress-specific DOM elements and classes
       /div\[class\*="VPDoc"\]/,
       /div\[class\*="VPNav"\]/,
@@ -31,7 +31,7 @@ export const vitepress = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // VitePress hydration and state management
       /__VITEPRESS_DATA__/,
       /window\.__VITEPRESS_INITIAL_STATE__/,
@@ -58,7 +58,7 @@ export const vitepress = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [
+    scripts: [
       // VitePress SSR-specific patterns
       /__VITEPRESS_SSR__/,
       /window\.__VITEPRESS_DATA__/,

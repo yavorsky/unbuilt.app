@@ -4,7 +4,7 @@ export const luxon = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Luxon classes and imports
       /DateTime\s*\.\s*(?:now|local|utc|fromISO|fromHTTP|fromSQL)/,
       /Duration\s*\.\s*(?:from|fromISO|fromMillis)/,
@@ -51,7 +51,7 @@ export const luxon = [
   {
     name: 'methods' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Common method combinations
       /\.(?:toISO|toISODate|toISOTime|toISOWeekDate)/,
       /\.(?:toLocal|toLocaleParts|toLocaleString)/,

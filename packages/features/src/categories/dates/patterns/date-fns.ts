@@ -4,7 +4,7 @@ export const dateFns = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core imports/functions
       /from\s+["']date-fns["']/,
       /(?:import|require)\s*\{?\s*(?:format|parse|add|sub|diff|is)[A-Z]\w+\s*\}?\s*from\s*["']date-fns["']/,
@@ -51,7 +51,7 @@ export const dateFns = [
   {
     name: 'modules' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // ESM imports
       /\/_lib\/\w+\/index\.js/,
       /\/_lib\/locale\/\w+\/index\.js/,

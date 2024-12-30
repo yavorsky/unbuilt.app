@@ -4,7 +4,7 @@ export const preact = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Preact
       /(?:window\.)?preact/,
       /from\s+["']preact["']/,
@@ -26,7 +26,7 @@ export const preact = [
   {
     name: 'rendering' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Rendering methods
       /render\s*\(\s*[^,]+,\s*[^,)]+\)/,
       /hydrate\s*\(\s*[^,]+,\s*[^,)]+\)/,
@@ -41,7 +41,7 @@ export const preact = [
   {
     name: 'hooks' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Core hooks
       /(?:preact\/|[\W])use(?:State|Effect|Context|Reducer|Ref)\W/,
       // Additional hooks
@@ -56,7 +56,7 @@ export const preact = [
   {
     name: 'components' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Component base
       /Component\s*\{\s*(?:render|constructor)/,
       // Component features
@@ -74,7 +74,7 @@ export const preact = [
   {
     name: 'compat' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // React compatibility layer
       /preact\/compat/,
       /react-compat/,
@@ -91,7 +91,7 @@ export const preact = [
   {
     name: 'signals' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Preact Signals
       /(?:from\s+)?["']@preact\/signals["']/,
       /useSignal|useComputed/,

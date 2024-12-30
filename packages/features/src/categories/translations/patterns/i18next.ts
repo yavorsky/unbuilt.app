@@ -4,7 +4,7 @@ export const i18next = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core i18next object and initialization
       /i18next\./,
       /\.use\((?:Backend|LanguageDetector|initReactI18next)\)/,
@@ -47,7 +47,7 @@ export const i18next = [
   {
     name: 'plugins' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Common plugins
       /i18nextHttpBackend/,
       /i18nextBrowserLanguageDetector/,
@@ -68,7 +68,7 @@ export const i18next = [
   {
     name: 'interpolation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Interpolation patterns
       /\{\{[^}]+\}\}/,
       /\$t\([^)]+\)/,

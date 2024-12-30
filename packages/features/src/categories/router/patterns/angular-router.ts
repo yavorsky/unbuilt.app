@@ -4,7 +4,7 @@ export const angularRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Angular Router specific imports (minification resistant)
       /["']@angular[/\\]router(?:\/fesm2022\/router\.mjs|\/bundles\/router\.umd\.min\.js)?["']/,
       /["']\@angular\/router\/package\.json["']/,
@@ -70,7 +70,7 @@ export const angularRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Angular Router specific configuration (minification resistant)
       /RouterModule\.(?:forRoot|forChild)\(\s*(?:\[|routes)/,
       /provideRouter\(\s*withRouterConfig\(/,

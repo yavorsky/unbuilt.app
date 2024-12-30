@@ -4,7 +4,7 @@ export const lucide = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized imports - combined patterns with length limits
       /(?:from\s+["']lucide|import\s*\{[^}]{1,200}\}\s*from\s*["']lucide)(?:-react)?\b/,
 

@@ -4,7 +4,7 @@ export const angular = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Angular
       /\bangular\b/i,
       /ng-version/,
@@ -22,7 +22,7 @@ export const angular = [
   {
     name: 'components' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Component decorators
       /@Component\s*\(/,
       /@Injectable\s*\(/,
@@ -40,7 +40,7 @@ export const angular = [
   {
     name: 'templates' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Template syntax
       /\*ngIf|\*ngFor/,
       /\[(ngModel)\]/,
@@ -58,7 +58,7 @@ export const angular = [
   {
     name: 'routing' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Router
       /RouterModule|Routes/,
       /router-outlet/,
@@ -74,7 +74,7 @@ export const angular = [
   {
     name: 'forms' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Forms
       /FormGroup|FormControl/,
       /FormBuilder|FormArray/,

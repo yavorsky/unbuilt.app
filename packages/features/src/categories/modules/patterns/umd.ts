@@ -2,7 +2,7 @@ export const umd = [
   {
     name: 'wrapperPattern' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core UMD wrapper checks
       /typeof\s+define\s*===?\s*["']function["']\s*&&\s*define\.amd/,
       /typeof\s+exports\s*===?\s*["']object["']/,
@@ -22,7 +22,7 @@ export const umd = [
   {
     name: 'definitions' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Module definitions
       /define\s*\(\s*["'][^"']+["']\s*,\s*\[/,
       /define\s*\(\s*\[[^\]]*\]\s*,\s*function/,
@@ -42,7 +42,7 @@ export const umd = [
   {
     name: 'factoryExecutions' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Factory execution patterns
       /factory\s*\(\s*(?:root|global|this|window)\s*\)/,
       /factory\s*\(\s*(?:exports|module)?\s*,\s*(?:exports|module)?\s*\)/,

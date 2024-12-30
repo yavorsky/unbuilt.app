@@ -4,7 +4,9 @@ import { Browser, Page } from 'playwright';
 export interface Pattern<Name extends string = string> {
   score: number;
   name: Name;
-  runtime?: RegExp[];
+  scripts?: RegExp[];
+  stylesheets?: RegExp[];
+  documents?: RegExp[];
   filenames?: RegExp[];
   browser?: (page: Page, browser: Browser) => boolean | Promise<boolean>;
 }
@@ -43,7 +45,10 @@ async function processPatterns<Names extends string>(
   browser: Browser,
   debug: boolean = false
 ): Promise<{ totalScore: number; matchedPatterns: Set<Names> }> {
-  const content = resources.getAllScriptsContent();
+  const scriptsContent = resources.getAllScriptsContent();
+  const stylesheetsContent = resources.getAllScriptsContent();
+  const documentsContent = resources.getAllScriptsContent();
+  const totalContent = scriptsContent + stylesheetsContent + documentsContent;
   const filenames = Array.from(resources.getAllScriptsNames());
 
   const result = {
@@ -52,11 +57,11 @@ async function processPatterns<Names extends string>(
   };
 
   for (const pattern of patterns) {
-    if (pattern.runtime) {
-      for (const runtimePattern of pattern.runtime) {
+    if (pattern.scripts) {
+      for (const runtimePattern of pattern.scripts) {
         let matched = false;
         try {
-          matched = runtimePattern.test(content);
+          matched = runtimePattern.test(totalContent);
         } catch (e) {
           console.error(
             `Error while running filename pattern for ${pattern.name}`,

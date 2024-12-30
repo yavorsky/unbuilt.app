@@ -4,7 +4,7 @@ export const remix = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core Remix globals and identifiers
       /__remixContext/,
       /__remixManifest/,
@@ -16,7 +16,7 @@ export const remix = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Remix-specific DOM attributes and markers
       /data-remix-run/,
       /data-remix-/,
@@ -27,7 +27,7 @@ export const remix = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Remix-specific hydration markers
       /__remixContext\.state/,
       /__remixContext\.url/,

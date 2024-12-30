@@ -36,7 +36,7 @@ export const effector = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Effector's unique store creation pattern
       /function\s+createStore\s*\(\s*defaultState\s*,\s*config\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*\{\s*subscribers:/,
 
@@ -94,7 +94,7 @@ export const effector = [
   {
     name: 'combines' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Effector's unique store combination pattern
       /function\s+combine\s*\(\s*stores\s*,\s*fn\s*\)\s*\{\s*(?:const|let|var)\s+target\s*=\s*createStore\s*\(/,
 
@@ -108,7 +108,7 @@ export const effector = [
   {
     name: 'reactBindings' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Effector's specific React integration
       /function\s+useStore\s*\(\s*store\s*,\s*defaultState\s*\)\s*\{\s*(?:const|let|var)\s+\[\s*state\s*,\s*setState\s*\]\s*=/,
 

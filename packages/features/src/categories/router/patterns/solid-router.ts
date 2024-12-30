@@ -4,7 +4,7 @@ export const solidRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Solid Router imports (survive minification)
       /["']@solidjs\/router(?:\/dist\/|\/)?[^"']*["']/,
 
@@ -67,7 +67,7 @@ export const solidRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Solid's internal property checks (minification resistant)
       /\w+\.__propertyCheck&&\w+\.__propertyCheck\([^)]+\)/,
       /WeakMap\.prototype\.get\.call\(\w+\.__propertyCache/,

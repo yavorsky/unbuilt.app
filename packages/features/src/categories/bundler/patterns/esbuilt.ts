@@ -4,7 +4,7 @@ export const esbuild = [
   {
     name: 'core' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // esbuild's unique module initialization with void 0 (unique to esbuild)
       /function\s+\w+\(\w+\)\s*{\s*var\s+\w+\s*=\s*\w+\[\w+\];\s*if\s*\(void\s*0\s*!==\s*\w+\)\s*return\s*\w+\.exports/,
 
@@ -18,7 +18,7 @@ export const esbuild = [
   {
     name: 'imports' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // esbuild's multi-variable declarations pattern (unique)
       /var\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+[a-z],\s+\w+\s*=\s*{}/,
 
@@ -32,7 +32,7 @@ export const esbuild = [
   {
     name: 'moduleSystem' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // esbuild's unique getter pattern with cache
       /\w+\.n\s*=\s*function\(\w+\)\s*{\s*var\s+\w+\s*=\s*\w+\s*&&\s*\w+\.__esModule\s*\?\s*function\(\)\s*{\s*return\s*\w+\.default\s*}\s*:\s*function\(\)\s*{\s*return\s*\w+\s*};\s*return\s*\w+\.d\(\w+,\s*{\s*a:\s*\w+\s*}\),\s*\w+\s*}/,
 

@@ -2,7 +2,7 @@ export const vite = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       /import\.meta\.env\.VITE_/,
       /new\s+URL\((?:["'`])[@\w\/-]+["'`],\s*import\.meta\.url\)/,
       // Core Vite markers - highly specific
@@ -23,7 +23,7 @@ export const vite = [
   {
     score: 0.7,
     name: 'imports' as const,
-    runtime: [
+    scripts: [
       /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
       /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
       // Dynamic imports
@@ -36,12 +36,12 @@ export const vite = [
   {
     score: 0.6,
     name: 'exports' as const,
-    runtime: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
+    scripts: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
   },
   {
     name: 'envVariables',
     score: 0.8,
-    runtime: [
+    scripts: [
       // Vite's env variables declarations
       /const\s+\w+\s*=\s*{"VITE_[A-Z0-9_]+":/,
       /process\.env\.VITE_/,
@@ -60,7 +60,7 @@ export const vite = [
   {
     name: 'hmr' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Vite-specific HMR patterns
       /vite-hmr/,
       /vite-hot-data/,
@@ -70,7 +70,7 @@ export const vite = [
   {
     name: 'module-resolution' as const,
     score: 0.7,
-    runtime: [
+    scripts: [
       // Vite-specific module resolution
       /\/@fs\//,
       /\/@id\//,
@@ -82,7 +82,7 @@ export const vite = [
   {
     name: 'error-overlay' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Vite-specific error handling
       /vite-error-overlay/,
       /__vite__error/,
@@ -92,7 +92,7 @@ export const vite = [
   {
     name: 'plugins' as const,
     score: 0.5,
-    runtime: [
+    scripts: [
       // Vite-specific plugins
       /vite-plugin-/,
       /virtual:ssr-/,
@@ -101,7 +101,7 @@ export const vite = [
   {
     name: 'query-params' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Vite-specific query parameters
       /\?v=[a-zA-Z0-9]+/, // Vite's cache busting
       /\?used&v=[a-zA-Z0-9]+/,

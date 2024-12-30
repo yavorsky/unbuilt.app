@@ -2,7 +2,7 @@ export const uglify = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // UglifyJS specific IIFE patterns with more context
       // More specific wrapper pattern with optional strict mode
       /^!function\(([a-z],)*[a-z]\)\{"use strict";(?:var [a-z]=)?/,

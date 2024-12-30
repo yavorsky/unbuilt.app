@@ -4,7 +4,7 @@ export const gatsby = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core Gatsby global markers
       /__GATSBY/,
       /__GATSBY_RESOLVED_PAGES/,
@@ -16,7 +16,7 @@ export const gatsby = [
   {
     name: 'hydration' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Gatsby-specific hydration markers
       /__GATSBY_REGISTER_COMPONENT/,
       /__GATSBY_DYNAMIC_CHUNK_MAP/,
@@ -54,7 +54,7 @@ export const gatsby = [
   {
     name: 'routing' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Gatsby-specific routing markers
       /___loader/,
       /___emitter/,

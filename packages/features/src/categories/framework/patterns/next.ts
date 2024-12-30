@@ -5,7 +5,7 @@ export const next = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core Next.js-specific globals and identifiers
       /__NEXT_DATA__/,
       /__NEXT_LOADED_PAGES__/,
@@ -17,7 +17,7 @@ export const next = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Next.js-specific DOM attributes and classes
       /data-nextjs-page/,
       /data-next-page/,
@@ -29,7 +29,7 @@ export const next = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Next.js-specific hydration markers
       /__NEXT_HYDRATED_STATE__/,
       /__NEXT_HYDRATE_MARKER__/,
@@ -53,7 +53,7 @@ export const next = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [/getServerSideProps/, /getInitialProps/],
+    scripts: [/getServerSideProps/, /getInitialProps/],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {

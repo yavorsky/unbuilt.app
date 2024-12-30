@@ -4,7 +4,7 @@ export const bootstrap = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized component attributes - consolidated patterns with length limits
       /data-bs-(?:toggle|target|parent|container|placement|trigger|content|template|theme|dismiss|ride|slide-to)="[^"]{1,50}"/,
       /data-bs-backdrop="(?:true|false|static)"/,

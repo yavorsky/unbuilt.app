@@ -4,7 +4,7 @@ export const qwikRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Qwik's unique binding attributes (exclusive to Qwik)
       /q:container="[\w-]+"/,
       /q:version="[\w.-]+"/,
@@ -64,7 +64,7 @@ export const qwikRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // QwikCity-specific patterns (survive minification)
       /endQwikCity\$/,
       /qwikCity\.json/,

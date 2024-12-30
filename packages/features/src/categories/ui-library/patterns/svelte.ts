@@ -4,7 +4,7 @@ export const svelte = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Svelte
       /\bsvelte\b/i,
       /from\s+["']svelte["']/,
@@ -23,7 +23,7 @@ export const svelte = [
   {
     name: 'reactivity' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Store and reactivity
       /writable|readable|derived/,
       /\$store/,
@@ -40,7 +40,7 @@ export const svelte = [
   {
     name: 'lifecycle' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Lifecycle functions
       /onMount\s*\(/,
       /onDestroy\s*\(/,
@@ -56,7 +56,7 @@ export const svelte = [
   {
     name: 'bindings' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Action directives
       /use:[\w$]+/,
       // Event modifiers
@@ -74,7 +74,7 @@ export const svelte = [
   {
     name: 'sveltekit' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // SvelteKit specific
       /from\s+["']@sveltejs\/kit["']/,
       /\+page\./,

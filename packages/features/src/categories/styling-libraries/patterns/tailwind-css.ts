@@ -4,7 +4,7 @@ export const tailwindCSS = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Optimized spacing scale - combined with boundaries
       /(?:^|\s)(?:p|m)[trblxy]?-(?:0|0\.5|1\.5|2\.5|3\.5|px|auto)\b/,
 

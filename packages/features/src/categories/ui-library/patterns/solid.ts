@@ -4,7 +4,7 @@ export const solid = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core Solid
       /from\s+["']solid-js["']/,
       /createSignal\s*\(/,
@@ -23,7 +23,7 @@ export const solid = [
   {
     name: 'rendering' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core rendering
       /render\s*\(\s*\(\s*\)\s*=>/,
       /hydrate\s*\(\s*\(\s*\)\s*=>/,
@@ -40,7 +40,7 @@ export const solid = [
   {
     name: 'reactivity' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Core reactive primitives
       /createSignal|createEffect|createMemo/,
       /createResource|createStore|createRoot/,
@@ -56,7 +56,7 @@ export const solid = [
   {
     name: 'components' as const,
     score: 0.25,
-    runtime: [
+    scripts: [
       // Component patterns
       /createComponent\s*\(/,
       /splitProps\s*\(/,
@@ -76,7 +76,7 @@ export const solid = [
   {
     name: 'compilation' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // JSX runtime
       /\$template\$/,
       /\$custom\$/,
@@ -94,7 +94,7 @@ export const solid = [
   {
     name: 'stores' as const,
     score: 0.15,
-    runtime: [
+    scripts: [
       // Store API
       /createStore\s*\(/,
       /produce\s*\(/,

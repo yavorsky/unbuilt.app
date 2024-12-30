@@ -7,7 +7,7 @@ export const turbopack = [
   {
     name: 'turbopack-core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Core structural patterns that survive minification
       /TURBOPACK/, // Constants usually preserved
       /\[\[SSR\]\]/, // Special syntax usually preserved
@@ -21,7 +21,7 @@ export const turbopack = [
   {
     name: 'turbopack-modules' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Module system patterns with minification variants
       /(__turbopack_export__|__tx)[\s\n]*=/,
       /(__turbopack_import__|__ti)[\s\n]*=/,
@@ -33,7 +33,7 @@ export const turbopack = [
   {
     name: 'turbopack-runtime' as const,
     score: 0.7,
-    runtime: [
+    scripts: [
       // Runtime patterns focusing on structural elements
       /(turbopack\/runtime)/,
       /chunk_global_id/,
@@ -42,7 +42,7 @@ export const turbopack = [
   {
     name: 'turbopack-chunk-structure' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Common Turbopack structural patterns
       /\(\s*window\s*\.\s*\w+\s*=\s*window\s*\.\s*\w+\s*\|\|\s*\[\s*\]\s*\)/,
     ],

@@ -4,7 +4,7 @@ export const docusaurus = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Docusaurus-specific globals and identifiers
       /window\.__docusaurus/,
       /__DOCUSAURUS_CHUNK_LOADING_MANIFEST/,
@@ -16,7 +16,7 @@ export const docusaurus = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // Docusaurus-specific DOM elements and classes
       /div\[class\*="docusaurus"\]/,
       /div\[class\*="navbar--fixed-top"\]/,
@@ -30,7 +30,7 @@ export const docusaurus = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Docusaurus hydration and client-specific markers
       /__DOCUSAURUS_INITIAL_STATE__/,
       /__DOCUSAURUS_CLIENT_CONTEXT__/,
@@ -58,7 +58,7 @@ export const docusaurus = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [
+    scripts: [
       // Docusaurus SSR-specific patterns
       /__DOCUSAURUS_SSR__/,
       /window\.__DOCUSAURUS_SSR_CONTEXT__/,

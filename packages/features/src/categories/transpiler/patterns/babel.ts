@@ -2,7 +2,7 @@ export const babel = [
   {
     name: 'core' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Babel still adds these even with modern preset-env
       /\s*"use strict";\s*Object\.defineProperty\(exports,\s*"__esModule"/,
 
@@ -46,7 +46,7 @@ export const babel = [
   {
     name: 'helpers' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Babel's unique class helper implementations
       /function\s*_classCallCheck\s*\(instance,\s*Constructor\)\s*\{\s*if\s*\(!\(instance\s+instanceof\s+Constructor\)\)/,
 
@@ -63,7 +63,7 @@ export const babel = [
   {
     name: 'moduleSystem' as const,
     score: 1,
-    runtime: [
+    scripts: [
       // Babel's specific module interop helpers
       /function\s*_interopRequireDefault\s*\(obj\)\s*\{\s*return\s*obj\s*&&\s*obj\.__esModule\s*\?\s*obj\s*:\s*\{\s*"default":\s*obj\s*\}\s*\}/,
 
@@ -78,7 +78,7 @@ export const babel = [
     name: 'react-compiler' as const,
     // No score added since we are focusing to just detect the presence of React Compiler
     score: 0,
-    runtime: [
+    scripts: [
       // React Compiler transformation markers
       /__COMPILER__/,
       /__RC__/,

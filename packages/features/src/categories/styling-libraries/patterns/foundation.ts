@@ -4,7 +4,7 @@ export const foundation = [
   {
     name: 'compilation' as const,
     score: 0.6,
-    runtime: [
+    scripts: [
       // Optimized Grid system - combined patterns with boundaries
       /grid-(?:margin|padding)-[xy](?:\s|$)/,
       /cell-(?:block(?:-container|-y)?)\b/,

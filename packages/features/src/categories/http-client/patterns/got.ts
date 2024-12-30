@@ -4,7 +4,7 @@ export const got = [
   {
     name: 'coreRuntime' as const,
     score: 0.4,
-    runtime: [
+    scripts: [
       // Core Got-specific imports and instances
       /import\s+(?:\* as\s+)?got\s+from\s+['"]got['"]/,
       /require\s*\(\s*['"]got['"]\s*\)/,
@@ -56,7 +56,7 @@ export const got = [
   {
     name: 'patterns' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Got-specific configuration patterns
       /options:\s*\{\s*(?:resolveBodyOnly|isStream|pagination|dnsCache):/,
 

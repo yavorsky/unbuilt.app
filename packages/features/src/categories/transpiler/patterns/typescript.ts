@@ -2,7 +2,7 @@ export const typescript = [
   {
     name: 'core',
     score: 1,
-    runtime: [
+    scripts: [
       // TSC-only class transformation with preserve flag
       /var\s+\w+\s*=\s*\/\*\*\s*@preserve\s*@class\s*\*\/\s*function/,
 
@@ -25,7 +25,7 @@ export const typescript = [
   {
     name: 'decoratorsAndMetadata',
     score: 1,
-    runtime: [
+    scripts: [
       // TypeScript-specific parameter decorator pattern (unique to tsc)
       /Reflect\.getMetadata\(\"design:paramtypes\"/,
 
@@ -39,7 +39,7 @@ export const typescript = [
   {
     name: 'moduleSystem',
     score: 1,
-    runtime: [
+    scripts: [
       // TypeScript's unique module interop pattern
       /if\s*\(typeof\s*module\s*===\s*\"object\"\s*&&\s*typeof\s*module.exports\s*===\s*\"object\"\)\s*{\s*var\s*v\s*=\s*factory\([^)]*typeof\s*require\s*===\s*\"function\"\s*\?\s*require\s*:\s*[^)]*\);\s*if\s*\(v\s*!==\s*undefined\)\s*module\.exports\s*=\s*v;\s*}/,
 

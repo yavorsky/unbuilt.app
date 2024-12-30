@@ -4,7 +4,7 @@ export const brunch = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // Brunch-specific globals and identifiers
       /window\.__brunch__/,
       /__brunch__/,
@@ -15,7 +15,7 @@ export const brunch = [
   {
     name: 'module-system' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // Brunch-specific module system
       /require\.register\s*\(/,
       /require\.modules\s*=/,

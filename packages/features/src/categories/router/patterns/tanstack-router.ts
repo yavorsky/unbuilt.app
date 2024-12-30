@@ -4,7 +4,7 @@ export const tanstackRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Core package imports (including minified variants)
       /["']@t(?:anstack)?[/\\-]router(?:-(?:core|devtools))?["']/,
 
@@ -57,7 +57,7 @@ export const tanstackRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // TanStack-specific route definitions (minification resistant)
       /createFileRoute\s*\(\s*['"][/\w]+['"]\s*,?\s*\{/,
       /createLazyFileRoute\s*\(\s*['"][/\w]+['"]\s*,?\s*\{/,

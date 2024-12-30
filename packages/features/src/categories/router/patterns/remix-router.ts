@@ -4,7 +4,7 @@ export const remixRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.3,
-    runtime: [
+    scripts: [
       // Remix Router specific imports (minification resistant)
       /["']@remix-run\/router["']/,
       /["']@remix-run\/router\/history["']/,
@@ -67,7 +67,7 @@ export const remixRouter = [
   {
     name: 'patterns' as const,
     score: 0.2,
-    runtime: [
+    scripts: [
       // Remix-specific route patterns (minification resistant)
       /createClientRoute\(\{id:/,
       /createClientResolver\(\{routes:/,

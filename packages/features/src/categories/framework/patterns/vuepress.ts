@@ -4,7 +4,7 @@ export const vuepress = [
   {
     name: 'core' as const,
     score: 1.0,
-    runtime: [
+    scripts: [
       // VuePress-specific globals and identifiers
       /\$vuepress/,
       /\$withBase/,
@@ -16,7 +16,7 @@ export const vuepress = [
   {
     name: 'dom-markers' as const,
     score: 0.9,
-    runtime: [
+    scripts: [
       // VuePress-specific DOM elements and classes
       /div\[class\*="theme-container"\]/,
       /div\[class\*="theme-default"\]/,
@@ -28,7 +28,7 @@ export const vuepress = [
   {
     name: 'hydration' as const,
     score: 0.8,
-    runtime: [
+    scripts: [
       // VuePress hydration and client-specific markers
       /__VUEPRESS_PREFETCH__/,
       /__VUEPRESS_PRELOAD__/,
@@ -54,7 +54,7 @@ export const vuepress = [
   {
     score: 0.3,
     name: 'ssr' as const,
-    runtime: [
+    scripts: [
       // VuePress SSR-specific patterns
       /useSSRContext/,
       /__VUEPRESS_SSR__/,
