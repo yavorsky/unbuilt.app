@@ -15,7 +15,6 @@ import { HTTPClientCard } from './cards/http-client';
 import { StateManagementCard } from './cards/state-management';
 import { DatesCard } from './cards/dates';
 import { RouterCard } from './cards/router';
-import { useActiveCategory } from '@/app/contexts/active-category';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;

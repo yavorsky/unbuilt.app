@@ -8,14 +8,11 @@ import { OnProgress } from '../../../../packages/analyzer/build/progress';
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future.
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 
-type OnJobCompleted = (jobId: string, result: AnalyzeResult) => void;
-
 export class QueueManager {
   private static instance: QueueManager;
-  private queue: Queue<OnProgressResult> | null = null;
+  queue: Queue<OnProgressResult> | null = null;
   private browserManager: BrowserManager | null = null;
   private initializing: Promise<void> | null = null;
-  private onJobCompleted: OnJobCompleted | null = null;
 
   private constructor() {}
 
@@ -26,14 +23,10 @@ export class QueueManager {
     return QueueManager.instance;
   }
 
-  async initialize({
-    onJobCompleted,
-  }: { onJobCompleted?: OnJobCompleted } = {}) {
+  async initialize() {
     // Prevent multiple simultaneous initializations
     if (this.initializing) return this.initializing;
     if (this.queue) return;
-
-    this.onJobCompleted = onJobCompleted ?? null;
 
     this.initializing = (async () => {
       // Initialize queue
@@ -43,8 +36,8 @@ export class QueueManager {
           port: parseInt(process.env.REDIS_PORT || '6379'),
         },
         defaultJobOptions: {
-          removeOnComplete: 100, // Keep last 100 completed jobs
-          removeOnFail: 100, // Keep last 100 failed jobs
+          removeOnComplete: 300, // Keep last 100 completed jobs
+          removeOnFail: 300, // Keep last 100 failed jobs
         },
       });
 
@@ -77,25 +70,22 @@ export class QueueManager {
         }
       });
 
-      // Set up event handlers
-      this.queue.on('completed', (job, result) => {
-        console.log(`Job ${job.id} completed:`, result);
-        // Consider moving to process callback and not store any result in redis
-        this.onJobCompleted?.(job.id.toString(), result);
-      });
+      // // Set up event handlers
+      // this.queue.on('completed', (job, result) => {
+      // });
 
-      this.queue.on('failed', (job, error) => {
-        console.error(`Job ${job.id} failed:`, error);
-      });
+      // this.queue.on('failed', (job, error) => {
+      //   console.error(`Job ${job.id} failed:`, error);
+      // });
 
-      // Optional: Add more event handlers
-      this.queue.on('error', (error) => {
-        console.error('Queue error:', error);
-      });
+      // // Optional: Add more event handlers
+      // this.queue.on('error', (error) => {
+      //   console.error('Queue error:', error);
+      // });
 
-      this.queue.on('stalled', (job) => {
-        console.warn(`Job ${job.id} has stalled`);
-      });
+      // this.queue.on('stalled', (job) => {
+      //   console.warn(`Job ${job.id} has stalled`);
+      // });
     })();
 
     await this.initializing;
@@ -115,6 +105,11 @@ export class QueueManager {
       },
       opts
     );
+  }
+
+  async removeJob(jobId: string) {
+    const job = await this.getJob(jobId);
+    return job?.remove();
   }
 
   async getJob(jobId: string) {

@@ -18,9 +18,9 @@ export const detect = async (
   const secondaryMatches = getAllResultsWithConfidence(0.3, true);
 
   return {
+    type: 'modules',
     name: result.name,
     confidence: result.confidence,
     secondaryMatches,
-    mixedResults: Object.keys(secondaryMatches).length > 1,
   };
 };

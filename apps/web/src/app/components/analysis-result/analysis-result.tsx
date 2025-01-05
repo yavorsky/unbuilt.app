@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { getJobStatus } from '../../../actions';
+import { AnalysisResults, getAnalysisResults } from '../../../actions';
 import { CardsGrid } from './cards-grid';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { useActiveCategory } from '@/app/contexts/active-category';
 
 export function AnalysisResult({ analysisId }: { analysisId: string }) {
-  const [jobStatus, setJobStatus] = useState<Awaited<
-    ReturnType<typeof getJobStatus>
-  > | null>(null);
+  const [jobStatus, setJobStatus] = useState<AnalysisResults | null>(null);
   const { updateActiveAnalysis, clearActiveAnalysis } = useActiveAnalysis();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,9 +22,9 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
       }
       isCheckingRef.current = true;
 
-      const jobStatus = await getJobStatus(analysisId);
+      const jobStatus = await getAnalysisResults(analysisId);
 
-      if (jobStatus.error) {
+      if (jobStatus.error || !jobStatus.result) {
         setError(jobStatus.error);
         setIsLoading(false);
         return;

@@ -16,6 +16,7 @@ export const detect = async (
   );
 
   return {
+    type: 'translations',
     name: translations.result.name,
     confidence: translations.result.confidence,
     secondaryMatches: translations.getAllResultsWithConfidence(0.3, true),

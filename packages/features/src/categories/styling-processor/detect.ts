@@ -25,14 +25,14 @@ export const detect = async (
   const processorResult =
     processorType === 'preprocessor' ? preprocessorResult : cssInJsResult;
 
-  const secondaryMatches = new Set();
-  secondaryMatches.add(getAllPreprocessorResultsWithConfidence(0.3, true));
-  secondaryMatches.add(getAllCssInJsResultsWithConfidence(0.3, true));
+  const secondaryMatches = {
+    ...getAllPreprocessorResultsWithConfidence(0.3, true),
+    ...getAllCssInJsResultsWithConfidence(0.3, true),
+  };
 
   return {
     type: 'styling-processor',
     name: processorResult.name,
-    variant: processorType,
     confidence: processorResult.confidence,
     secondaryMatches,
   };
