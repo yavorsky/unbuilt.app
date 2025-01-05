@@ -16,6 +16,7 @@ export const detect = async (
   );
 
   return {
+    type: 'minifier',
     name: result.name,
     confidence: result.confidence,
     secondaryMatches: getAllResultsWithConfidence(0.3, true),

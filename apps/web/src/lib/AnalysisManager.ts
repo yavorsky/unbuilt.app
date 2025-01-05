@@ -1,6 +1,6 @@
-import { AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalyzeResult, OnProgressResult } from '@unbuilt/analyzer';
 import { QueueManager } from './QueueManager';
-// import { supabase } from './supabase';
+import { saveAnalysis, getAnalysisById, getAnalyzysIdByUrl } from './api';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface AnalysisStatus {
@@ -26,102 +26,96 @@ export class AnalysisManager {
     return AnalysisManager.instance;
   }
 
-  async onJobCompleted(jobId: string, result: AnalyzeResult) {
-    console.log(jobId, result);
-    // this.storeResult(jobId, result);
+  private async onJobCompleted(jobId: string, result: AnalyzeResult) {
+    await this.storeResult(jobId, result);
+    await this.queueManager.removeJob(jobId);
   }
 
   async startAnalysis(url: string): Promise<string> {
     const id = uuidv4();
 
-    await this.queueManager.initialize({ onJobCompleted: this.onJobCompleted });
+    await this.queueManager.initialize();
     await this.queueManager.addJob(url, { jobId: id });
-
-    // Enable if we want to store initial state in Supabase in the future
-    // const { error } = await supabase
-    //   .from('analysis_results')
-    //   .insert({
-    //     id,
-    //     url,
-    //     status: 'processing',
-    //     result: null,
-    //   });
-
-    // if (error) {
-    //   await job.remove();
-    //   throw new Error(`Failed to create analysis: ${error.message}`);
-    // }
+    this.queueManager.queue?.on('completed', (job, result: AnalyzeResult) => {
+      this.onJobCompleted(job.id as string, result);
+    });
 
     return id;
   }
 
-  // async getAnalysisResults(id: string): Promise<AnalysisStatus> {
-  //   // Check Redis first
-  //   await this.queueManager.initialize();
-  //   const job = await this.queueManager.getJob(id);
+  async getAnalysisResults(id: string) {
+    // Check Redis first
+    const ongoingAnalysis = await this.getOngoingAnalysis(id);
 
-  //   if (job) {
-  //     const state = await job.getState();
-  //     const result = job.returnvalue;
+    if (ongoingAnalysis) {
+      return ongoingAnalysis;
+    }
 
-  //     if (state === 'completed' && result) {
-  //       return {
-  //         id,
-  //         status: 'completed',
-  //         result,
-  //         progress: 100,
-  //       };
-  //     }
+    const completedAnalysis = await this.getCompletedAnalysis(id);
 
-  //     if (state === 'failed') {
-  //       return {
-  //         id,
-  //         status: 'failed',
-  //         result: null,
-  //         error: 'Job processing failed',
-  //       };
-  //     }
+    if (completedAnalysis) {
+      return completedAnalysis;
+    }
 
-  //     return {
-  //       id,
-  //       status: 'processing',
-  //       result: null,
-  //       progress: job.progress(),
-  //     };
-  //   }
+    throw new Error('Analysis not found');
+  }
 
-  //   // If not in Redis, check Supabase
-  //   const { data: analysis, error } = await supabase
-  //     .from('analysis_results')
-  //     .select('*')
-  //     .eq('id', id)
-  //     .single();
+  private async getOngoingAnalysis(id: string) {
+    await this.queueManager.initialize();
+    const job = await this.queueManager.getJob(id);
 
-  //   if (error) {
-  //     return {
-  //       id,
-  //       status: 'failed',
-  //       result: null,
-  //       error: 'Analysis not found',
-  //     };
-  //   }
+    // First, check redis ongoing jobs. We don't want to save ongoring progress in Supabase. Only finished ones
+    if (job) {
+      const state = await job.getState();
+      const result = job.data;
 
-  //   return {
-  //     id,
-  //     status: analysis.status,
-  //     result: analysis.result,
-  //     progress: analysis.status === 'completed' ? 100 : undefined,
-  //   };
-  // }
+      return {
+        id: job.id as string,
+        status: state,
+        result,
+        progress: job.progress() as number,
+        timestamp: job.timestamp,
+        processedOn: job.processedOn,
+        finishedOn: job.finishedOn,
+        error: null,
+      };
+    }
+    return null;
+  }
 
-  // private async storeResult(id: string, result: AnalyzeResult) {
-  //   await supabase
-  //     .from('analysis_results')
-  //     .update({
-  //       status: 'completed',
-  //       result,
-  //       updated_at: new Date().toISOString(),
-  //     })
-  //     .eq('id', id);
-  // }
+  private async getCompletedAnalysis(id: string) {
+    // If not in Redis, check Supabase
+    const { data: analysis, error } = await getAnalysisById(id);
+
+    // TODO: Handle error
+    if (error || !analysis) {
+      return null;
+    }
+
+    const timestamp = analysis?.timestamp ? +analysis?.timestamp : 0;
+    return {
+      id,
+      status: 'completed',
+      result: analysis as OnProgressResult,
+      progress: 100,
+      timestamp: timestamp,
+      processedOn: timestamp,
+      finishedOn: timestamp || null,
+      error: null,
+    };
+  }
+
+  async getAnalysisIdByUrl(url: string) {
+    try {
+      const { data } = await getAnalyzysIdByUrl(url);
+      return data?.id;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  }
+
+  private async storeResult(id: string, result: AnalyzeResult) {
+    await saveAnalysis(id, result);
+  }
 }

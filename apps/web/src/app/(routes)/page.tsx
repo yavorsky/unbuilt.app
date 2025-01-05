@@ -31,8 +31,8 @@ export default function Root() {
           <p className="text-lg text-gray-400 max-w-md mx-auto">
             Unbuilding the web, piece by piece.
             <br />
-            See the exact technologies powering any web app.{' '}
-            <i>Free of charge!</i>
+            See the exact technologies powering any web app. <br />
+            <i>Free!</i>
           </p>
         </div>
 

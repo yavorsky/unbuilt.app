@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
 import { AnalysisManager } from './lib/AnalysisManager';
+import { OnProgressResult } from '@unbuilt/analyzer';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -21,10 +22,19 @@ export async function analyzeWebsite(
       url = `https://${url}`;
     }
 
+    let id: string;
     const manager = AnalysisManager.getInstance();
-    const id = await manager.startAnalysis(url);
 
-    revalidatePath('/results');
+    // We are displaying latest analysis for this url by default
+    const analysisId = await manager.getAnalysisIdByUrl(url);
+    console.log(analysisId, url, 'analysisId');
+    if (analysisId) {
+      id = analysisId;
+    } else {
+      id = await manager.startAnalysis(url);
+    }
+
+    revalidatePath('/analyzis/[id]', 'page');
     return { error: null, analysisId: id };
   } catch (error) {
     console.error('Analysis failed:', error);
@@ -73,17 +83,31 @@ export async function getJobStatus(analysisId: string) {
   }
 }
 
-// export async function getAnalysisResults(id: string): Promise<AnalysisStatus> {
-//   try {
-//     const manager = AnalysisManager.getInstance();
-//     return await manager.getAnalysisResults(id);
-//   } catch (error) {
-//     console.error('Status check failed:', error);
-//     return {
-//       id,
-//       status: 'failed',
-//       result: null,
-//       error: 'Failed to get analysis status',
-//     };
-//   }
-// }
+export type AnalysisResults = {
+  id: string;
+  status: string;
+  result: OnProgressResult | null;
+  progress: number;
+  timestamp: number;
+  processedOn: number;
+  finishedOn: number | null;
+  error: string | null;
+};
+
+export async function getAnalysisResults(id: string): Promise<AnalysisResults> {
+  try {
+    const manager = AnalysisManager.getInstance();
+    return await manager.getAnalysisResults(id);
+  } catch (error) {
+    return {
+      id,
+      status: 'failed',
+      result: null,
+      progress: 0,
+      timestamp: 0,
+      processedOn: 0,
+      finishedOn: null,
+      error: (error as Error).name,
+    };
+  }
+}
