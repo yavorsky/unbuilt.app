@@ -74,9 +74,9 @@ export class AnalysisManager {
         status: state,
         result,
         progress: job.progress() as number,
-        timestamp: job.timestamp,
-        processedOn: job.processedOn,
-        finishedOn: job.finishedOn,
+        timestamp: job.timestamp ?? 0,
+        processedOn: job.processedOn ?? 0,
+        finishedOn: job.finishedOn ?? 0,
         error: null,
       };
     }
