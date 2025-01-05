@@ -1,7 +1,7 @@
 // A simple utility method that convers category id to a human readable label.
 // We'll replace it with translations library in the future.
 
-import { AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
 
 const categoryLabelsMap: Record<keyof AnalyzeResult['analysis'], string> = {
   bundler: 'Bundler',
@@ -20,6 +20,9 @@ const categoryLabelsMap: Record<keyof AnalyzeResult['analysis'], string> = {
   stats: 'General Stats',
 };
 
-export const getCategoryLabel = (category: keyof AnalyzeResult['analysis']) => {
+export const getCategoryLabel = (category: AnalysisKeys | null) => {
+  if (!category) {
+    return null;
+  }
   return categoryLabelsMap[category];
 };

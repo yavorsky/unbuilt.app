@@ -12,13 +12,17 @@ export function ActiveCategoryProvider({ children }: { children: ReactNode }) {
 
   const activeCategory = useMemo(() => {
     const params = new URLSearchParams(searchParams);
-    return params.get('category') as AnalysisKeys;
+    return params.get('category') as AnalysisKeys | null;
   }, [searchParams]);
 
   const updateActiveCategory = useCallback(
-    (categoryId: AnalysisKeys) => {
+    (categoryId: AnalysisKeys | null) => {
       const params = new URLSearchParams(searchParams);
-      params.set('category', categoryId);
+      if (categoryId) {
+        params.set('category', categoryId);
+      } else {
+        params.delete('category');
+      }
       router.push(`?${params.toString()}`, { scroll: false });
     },
     [router, searchParams]
