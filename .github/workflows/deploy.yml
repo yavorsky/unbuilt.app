@@ -8,6 +8,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
 
     steps:
       - name: Checkout code
@@ -22,8 +25,9 @@ jobs:
           envs: SUPABASE_URL,SUPABASE_KEY
           script: |
             cd /home/server/unbuilt-app && \
-            echo "SUPABASE_URL=$SUPABASE_URL" >> .env && \
-            echo "SUPABASE_KEY=$SUPABASE_KEY" >> .env && \
+            rm -f .env && \
+            echo "SUPABASE_URL=${SUPABASE_URL}" >> .env && \
+            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
             git pull origin main && \
             yarn install && \
             yarn turbo run build && \
