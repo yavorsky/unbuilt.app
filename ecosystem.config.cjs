@@ -4,6 +4,7 @@ module.exports = {
     cwd: './apps/web',
     script: 'node_modules/next/dist/bin/next',
     args: 'start',
+    env_file: '.env',
     env: {
       NODE_ENV: 'production',
       PORT: 3000,
@@ -14,7 +15,6 @@ module.exports = {
     autorestart: true,
     watch: false,
     max_memory_restart: '3G',
-    instances: 1,
 
     watch_delay: 1000,
     listen_timeout: 3000,
