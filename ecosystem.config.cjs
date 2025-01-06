@@ -4,12 +4,16 @@ module.exports = {
     cwd: './apps/web',
     script: 'node_modules/next/dist/bin/next',
     args: 'start',
-    env_file: '../../.env',
+    env_file: '/home/server/unbuilt-app/.env',
     env: {
       NODE_ENV: 'production',
       PORT: 3000,
       REDIS_HOST: 'localhost',
-      REDIS_PORT: 6379
+      REDIS_PORT: 6379,
+      // eslint-disable-next-line no-undef
+      SUPABASE_URL: process.env.SUPABASE_URL,
+      // eslint-disable-next-line no-undef
+      SUPABASE_KEY: process.env.SUPABASE_KEY
     },
     instances: 1,
     autorestart: true,
