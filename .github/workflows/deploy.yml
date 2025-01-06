@@ -31,5 +31,6 @@ jobs:
             git pull origin main && \
             yarn install && \
             yarn turbo run build && \
-            pm2 restart ecosystem.config.cjs || \
+            pm2 delete web || true && \  # Delete the process first
+            pm2 start ecosystem.config.cjs --update-env || \  # Start with updated env
             { echo "Deployment failed at one of the steps"; exit 1; }
