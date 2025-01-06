@@ -1,6 +1,6 @@
 import { AnalyzeResult, OnProgressResult } from '@unbuilt/analyzer';
 import { QueueManager } from './QueueManager';
-import { saveAnalysis, getAnalysisById, getAnalyzysIdByUrl } from './api';
+import { saveAnalysis, getAnalysisById, getAnalyzysMetaByUrl } from './api';
 import { v4 as uuidv4 } from 'uuid';
 
 export interface AnalysisStatus {
@@ -105,10 +105,10 @@ export class AnalysisManager {
     };
   }
 
-  async getAnalysisIdByUrl(url: string) {
+  async getAnalyzysMetaByUrl(url: string) {
     try {
-      const { data } = await getAnalyzysIdByUrl(url);
-      return data?.id;
+      const { data } = await getAnalyzysMetaByUrl(url);
+      return { id: data?.id, analyzedAt: data?.analyzed_at };
     } catch (e) {
       console.error(e);
       return null;

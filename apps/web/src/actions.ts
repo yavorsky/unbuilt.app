@@ -4,12 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
 import { AnalysisManager } from './lib/AnalysisManager';
 import { OnProgressResult } from '@unbuilt/analyzer';
+import { normalizeUrl } from './app/utils/normalize-url';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
 export async function analyzeWebsite(
-  prevState: AnalyzeState,
-  formData: FormData
+  formData: FormData,
+  lookupForExisting: boolean = false
 ): Promise<AnalyzeState> {
   try {
     let url = formData.get('url');
@@ -18,24 +19,20 @@ export async function analyzeWebsite(
       return { error: 'URL is required' };
     }
 
-    if (!url.startsWith('https://')) {
-      url = `https://${url}`;
-    }
-
-    let id: string;
+    const normalizedUrl = normalizeUrl(url);
     const manager = AnalysisManager.getInstance();
-
-    // We are displaying latest analysis for this url by default
-    const analysisId = await manager.getAnalysisIdByUrl(url);
-    console.log(analysisId, url, 'analysisId');
-    if (analysisId) {
-      id = analysisId;
-    } else {
-      id = await manager.startAnalysis(url);
+    let existingId: string | null = null;
+    if (lookupForExisting) {
+      const analysisMeta = await manager.getAnalyzysMetaByUrl(normalizedUrl);
+      if (analysisMeta?.id) {
+        existingId = analysisMeta?.id;
+      }
     }
+    const analysisId =
+      existingId ?? (await manager.startAnalysis(normalizedUrl));
 
     revalidatePath('/analyzis/[id]', 'page');
-    return { error: null, analysisId: id };
+    return { error: null, analysisId };
   } catch (error) {
     console.error('Analysis failed:', error);
     return { error: 'Failed to analyze website' };
@@ -111,3 +108,10 @@ export async function getAnalysisResults(id: string): Promise<AnalysisResults> {
     };
   }
 }
+
+export const getAnalysisMetaByUrl = async (url: string) => {
+  const manager = AnalysisManager.getInstance();
+  // We are displaying latest analysis for this url by default
+  const analysisMeta = await manager.getAnalyzysMetaByUrl(normalizeUrl(url));
+  return analysisMeta;
+};
