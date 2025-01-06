@@ -26,10 +26,12 @@ jobs:
           script: |
             cd /home/server/unbuilt-app && \
             rm -f .env && \
-            echo "SUPABASE_URL=${SUPABASE_URL}" >> .env && \
+            echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
             git pull origin main && \
             yarn install && \
             yarn turbo run build && \
-            pm2 restart ecosystem.config.cjs --update-env || \
+            pm2 delete web || true && \
+            NODE_ENV=production SUPABASE_URL=${SUPABASE_URL} SUPABASE_KEY=${SUPABASE_KEY} pm2 start ecosystem.config.cjs --update-env && \
+            pm2 save --force || \
             { echo "Deployment failed at one of the steps"; exit 1; }
