@@ -4,7 +4,7 @@ module.exports = {
     cwd: './apps/web',
     script: 'node_modules/next/dist/bin/next',
     args: 'start',
-    env_file: '.env',
+    env_file: '../../.env',
     env: {
       NODE_ENV: 'production',
       PORT: 3000,
