@@ -82,20 +82,33 @@ export const AnalyzeForm = () => {
         <div className="flex overflow-hidden mt-4">
           {existingAnalysis.status === 'FOUND' ? (
             <>
-              <Button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleStartNewAnalyis();
-                }}
-                className="transition-all duration-300 ease-in-out min-w-[140px] text-foreground hover:text-foreground bg-blue-700/20 hover:bg-blue-600/40 disabled:bg-blue-300/20 border-0"
-                disabled={isLoading || !url}
-                variant="outline"
-              >
-                <PlusCircle className="mr-2 h-4 w-4" />
-                New Analysis
-              </Button>
               <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      type="button"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleStartNewAnalyis();
+                      }}
+                      className="transition-all duration-300 ease-in-out min-w-[140px] text-foreground hover:text-foreground bg-blue-700/20 hover:bg-blue-600/40 disabled:bg-blue-300/20 border-0"
+                      disabled={isLoading || !url}
+                      variant="outline"
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      Unbuild Again
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent className="p-2 bg-gray-900/90 backdrop-blur-sm border-gray-800 text-foreground/80 rounded-lg text-sm">
+                    <p className="text-center">
+                      Re-trigger the new analysis process. (Usually takes up to
+                      10 seconds)
+                      <br />
+                      Useful if latest analysis is old or new technology was
+                      added.
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
@@ -103,12 +116,12 @@ export const AnalyzeForm = () => {
                       className="flex-1 transition-all duration-300 ease-in-out min-w-[200px] bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 ml-4"
                       disabled={isLoading || !url}
                     >
-                      View Existing Analysis
+                      View Latest Analysis
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
-                  <TooltipContent className="p-2 bg-background text-foreground/80 rounded-lg text-sm">
-                    <p>Last analyzed on: {formattedDate}</p>
+                  <TooltipContent className="p-2 bg-gray-900/90 backdrop-blur-sm border-gray-800 text-foreground/80 rounded-lg text-sm">
+                    <p>See latest results for this url from {formattedDate}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -123,7 +136,7 @@ export const AnalyzeForm = () => {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <>
-                  Analyze
+                  Unbuild
                   <ArrowRight className="ml-0 h-4 w-4" />
                 </>
               )}
