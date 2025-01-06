@@ -13,8 +13,7 @@ export const detect = async (
     page,
     browser,
     patterns,
-    0.5,
-    true
+    0.5
   );
 
   return {

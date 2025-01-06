@@ -1,14 +1,14 @@
 import { supabase } from '../supabase';
 
-export async function getAnalyzysIdByUrl(url: string) {
+export async function getAnalyzysMetaByUrl(url: string) {
   try {
     const { data, error } = await supabase
       .from('tech_stack_analysis')
-      .select('id')
-      .ilike('url', `%${url}%`)
+      .select('id, analyzed_at')
+      .eq('url', url)
       .order('analyzed_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (error) throw error;
 

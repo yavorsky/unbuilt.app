@@ -32,15 +32,14 @@ export default function Root() {
             Unbuilding the web, piece by piece.
             <br />
             See the exact technologies powering any web app. <br />
-            <i>Free!</i>
           </p>
         </div>
 
         <div className="flex-0 flex justify-center items-center relative">
-          <Card className="w-full max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 transition-all duration-100 h-48 z-10 flex flex-col justify-around">
+          <Card className="w-full max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 transition-all duration-100 z-10 flex flex-col justify-around">
             <CardHeader className="pb-3 mb-0">
-              <CardDescription className="text-foreground/40">
-                Fill the page url you want to be <b>unbuilt</b>
+              <CardDescription className="text-foreground/50">
+                Enter URL to be <b>unbuilt</b>
               </CardDescription>
             </CardHeader>
             <CardContent>
