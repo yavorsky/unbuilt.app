@@ -19,8 +19,11 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
+          envs: SUPABASE_URL,SUPABASE_KEY
           script: |
             cd /home/server/unbuilt-app && \
+            echo "SUPABASE_URL=$SUPABASE_URL" >> .env && \
+            echo "SUPABASE_KEY=$SUPABASE_KEY" >> .env && \
             git pull origin main && \
             yarn install && \
             yarn turbo run build && \
