@@ -5,6 +5,7 @@ import { QueueManager } from './lib/QueueManager';
 import { AnalysisManager } from './lib/AnalysisManager';
 import { OnProgressResult } from '@unbuilt/analyzer';
 import { normalizeUrl } from './app/utils/normalize-url';
+import { getTechnologyStatsQuery } from './lib/api/get-all-technology-stats';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -115,3 +116,7 @@ export const getAnalysisMetaByUrl = async (url: string) => {
   const analysisMeta = await manager.getAnalyzysMetaByUrl(normalizeUrl(url));
   return analysisMeta;
 };
+
+export async function getTechnologyStats() {
+  return getTechnologyStatsQuery();
+}

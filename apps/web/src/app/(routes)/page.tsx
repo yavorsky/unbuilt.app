@@ -25,7 +25,7 @@ export default function Root() {
               className="text-white mr-2"
             />
             <h1 className="text-4xl font-bold text-white">
-              Unbuilt<span className="text-slate-300"> app</span>
+              Unbuilt<span className="text-slate-300">.app</span>
             </h1>
           </div>
           <p className="text-lg text-gray-400 max-w-md mx-auto">
@@ -39,7 +39,7 @@ export default function Root() {
           <Card className="w-full max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 transition-all duration-100 z-10 flex flex-col justify-around">
             <CardHeader className="pb-3 mb-0">
               <CardDescription className="text-foreground/50">
-                Enter URL to be <b>unbuilt</b>
+                Enter URL of the app to be <b>unbuilt</b>
               </CardDescription>
             </CardHeader>
             <CardContent>

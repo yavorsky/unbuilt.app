@@ -15,7 +15,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'Unbuilt app',
+  title: 'Unbuilt.app',
   applicationName: 'Unbuilt',
   description: 'Website analyzer',
   authors: [{ url: 'https://github.com/yavorsky', name: 'Artem Yavorskyi' }],

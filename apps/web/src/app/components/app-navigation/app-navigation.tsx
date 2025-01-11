@@ -38,7 +38,7 @@ export const AppNavigation = () => {
   return (
     <div className="fixed inset-x-0 top-0 z-50">
       <header className="w-full bg-gray-900/30 backdrop-blur-sm border-b border-gray-800">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Breadcrumb>
