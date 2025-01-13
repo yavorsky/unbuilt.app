@@ -5,7 +5,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { useMemo } from 'react';
-import { Bar, BarChart, Cell, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
 export const OverallChart = ({
   chartConfig,
