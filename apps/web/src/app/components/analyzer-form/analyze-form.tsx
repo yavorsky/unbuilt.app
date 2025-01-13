@@ -113,7 +113,7 @@ export const AnalyzeForm = () => {
                   <TooltipTrigger asChild>
                     <Button
                       type="submit"
-                      className="flex-1 transition-all duration-300 ease-in-out min-w-[200px] bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 ml-4"
+                      className="flex-1 transition-all duration-300 ease-in-out min-w-[200px] bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 ml-4 text-foreground"
                       disabled={isLoading || !url}
                     >
                       View Latest Analysis

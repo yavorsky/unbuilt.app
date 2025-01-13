@@ -3,9 +3,13 @@
 import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
 import { AnalysisManager } from './lib/AnalysisManager';
-import { OnProgressResult } from '@unbuilt/analyzer';
+import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
 import { normalizeUrl } from './app/utils/normalize-url';
 import { getTechnologyStatsQuery } from './lib/api/get-all-technology-stats';
+import {
+  getTechnologyTrendsQuery,
+  TimeRange,
+} from './lib/api/get-technology-trends';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -119,4 +123,11 @@ export const getAnalysisMetaByUrl = async (url: string) => {
 
 export async function getTechnologyStats() {
   return getTechnologyStatsQuery();
+}
+
+export async function getTechnologyTrends(
+  type: Exclude<AnalysisKeys, 'stylingLibraries' | 'stats'>,
+  timeRange?: TimeRange
+) {
+  return getTechnologyTrendsQuery(type, timeRange);
 }

@@ -23,8 +23,8 @@ export function TableTechnologies({
   return (
     <Table>
       <TableHeader>
-        <TableRow className="border-foreground/30 select-none hover:bg-transparent">
-          <TableHead className="w-[200px]">Name</TableHead>
+        <TableRow className="border-foreground/10 select-none hover:bg-transparent">
+          <TableHead className="w-[200px]"></TableHead>
           <TableHead className="text-right">Used By</TableHead>
         </TableRow>
       </TableHeader>
