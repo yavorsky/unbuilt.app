@@ -6,7 +6,7 @@ import {
 } from '@/components/ui/chart';
 import { useHandleDateFormat } from '@/hooks/use-date-format';
 import { TechnologyTrend } from '@/lib/api/get-technology-trends';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 
 export const TrendsChart = ({
