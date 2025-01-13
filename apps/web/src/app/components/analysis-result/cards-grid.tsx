@@ -15,6 +15,7 @@ import { HTTPClientCard } from './cards/http-client';
 import { StateManagementCard } from './cards/state-management';
 import { DatesCard } from './cards/dates';
 import { RouterCard } from './cards/router';
+import { useDateFormat } from '@/hooks/use-date-format';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -35,13 +36,7 @@ export const CardsGrid: FC<{
     document.title = `${actionLabel} ${truncatedUrl}`;
   }, [truncatedUrl, actionLabel]);
 
-  const formattedDate = useMemo(() => {
-    if (!result?.timestamp) {
-      return null;
-    }
-    const date = new Date(result.timestamp);
-    return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-  }, [result]);
+  const formattedDate = useDateFormat(result?.timestamp);
 
   return (
     <div className="max-w-7xl mx-auto">

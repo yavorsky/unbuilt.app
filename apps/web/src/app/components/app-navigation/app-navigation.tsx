@@ -21,6 +21,7 @@ import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useActiveCategory } from '@/app/contexts/active-category';
 import { usePathname } from 'next/navigation';
+import { ToggleTheme } from '../toggle-theme';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
@@ -111,6 +112,9 @@ export const AppNavigation = () => {
                       className="fill-foreground/80 hover:fill-foreground"
                     />
                   </NavigationMenuLink>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <ToggleTheme />
                 </NavigationMenuItem>
               </NavigationMenuList>
             </NavigationMenu>

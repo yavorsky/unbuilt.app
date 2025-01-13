@@ -1,6 +1,8 @@
 import { TechnologyStats } from '@/lib/types';
-import { TechnologyTypeSection } from './technology-type-section';
+import { TechnologyTypeSection } from './technology-section';
 import * as features from '@unbuilt/features';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 import { mapValues, pick } from 'lodash-es';
 
 const sections = [
@@ -20,36 +22,49 @@ const sections = [
 ] as const;
 
 export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
-  console.log(stats);
   return (
-    <div className="container mx-auto bg-[rgb(3,7,18)] text-white">
+    <Tabs defaultValue={sections[0].key} className="container mx-auto">
       <h1 className="text-3xl font-bold mb-6">Technologies</h1>
       <h4 className="text-xl font-bold text-foreground/70 mb-6">
         All supported technologies with basic usage stats
       </h4>
+      <TabsList className="gap-2 bg-transparent">
+        {sections.map((section) => {
+          return (
+            <TabsTrigger
+              value={section.key}
+              key={section.key}
+              className="rounded-lg aria-selected:bg-gray-800 hover:text-foreground"
+            >
+              {section.title}
+            </TabsTrigger>
+          );
+        })}
+      </TabsList>
       <div className="grid grid-cols-1 gap-6 pt-4">
         {sections.map((section) => {
           const statsForType = stats[section.key];
-          const metaForType = mapValues(features[section.key].meta, (item) =>
+          const metaForType = mapValues(features[section.type].meta, (item) =>
             pick(item, ['name'])
           );
 
           return (
-            <div
+            <TabsContent
+              value={section.type}
               key={section.key}
               className="col-span-1 sm:col-span-1 lg:col-span-2"
             >
               <TechnologyTypeSection
-                key={section.type}
+                key={section.key}
                 title={section.title}
                 type={section.type}
                 meta={metaForType}
                 data={statsForType || {}}
               />
-            </div>
+            </TabsContent>
           );
         })}
       </div>
-    </div>
+    </Tabs>
   );
 }

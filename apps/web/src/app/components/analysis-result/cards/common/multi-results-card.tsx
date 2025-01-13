@@ -105,7 +105,7 @@ export function MultiResultAnalysisCard<
                     key={library.name}
                     className="flex justify-between items-center"
                   >
-                    <Badge>
+                    <Badge variant="secondary">
                       <div className="w-5 flex justify-center items-center">
                         <Suspense>
                           <ResultIcon className="mr-2" />
