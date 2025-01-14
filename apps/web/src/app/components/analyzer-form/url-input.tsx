@@ -60,7 +60,7 @@ export const URLInput: FC<
         onClick={handleClick}
         onChange={handleUrlUpdate}
         value={url}
-        className="block w-full pr-3 pl-16 text-base text-foreground outline-none border border-gray-500 py-5 rounded-md focus:border-indigo-500 "
+        className="block w-full pr-3 pl-16 text-base text-foreground outline-none border border-gray-500 py-5 rounded-md focus:border-indigo-500 focus-visible:ring-0"
       />
     </div>
   );

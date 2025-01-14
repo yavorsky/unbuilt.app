@@ -2,6 +2,7 @@ import { useState, FC, Suspense } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
 import { ChevronDown, ChevronUp, LucideProps } from 'lucide-react';
 import { ConfidenceIndicator } from '../../../confidence-indicator';
+import { Skeleton } from '@/components/ui/skeleton';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { Meta } from '@unbuilt/features';
 import { capitalize } from 'lodash-es';
@@ -35,28 +36,40 @@ export function SingleResultAnalysisCard<
   const isLoading = !analysis;
   const label = getCategoryLabel(name);
 
-  const { updateActiveCategory } = useActiveCategory();
+  const { updateActiveCategory, activeCategory } = useActiveCategory();
+  const activeState = activeCategory === name ? 'selected' : 'default';
+  const className =
+    'max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
 
   if (isLoading || !('name' in analysis)) {
     return (
       <Card
-        className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+        className={className}
+        data-state={activeState}
         onClick={(evt) => {
           evt.stopPropagation();
           updateActiveCategory(name);
         }}
       >
-        <CardHeader className="space-y-1 py-4 pb-4">
+        <CardHeader className="py-4 pb-4">
           <div className="flex justify-between items-start">
             <div>
               <p className="text-sm text-slate-400">{label}</p>
             </div>
           </div>
+          <div className="flex items-center space-x-4 pt-1">
+            <Skeleton className="h-6 w-6 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-7 w-[150px]" />
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="p-6 space-y-4">
-            <LoaderText supportedOptions={supportedOptions} />
-          </div>
+          {!isLoading && (
+            <div className="p-6 space-y-4">
+              <LoaderText supportedOptions={supportedOptions} />
+            </div>
+          )}
         </CardContent>
       </Card>
     );
@@ -66,10 +79,13 @@ export function SingleResultAnalysisCard<
   const ResultIcon = resultMeta?.Icon ?? Icon;
 
   const isUnknown = analysis.name === 'unknown';
+  const discoveredStatus = isUnknown ? 'unknown' : 'discovered';
 
   return (
     <Card
-      className={`max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40 ${isUnknown ? 'opacity-70' : ''}`}
+      className={className}
+      data-state={activeState}
+      data-status={discoveredStatus}
       onClick={(evt) => {
         evt.stopPropagation();
         updateActiveCategory(name);

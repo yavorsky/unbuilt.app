@@ -4,15 +4,19 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { useMemo } from 'react';
+import { AnalysisKeys } from '@unbuilt/analyzer';
+import { useRouter } from 'next/navigation';
+import { useCallback, useMemo } from 'react';
 import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
 export const OverallChart = ({
   chartConfig,
   data,
+  type,
 }: {
   chartConfig: ChartConfig;
   data: { name: string; count: number }[];
+  type: AnalysisKeys;
 }) => {
   // Adding fill field for BarChart entries
   const dataWithColors = useMemo(() => {
@@ -21,6 +25,15 @@ export const OverallChart = ({
       fill: `var(--color-${entry.name})`,
     }));
   }, [data]);
+
+  const router = useRouter();
+
+  const handleBarClick = useCallback(
+    (item: { name: string; count: number }) => {
+      router.push(`/technologies/${type}/${item.name}`);
+    },
+    [router, type]
+  );
 
   return (
     <ChartContainer
@@ -48,7 +61,14 @@ export const OverallChart = ({
         />
         <XAxis dataKey="count" type="number" hide />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-        <Bar dataKey="count" layout="vertical" maxBarSize={36} radius={5} />
+        <Bar
+          className="hover:cursor-pointer"
+          onClick={handleBarClick}
+          dataKey="count"
+          layout="vertical"
+          maxBarSize={36}
+          radius={5}
+        />
       </BarChart>
     </ChartContainer>
   );

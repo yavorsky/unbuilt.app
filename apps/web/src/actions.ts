@@ -3,13 +3,18 @@
 import { revalidatePath } from 'next/cache';
 import { QueueManager } from './lib/QueueManager';
 import { AnalysisManager } from './lib/AnalysisManager';
-import { AnalysisKeys, OnProgressResult } from '@unbuilt/analyzer';
+import {
+  AnalysisTechnologies,
+  AnalyzeResult,
+  OnProgressResult,
+} from '@unbuilt/analyzer';
 import { normalizeUrl } from './app/utils/normalize-url';
 import { getTechnologyStatsQuery } from './lib/api/get-all-technology-stats';
 import {
   getTechnologyTrendsQuery,
   TimeRange,
 } from './lib/api/get-technology-trends';
+import { getTechnologyWebsitesQuery } from './lib/api/get-technology-websites';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -126,8 +131,30 @@ export async function getTechnologyStats() {
 }
 
 export async function getTechnologyTrends(
-  type: Exclude<AnalysisKeys, 'stylingLibraries' | 'stats'>,
+  type: AnalysisTechnologies,
   timeRange?: TimeRange
 ) {
   return getTechnologyTrendsQuery(type, timeRange);
+}
+
+export async function getTechnologyWebsites<T extends AnalysisTechnologies>({
+  type,
+  technology,
+  page = 1,
+  search = '',
+  pageSize = 20,
+}: {
+  type: T;
+  technology: keyof AnalyzeResult['analysis'][T];
+  page?: number;
+  search?: string;
+  pageSize?: number;
+}) {
+  return getTechnologyWebsitesQuery({
+    type,
+    technology,
+    page,
+    search,
+    pageSize,
+  });
 }

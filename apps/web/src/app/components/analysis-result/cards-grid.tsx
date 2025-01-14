@@ -30,7 +30,18 @@ export const CardsGrid: FC<{
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
   }, [result]);
 
-  const actionLabel = isLoading ? 'Unbuilding' : 'Unbuilt';
+  const actionLabel = useMemo(() => {
+    // Loading Result
+    if (!result) {
+      return '';
+    }
+    // Unbuilding or initializing
+    if (isLoading) {
+      return 'Unbuilding';
+    }
+    // Result is loaded
+    return 'Unbuilt';
+  }, [result, isLoading]);
 
   useEffect(() => {
     document.title = `${actionLabel} ${truncatedUrl}`;
@@ -41,7 +52,7 @@ export const CardsGrid: FC<{
   return (
     <div className="max-w-7xl mx-auto">
       <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
-        <div className="flex-1 flex items-center justify-start">
+        <div className="flex-1 flex items-start justify-start">
           <Breadcrumb>
             <BreadcrumbList>
               <h3 className="text-foreground text-3xl">{actionLabel}</h3>

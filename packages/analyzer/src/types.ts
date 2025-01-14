@@ -15,3 +15,7 @@ export type OnProgressResult = {
 };
 
 export type AnalysisKeys = keyof OnProgressResult['analysis'];
+export type AnalysisTechnologies = Exclude<
+  AnalysisKeys,
+  'stylingLibraries' | 'stats'
+>;
