@@ -25,13 +25,20 @@ jobs:
           envs: SUPABASE_URL,SUPABASE_KEY
           script: |
             cd /home/server/unbuilt-app && \
+            # Create .env file in the root directory
             rm -f .env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
+            # Create .env in the web app directory for monorepo
+            rm -f apps/web/.env && \
+            echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
+            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
-            NODE_ENV=production SUPABASE_URL=${SUPABASE_URL} SUPABASE_KEY=${SUPABASE_KEY} yarn turbo run build && \
+            export SUPABASE_URL=${SUPABASE_URL} && \
+            export SUPABASE_KEY=${SUPABASE_KEY} && \
+            NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
-            NODE_ENV=production SUPABASE_URL=${SUPABASE_URL} SUPABASE_KEY=${SUPABASE_KEY} pm2 start ecosystem.config.cjs --update-env && \
+            NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
             pm2 save --force || \
             { echo "Deployment failed at one of the steps"; exit 1; }
