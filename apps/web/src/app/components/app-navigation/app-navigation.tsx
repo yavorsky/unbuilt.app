@@ -8,6 +8,7 @@ import {
   NavigationMenuList,
 } from '@/components/ui/navigation-menu';
 import Link from 'next/link';
+import * as features from '@unbuilt/features';
 import { LogoIcon } from '../icons/logo';
 import {
   Breadcrumb,
@@ -20,15 +21,17 @@ import { GithubIcon } from '../icons/github';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useActiveCategory } from '@/app/contexts/active-category';
-import { usePathname } from 'next/navigation';
+import { useParams, usePathname } from 'next/navigation';
 import { ToggleTheme } from '../toggle-theme';
 import { CopyIcon } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { AnalysisTechnologies } from '@unbuilt/analyzer';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
   const { activeCategoryLabel } = useActiveCategory();
   const pathname = usePathname();
+  const params = useParams<{ name: string; type: AnalysisTechnologies }>();
   const { toast } = useToast();
 
   const truncatedUrl = useMemo(() => {
@@ -46,6 +49,68 @@ export const AppNavigation = () => {
       duration: 2000,
     });
   }, [toast]);
+
+  const activeRoute = useMemo(() => {
+    if (pathname === '/' || pathname.startsWith('/analysis')) {
+      return 'ANALYZE';
+    }
+    if (pathname.startsWith('/technologies')) {
+      return 'TECHNOLOGIES';
+    }
+  }, [pathname]);
+
+  const breadcrumbForRoute = useMemo(() => {
+    if (activeRoute === 'ANALYZE' && truncatedUrl) {
+      return (
+        <div className="flex items-center gap-2">
+          <BreadcrumbSeparator className="hidden md:inline" />
+          <URLBreadcrumb
+            className="hidden md:inline"
+            skipSubmit={!!activeCategoryLabel}
+            skipBackground
+            variant="medium"
+            url={truncatedUrl}
+          />
+          {activeCategoryLabel && (
+            <>
+              <BreadcrumbSeparator className="-ml-3 hidden md:inline" />
+              <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
+                {activeCategoryLabel}
+              </BreadcrumbItem>
+            </>
+          )}
+          <BreadcrumbItem className={activeCategoryLabel ? 'ml-2' : '-ml-2'}>
+            <CopyIcon
+              className="cursor-pointer transition-colors hover:text-blue-500"
+              size={14}
+              onClick={handleCopyUrl}
+            />
+          </BreadcrumbItem>
+        </div>
+      );
+    }
+    const meta = features[params.type]?.meta;
+    if (activeRoute === 'TECHNOLOGIES') {
+      // @ts-expect-error - Fix meta types inference
+      const technologyName = meta?.[params.name as keyof typeof meta]?.name;
+      return (
+        <>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
+            Technologies
+          </BreadcrumbItem>
+          {technologyName && (
+            <>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
+                {technologyName}
+              </BreadcrumbItem>
+            </>
+          )}
+        </>
+      );
+    }
+  }, [activeRoute, activeCategoryLabel, truncatedUrl, handleCopyUrl, params]);
 
   return (
     <div className="fixed inset-x-0 top-0 z-50">
@@ -69,31 +134,7 @@ export const AppNavigation = () => {
                       </Link>
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  {truncatedUrl && (
-                    <>
-                      <BreadcrumbSeparator className="hidden md:inline" />
-                      <URLBreadcrumb
-                        className="hidden md:inline"
-                        skipSubmit={!!activeCategoryLabel}
-                        skipBackground
-                        variant="medium"
-                        url={truncatedUrl}
-                      />
-                      {activeCategoryLabel && (
-                        <>
-                          <BreadcrumbSeparator className="-ml-3 hidden md:inline" />
-                          <span className="text-foreground text-lg hidden md:inline">
-                            {activeCategoryLabel}
-                          </span>
-                        </>
-                      )}
-                      <CopyIcon
-                        className="cursor-pointer transition-colors hover:text-blue-500"
-                        size={14}
-                        onClick={handleCopyUrl}
-                      />
-                    </>
-                  )}
+                  {breadcrumbForRoute}
                 </BreadcrumbList>
               </Breadcrumb>
             </div>
@@ -103,9 +144,7 @@ export const AppNavigation = () => {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={`inline-flex h-9 rounded-md px-4 py-2 text-sm text-foreground/70 data-[active=true]:text-foreground hover:text-foreground`}
-                    data-active={
-                      pathname === '/' || pathname.startsWith('/analysis')
-                    }
+                    data-active={activeRoute === 'ANALYZE'}
                     href="/"
                   >
                     Analyze
@@ -115,7 +154,7 @@ export const AppNavigation = () => {
                 <NavigationMenuItem>
                   <NavigationMenuLink
                     className={`inline-flex h-9 px-4 py-2 text-sm text-foreground/70  data-[active=true]:text-foreground hover:text-foreground`}
-                    data-active={pathname.startsWith('/technologies')}
+                    data-active={activeRoute === 'TECHNOLOGIES'}
                     href="/technologies"
                   >
                     Technologies

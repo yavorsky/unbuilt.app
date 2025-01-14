@@ -1,5 +1,5 @@
 import { Button, Input } from '@/components/ui';
-import { ArrowRight, ChevronRight, Loader2, Pencil } from 'lucide-react';
+import { ArrowRight, Loader2, Pencil } from 'lucide-react';
 import React, {
   useState,
   InputHTMLAttributes,
@@ -16,6 +16,7 @@ interface FocusedInputProps
   className?: string;
   value: string;
   withSubmit?: boolean;
+  withPencil?: boolean;
   isPending?: boolean;
   skipBackground?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -26,6 +27,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
   onChange,
   className = '',
   withSubmit = false,
+  withPencil = false,
   isPending = false,
   skipBackground = false,
   ...props
@@ -71,9 +73,6 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
       <span
         ref={measureRef}
         className={`absolute invisible whitespace-pre ${className}`}
-        // style={{
-        //   font: window.getComputedStyle(inputRef.current || document.body).font,
-        // }}
       >
         {value || props.placeholder || ''}
       </span>
@@ -97,7 +96,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
         />
-        {!isFocused && (
+        {!isFocused && withPencil && (
           <Pencil
             className="absolute -right-1 top-1/2 -translate-y-1/2 h-4 w-4
             text-white/70 opacity-0 pointer-events-none
