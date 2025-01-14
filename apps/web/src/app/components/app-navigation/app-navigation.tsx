@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -22,11 +22,14 @@ import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useActiveCategory } from '@/app/contexts/active-category';
 import { usePathname } from 'next/navigation';
 import { ToggleTheme } from '../toggle-theme';
+import { CopyIcon } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export const AppNavigation = () => {
   const { activeAnalysis } = useActiveAnalysis();
   const { activeCategoryLabel } = useActiveCategory();
   const pathname = usePathname();
+  const { toast } = useToast();
 
   const truncatedUrl = useMemo(() => {
     if (!activeAnalysis?.url) {
@@ -35,6 +38,14 @@ export const AppNavigation = () => {
     const url = new URL(activeAnalysis?.url);
     return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
   }, [activeAnalysis]);
+
+  const handleCopyUrl = useCallback(async () => {
+    await navigator.clipboard.writeText(window.location.href);
+    toast({
+      description: 'Analysis URL copied to clipboard',
+      duration: 2000,
+    });
+  }, [toast]);
 
   return (
     <div className="fixed inset-x-0 top-0 z-50">
@@ -76,6 +87,11 @@ export const AppNavigation = () => {
                           </span>
                         </>
                       )}
+                      <CopyIcon
+                        className="cursor-pointer transition-colors hover:text-blue-500"
+                        size={14}
+                        onClick={handleCopyUrl}
+                      />
                     </>
                   )}
                 </BreadcrumbList>
@@ -86,7 +102,10 @@ export const AppNavigation = () => {
               <NavigationMenuList>
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className={`inline-flex h-9 rounded-md px-4 py-2 text-sm text-white/${pathname === '/' ? 100 : 70} hover:text-white`}
+                    className={`inline-flex h-9 rounded-md px-4 py-2 text-sm text-foreground/70 data-[active=true]:text-foreground hover:text-foreground`}
+                    data-active={
+                      pathname === '/' || pathname.startsWith('/analysis')
+                    }
                     href="/"
                   >
                     Analyze
@@ -95,7 +114,8 @@ export const AppNavigation = () => {
 
                 <NavigationMenuItem>
                   <NavigationMenuLink
-                    className={`inline-flex h-9 px-4 py-2 text-sm text-white/${pathname === '/technologies' ? 100 : 70} hover:text-white`}
+                    className={`inline-flex h-9 px-4 py-2 text-sm text-foreground/70  data-[active=true]:text-foreground hover:text-foreground`}
+                    data-active={pathname.startsWith('/technologies')}
                     href="/technologies"
                   >
                     Technologies

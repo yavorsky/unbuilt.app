@@ -2,6 +2,7 @@ import { ReactNode, Suspense } from 'react';
 import { AppNavigation } from '../components/app-navigation';
 import { ActiveAnalysisProvider } from '../contexts/active-analysis';
 import { ActiveCategoryProvider } from '../contexts/active-category';
+import { Toaster } from '@/components/ui/toaster';
 import Link from 'next/link';
 
 export default function RoutesLayout({
@@ -12,6 +13,7 @@ export default function RoutesLayout({
   return (
     <Suspense>
       <div className="min-h-screen flex flex-col">
+        <Toaster />
         <ActiveAnalysisProvider>
           <ActiveCategoryProvider>
             <AppNavigation />

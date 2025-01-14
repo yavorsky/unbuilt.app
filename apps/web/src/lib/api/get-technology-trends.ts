@@ -1,4 +1,4 @@
-import { AnalysisKeys } from '@unbuilt/analyzer';
+import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
 
 export type TimeRange = 'week' | 'month' | '3months' | 'year';
@@ -27,7 +27,7 @@ const columnMapping = {
 } as const;
 
 export async function getTechnologyTrendsQuery(
-  type: Exclude<AnalysisKeys, 'stylingLibraries' | 'stats'>,
+  type: AnalysisTechnologies,
   timeRange: TimeRange = 'month'
 ): Promise<TechnologyTrend[]> {
   // 1. Set the date range

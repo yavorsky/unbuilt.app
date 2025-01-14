@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Button,
@@ -15,6 +15,7 @@ import { ArrowRight, Loader2, PlusCircle } from 'lucide-react';
 import { useExistingAnalysisMeta } from '@/app/hooks/use-existing-analysis';
 import { analyzeWebsite } from '@/actions';
 import { toast } from '@/hooks/use-toast';
+import { useDateFormat } from '@/hooks/use-date-format';
 
 export const AnalyzeForm = () => {
   const [isPending, setIsPending] = useState(false);
@@ -24,13 +25,7 @@ export const AnalyzeForm = () => {
   const { url } = useAnalysisForm();
   const existingAnalysis = useExistingAnalysisMeta(url);
 
-  const formattedDate = useMemo(() => {
-    if (!existingAnalysis.analyzedAt) {
-      return null;
-    }
-    const date = new Date(existingAnalysis.analyzedAt);
-    return new Intl.DateTimeFormat(undefined).format(date);
-  }, [existingAnalysis]);
+  const formattedDate = useDateFormat(existingAnalysis.analyzedAt);
 
   const handleStartNewAnalyis = useCallback(async () => {
     setIsPending(true);
@@ -38,7 +33,7 @@ export const AnalyzeForm = () => {
     form.append('url', url);
     toast({
       title: `Starting analysis for ${url}`,
-      description: 'Redirecting you to the existing analysis.',
+      description: 'Usually takes up to 10 seconds.',
     });
     const result = await analyzeWebsite(form);
     if (result.analysisId) {
@@ -91,7 +86,7 @@ export const AnalyzeForm = () => {
                         e.preventDefault();
                         handleStartNewAnalyis();
                       }}
-                      className="transition-all duration-300 ease-in-out min-w-[140px] text-foreground hover:text-foreground bg-blue-700/20 hover:bg-blue-600/40 disabled:bg-blue-300/20 border-0"
+                      className="transition-all duration-300 ease-in-out min-w-[140px] text-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary disabled:bg-secondary/20 border-0"
                       disabled={isLoading || !url}
                       variant="outline"
                     >
@@ -121,7 +116,10 @@ export const AnalyzeForm = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent className="p-2 bg-gray-900/90 backdrop-blur-sm border-gray-800 text-foreground/80 rounded-lg text-sm">
-                    <p>See latest results for this url from {formattedDate}</p>
+                    <p>
+                      See latest results for this url from{' '}
+                      <b>{formattedDate}</b>
+                    </p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

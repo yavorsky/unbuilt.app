@@ -8,6 +8,7 @@ import { ConfidenceIndicator } from '@/app/components/confidence-indicator';
 import { capitalize } from 'lodash-es';
 import { useActiveCategory } from '@/app/contexts/active-category';
 import LoaderText from '@/app/components/loader-text';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export function MultiResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
@@ -60,13 +61,25 @@ export function MultiResultAnalysisCard<
           updateActiveCategory(name);
         }}
       >
-        <CardHeader className="space-y-1 py-4 pb-4">
-          <div className="flex justify-between items-start">{label}</div>
+        <CardHeader className="py-4 pb-4">
+          <div className="flex justify-between items-start">
+            <div>
+              <p className="text-sm text-slate-400">{label}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-4 pt-2">
+            <div className="space-y-3">
+              <Skeleton className="h-8 w-[150px]" />
+              <Skeleton className="h-8 w-[120px]" />
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="p-6 space-y-4">
-            <LoaderText supportedOptions={supportedOptions} />
-          </div>
+          {!isLoading && (
+            <div className="p-6 space-y-4">
+              <LoaderText supportedOptions={supportedOptions} />
+            </div>
+          )}
         </CardContent>
       </Card>
     );
