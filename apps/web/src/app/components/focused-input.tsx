@@ -1,5 +1,5 @@
 import { Button, Input } from '@/components/ui';
-import { ChevronRight, Loader2, Pencil } from 'lucide-react';
+import { ArrowRight, ChevronRight, Loader2, Pencil } from 'lucide-react';
 import React, {
   useState,
   InputHTMLAttributes,
@@ -8,6 +8,7 @@ import React, {
   useRef,
   useCallback,
   KeyboardEvent,
+  useEffect,
 } from 'react';
 
 interface FocusedInputProps
@@ -31,6 +32,15 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState<boolean>(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
+  const [width, setWidth] = useState(0);
+
+  useEffect(() => {
+    if (measureRef.current) {
+      const newWidth = measureRef.current.offsetWidth;
+      setWidth(Math.max(newWidth + 16, 40)); // Add padding and set minimum width
+    }
+  }, [value]);
 
   const handleFocus = (e: ReactFocusEvent<HTMLInputElement>): void => {
     setIsFocused(true);
@@ -57,20 +67,31 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
 
   return (
     <div className="relative flex items-center">
+      {/* Hidden span to calculate width */}
+      <span
+        ref={measureRef}
+        className={`absolute invisible whitespace-pre ${className}`}
+        // style={{
+        //   font: window.getComputedStyle(inputRef.current || document.body).font,
+        // }}
+      >
+        {value || props.placeholder || ''}
+      </span>
       {isFocused && !skipBackground && (
         <div
-          className="fixed inset-0 bg-black/50 z-20 transition-opacity duration-200"
+          className="fixed inset-0 bg-black/50 z-20 transition-opacity duration-200 pr-4"
           onClick={handleOverlayClick}
         />
       )}
       <div className="relative flex-1 group/input">
         <Input
           {...props}
+          style={{ width: `${width}px` }}
           ref={inputRef}
           value={value}
           onChange={onChange}
           className={`relative z-30 bg-transparent text-white text-xl border-none outline-none p-0 pr-8 focus:ring-0
-             transition-all duration-200
+             transition-all duration-50 ring-0 focus-visible:ring-0
             ${className}`}
           onFocus={handleFocus}
           onBlur={handleBlur}
@@ -78,7 +99,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
         />
         {!isFocused && (
           <Pencil
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-4 w-4
+            className="absolute -right-1 top-1/2 -translate-y-1/2 h-4 w-4
             text-white/70 opacity-0 pointer-events-none
             transition-opacity duration-200
             group-hover/input:opacity-50"
@@ -87,14 +108,14 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
       </div>
       {withSubmit && (
         <Button
-          className="absolute -right-6 bg-transparent mt-1 px-2 py-2 z-30"
-          variant="secondary"
+          className="absolute -right-12 bg-blue-700 hover:bg-blue-600 mt-1 px-2 py-4 z-30"
+          variant="outline"
           type="submit"
         >
           {isPending ? (
             <Loader2 className="h-5 w-5 animate-spin text-white" />
           ) : (
-            <ChevronRight className="h-5 w-5 text-blue-500" />
+            <ArrowRight className="h-5 w-5 text-white" />
           )}
         </Button>
       )}
