@@ -77,7 +77,7 @@ export const URLBreadcrumb: FC<{
   const textClass =
     variant === 'large'
       ? 'text-3xl font-bold text-white'
-      : 'text-lg text-white';
+      : 'text-lg font-normal text-white';
 
   return (
     <BreadcrumbItem className={`${textClass} ${className}`}>
@@ -96,8 +96,7 @@ export const URLBreadcrumb: FC<{
           value={newUrl}
           onChange={handleNewUrlChange}
           onBlur={handleBlur}
-          className={`bg-transparent text-white font-normal border-none outline-none p-0 focus:ring-0 ${textClass}`}
-          style={{ width: `${newUrl.length}ch` }}
+          className={`bg-transparent text-white border-none outline-none p-0 focus:ring-0 ${textClass}`}
           withSubmit={!skipSubmit && !!isUrlChanged}
           isPending={isPending}
         />
