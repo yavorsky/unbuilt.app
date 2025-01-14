@@ -30,7 +30,7 @@ jobs:
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
             git pull origin main && \
             yarn install && \
-            yarn turbo run build && \
+            NODE_ENV=production SUPABASE_URL=${SUPABASE_URL} SUPABASE_KEY=${SUPABASE_KEY} yarn turbo run build && \
             pm2 delete web || true && \
             NODE_ENV=production SUPABASE_URL=${SUPABASE_URL} SUPABASE_KEY=${SUPABASE_KEY} pm2 start ecosystem.config.cjs --update-env && \
             pm2 save --force || \
