@@ -91,19 +91,20 @@ export const AppNavigation = () => {
     }
     const meta = features[params.type]?.meta;
     if (activeRoute === 'TECHNOLOGIES') {
-      // @ts-expect-error - Fix meta types inference
-      const technologyName = meta?.[params.name as keyof typeof meta]?.name;
+      const subTechnologyRoute = (
+        meta?.[params.name as keyof typeof meta] as features.Meta
+      )?.name;
       return (
         <>
           <BreadcrumbSeparator />
           <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
-            Technologies
+            <BreadcrumbLink href="/technologies">Technologies</BreadcrumbLink>
           </BreadcrumbItem>
-          {technologyName && (
+          {subTechnologyRoute && (
             <>
               <BreadcrumbSeparator />
               <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
-                {technologyName}
+                {subTechnologyRoute}
               </BreadcrumbItem>
             </>
           )}
