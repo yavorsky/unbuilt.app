@@ -112,7 +112,7 @@ export function TechnologyDashboard<T extends AnalysisTechnologies>({
   const website = meta.website;
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto px-4">
       <div className="mb-12">
         <div className="text-3xl font-bold mb-6 flex items-center gap-2">
           {Icon && (

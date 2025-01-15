@@ -1,6 +1,7 @@
 import { getAnalysisMetaByUrl } from '@/actions';
 import { debounce } from 'lodash-es';
 import { useEffect, useState, useCallback } from 'react';
+import { validateUrl } from '../utils/validate-url';
 
 type URL = string;
 export const statuses = {
@@ -38,7 +39,7 @@ export const useExistingAnalysisMeta = (url: URL) => {
 
   useEffect(() => {
     // Skip if URL is empty or already in cache
-    if (!url || analysisMap[url]) {
+    if (!validateUrl(url) || analysisMap[url]) {
       return;
     }
 
