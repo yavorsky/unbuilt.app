@@ -23,7 +23,7 @@ const sections = [
 
 export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
   return (
-    <Tabs defaultValue={sections[0].key} className="container mx-auto">
+    <Tabs defaultValue={sections[0].key} className="container mx-auto px-4">
       <div>
         <h1 className="text-3xl font-bold mb-6">Technologies</h1>
         <h4 className="text-xl font-bold text-foreground/70 mb-6">

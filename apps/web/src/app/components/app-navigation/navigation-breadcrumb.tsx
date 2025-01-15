@@ -62,7 +62,9 @@ export const NavigationBreadcrumb: FC<{
               </BreadcrumbItem>
             </>
           )}
-          <BreadcrumbItem className={activeCategoryLabel ? 'ml-2' : '-ml-2'}>
+          <BreadcrumbItem
+            className={`hidden md:inline ${activeCategoryLabel ? 'ml-2' : '-ml-2'}`}
+          >
             <CopyIcon
               className="cursor-pointer transition-colors hover:text-blue-500"
               size={14}
