@@ -14,6 +14,7 @@ import {
 import LoaderText from '../../../loader-text';
 import { getCategoryLabel } from '@/app/utils/get-category-label';
 import { useActiveCategory } from '@/app/contexts/active-category';
+import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 
 export function SingleResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
@@ -35,11 +36,12 @@ export function SingleResultAnalysisCard<
   const [isOpen, setIsOpen] = useState(false);
   const isLoading = !analysis;
   const label = getCategoryLabel(name);
+  const { activeAnalysis } = useActiveAnalysis();
 
   const { updateActiveCategory, activeCategory } = useActiveCategory();
   const activeState = activeCategory === name ? 'selected' : 'default';
   const className =
-    'max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
+    'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
 
   if (isLoading || !('name' in analysis)) {
     return (
@@ -65,7 +67,7 @@ export function SingleResultAnalysisCard<
           </div>
         </CardHeader>
         <CardContent className="p-0">
-          {!isLoading && (
+          {activeAnalysis?.status === 'active' && (
             <div className="p-6 space-y-4">
               <LoaderText supportedOptions={supportedOptions} />
             </div>

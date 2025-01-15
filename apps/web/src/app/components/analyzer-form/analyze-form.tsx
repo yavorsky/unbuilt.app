@@ -108,10 +108,10 @@ export const AnalyzeForm = () => {
                   <TooltipTrigger asChild>
                     <Button
                       type="submit"
-                      className="flex-1 transition-all duration-300 ease-in-out min-w-[200px] bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 ml-4 text-foreground"
+                      className="flex-1 transition-all duration-300 ease-in-out min-w-[150px] bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 ml-4 text-white"
                       disabled={isLoading || !url}
                     >
-                      View Latest Analysis
+                      Latest Analysis
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </TooltipTrigger>
@@ -127,7 +127,7 @@ export const AnalyzeForm = () => {
           ) : (
             <Button
               type="submit"
-              className="w-full transition-all duration-300 ease-in-out min-w-[200px] text-foreground hover:text-foreground bg-blue-700/40 hover:bg-blue-600/80 disabled:bg-blue-300/20 border-0"
+              className="w-full transition-all duration-300 ease-in-out min-w-[200px] text-white bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300/20 border-0"
               disabled={isLoading || !url}
             >
               {isLoading ? (
@@ -143,7 +143,7 @@ export const AnalyzeForm = () => {
         </div>
       </div>
 
-      <p className="text-sm text-foreground/20">
+      <p className="text-sm text-foreground/30">
         Unbuilt.app is currently in development phase. Some results could be
         wrong.
       </p>

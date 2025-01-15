@@ -140,11 +140,11 @@ export function TechnologyDashboard<T extends AnalysisTechnologies>({
           )}
         </div>
       </div>
-      <Card className="bg-gray-900/30 backdrop-blur-sm border border-gray-800">
+      <Card className="bg-muted backdrop-blur-sm border">
         <CardHeader>
           <CardTitle className="flex justify-between items-center">
             <span>Technology adopters</span>
-            <span className="text-sm text-gray-400">
+            <span className="text-sm text-foreground/50">
               {fallbackData.data.length} of {fallbackData.totalCount}
             </span>
           </CardTitle>
@@ -162,9 +162,7 @@ export function TechnologyDashboard<T extends AnalysisTechnologies>({
                 Loading...
               </div>
             )}
-
             <WebsitesTable data={fallbackData.data} formatDate={formatDate} />
-
             <div className="mt-4">
               <PaginationControl
                 currentPage={loadParams.params.page}

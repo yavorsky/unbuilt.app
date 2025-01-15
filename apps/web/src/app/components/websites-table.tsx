@@ -27,15 +27,15 @@ export function WebsitesTable({ data, formatDate }: WebsiteTableProps) {
       <TableBody>
         {data.map((website) => (
           <TableRow key={website.id}>
-            <TableCell className="font-medium">
+            <TableCell className="text-xl">
               <a
                 href={website.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors"
+                className="group inline-flex items-center gap-1 text-sm text-foreground/80 hover:text-foreground transition-colors"
               >
                 {website.url}
-                <ExternalLinkIcon className="w-4 h-4" />
+                <ExternalLinkIcon className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
             </TableCell>
             <TableCell>{formatDate(website?.analyzed_at)}</TableCell>

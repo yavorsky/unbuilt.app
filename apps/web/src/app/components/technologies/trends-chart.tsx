@@ -45,7 +45,7 @@ export const TrendsChart = ({
       config={chartConfig}
     >
       <LineChart data={chartData}>
-        <CartesianGrid vertical={false} stroke="rgba(250, 250, 250, 0.1)" />
+        <CartesianGrid vertical={false} />
         <XAxis
           dataKey="date"
           tickLine={false}

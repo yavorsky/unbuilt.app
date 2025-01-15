@@ -33,7 +33,10 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
       setJobStatus(jobStatus);
 
       if (jobStatus?.result?.url) {
-        updateActiveAnalysis({ url: jobStatus?.result?.url });
+        updateActiveAnalysis({
+          url: jobStatus?.result?.url,
+          status: jobStatus.status,
+        });
       }
 
       if (jobStatus.status !== 'completed' && jobStatus.status !== 'failed') {

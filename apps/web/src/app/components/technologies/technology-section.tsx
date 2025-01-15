@@ -61,12 +61,12 @@ export function TechnologyTypeSection({
   }, [meta]);
 
   return (
-    <Card className="bg-muted backdrop-blur-sm border border-gray-800 transition-all">
+    <Card className="bg-muted backdrop-blur-sm border transition-all">
       <CardHeader>
         <CardTitle className="text-foreground">{title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
             <OverallChart data={data} chartConfig={chartConfig} type={type} />
             <div className="mt-4 space-y-2">

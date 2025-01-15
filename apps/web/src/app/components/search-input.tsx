@@ -14,7 +14,7 @@ export function SearchInput({ onSearch, initialValue }: SearchInputProps) {
     <Input
       placeholder="Search websites..."
       onChange={(e) => debounced(e.target.value)}
-      className="max-w-sm"
+      className="max-w-sm border-border text-foreground"
       defaultValue={initialValue ?? ''}
     />
   );

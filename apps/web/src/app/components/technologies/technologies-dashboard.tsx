@@ -24,17 +24,19 @@ const sections = [
 export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
   return (
     <Tabs defaultValue={sections[0].key} className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Technologies</h1>
-      <h4 className="text-xl font-bold text-foreground/70 mb-6">
-        All supported technologies with basic usage stats
-      </h4>
+      <div>
+        <h1 className="text-3xl font-bold mb-6">Technologies</h1>
+        <h4 className="text-xl font-bold text-foreground/70 mb-6">
+          All supported technologies with basic usage stats
+        </h4>
+      </div>
       <TabsList className="gap-2 bg-transparent">
         {sections.map((section) => {
           return (
             <TabsTrigger
               value={section.key}
               key={section.key}
-              className="rounded-lg aria-selected:bg-gray-800 hover:text-foreground"
+              className="rounded-lg aria-selected:bg-secondary hover:text-foreground"
             >
               {section.title}
             </TabsTrigger>

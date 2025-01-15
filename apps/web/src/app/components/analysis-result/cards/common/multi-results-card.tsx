@@ -52,10 +52,13 @@ export function MultiResultAnalysisCard<
     [allLibraries]
   );
 
+  const className =
+    'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500 transition-all duration-300 min-h-40';
+
   if (isLoading || !('items' in analysis)) {
     return (
       <Card
-        className="max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40"
+        className={className}
         onClick={(evt) => {
           evt.stopPropagation();
           updateActiveCategory(name);
@@ -84,12 +87,11 @@ export function MultiResultAnalysisCard<
       </Card>
     );
   }
-
   const noLibrariesDetected = !primaryLibraries.length;
 
   return (
     <Card
-      className={`max-w-md bg-gray-900/30 backdrop-blur-sm border-gray-800 hover:border-indigo-500 transition-all duration-300 min-h-40 ${noLibrariesDetected ? 'opacity-70' : ''}`}
+      className={`${className} ${noLibrariesDetected ? 'opacity-70' : ''}`}
       onClick={(evt) => {
         evt.stopPropagation();
         updateActiveCategory(name);
@@ -124,7 +126,7 @@ export function MultiResultAnalysisCard<
                           <ResultIcon className="mr-2" />
                         </Suspense>
                       </div>
-                      <span className="text-gray-300 text-xl">
+                      <span className="text-foreground text-xl">
                         {resultMeta?.name ?? capitalize(library.name)}
                       </span>
                     </Badge>

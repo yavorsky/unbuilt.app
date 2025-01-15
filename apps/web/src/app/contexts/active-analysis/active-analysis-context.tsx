@@ -2,7 +2,7 @@
 
 import { createContext } from 'react';
 
-export type ActiveAnalysis = { url: string };
+export type ActiveAnalysis = { url: string; status: string };
 type ActiveAnalysisContextType = {
   activeAnalysis: ActiveAnalysis | null;
   updateActiveAnalysis: (analysis: ActiveAnalysis) => void;

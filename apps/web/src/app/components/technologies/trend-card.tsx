@@ -25,7 +25,7 @@ export function TrendCard({
   return (
     <Card
       style={{ borderLeftColor: chartConfig[trend.name]?.color }}
-      className={`bg-gray-900/50 border-gray-800 h-[100%] ${className}`}
+      className={`bg-secondary/20 border-border/50 h-[100%] ${className}`}
     >
       <CardContent className="p-4">
         <div className="flex items-center justify-between">

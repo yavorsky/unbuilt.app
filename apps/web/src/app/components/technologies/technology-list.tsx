@@ -23,7 +23,7 @@ export function TableTechnologies({
   return (
     <Table>
       <TableHeader>
-        <TableRow className="border-foreground/10 select-none hover:bg-transparent">
+        <TableRow className="border-none select-none hover:bg-transparent">
           <TableHead className="w-[200px]"></TableHead>
           <TableHead className="text-right">Used By</TableHead>
         </TableRow>
@@ -32,7 +32,7 @@ export function TableTechnologies({
         {features.map((item) => (
           <TableRow
             key={item.name}
-            className="border-foreground/10 cursor-pointer text-lg p-4 hover:bg-trasnparent group"
+            className="border-border/50 cursor-pointer text-lg p-4 hover:bg-trasnparent group"
             onClick={() => {
               router.push(`/technologies/${type}/${item.name}`);
             }}
