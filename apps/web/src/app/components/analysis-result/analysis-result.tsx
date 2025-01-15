@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnalysisResults, getAnalysisResults } from '../../../actions';
 import { CardsGrid } from './cards-grid';
+import { useActiveCategory } from '@/app/hooks/use-active-categoy';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
-import { useActiveCategory } from '@/app/contexts/active-category';
 
 export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [jobStatus, setJobStatus] = useState<AnalysisResults | null>(null);

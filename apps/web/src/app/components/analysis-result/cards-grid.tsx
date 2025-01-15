@@ -1,4 +1,4 @@
-import { FC, useEffect, useMemo } from 'react';
+import { FC, Suspense, useEffect, useMemo } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Breadcrumb, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { OnProgressResult } from '@unbuilt/analyzer';
@@ -76,53 +76,55 @@ export const CardsGrid: FC<{
           )}
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
-        {/* First row - two items */}
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <FrameworkCard framework={result?.analysis.framework} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />
-        </div>
+      <Suspense>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
+          {/* First row - two items */}
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <FrameworkCard framework={result?.analysis.framework} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />
+          </div>
 
-        {/* All subsequent items */}
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <RouterCard router={result?.analysis.router} />
+          {/* All subsequent items */}
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <RouterCard router={result?.analysis.router} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <BundlerCard bundler={result?.analysis.bundler} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <TranspilerCard transpiler={result?.analysis.transpiler} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <MinifierCard minifier={result?.analysis.minifier} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <HTTPClientCard httpClient={result?.analysis.httpClient} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <StateManagementCard
+              stateManagement={result?.analysis.stateManagement}
+            />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <DatesCard dates={result?.analysis.dates} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <ModulesCard modules={result?.analysis.modules} />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <StylingLibrariesCard
+              stylingLibraries={result?.analysis.stylingLibraries}
+            />
+          </div>
+          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            <StylingProcessorCard
+              stylingProcessor={result?.analysis.stylingProcessor}
+            />
+          </div>
         </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <BundlerCard bundler={result?.analysis.bundler} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <TranspilerCard transpiler={result?.analysis.transpiler} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <MinifierCard minifier={result?.analysis.minifier} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <HTTPClientCard httpClient={result?.analysis.httpClient} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <StateManagementCard
-            stateManagement={result?.analysis.stateManagement}
-          />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <DatesCard dates={result?.analysis.dates} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <ModulesCard modules={result?.analysis.modules} />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <StylingLibrariesCard
-            stylingLibraries={result?.analysis.stylingLibraries}
-          />
-        </div>
-        <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-          <StylingProcessorCard
-            stylingProcessor={result?.analysis.stylingProcessor}
-          />
-        </div>
-      </div>
+      </Suspense>
     </div>
   );
 };

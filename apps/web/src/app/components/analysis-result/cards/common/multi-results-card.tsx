@@ -6,9 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { ConfidenceIndicator } from '@/app/components/confidence-indicator';
 import { capitalize } from 'lodash-es';
-import { useActiveCategory } from '@/app/contexts/active-category';
 import LoaderText from '@/app/components/loader-text';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useActiveCategory } from '@/app/hooks/use-active-categoy';
 
 export function MultiResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
