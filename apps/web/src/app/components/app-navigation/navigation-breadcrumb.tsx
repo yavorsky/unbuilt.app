@@ -10,12 +10,12 @@ import Link from 'next/link';
 import * as features from '@unbuilt/features';
 import { LogoIcon } from '../icons/logo';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
-import { useActiveCategory } from '@/app/contexts/active-category';
 import { FC, useCallback, useMemo } from 'react';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { useParams } from 'next/navigation';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { CopyIcon } from 'lucide-react';
+import { useActiveCategory } from '@/app/hooks/use-active-categoy';
 
 export const NavigationBreadcrumb: FC<{
   activeRoute: 'ANALYZE' | 'TECHNOLOGIES' | undefined;

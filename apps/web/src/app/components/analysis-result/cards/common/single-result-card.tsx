@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/collapsible';
 import LoaderText from '../../../loader-text';
 import { getCategoryLabel } from '@/app/utils/get-category-label';
-import { useActiveCategory } from '@/app/contexts/active-category';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
+import { useActiveCategory } from '@/app/hooks/use-active-categoy';
 
 export function SingleResultAnalysisCard<
   N extends keyof AnalyzeResult['analysis'],
