@@ -27,7 +27,7 @@ export const URLSuggestions = () => {
       <div className="grid grid-cols-4 max-[640px]:grid-cols-2 gap-3">
         {urlSuggestionsList.map((url) => (
           <Button
-            className="bg-muted text-foreground/50 hover:text-foreground"
+            className="bg-muted text-foreground/60 hover:text-foreground shadow-none"
             variant="secondary"
             key={url}
             onClick={() => {

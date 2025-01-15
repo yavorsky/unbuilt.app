@@ -89,7 +89,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
           ref={inputRef}
           value={value}
           onChange={onChange}
-          className={`relative z-30 bg-transparent text-white text-xl border-none outline-none p-0 pr-8 focus:ring-0
+          className={`relative z-30 text-foreground text-xl border-none outline-none p-0 pr-8 focus:ring-0
              transition-all duration-50 ring-0 focus-visible:ring-0
             ${className}`}
           onFocus={handleFocus}
@@ -107,7 +107,7 @@ const FocusedInput: React.FC<FocusedInputProps> = ({
       </div>
       {withSubmit && (
         <Button
-          className="absolute -right-12 bg-blue-700 hover:bg-blue-600 mt-1 px-2 py-4 z-30"
+          className="absolute -right-12 bg-blue-700 hover:bg-blue-600 mt-1 border-0 px-2 py-4 z-30"
           variant="outline"
           type="submit"
         >

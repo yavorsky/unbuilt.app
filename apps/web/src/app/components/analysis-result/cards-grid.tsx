@@ -16,6 +16,7 @@ import { StateManagementCard } from './cards/state-management';
 import { DatesCard } from './cards/dates';
 import { RouterCard } from './cards/router';
 import { useDateFormat } from '@/hooks/use-date-format';
+import { useTheme } from 'next-themes';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -48,6 +49,7 @@ export const CardsGrid: FC<{
   }, [truncatedUrl, actionLabel]);
 
   const formattedDate = useDateFormat(result?.timestamp);
+  const { theme } = useTheme();
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -57,7 +59,11 @@ export const CardsGrid: FC<{
             <BreadcrumbList>
               <h3 className="text-foreground text-3xl">{actionLabel}</h3>
               {truncatedUrl ? (
-                <URLBreadcrumb variant="large" url={truncatedUrl} />
+                <URLBreadcrumb
+                  skipBackground={theme === 'light'}
+                  variant="large"
+                  url={truncatedUrl}
+                />
               ) : (
                 <Loader2 className="h-5 w-5 mx-16 animate-spin text-white" />
               )}

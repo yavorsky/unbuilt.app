@@ -42,7 +42,7 @@ export function TechnologyTrends({ data, chartConfig }: TechnologyTrendsProps) {
   return (
     <div className="space-y-4 flex flex-col">
       <TrendsChart data={data} chartConfig={chartConfig} />
-      <div className="pt-2 pb-2 pl-12 flex flex-col flex-1 justify-center">
+      <div className="pt-2 pb-2 flex flex-col flex-1 justify-center">
         {risingTrendTitle}
         <div className="grid grid-cols-2 gap-4 mt-6">
           {risingTrend && (
