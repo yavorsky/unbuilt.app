@@ -57,7 +57,9 @@ export const esbuild = [
               typeof obj.n === 'function' &&
               typeof obj.o === 'function' &&
               typeof obj.rv === 'function' &&
-              obj.o.toString().includes('Object.prototype.hasOwnProperty.call')
+              obj?.o
+                ?.toString()
+                ?.includes('Object.prototype.hasOwnProperty.call')
             );
           }),
 
