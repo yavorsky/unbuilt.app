@@ -17,12 +17,15 @@ import { DatesCard } from './cards/dates';
 import { RouterCard } from './cards/router';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useTheme } from 'next-themes';
+import { ErrorState } from '../error-state';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
+  status: string | null;
   progress: number | null;
+  error?: string | null;
   isLoading: boolean;
-}> = ({ result, isLoading }) => {
+}> = ({ result, status, error, isLoading }) => {
   const truncatedUrl = useMemo(() => {
     if (!result) {
       return '';
@@ -40,9 +43,12 @@ export const CardsGrid: FC<{
     if (isLoading) {
       return 'Unbuilding';
     }
+    if (status === 'failed') {
+      return 'Failed to unbuild';
+    }
     // Result is loaded
     return 'Unbuilt';
-  }, [result, isLoading]);
+  }, [result, status, isLoading]);
 
   useEffect(() => {
     document.title = `${actionLabel} ${truncatedUrl}`;
@@ -76,55 +82,59 @@ export const CardsGrid: FC<{
           )}
         </span>
       </div>
-      <Suspense>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
-          {/* First row - two items */}
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <FrameworkCard framework={result?.analysis.framework} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />
-          </div>
+      {status !== 'failed' ? (
+        <Suspense>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
+            {/* First row - two items */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <FrameworkCard framework={result?.analysis.framework} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />
+            </div>
 
-          {/* All subsequent items */}
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <RouterCard router={result?.analysis.router} />
+            {/* All subsequent items */}
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <RouterCard router={result?.analysis.router} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <BundlerCard bundler={result?.analysis.bundler} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <TranspilerCard transpiler={result?.analysis.transpiler} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <MinifierCard minifier={result?.analysis.minifier} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <HTTPClientCard httpClient={result?.analysis.httpClient} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <StateManagementCard
+                stateManagement={result?.analysis.stateManagement}
+              />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <DatesCard dates={result?.analysis.dates} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <ModulesCard modules={result?.analysis.modules} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <StylingLibrariesCard
+                stylingLibraries={result?.analysis.stylingLibraries}
+              />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <StylingProcessorCard
+                stylingProcessor={result?.analysis.stylingProcessor}
+              />
+            </div>
           </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <BundlerCard bundler={result?.analysis.bundler} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <TranspilerCard transpiler={result?.analysis.transpiler} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <MinifierCard minifier={result?.analysis.minifier} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <HTTPClientCard httpClient={result?.analysis.httpClient} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <StateManagementCard
-              stateManagement={result?.analysis.stateManagement}
-            />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <DatesCard dates={result?.analysis.dates} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <ModulesCard modules={result?.analysis.modules} />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <StylingLibrariesCard
-              stylingLibraries={result?.analysis.stylingLibraries}
-            />
-          </div>
-          <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-            <StylingProcessorCard
-              stylingProcessor={result?.analysis.stylingProcessor}
-            />
-          </div>
-        </div>
-      </Suspense>
+        </Suspense>
+      ) : (
+        <ErrorState error={error} className="mt-32" />
+      )}
     </div>
   );
 };

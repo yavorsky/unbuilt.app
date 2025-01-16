@@ -54,7 +54,7 @@ export const useExistingAnalysisMeta = (url: URL) => {
     };
   } else if (analysisMap[url] && !analysisMap[url].id) {
     return { id: null, analyzedAt: null, status: statuses.NOT_FOUND };
-  } else if (url) {
+  } else if (validateUrl(url)) {
     return { id: null, analyzedAt: null, status: statuses.PENDING };
   } else {
     return { id: null, analyzedAt: null, status: statuses.NO_URL };

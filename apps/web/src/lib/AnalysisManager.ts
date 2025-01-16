@@ -68,6 +68,7 @@ export class AnalysisManager {
     if (job) {
       const state = await job.getState();
       const result = job.data;
+      const error = job.failedReason ?? null;
 
       return {
         id: job.id as string,
@@ -77,7 +78,7 @@ export class AnalysisManager {
         timestamp: job.timestamp ?? 0,
         processedOn: job.processedOn ?? 0,
         finishedOn: job.finishedOn ?? 0,
-        error: null,
+        error,
       };
     }
     return null;
