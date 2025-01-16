@@ -28,7 +28,7 @@ export function TrendCard({
       className={`bg-secondary/20 border-border/50 h-[100%] ${className}`}
     >
       <CardContent className="p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-center lg:justify-between md:justify-between flex-wrap">
           <span className="text-xl font-medium text-foreground">{label}</span>
           <div className={`flex items-center gap-1 ${colorClass}`}>
             <Icon className="w-4 h-4" />

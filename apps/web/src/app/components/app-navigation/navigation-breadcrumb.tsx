@@ -81,7 +81,7 @@ export const NavigationBreadcrumb: FC<{
       )?.name;
       return (
         <>
-          <BreadcrumbSeparator />
+          <BreadcrumbSeparator className="hidden md:inline" />
           <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
             <BreadcrumbLink href="/technologies">Technologies</BreadcrumbLink>
           </BreadcrumbItem>
