@@ -1,19 +1,35 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { AnalysisResults, getAnalysisResults } from '../../../actions';
 import { CardsGrid } from './cards-grid';
 import { useActiveCategory } from '@/app/hooks/use-active-categoy';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
+import { toast } from '@/hooks/use-toast';
+import { Button } from '@/components/ui';
+import { useTruncatedUrlCallback } from '@/hooks/use-truncated-url';
 
 export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [jobStatus, setJobStatus] = useState<AnalysisResults | null>(null);
+  const jobStatusRef = useRef<string | null>(null);
   const { updateActiveAnalysis, clearActiveAnalysis } = useActiveAnalysis();
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const isCheckingRef = useRef(false);
   const timeoutRef = useRef<number | null>(null);
+
+  const handleUrlTrancate = useTruncatedUrlCallback();
+
+  const handleCopyUrl = useCallback(async () => {
+    await navigator.clipboard.writeText(
+      handleUrlTrancate(window.location.href)
+    );
+    toast({
+      description: 'Analysis URL copied to clipboard',
+      duration: 2000,
+    });
+  }, [handleUrlTrancate]);
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -22,25 +38,41 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
       }
       isCheckingRef.current = true;
 
-      const jobStatus = await getAnalysisResults(analysisId);
+      const updatedStatus = await getAnalysisResults(analysisId);
+      const prevStatus = jobStatusRef.current;
+      jobStatusRef.current = updatedStatus.status;
 
-      if (jobStatus.error || !jobStatus.result) {
-        setError(jobStatus.error);
+      if (updatedStatus.error || !updatedStatus.result) {
+        setError(updatedStatus.error);
         setIsLoading(false);
-        setJobStatus(jobStatus);
+        setJobStatus(updatedStatus);
         return;
       }
 
-      setJobStatus(jobStatus);
+      setJobStatus(updatedStatus);
 
-      if (jobStatus?.result?.url) {
+      if (updatedStatus?.result?.url) {
         updateActiveAnalysis({
-          url: jobStatus?.result?.url,
-          status: jobStatus.status,
+          url: updatedStatus?.result?.url,
+          status: updatedStatus.status,
         });
       }
 
-      if (jobStatus.status !== 'completed' && jobStatus.status !== 'failed') {
+      if (updatedStatus.status === 'completed' && prevStatus === 'active') {
+        toast({
+          title: `Analysis for ${handleUrlTrancate(updatedStatus?.result?.url)} is completed`,
+          action: (
+            <Button variant="secondary" onClick={handleCopyUrl}>
+              Copy
+            </Button>
+          ),
+        });
+      }
+
+      if (
+        updatedStatus.status !== 'completed' &&
+        updatedStatus.status !== 'failed'
+      ) {
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
@@ -59,7 +91,7 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
         timeoutRef.current = null;
       }
     };
-  }, [analysisId, updateActiveAnalysis]);
+  }, [analysisId, updateActiveAnalysis, handleCopyUrl, handleUrlTrancate]);
 
   useEffect(() => {
     return () => {

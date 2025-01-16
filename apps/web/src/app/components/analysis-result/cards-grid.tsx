@@ -18,6 +18,7 @@ import { RouterCard } from './cards/router';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { useTheme } from 'next-themes';
 import { ErrorState } from '../error-state';
+import { useTruncatedUrl } from '@/hooks/use-truncated-url';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -26,13 +27,7 @@ export const CardsGrid: FC<{
   error?: string | null;
   isLoading: boolean;
 }> = ({ result, status, error, isLoading }) => {
-  const truncatedUrl = useMemo(() => {
-    if (!result) {
-      return '';
-    }
-    const url = new URL(result.url);
-    return `${url.host}${url.pathname === '/' ? '' : url.pathname}`;
-  }, [result]);
+  const truncatedUrl = useTruncatedUrl(result?.url);
 
   const actionLabel = useMemo(() => {
     // Loading Result

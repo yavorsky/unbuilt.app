@@ -71,7 +71,6 @@ export class QueueManager {
       // Initialize browser manager
       this.browserManager = new BrowserManager();
       await this.browserManager.initialize(CONCURRENT_JOBS);
-      // const browser = this.browserManager.getBrowser();
 
       // Process jobs
       this.queue.process(CONCURRENT_JOBS, async (job) => {
