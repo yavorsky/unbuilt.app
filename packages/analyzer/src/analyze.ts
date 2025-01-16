@@ -18,6 +18,7 @@ import {
 } from '@unbuilt/features';
 import { Resources } from '@unbuilt/resources';
 import { checkUrlAvailability } from './utils/check-for-availability.js';
+import { errors } from './utils/errors.js';
 
 export const analyze = async (
   url: string,
@@ -29,7 +30,7 @@ export const analyze = async (
 
   const isAvailable = await checkUrlAvailability(page, url);
   if (!isAvailable) {
-    throw new Error('Resource is not available.');
+    throw new Error(errors.RESOURCE_NOT_AVAILABLE);
   }
 
   // TODO: Resources to function
@@ -38,7 +39,7 @@ export const analyze = async (
 
   await page.goto(url, {
     waitUntil: 'networkidle',
-    timeout: 10000,
+    timeout: 30000,
   });
 
   const onProgress = createProgressTracker(url, handleProgress, startedAt, 14);

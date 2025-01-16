@@ -2,6 +2,7 @@ import { AnalyzeResult, OnProgressResult } from '@unbuilt/analyzer';
 import { QueueManager } from './QueueManager';
 import { saveAnalysis, getAnalysisById, getAnalyzysMetaByUrl } from './api';
 import { v4 as uuidv4 } from 'uuid';
+import Bull from 'bull';
 
 export interface AnalysisStatus {
   id: string;
@@ -27,6 +28,7 @@ export class AnalysisManager {
   }
 
   private async onJobCompleted(jobId: string, result: AnalyzeResult) {
+    console.log('Job is completed', jobId);
     await this.storeResult(jobId, result);
     await this.queueManager.removeJob(jobId);
   }
@@ -36,9 +38,16 @@ export class AnalysisManager {
 
     await this.queueManager.initialize();
     await this.queueManager.addJob(url, { jobId: id });
-    this.queueManager.queue?.on('completed', (job, result: AnalyzeResult) => {
-      this.onJobCompleted(job.id as string, result);
-    });
+    const handleJobCompleted = (
+      job: Bull.Job<OnProgressResult>,
+      result: AnalyzeResult
+    ) => {
+      if (id === job.id) {
+        this.onJobCompleted(job.id as string, result);
+        this.queueManager.queue?.off('completed', handleJobCompleted);
+      }
+    };
+    this.queueManager.queue?.on('completed', handleJobCompleted);
 
     return id;
   }

@@ -56,6 +56,9 @@ export const URLInput: FC<
         ref={inputRef}
         type="text"
         id="url"
+        spellCheck="false"
+        autoCapitalize="off"
+        autoCorrect="off"
         onFocus={handleFocus}
         onClick={handleClick}
         onChange={handleUrlUpdate}
