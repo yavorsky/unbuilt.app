@@ -30,19 +30,23 @@ export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
           All supported technologies with basic usage stats
         </h4>
       </div>
-      <TabsList className="gap-2 bg-transparent">
-        {sections.map((section) => {
-          return (
-            <TabsTrigger
-              value={section.key}
-              key={section.key}
-              className="rounded-lg aria-selected:bg-secondary hover:text-foreground"
-            >
-              {section.title}
-            </TabsTrigger>
-          );
-        })}
-      </TabsList>
+      <div className="relative w-full">
+        <div className="w-full overflow-x-auto pb-2 no-scrollbar">
+          <TabsList className="w-max min-w-full gap-2 bg-transparent flex justify-start">
+            {sections.map((section) => {
+              return (
+                <TabsTrigger
+                  value={section.key}
+                  key={section.key}
+                  className="shrink-0 rounded-lg whitespace-nowrap aria-selected:bg-secondary hover:text-foreground"
+                >
+                  {section.title}
+                </TabsTrigger>
+              );
+            })}
+          </TabsList>
+        </div>
+      </div>
       <div className="grid grid-cols-1 gap-6 pt-4">
         {sections.map((section) => {
           const statsForType = stats[section.key];

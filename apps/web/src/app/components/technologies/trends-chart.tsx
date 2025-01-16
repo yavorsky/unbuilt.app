@@ -44,7 +44,10 @@ export const TrendsChart = ({
       className="min-h-[50px] max-h-[200px] w-full"
       config={chartConfig}
     >
-      <LineChart data={chartData}>
+      <LineChart
+        data={chartData}
+        margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
+      >
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="date"
@@ -53,6 +56,8 @@ export const TrendsChart = ({
           tickMargin={8}
           tickFormatter={handleTickFormat}
           ticks={[chartData[0]?.date]}
+          interval={0}
+          padding={{ left: 0, right: 0 }}
         />
         <YAxis
           tickLine={false}
@@ -61,6 +66,7 @@ export const TrendsChart = ({
           ticks={[0, 50, 100]}
           tickFormatter={() => ''}
           domain={[0, 100]}
+          hide={true}
         />
         <ChartTooltip content={<ChartTooltipContent />} />
         {usedTechnologies.map((tech) => (
@@ -77,3 +83,5 @@ export const TrendsChart = ({
     </ChartContainer>
   );
 };
+
+export default TrendsChart;
