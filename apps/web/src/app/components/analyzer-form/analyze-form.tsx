@@ -131,7 +131,7 @@ export const AnalyzeForm = () => {
             <Button
               type="submit"
               className="w-full transition-all duration-300 ease-in-out min-w-[200px] text-white bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300/20 border-0"
-              disabled={isLoading || !url}
+              disabled={isLoading || !validateUrl(url)}
             >
               {isLoading ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

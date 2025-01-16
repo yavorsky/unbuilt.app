@@ -17,6 +17,7 @@ import {
   getStats,
 } from '@unbuilt/features';
 import { Resources } from '@unbuilt/resources';
+import { checkUrlAvailability } from './utils/check-for-availability.js';
 
 export const analyze = async (
   url: string,
@@ -25,16 +26,23 @@ export const analyze = async (
   handleProgress: OnProgress
 ) => {
   const startedAt = new Date();
+
+  const isAvailable = await checkUrlAvailability(page, url);
+  if (!isAvailable) {
+    throw new Error('Resource is not available.');
+  }
+
   // TODO: Resources to function
   const resources = new Resources(page);
   await resources.initialize();
 
   await page.goto(url, {
     waitUntil: 'networkidle',
-    timeout: 15000,
+    timeout: 10000,
   });
 
   const onProgress = createProgressTracker(url, handleProgress, startedAt, 14);
+
   const bundlerAnalysis = await bundler.detect(page, browser, resources);
   onProgress({ bundler: bundlerAnalysis });
   const transpilerAnalysis = await transpiler.detect(page, browser, resources);

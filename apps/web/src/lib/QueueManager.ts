@@ -63,7 +63,7 @@ export class QueueManager {
 
           return result;
         } catch (e) {
-          console.error('Analysis failed:', e);
+          console.log(e);
           throw e;
         } finally {
           await page.close();

@@ -27,6 +27,7 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
       if (jobStatus.error || !jobStatus.result) {
         setError(jobStatus.error);
         setIsLoading(false);
+        setJobStatus(jobStatus);
         return;
       }
 
@@ -68,21 +69,14 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
 
   const { updateActiveCategory } = useActiveCategory();
 
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50 text-red-700 rounded">
-        <h3 className="font-bold">Error</h3>
-        <p>{error ?? 'No result exists. Please try again'}</p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4" onClick={() => updateActiveCategory(null)}>
       <CardsGrid
         result={jobStatus?.result ?? null}
         progress={jobStatus?.progress ?? null}
         isLoading={isLoading}
+        status={jobStatus?.status ?? null}
+        error={error}
       />
     </div>
   );
