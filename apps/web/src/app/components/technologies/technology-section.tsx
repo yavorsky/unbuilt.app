@@ -6,7 +6,7 @@ import { AnalysisKeys } from '@unbuilt/analyzer';
 import { TableTechnologies } from './technology-list';
 import { TechnologyTrends } from './technology-trends';
 import { getTechnologyTrends } from '@/actions';
-import { TechnologyTrend } from '@/lib/api/get-technology-trends';
+import type { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { OverallChart } from './overall-chart';
 
 export function TechnologyTypeSection({

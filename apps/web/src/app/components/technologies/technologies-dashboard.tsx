@@ -1,4 +1,4 @@
-import { TechnologyStats } from '@/lib/types';
+import { TechnologyStats } from '@/types';
 import { TechnologyTypeSection } from './technology-section';
 import * as features from '@unbuilt/features';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

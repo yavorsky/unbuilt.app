@@ -1,4 +1,4 @@
-import { TechnologyTrend } from '@/lib/api/get-technology-trends';
+import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { useMemo } from 'react';
 
 export const useTrends = (data: TechnologyTrend[]) => {

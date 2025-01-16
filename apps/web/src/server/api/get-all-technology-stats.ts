@@ -1,5 +1,5 @@
 import { supabase } from '../supabase';
-import { TechCount, TechnologyStats } from '../types';
+import { TechCount, TechnologyStats } from '../../types';
 
 // Usage example:
 // const { data } = await getTechnologyStats();

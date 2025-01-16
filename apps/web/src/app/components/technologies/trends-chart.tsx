@@ -5,7 +5,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 import { useHandleDateFormat } from '@/hooks/use-date-format';
-import { TechnologyTrend } from '@/lib/api/get-technology-trends';
+import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { useMemo } from 'react';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
 

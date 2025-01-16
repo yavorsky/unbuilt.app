@@ -1,6 +1,4 @@
-// lib/queueManager.ts
 import QueueService, { Queue, Job } from 'bull';
-import { BrowserManager } from './BrowserManager';
 import {
   AnalyzeResult,
   OnProgressResult,
@@ -8,10 +6,10 @@ import {
   errors,
 } from '@unbuilt/analyzer';
 import os from 'os';
+import { BrowserManager } from './browser-manager';
 import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
 
-let i = 1;
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.
 const CONCURRENT_JOBS = Math.min(
   Math.max(1, Math.floor(os.cpus().length * 0.75)),
