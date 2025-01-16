@@ -7,7 +7,7 @@ import * as features from '@unbuilt/features';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHandleDateFormat } from '@/hooks/use-date-format';
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
-import type { TechnologyWebsites } from '@/lib/api/get-technology-websites';
+import type { TechnologyWebsites } from '@/server/api/get-technology-websites';
 import { usePagination } from '@/app/hooks/use-pagination';
 import { PaginationControl } from '../pagination-controls';
 import { SearchInput } from '../search-input';

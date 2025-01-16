@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import type { WebsiteData } from '@/lib/api/get-technology-websites';
+import type { WebsiteData } from '@/server/api/get-technology-websites';
 import { ExternalLinkIcon } from 'lucide-react';
 
 interface WebsiteTableProps {

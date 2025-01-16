@@ -3,7 +3,7 @@ import { supabase } from '../supabase';
 import {
   extractDetectedFeatures,
   extractSecondaryMatches,
-} from '../extract-secondary-matches';
+} from '../utils/extract-secondary-matches';
 
 export interface TechnologyInfo {
   type?: string;

@@ -2,7 +2,7 @@
 
 import React, { useMemo } from 'react';
 import { ChartConfig } from '@/components/ui/chart';
-import { TechnologyTrend } from '@/lib/api/get-technology-trends';
+import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { TrendCard } from './trend-card';
 import { TrendsChart } from './trends-chart';
 import { useTrends } from '@/app/hooks/technologies/use-trends';

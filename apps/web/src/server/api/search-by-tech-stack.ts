@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../supabase';
 import { AnalysisKeys } from '@unbuilt/analyzer';
 
 /**

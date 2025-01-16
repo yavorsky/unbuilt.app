@@ -1,5 +1,5 @@
 import { AnalyzeResult, OnProgressResult } from '@unbuilt/analyzer';
-import { QueueManager } from './QueueManager';
+import { QueueManager } from './queue-manager';
 import { saveAnalysis, getAnalysisById, getAnalyzysMetaByUrl } from './api';
 import { v4 as uuidv4 } from 'uuid';
 import Bull from 'bull';

@@ -2,7 +2,7 @@
 'use server';
 
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '../supabase';
 
 const columnMapping = {
   framework: 'framework',

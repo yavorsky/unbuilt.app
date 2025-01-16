@@ -1,20 +1,20 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { QueueManager } from './lib/QueueManager';
-import { AnalysisManager } from './lib/AnalysisManager';
+import { QueueManager } from './server/queue-manager';
+import { AnalysisManager } from './server/analysis-manager';
 import {
   AnalysisTechnologies,
   AnalyzeResult,
   OnProgressResult,
 } from '@unbuilt/analyzer';
 import { normalizeUrl } from './app/utils/normalize-url';
-import { getTechnologyStatsQuery } from './lib/api/get-all-technology-stats';
+import { getTechnologyStatsQuery } from './server/api/get-all-technology-stats';
 import {
   getTechnologyTrendsQuery,
   TimeRange,
-} from './lib/api/get-technology-trends';
-import { getTechnologyWebsitesQuery } from './lib/api/get-technology-websites';
+} from './server/api/get-technology-trends';
+import { getTechnologyWebsitesQuery } from './server/api/get-technology-websites';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
