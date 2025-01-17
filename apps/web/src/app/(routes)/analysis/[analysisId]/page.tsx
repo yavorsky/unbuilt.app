@@ -8,7 +8,7 @@ export default function ResultsPage({
   };
 }) {
   return (
-    <main className="flex-1 p-8 pt-24">
+    <main className="flex-1 p-2 lg:p-8 md:p-8 pt-24">
       {params.analysisId ? (
         <AnalysisResult analysisId={params.analysisId} />
       ) : (
