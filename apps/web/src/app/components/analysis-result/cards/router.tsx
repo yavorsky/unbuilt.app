@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
-import { router as routerFeature } from '@unbuilt/features';
+import { routerMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Calendar } from 'lucide-react';
 import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = getResultsName(routerFeature.meta);
+const supportedOptions = getResultsName(routerMeta.meta);
 
 export const RouterCard: FC<{
   router: AnalyzeResult['analysis']['router'] | undefined;
@@ -15,7 +15,7 @@ export const RouterCard: FC<{
       name="router"
       supportedOptions={supportedOptions}
       analysis={router}
-      meta={routerFeature.meta}
+      meta={routerMeta.meta}
       Icon={Calendar}
     />
   );

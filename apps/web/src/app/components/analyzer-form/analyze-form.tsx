@@ -88,7 +88,7 @@ export const AnalyzeForm = () => {
                         e.preventDefault();
                         handleStartNewAnalyis();
                       }}
-                      className="transition-all duration-300 ease-in-out  text-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary disabled:bg-secondary/20 border-0"
+                      className="transition-all duration-300 h-10 ease-in-out text-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary disabled:bg-secondary/20 border-0"
                       disabled={isLoading || !isValidUrl}
                       variant="outline"
                     >
@@ -110,7 +110,7 @@ export const AnalyzeForm = () => {
                   <TooltipTrigger asChild>
                     <Button
                       type="submit"
-                      className="flex-1 transition-all duration-300 ease-in-out bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 text-white"
+                      className="flex-1 transition-all h-10 duration-300 ease-in-out bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 text-white"
                       disabled={isLoading || !isValidUrl}
                     >
                       <span className="hidden sm:inline">Latest Analysis</span>
@@ -130,7 +130,7 @@ export const AnalyzeForm = () => {
           ) : (
             <Button
               type="submit"
-              className="w-full transition-all duration-300 ease-in-out min-w-[200px] text-white bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300/20 border-0"
+              className="w-full transition-all duration-300 h-10 ease-in-out min-w-[200px] text-white bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300/20 border-0"
               disabled={isLoading || !validateUrl(url)}
             >
               {isLoading ? (

@@ -1,11 +1,11 @@
 import { FC } from 'react';
 import { Component } from 'lucide-react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
-import { uiLibrary as uiLibraryFeature } from '@unbuilt/features';
+import { uiLibraryMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = getResultsName(uiLibraryFeature.meta);
+const supportedOptions = getResultsName(uiLibraryMeta.meta);
 
 export const UILibraryCard: FC<{
   uiLibrary: AnalyzeResult['analysis']['uiLibrary'] | undefined;
@@ -15,7 +15,7 @@ export const UILibraryCard: FC<{
       name="uiLibrary"
       analysis={uiLibrary}
       Icon={Component}
-      meta={uiLibraryFeature.meta}
+      meta={uiLibraryMeta.meta}
       supportedOptions={supportedOptions}
     />
   );

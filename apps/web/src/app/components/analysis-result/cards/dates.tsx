@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { AnalyzeResult } from '@unbuilt/analyzer';
+import type { AnalyzeResult } from '@unbuilt/analyzer';
+import { datesMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Calendar } from 'lucide-react';
-import { dates as datesFeature } from '@unbuilt/features';
 import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = getResultsName(datesFeature.meta);
+const supportedOptions = getResultsName(datesMeta.meta);
 
 export const DatesCard: FC<{
   dates: AnalyzeResult['analysis']['dates'] | undefined;
@@ -16,7 +16,7 @@ export const DatesCard: FC<{
       supportedOptions={supportedOptions}
       analysis={dates}
       Icon={Calendar}
-      meta={datesFeature.meta}
+      meta={datesMeta.meta}
     />
   );
 };
