@@ -1,11 +1,7 @@
 import { FC } from 'react';
-import { AnalyzeResult } from '@unbuilt/analyzer';
-import { frameworkMeta } from '@unbuilt/features';
+import type { AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Boxes } from 'lucide-react';
-import { getResultsName } from '@/app/utils/get-results-name';
-
-const supportedOptions = getResultsName(frameworkMeta.meta);
 
 export const FrameworkCard: FC<{
   framework: AnalyzeResult['analysis']['framework'] | undefined;
@@ -13,10 +9,8 @@ export const FrameworkCard: FC<{
   return (
     <SingleResultAnalysisCard
       name="framework"
-      supportedOptions={supportedOptions}
       analysis={framework}
       Icon={Boxes}
-      meta={frameworkMeta.meta}
     />
   );
 };

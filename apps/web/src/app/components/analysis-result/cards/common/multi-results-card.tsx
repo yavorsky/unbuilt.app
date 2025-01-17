@@ -1,36 +1,37 @@
 import { FC, Suspense, useMemo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
-import { Meta } from '@unbuilt/features';
 import { LucideProps } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalysisMultiTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
 import { ConfidenceIndicator } from '@/app/components/confidence-indicator';
 import { capitalize } from 'lodash-es';
 import LoaderText from '@/app/components/loader-text';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useActiveCategory } from '@/app/hooks/use-active-categoy';
+import {
+  getTechnologyMeta,
+  getTechnologyMetaForType,
+  TechnologyMetaResults,
+} from '@/app/utils/get-technology-meta';
+import { getCategoryLabel, getResultsName } from '@/app/utils';
 
 export function MultiResultAnalysisCard<
-  N extends keyof AnalyzeResult['analysis'],
+  N extends AnalysisMultiTechnologies,
   A extends AnalyzeResult['analysis'][N] | null,
+  M extends TechnologyMetaResults<N>,
 >({
   name,
   analysis,
-  label,
-  supportedOptions,
-  meta,
   Icon,
 }: {
   name: N;
   analysis: A | undefined;
-  label: string;
-  supportedOptions: string[];
   Icon: FC<LucideProps>;
-  meta?: Record<string, Meta | undefined>;
 }) {
   const isLoading = !analysis;
 
   const { updateActiveCategory } = useActiveCategory();
+  const label = getCategoryLabel(name);
 
   // Separate libraries into primary and secondary based on confidence
   const allLibraries = useMemo(() => {
@@ -54,6 +55,11 @@ export function MultiResultAnalysisCard<
 
   const className =
     'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500 transition-all duration-300 min-h-40';
+
+  const supportedOptions = useMemo(
+    () => getResultsName(getTechnologyMeta(name)),
+    [name]
+  );
 
   if (isLoading || !('items' in analysis)) {
     return (
@@ -112,7 +118,10 @@ export function MultiResultAnalysisCard<
           <div className="space-y-3">
             {!noLibrariesDetected ? (
               primaryLibraries.map((library) => {
-                const resultMeta = meta?.[library.name];
+                const resultMeta = getTechnologyMetaForType(
+                  name,
+                  library.name as M
+                );
                 const ResultIcon = resultMeta?.Icon ?? Icon;
 
                 return (

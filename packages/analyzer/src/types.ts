@@ -19,3 +19,7 @@ export type AnalysisTechnologies = Exclude<
   AnalysisKeys,
   'stylingLibraries' | 'stats'
 >;
+export type AnalysisMultiTechnologies = Extract<
+  AnalysisKeys,
+  'stylingLibraries'
+>;
