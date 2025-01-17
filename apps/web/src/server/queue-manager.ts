@@ -11,10 +11,7 @@ import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.
-const CONCURRENT_JOBS = Math.min(
-  Math.max(1, Math.floor(os.cpus().length * 0.75)),
-  3
-);
+const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
 const ANALYSIS_TIMEOUT = 30000; // 30 seconds

@@ -1,11 +1,11 @@
 import { FC } from 'react';
-import { AnalyzeResult } from '@unbuilt/analyzer';
-import { httpClient as httpClientFeature } from '@unbuilt/features';
+import type { AnalyzeResult } from '@unbuilt/analyzer';
+import { httpClientMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Network } from 'lucide-react';
 import { getResultsName } from '@/app/utils/get-results-name';
 
-const supportedOptions = getResultsName(httpClientFeature.meta);
+const supportedOptions = getResultsName(httpClientMeta.meta);
 
 export const HTTPClientCard: FC<{
   httpClient: AnalyzeResult['analysis']['httpClient'] | undefined;
@@ -16,7 +16,7 @@ export const HTTPClientCard: FC<{
       supportedOptions={supportedOptions}
       analysis={httpClient}
       Icon={Network}
-      meta={httpClientFeature.meta}
+      meta={httpClientMeta.meta}
     />
   );
 };

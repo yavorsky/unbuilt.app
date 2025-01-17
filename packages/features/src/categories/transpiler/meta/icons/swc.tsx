@@ -23,3 +23,5 @@ export const SwcLogo = ({
     </svg>
   );
 };
+
+export default SwcLogo;

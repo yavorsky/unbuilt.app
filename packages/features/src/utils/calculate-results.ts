@@ -74,7 +74,7 @@ async function processPatterns<Names extends string>(
           result.matchedPatterns.add(pattern.name);
           if (debug) {
             console.log(
-              'Matched: ',
+              'Matched runtime: ',
               pattern.name,
               pattern.score,
               runtimePattern,
@@ -103,11 +103,10 @@ async function processPatterns<Names extends string>(
           result.matchedPatterns.add(pattern.name);
           if (debug) {
             console.log(
-              'Matched: ',
+              'Matched filenames: ',
               pattern.name,
               pattern.score,
-              filenamePattern,
-              ' filename'
+              filenamePattern
             );
           }
         }
@@ -128,7 +127,7 @@ async function processPatterns<Names extends string>(
         result.totalScore += pattern.score;
         result.matchedPatterns.add(pattern.name);
         if (debug) {
-          console.log('Matched: ', pattern.name, pattern.score, 'Browser');
+          console.log('Matched Browser: ', pattern.name, pattern.score);
         }
       }
     }
@@ -149,6 +148,9 @@ export async function calculateResults<
 ): Promise<CalculationResult<T>> {
   const results = await Promise.all(
     Object.entries(patterns).map(async ([name, patternList]) => {
+      if (debug) {
+        console.log('Processing patterns for', name);
+      }
       const processed = await processPatterns(
         patternList,
         resources,

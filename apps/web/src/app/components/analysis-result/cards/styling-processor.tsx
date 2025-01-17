@@ -1,12 +1,12 @@
 import { FC } from 'react';
-import { AnalyzeResult } from '@unbuilt/analyzer';
+import type { AnalyzeResult } from '@unbuilt/analyzer';
+import { stylingProcessorMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Paintbrush2 } from 'lucide-react';
-import { stylingProcessor as stylingProcessorFeature } from '@unbuilt/features';
 
 const supportedOptions = Object.keys(
-  stylingProcessorFeature.cssInJsMeta
-).concat(Object.keys(stylingProcessorFeature.preprocessorMeta));
+  stylingProcessorMeta.meta
+) as (keyof typeof stylingProcessorMeta.meta)[];
 
 export const StylingProcessorCard: FC<{
   stylingProcessor: AnalyzeResult['analysis']['stylingProcessor'] | undefined;
@@ -18,8 +18,7 @@ export const StylingProcessorCard: FC<{
       supportedOptions={supportedOptions}
       Icon={Paintbrush2}
       meta={{
-        ...stylingProcessorFeature.cssInJsMeta,
-        ...stylingProcessorFeature.preprocessorMeta,
+        ...stylingProcessorMeta.meta,
       }}
     />
   );

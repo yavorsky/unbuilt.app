@@ -22,3 +22,4 @@ export const SucraseLogo = ({
     </svg>
   );
 };
+export default SucraseLogo;

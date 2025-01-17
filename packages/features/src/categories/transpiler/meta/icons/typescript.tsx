@@ -23,3 +23,4 @@ export const TypescriptLogo = ({
     </svg>
   );
 };
+export default TypescriptLogo;
