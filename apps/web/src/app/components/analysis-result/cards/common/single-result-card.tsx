@@ -1,10 +1,9 @@
-import { useState, FC, Suspense } from 'react';
+import { useState, FC, Suspense, useMemo } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
 import { ChevronDown, ChevronUp, LucideProps } from 'lucide-react';
 import { ConfidenceIndicator } from '../../../confidence-indicator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AnalyzeResult } from '@unbuilt/analyzer';
-import { Meta } from '@unbuilt/features';
+import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
 import { capitalize } from 'lodash-es';
 import {
   Collapsible,
@@ -15,23 +14,25 @@ import LoaderText from '../../../loader-text';
 import { getCategoryLabel } from '@/app/utils/get-category-label';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { useActiveCategory } from '@/app/hooks/use-active-categoy';
+import {
+  getTechnologyMeta,
+  getTechnologyMetaForType,
+  TechnologyMetaResults,
+} from '@/app/utils/get-technology-meta';
+import { getResultsName } from '@/app/utils';
 
 export function SingleResultAnalysisCard<
-  N extends keyof AnalyzeResult['analysis'],
+  N extends AnalysisTechnologies,
   A extends AnalyzeResult['analysis'][N] | null,
+  M extends TechnologyMetaResults<N>,
 >({
   name,
   analysis,
-  supportedOptions,
-  meta,
   Icon,
 }: {
   name: N;
   analysis: A | undefined;
-  supportedOptions: string[];
   Icon: FC<LucideProps>;
-  // TODO: adding meta step by step
-  meta?: Record<string, Meta | undefined>;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isLoading = !analysis;
@@ -39,6 +40,10 @@ export function SingleResultAnalysisCard<
   const { activeAnalysis } = useActiveAnalysis();
 
   const { updateActiveCategory, activeCategory } = useActiveCategory();
+  const supportedOptions = useMemo(
+    () => getResultsName(getTechnologyMeta(name)),
+    [name]
+  );
   const activeState = activeCategory === name ? 'selected' : 'default';
   const className =
     'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
@@ -77,7 +82,7 @@ export function SingleResultAnalysisCard<
     );
   }
 
-  const resultMeta = meta?.[analysis.name];
+  const resultMeta = getTechnologyMetaForType(name, analysis.name as M);
   const ResultIcon = resultMeta?.Icon ?? Icon;
 
   const isUnknown = analysis.name === 'unknown';
@@ -148,16 +153,19 @@ export function SingleResultAnalysisCard<
                   <CollapsibleContent className="pl-4 space-y-1 mt-2">
                     {Object.entries(analysis.secondaryMatches)
                       .sort(([, a], [, b]) => b.confidence - a.confidence)
-                      .map(([name, match]) => {
-                        const resultMeta = meta?.[name];
+                      .map(([secondaryName, match]) => {
+                        const secondaryMeta = getTechnologyMetaForType(
+                          name as N,
+                          secondaryName as M
+                        );
 
                         return (
                           <div
-                            key={name}
+                            key={secondaryName}
                             className="flex justify-between items-center text-sm"
                           >
                             <span className="text-gray-400">
-                              {resultMeta?.name ?? capitalize(name)}
+                              {secondaryMeta?.name ?? capitalize(secondaryName)}
                             </span>
                             <div className="flex items-center gap-2">
                               <ConfidenceIndicator

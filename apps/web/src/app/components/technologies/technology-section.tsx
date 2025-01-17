@@ -2,23 +2,28 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { AnalysisKeys } from '@unbuilt/analyzer';
+import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { TableTechnologies } from './technology-list';
 import { TechnologyTrends } from './technology-trends';
 import { getTechnologyTrends } from '@/actions';
 import type { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { OverallChart } from './overall-chart';
+import {
+  getTechnologyMeta,
+  TechnologyMetaResults,
+} from '@/app/utils/get-technology-meta';
 
-export function TechnologyTypeSection({
+export function TechnologyTypeSection<
+  T extends AnalysisTechnologies,
+  V extends TechnologyMetaResults<T>,
+>({
   title,
   data,
   type,
-  meta,
 }: {
   title: string;
-  type: Exclude<AnalysisKeys, 'stylingLibraries' | 'stats'>;
+  type: T;
   data: { name: string; count: number }[];
-  meta?: Record<string, { name: string }>;
 }) {
   const [trendsData, setTrendsData] = useState<TechnologyTrend[]>([]);
 
@@ -30,12 +35,13 @@ export function TechnologyTypeSection({
     load();
   }, [type]);
 
+  const meta = getTechnologyMeta<T, V>(type);
   const chartConfig = useMemo(() => {
     const chartConfigPerType = Object.keys(meta ?? {}).reduce(
       (acc, key, index) => {
         if (meta === undefined) return acc;
 
-        const metaValue = meta[key];
+        const metaValue = meta[key as V];
         return {
           ...acc,
           [key]: {

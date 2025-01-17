@@ -7,20 +7,27 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import Link from 'next/link';
-import * as features from '@unbuilt/features';
 import { LogoIcon } from '../icons/logo';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
-import { FC, useCallback, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { useParams } from 'next/navigation';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import { CopyIcon } from 'lucide-react';
 import { useActiveCategory } from '@/app/hooks/use-active-categoy';
+import {
+  getTechnologyMetaForType,
+  TechnologyMetaResults,
+} from '@/app/utils/get-technology-meta';
 
-export const NavigationBreadcrumb: FC<{
-  activeRoute: 'ANALYZE' | 'TECHNOLOGIES' | undefined;
-}> = ({ activeRoute }) => {
-  const params = useParams<{ name: string; type: AnalysisTechnologies }>();
+export function NavigationBreadcrumb<
+  T extends AnalysisTechnologies,
+  M extends TechnologyMetaResults<T>,
+>({ activeRoute }: { activeRoute: 'ANALYZE' | 'TECHNOLOGIES' | undefined }) {
+  const params = useParams<{
+    name: string;
+    type: T;
+  }>();
   const { toast } = useToast();
   const { activeAnalysis } = useActiveAnalysis();
 
@@ -74,22 +81,23 @@ export const NavigationBreadcrumb: FC<{
         </div>
       );
     }
-    const meta = features[params.type]?.meta;
     if (activeRoute === 'TECHNOLOGIES') {
-      const subTechnologyRoute = (
-        meta?.[params.name as keyof typeof meta] as features.Meta
-      )?.name;
+      const subTechnologyMeta =
+        params.type && params.name
+          ? getTechnologyMetaForType(params.type, params.name as M)
+          : null;
+
       return (
         <>
           <BreadcrumbSeparator className="hidden md:inline" />
           <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
             <BreadcrumbLink href="/technologies">Technologies</BreadcrumbLink>
           </BreadcrumbItem>
-          {subTechnologyRoute && (
+          {subTechnologyMeta && (
             <>
               <BreadcrumbSeparator />
               <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
-                {subTechnologyRoute}
+                {subTechnologyMeta.name}
               </BreadcrumbItem>
             </>
           )}
@@ -119,4 +127,4 @@ export const NavigationBreadcrumb: FC<{
       </BreadcrumbList>
     </Breadcrumb>
   );
-};
+}

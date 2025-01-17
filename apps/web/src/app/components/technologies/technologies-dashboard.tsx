@@ -1,9 +1,6 @@
 import { TechnologyStats } from '@/types';
 import { TechnologyTypeSection } from './technology-section';
-import * as features from '@unbuilt/features';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-import { mapValues, pick } from 'lodash-es';
 
 const sections = [
   { title: 'Frameworks', type: 'framework', key: 'framework' },
@@ -50,9 +47,6 @@ export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
       <div className="grid grid-cols-1 gap-6 pt-4">
         {sections.map((section) => {
           const statsForType = stats[section.key];
-          const metaForType = mapValues(features[section.type].meta, (item) =>
-            pick(item, ['name'])
-          );
 
           return (
             <TabsContent
@@ -64,7 +58,6 @@ export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
                 key={section.key}
                 title={section.title}
                 type={section.type}
-                meta={metaForType}
                 data={statsForType || {}}
               />
             </TabsContent>

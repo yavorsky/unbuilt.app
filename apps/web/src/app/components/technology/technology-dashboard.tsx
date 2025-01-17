@@ -3,7 +3,6 @@
 import React, { Suspense, useEffect, useMemo, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import * as features from '@unbuilt/features';
 import { useDebouncedCallback } from 'use-debounce';
 import { useHandleDateFormat } from '@/hooks/use-date-format';
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
@@ -15,6 +14,10 @@ import { useQueryParams } from '@/app/hooks/use-query-params';
 import { WebsitesTable } from '../websites-table';
 import { getTechnologyWebsites } from '@/actions';
 import { ExternalLinkIcon } from 'lucide-react';
+import {
+  getTechnologyMetaForType,
+  TechnologyMetaResults,
+} from '@/app/utils/get-technology-meta';
 
 interface TechnologyWebsitesProps<T extends AnalysisTechnologies> {
   initialData: TechnologyWebsites;
@@ -22,11 +25,10 @@ interface TechnologyWebsitesProps<T extends AnalysisTechnologies> {
   technology: keyof AnalyzeResult['analysis'][T];
 }
 
-export function TechnologyDashboard<T extends AnalysisTechnologies>({
-  initialData,
-  type,
-  technology,
-}: TechnologyWebsitesProps<T>) {
+export function TechnologyDashboard<
+  T extends AnalysisTechnologies,
+  V extends TechnologyMetaResults<T>,
+>({ initialData, type, technology }: TechnologyWebsitesProps<T>) {
   const router = useRouter();
   const pathname = usePathname();
   const createQueryString = useQueryParams();
@@ -89,9 +91,6 @@ export function TechnologyDashboard<T extends AnalysisTechnologies>({
   const fallbackData = data ?? initialData;
   const totalPages = fallbackData.totalPages;
 
-  // @ts-expect-error - TODO: Figure out types missmatch
-  const meta = features[type].meta[technology] as features.Meta;
-
   // Controllers for query params
   const updateSearch = useDebouncedCallback(async (search: string) => {
     const newUrl = `${pathname}?${createQueryString({ search, page: '1' })}`;
@@ -107,6 +106,7 @@ export function TechnologyDashboard<T extends AnalysisTechnologies>({
   // Date formatter
   const formatDate = useHandleDateFormat();
 
+  const meta = getTechnologyMetaForType(type, technology as V);
   const Icon = meta.Icon;
   const description = meta.description;
   const website = meta.website;

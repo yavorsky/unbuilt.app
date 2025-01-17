@@ -1,11 +1,7 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
-import { modulesMeta } from '@unbuilt/features';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { Combine } from 'lucide-react';
-import { getResultsName } from '@/app/utils/get-results-name';
-
-const supportedOptions = getResultsName(modulesMeta.meta);
 
 export const ModulesCard: FC<{
   modules: AnalyzeResult['analysis']['modules'] | undefined;
@@ -15,8 +11,6 @@ export const ModulesCard: FC<{
       name="modules"
       analysis={modules}
       Icon={Combine}
-      supportedOptions={supportedOptions}
-      meta={modulesMeta.meta}
     />
   );
 };
