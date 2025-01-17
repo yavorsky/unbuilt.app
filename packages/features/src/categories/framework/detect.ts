@@ -14,9 +14,7 @@ export const detect = async (
     resources,
     page,
     browser,
-    patterns,
-    0.3,
-    true
+    patterns
   );
 
   const frameworkFeatures = new Set<
