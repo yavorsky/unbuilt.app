@@ -57,11 +57,17 @@ export class QueueManager {
             delay: RETRY_DELAY,
           },
           timeout: ANALYSIS_TIMEOUT,
+          stallInterval: 30000, // Check for stalled jobs every 30 seconds
+          maxStalledCount: 1, // Number of times a job can be marked as stalled before being moved to failed
         },
         limiter: {
           max: CONCURRENT_JOBS, // Match with number of browser instances
           duration: 1000 * CONCURRENT_JOBS, // Per 1 second.
           bounceBack: true, // Queue up if limit is hit
+        },
+        settings: {
+          stalledInterval: 30000, // Check for stalled jobs (in ms)
+          maxStalledCount: 1, // Mark as stalled for 1 check
         },
       });
 

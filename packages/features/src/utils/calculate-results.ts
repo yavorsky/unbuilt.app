@@ -74,11 +74,37 @@ async function processPatterns<Names extends string>(
           result.matchedPatterns.add(pattern.name);
           if (debug) {
             console.log(
-              'Matched runtime: ',
+              'Matched runtime scripts: ',
               pattern.name,
               pattern.score,
-              runtimePattern,
-              ' runtime'
+              runtimePattern
+            );
+          }
+        }
+      }
+    }
+
+    if (pattern.stylesheets) {
+      for (const runtimePattern of pattern.stylesheets) {
+        let matched = false;
+        try {
+          matched = runtimePattern.test(totalContent);
+        } catch (e) {
+          console.error(
+            `Error while running filename pattern for ${pattern.name}`,
+            e
+          );
+        }
+
+        if (matched) {
+          result.totalScore += pattern.score;
+          result.matchedPatterns.add(pattern.name);
+          if (debug) {
+            console.log(
+              'Matched runtime stylesheets: ',
+              pattern.name,
+              pattern.score,
+              runtimePattern
             );
           }
         }

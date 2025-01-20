@@ -44,9 +44,12 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
 
       if (updatedStatus.error || !updatedStatus.result) {
         setError(updatedStatus.error);
-        setIsLoading(false);
-        setJobStatus(updatedStatus);
-        return;
+        // If status is delayed, we still trying to get the result
+        if (updatedStatus.status !== 'delayed') {
+          setJobStatus(updatedStatus);
+          setIsLoading(false);
+          return;
+        }
       }
 
       setJobStatus(updatedStatus);
@@ -100,6 +103,7 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   }, [clearActiveAnalysis]);
 
   const { updateActiveCategory } = useActiveCategory();
+  console.log(jobStatus);
 
   return (
     <div className="space-y-4" onClick={() => updateActiveCategory(null)}>

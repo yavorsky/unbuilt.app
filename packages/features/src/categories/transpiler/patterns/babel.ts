@@ -1,77 +1,72 @@
 export const babel = [
   {
-    name: 'core' as const,
-    score: 1,
+    name: 'coreHelpers' as const,
+    score: 0.3,
     scripts: [
-      // Babel still adds these even with modern preset-env
-      /\s*"use strict";\s*Object\.defineProperty\(exports,\s*"__esModule"/,
+      // Babel's core helper functions
+      /function\s+_typeof\s*\(\w+\)\s*\{(?:[^{}]|\{[^{}]*\})*typeof\s+Symbol[^}]+\}/,
+      /function\s+_classCallCheck\s*\(\w+\s*,\s*\w+\)\s*\{/,
+      /function\s+_defineProperties\s*\(\w+\s*,\s*\w+\)\s*\{/,
+      /function\s+_createClass\s*\(\w+\s*,\s*\w+(?:\s*,\s*\w+)?\)\s*\{/,
+      /function\s+_inherits\s*\(\w+\s*,\s*\w+\)\s*\{[^}]*_setPrototypeOf\s*\([^}]+\}/,
 
-      // Common import transformations (still present with modern targets)
-      /Object\.defineProperty\(exports,\s*"__esModule",\s*{\s*value:\s*true\s*}\)/,
-
-      // Babel's unique runtime namespace
-      /babelHelpers\.[a-zA-Z]+/,
-
-      // Babel-specific module type markers with version comment
+      // Runtime helpers reference pattern
       /@babel\/runtime\/helpers\//,
 
-      // Decorators
-      /_initializerDefineProperty\(/,
-      /_applyDecoratedDescriptor\(/,
+      // Babel's injected helpers
+      /function\s+_extends\(\)\s*\{\s*_extends\s*=\s*Object\.assign\s*\|\|/,
+      /function\s+_objectSpread\s*\(\w+\)\s*\{/,
+    ],
+  },
+  {
+    name: 'syntaxTransforms' as const,
+    score: 0.3,
+    scripts: [
+      // Class transformation patterns
+      /var\s+\w+\s*=\s*function\s*\(\)\s*\{\s*function\s+\w+\([^)]*\)\s*\{[^}]*_classCallCheck\(this,\s*\w+\)/,
 
-      // Babel's specific async helper pattern
-      /regeneratorRuntime\.wrap\(function\s+_callee\(/,
+      // Decorator transforms (babel specific)
+      /_decorate\(\[\s*\w+(?:\s*,\s*\w+)*\s*\],\s*\w+\.prototype,\s*["'][^"']+["']/,
+
+      // Async transforms
+      /function\s+_asyncToGenerator\s*\(\s*fn\s*\)\s*\{/,
       /regeneratorRuntime\.mark\(function\s+_callee\(/,
 
-      // Babel object spread
-      /_objectSpread\(/,
-      /_objectSpread2\(/,
-
-      // Babel sourcemap patterns
-      /\/\/# sourceMappingURL=data:application\/json;charset=utf-8;base64,.*?["']babel/,
-
-      // Common module wrapper pattern
-      /\(function\s*\([^)]*\)\s*\{\s*"use strict";\s*Object\.defineProperty\(exports,/,
-
-      // Import meta transform (still applied in modern preset-env)
-      /__filename,\s*__dirname,\s*require,\s*module,\s*exports,\s*__filename,\s*__dirname/,
-
-      // Babel's unique typeof helper implementation
-      /_typeof\s*=\s*function\s*\(obj\)\s*\{\s*return\s*typeof\s*obj\s*;?\s*\}/,
-
-      // Babel's unique createSuper implementation
-      /_createSuper\s*=\s*function\s*\(Derived\)\s*\{\s*var\s*hasNativeReflectConstruct/,
+      // Object spread/rest transforms
+      /function\s+_objectWithoutProperties\s*\([^)]+\)\s*\{/,
+      /function\s+_objectWithoutPropertiesLoose\s*\([^)]+\)\s*\{/,
     ],
   },
   {
-    name: 'helpers' as const,
-    score: 1,
+    name: 'modernFeatures' as const,
+    score: 0.25,
     scripts: [
-      // Babel's unique class helper implementations
-      /function\s*_classCallCheck\s*\(instance,\s*Constructor\)\s*\{\s*if\s*\(!\(instance\s+instanceof\s+Constructor\)\)/,
+      // Optional chaining transform (babel specific)
+      /var\s+\w+\s*=\s*\w+\s*==\s*null\s*\?\s*void\s*0\s*:\s*\w+(?:\[|\.)(?:[^;]|;(?=[^;]))*;/,
 
-      // Babel's specific async helper pattern
-      /function\s*_asyncToGenerator\s*\(fn\)\s*\{\s*return\s*function\s*\(\)\s*\{\s*var\s*self\s*=\s*this,\s*args\s*=\s*arguments;?\s*return\s*new\s*Promise/,
+      // Nullish coalescing transform
+      /var\s+\w+\s*=\s*\w+\s*===?\s*null\s*\|\|\s*\w+\s*===?\s*void\s*0\s*\?\s*\w+\s*:\s*\w+/,
 
-      // Babel's unique extends helper
-      /function\s*_inherits\s*\(subClass,\s*superClass\)\s*\{\s*if\s*\(typeof\s*superClass\s*!==\s*"function"\s*&&\s*superClass\s*!==\s*null\)/,
+      // Private fields transform (WeakMap based)
+      /var\s+\w+\s*=\s*new\s+WeakMap\(\);\s*var\s+\w+\s*=\s*function\s*\w+\s*\(/,
 
-      // Babel's unique decorator implementation
-      /_initializerDefineProperty\s*\(target,\s*property,\s*descriptor,\s*context\)/,
+      // Class properties transform
+      /Object\.defineProperty\(\w+\.prototype,\s*["'][^"']+["'],\s*\{\s*configurable:\s*true,\s*writable:\s*true,\s*value:/,
     ],
   },
   {
-    name: 'moduleSystem' as const,
-    score: 1,
+    name: 'importExport' as const,
+    score: 0.2,
     scripts: [
-      // Babel's specific module interop helpers
-      /function\s*_interopRequireDefault\s*\(obj\)\s*\{\s*return\s*obj\s*&&\s*obj\.__esModule\s*\?\s*obj\s*:\s*\{\s*"default":\s*obj\s*\}\s*\}/,
+      // Import transforms
+      /Object\.defineProperty\(exports,\s*["']__esModule["'],\s*\{\s*value:\s*true\s*\}\)/,
+      /exports\.(?:default|[\w$]+)\s*=\s*void\s*0/,
 
-      // Babel's unique wildcard interop helper
-      /function\s*_getRequireWildcardCache\s*\(nodeInterop\)\s*\{\s*if\s*\(typeof\s*WeakMap\s*!==\s*"function"\)\s*return\s*null/,
+      // Export transforms
+      /exports\[["']default["']\]\s*=\s*\w+/,
 
-      // Babel's specific object spread implementation
-      /function\s*_objectSpread2\s*\(target\)\s*\{\s*for\s*\(var\s*i\s*=\s*1;\s*i\s*<\s*arguments\.length;\s*i\+\+\)/,
+      // Dynamic import transform
+      /Promise\.resolve\(\)\.\s*then\(function\s*\(\)\s*\{\s*return\s*require\(/,
     ],
   },
   {

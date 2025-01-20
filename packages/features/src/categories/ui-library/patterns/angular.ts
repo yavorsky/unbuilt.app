@@ -5,86 +5,115 @@ export const angular = [
     name: 'coreRuntime' as const,
     score: 0.3,
     scripts: [
-      // Core Angular
-      /\bangular\b/i,
-      /ng-version/,
-      /\bng-app\b/,
-      /platformBrowser/,
-      // Zone.js
-      /Zone\$|__zone_symbol__|NgZone/,
-      // Common minified patterns
-      /__NgCli/,
-      /ngDevMode/,
-      /NG_COMP_DEF/,
-      /ɵ[a-z]+/, // Angular internal symbols
+      // Angular platform initialization (minification-resistant)
+      /platformBrowser\w*\s*\(\s*\[\s*\{\s*ngZone\s*:\s*["']zone\.js["']/,
+
+      // Angular internal symbols (with boundaries)
+      /ɵcmp|ɵmod|ɵfac|ɵinj|ɵprov|ɵdef/,
+
+      // Zone.js specific patterns
+      /Zone\.__load_patch\(['"]angular['"],\s*function/,
+      /__Zone_enable_cross_context_check/,
+      /__zone_symbol__BLACK_LISTED_EVENTS/,
+
+      // Angular DI and compilation (production patterns)
+      /\[\s*"ngInjectableDef"\s*,\s*ɵɵdefine/,
+      /ɵɵdefineInjectable\s*\(\s*\{\s*factory:/,
+
+      // Angular module definition (minified)
+      /defineNgModule\s*\(\s*\{\s*type:\s*\w+,\s*bootstrap:/,
+
+      // Version marker (reliable across versions)
+      /data-ng-version=["']\d+\.\d+\.\d+["']/,
+
+      // Production mode flags
+      /ngDevMode\s*=\s*false/,
+      /enableProdMode\s*\(\s*\)/,
     ],
   },
   {
     name: 'components' as const,
     score: 0.3,
     scripts: [
-      // Component decorators
-      /@Component\s*\(/,
-      /@Injectable\s*\(/,
-      /@Directive\s*\(/,
-      /@Pipe\s*\(/,
-      // Component features
-      /ngOnInit|ngOnDestroy/,
-      /ngAfterViewInit|ngAfterContentInit/,
-      /ViewChild|ContentChild/,
-      // Change detection
-      /ChangeDetector|ChangeDetectionStrategy/,
-      /detectChanges|markForCheck/,
+      // Component definition (production)
+      /ɵɵdefineComponent\s*\(\s*\{\s*type:\s*\w+,\s*selectors:\s*\[\s*\[/,
+
+      // Component factory pattern
+      /ɵɵfactoryDef\s*\(\s*type,\s*view/,
+
+      // Component lifecycle hooks (minified)
+      /prototype\.ngOnInit\s*=\s*function\s*\(\s*\)\s*\{/,
+      /prototype\.ngOnDestroy\s*=\s*function\s*\(\s*\)\s*\{/,
+
+      // Change detection patterns (production)
+      /ɵɵdetectChanges\s*\(\s*\)/,
+      /ChangeDetectorRef\.prototype\.markForCheck/,
+
+      // View queries (minified)
+      /ɵɵviewQuery\s*\(\s*\w+\s*,\s*\d+/,
+      /ɵɵcontentQuery\s*\(\s*\w+\s*,\s*\d+/,
     ],
   },
   {
     name: 'templates' as const,
     score: 0.25,
     scripts: [
-      // Template syntax
-      /\*ngIf|\*ngFor/,
-      /\[(ngModel)\]/,
-      /\(click\)|\(input\)/,
-      /\[\(ngModel\)\]/,
-      // Template binding
-      /\{\{[^}]+\}\}/,
-      /\[(?:class|style|id|attr)\./,
-      /\((?:click|focus|blur|input)\)/,
-      // Common directives
-      /ngClass|ngStyle/,
-      /ngSwitch|ngSwitchCase/,
+      // Template compilation output (production)
+      /ɵɵtemplate\s*\(\s*\d+\s*,\s*[A-Za-z]\w*\s*,\s*\d+\s*,\s*\d+/,
+      /ɵɵtemplateRefExtractor/,
+
+      // Structural directives (minified)
+      /ɵɵelementContainerStart\s*\(\s*\d+\s*,\s*\[\s*["']\*ngIf["']/,
+      /ɵɵelementContainerStart\s*\(\s*\d+\s*,\s*\[\s*["']\*ngFor["']/,
+
+      // Event bindings (production)
+      /ɵɵlistener\s*\(\s*["'][^"']+["']\s*,\s*function/,
+
+      // Property bindings (production)
+      /ɵɵproperty\s*\(\s*["'][^"']+["']\s*,\s*/,
+      /ɵɵattribute\s*\(\s*["'][^"']+["']\s*,\s*/,
     ],
   },
   {
     name: 'routing' as const,
     score: 0.2,
     scripts: [
-      // Router
-      /RouterModule|Routes/,
+      // Router configuration (production)
+      /RouterModule\.forRoot\s*\(\s*\[\s*\{\s*path\s*:/,
+      /ɵɵRouterModule\s*\(\s*\[\s*\{\s*path\s*:/,
+
+      // Router outlet (minified)
       /router-outlet/,
-      /routerLink/,
-      /ActivatedRoute/,
-      // Navigation
-      /Router\.navigate/,
-      /NavigationEnd|NavigationStart/,
-      /CanActivate|CanDeactivate/,
-      /resolveGuard/,
+      /RouterOutlet\.prototype\.ngOnDestroy/,
+
+      // Navigation guards (production)
+      /CanActivate\s*:\s*\[/,
+      /CanDeactivate\s*:\s*\[/,
+
+      // Router events (minified)
+      /NavigationStart\s*\.\s*prototype\s*\.\s*toString/,
+      /NavigationEnd\s*\.\s*prototype\s*\.\s*toString/,
     ],
   },
   {
     name: 'forms' as const,
     score: 0.15,
     scripts: [
-      // Forms
-      /FormGroup|FormControl/,
-      /FormBuilder|FormArray/,
-      /Validators\./,
-      /FormsModule|ReactiveFormsModule/,
-      // Form validation
-      /ngModel|ngForm/,
-      /required|minlength|maxlength/,
-      /\[\(ngModel\)\]/,
-      /ValidatorFn|AsyncValidatorFn/,
+      // Reactive forms (production)
+      /FormGroup\.prototype\.registerControl/,
+      /FormBuilder\.prototype\.group/,
+
+      // Form validation (minified)
+      /Validators\.required/,
+      /Validators\.minLength\s*\(\s*\d+\s*\)/,
+
+      // Form directives (production)
+      /NgModel\.prototype\.ngOnChanges/,
+      /FormControlDirective\.prototype\.ngOnChanges/,
+
+      // Form control registration (minified)
+      /ControlContainer\.prototype\.registerOnChange/,
+      /AbstractControl\.prototype\.statusChanges/,
     ],
   },
   {
@@ -93,22 +122,32 @@ export const angular = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Angular global
-          hasAngularGlobal: !!window.ng,
-          // Check for Zone.js
-          hasZone: typeof window.Zone !== 'undefined',
-          // Check for Angular attributes
-          hasAngularAttributes: !!document.querySelector('[ng-version]'),
+          // Check for Angular global with specific properties
+          hasAngular: !!(window.ng && window.ng.probe),
+
+          // Check for Zone.js with Angular patches
+          hasZone:
+            typeof window.Zone !== 'undefined' &&
+            !!window.Zone['__symbol__']('angular'),
+
+          // Check for Angular version attribute
+          hasVersion: !!document.querySelector('[ng-version]'),
+
           // Check for Angular dev mode
           hasDevMode: typeof window.ngDevMode !== 'undefined',
-          // Check for Angular router
+
+          // Check for Angular router outlet
           hasRouter: !!document.querySelector('router-outlet'),
-          // Check for common Angular elements
-          hasNgElements: !!document.querySelector('[ng-reflect-]'),
-          // Check for Angular bootstrap element
-          hasNgApp: !!document.querySelector('[ng-app]'),
+
+          // Check for Angular debug info
+          hasDebugInfo: !!document.querySelector('[ng-reflect-name]'),
+
+          // Check for Angular bootstrap
+          hasBootstrap: !!document.querySelector('[ng-app], [ng-controller]'),
         };
-        return Object.values(markers).some(Boolean);
+
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },
@@ -117,23 +156,39 @@ export const angular = [
     score: 0.3,
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const root = document.querySelector('app-root');
         const markers = {
-          // Angular Universal markers
-          hasUniversalState: !!window.UNIVERSAL_STATE,
+          // Universal state transfer
+          hasUniversalState:
+            !!window.UNIVERSAL_STATE ||
+            !!document.querySelector('#_TRANSFER_STATE'),
 
-          // Transfer state marker
-          hasTransferState: !!document.querySelector('#_TRANSFER_STATE'),
-
-          // Platform server marker
+          // Platform server context
           hasPlatformServer:
             document.documentElement.hasAttribute('ng-server-context'),
 
-          // Check for prerendered content
-          hasPrerenderedContent: root && root?.children?.length > 0,
+          // Server-side rendered content markers
+          hasServerMarkers: !!document.querySelector(
+            'nguniversal-preboot-root'
+          ),
+
+          // Pre-rendered content check
+          hasPrerenderedContent: (() => {
+            const appRoot = document.querySelector('app-root');
+            return (
+              appRoot &&
+              appRoot.children.length > 0 &&
+              !appRoot.hasAttribute('ng-version')
+            );
+          })(),
+
+          // Transfer state markers
+          hasTransferData: !!document.querySelector(
+            'script#UNIVERSAL_STATE_ID'
+          ),
         };
 
-        return Object.values(markers).some(Boolean);
+        // Require at least two SSR markers
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },

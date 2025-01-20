@@ -1,9 +1,9 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const SwcLogo = ({
+const SwcLogo = ({
   width = 24,
   height = 24,
-  color = '#000000',
+  color = '#feaa7f',
   className = '',
 }: LogoProps) => {
   const calculatedHeight = height || width;

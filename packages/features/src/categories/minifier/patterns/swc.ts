@@ -1,3 +1,5 @@
+import { Page } from 'playwright';
+
 export const swcMinify = [
   {
     name: 'compilation' as const,
@@ -23,5 +25,20 @@ export const swcMinify = [
     name: 'chunks' as const,
     score: 0.3,
     filenames: [/\.swc\.min\.js$/, /\.min\.swc\.js$/],
+  },
+  {
+    name: 'runtimeExecution' as const,
+    score: 0.6,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        // Detect Next.js version where SWC is enabled by default (Next.js 12 and above)
+        const nextVersion = window.next?.version;
+        const isNextWithSWC = nextVersion
+          ? parseInt(nextVersion.split('.')[0], 10) >= 12
+          : false;
+
+        return isNextWithSWC;
+      });
+    },
   },
 ];

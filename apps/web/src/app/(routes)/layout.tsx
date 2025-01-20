@@ -19,7 +19,7 @@ export default function RoutesLayout({
         <div className="flex-1 flex flex-col">
           {children}
           <footer className="w-full p-4 mt-auto">
-            <div className="max-w-3xl mx-auto flex justify-center items-center mb-2 text-foreground/50 gap-1">
+            <div className="max-w-3xl mx-auto text-center mb-2 text-foreground/50">
               Free and Open Source. Currently collecting data and improving
               algorithms.{' '}
               <a

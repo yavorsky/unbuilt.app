@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const BabelLogo = ({
+const BabelLogo = ({
   width = 24,
   height = 24,
   color = '#F5DA55',

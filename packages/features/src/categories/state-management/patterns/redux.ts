@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const redux = [
   {
     name: 'coreRuntime' as const,
-    score: 0.4,
+    score: 0.5,
     scripts: [
       // Redux's unique store implementation with currentReducer and currentState
       /function\s+createStore\s*\([^)]*\)\s*\{\s*(?:var|let|const)\s+currentReducer\s*=\s*reducer(?:\s*;)?\s*(?:var|let|const)\s+currentState\s*=\s*preloadedState/,
@@ -28,7 +28,8 @@ export const redux = [
             typeof obj.getState === 'function' &&
             typeof obj.replaceReducer === 'function' &&
             // Check for Redux-specific store implementation details
-            obj.dispatch.toString().includes('currentState') &&
+            // Temp disabling this check to improve detection
+            // obj.dispatch.toString()?.includes('currentState') &&
             // @ts-expect-error Symbol type is not recognized by TypeScript in node env
             typeof obj[Symbol.observable] === 'function'
           );
