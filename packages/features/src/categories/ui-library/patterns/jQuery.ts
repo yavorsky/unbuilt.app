@@ -5,103 +5,127 @@ export const jQuery = [
     name: 'coreRuntime' as const,
     score: 0.3,
     scripts: [
-      // jQuery core detection
-      /jQuery|\$\.fn\.|jquery/,
-      /\$\([\s\S]*?\)\./,
-      /\$\(document\)\.ready\(/,
-      // Global utilities
-      /\$\.(?:extend|ajax|get|post|getJSON|parseJSON|Deferred)/,
-      /\$\.(?:each|map|grep|unique|merge|inArray)/,
-      // Minified patterns
-      /[^a-zA-Z]fn\[["']/,
-      /jQuery\d+/,
-      /\$[\d\w]+/,
+      // jQuery factory definition (production)
+      /typeof\s+jQuery\s*===?\s*["']function["']/,
+      /\(function\s*\(\s*global\s*,\s*factory\s*\)\s*\{\s*(?:[^{}]|\{[^{}]*\})*jQuery\s*=\s*factory/,
+
+      // jQuery.fn patterns (highly specific)
+      /jQuery\.fn\s*=\s*jQuery\.prototype\s*=\s*\{/,
+      /jQuery\.extend\(\s*\{\s*(?:[^{}]|\{[^{}]*\})*\}\s*\)/,
+
+      // jQuery internal markers (minified but unique)
+      /jQuery\.(?:cssHooks|cssNumber|cssProps|style)\s*=/,
+      /jQuery\.(?:error|noop|now|isEmptyObject)\s*=/,
     ],
   },
   {
     name: 'domManipulation' as const,
     score: 0.25,
     scripts: [
-      // Element selection and traversal
-      /\$\(['"][\s\S]*['"]\)\.(?:find|closest|parent|children|siblings)/,
-      /\.(?:prev|next|filter|not|has|is|contains)/,
-      // Manipulation methods
-      /\.(?:attr|prop|val|text|html|css|addClass|removeClass|toggleClass)/,
-      /\.(?:append|prepend|after|before|remove|empty|clone|wrap)/,
+      // jQuery-specific DOM manipulation (not generic methods)
+      /\.before\(\s*function\s*\(\s*\)\s*\{\s*return\s+jQuery/,
+      /\.after\(\s*function\s*\(\s*\)\s*\{\s*return\s+jQuery/,
+
+      // jQuery unique selectors and methods
+      /jQuery\.find\s*=\s*Sizzle/,
+      /jQuery\.unique\s*=\s*Sizzle\.uniqueSort/,
+
+      // jQuery-specific attribute handling
+      /jQuery\.attrHooks\s*=\s*\{/,
+      /jQuery\.propHooks\s*=\s*\{/,
     ],
   },
   {
     name: 'events' as const,
     score: 0.25,
     scripts: [
-      // Event handling
-      /\.(?:on|off|one|bind|unbind|delegate|undelegate|trigger|live|die)/,
-      /\.(?:click|submit|hover|focus|blur|change|keyup|keydown|mouseenter|mouseleave)/,
-      // Event utilities
-      /\.(?:preventDefault|stopPropagation|stopImmediatePropagation)/,
-      /event\.(?:target|currentTarget|relatedTarget|pageX|pageY|which)/,
+      // jQuery event system (unique to jQuery)
+      /jQuery\.event\s*=\s*\{(?:[^{}]|\{[^{}]*\})*\}/,
+      /jQuery\.Event\s*=\s*function\s*\(\s*src\s*\)\s*\{/,
+
+      // jQuery-specific event handling
+      /jQuery\.removeEvent\s*=\s*function\s*\(\s*elem\s*,\s*type\s*,\s*handle\s*\)\s*\{/,
+
+      // jQuery event hooks
+      /jQuery\.event\.(?:special|fix|props)\s*=/,
     ],
   },
   {
     name: 'effects' as const,
-    score: 0.2,
+    score: 0.3,
     scripts: [
-      // Animation and effects
-      /\.(?:show|hide|toggle|slideDown|slideUp|slideToggle)/,
-      /\.(?:fadeIn|fadeOut|fadeTo|fadeToggle)/,
-      /\.(?:animate|stop|delay|finish|queue|dequeue)/,
-      // Animation utilities
-      /\$\.(?:fx|easing|speed|Animation)/,
+      // jQuery-specific animation system
+      /jQuery\.(?:Animation|Tween)\s*=\s*function\s*\(\s*elem\s*,\s*options\s*,\s*prop\s*,\s*end\s*\)\s*\{/,
+
+      // jQuery fx hooks
+      /jQuery\.fx\.(?:tick|timer|interval|start|stop)\s*=/,
+
+      // jQuery-specific easing
+      /jQuery\.easing\s*=\s*\{\s*(?:[^{}]|\{[^{}]*\})*\}/,
     ],
   },
   {
     name: 'ajax' as const,
-    score: 0.15,
+    score: 0.3,
     scripts: [
-      // Ajax methods
-      /\$\.(?:ajax|get|post|getJSON|getScript)/,
-      /\.(?:load|serialize|serializeArray)/,
-      // Ajax settings
-      /(?:contentType|dataType|beforeSend|complete|success|error|xhr)/,
-      /xhr\.responseText|xhr\.status/,
+      // jQuery-specific AJAX implementation
+      /jQuery\.(?:ajax|get|post|getJSON|getScript)\s*=\s*function\s*\(/,
+
+      // jQuery transport system
+      /jQuery\.ajaxTransport\s*=\s*function\s*\(/,
+
+      // jQuery-specific AJAX events
+      /jQuery\.(?:ajaxPrefilter|ajaxSetup|ajaxSettings)\s*=/,
     ],
   },
   {
     name: 'runtimeExecution' as const,
-    score: 0.3,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for jQuery global
-          hasJQuery:
-            typeof window.jQuery !== 'undefined' ||
-            typeof window.$ !== 'undefined',
+          // Check for jQuery with specific version and features
+          hasJQuery: (() => {
+            if (typeof window.jQuery === 'function') {
+              const jq = window.jQuery;
+              // Check for core jQuery properties
+              return (
+                typeof jq.fn === 'object' &&
+                typeof jq.ajax === 'function' &&
+                typeof jq.extend === 'function' &&
+                typeof jq.event === 'object'
+              );
+            }
+            return false;
+          })(),
 
-          // // Check for jQuery version
-          // hasVersion: typeof window.$?.fn?.jquery === 'string',
+          // Check for jQuery data
+          hasJQueryData: (() => {
+            if (typeof window.jQuery === 'function') {
+              const el = document.createElement('div');
+              const testKey = 'jqueryDataTest';
+              window.jQuery(el).data(testKey, true);
+              const hasData = !!window.jQuery(el).data(testKey);
+              window.jQuery(el).removeData(testKey);
+              return hasData;
+            }
+            return false;
+          })(),
 
-          // // Check for jQuery event handlers
-          // hasEventHandlers: !!document.querySelector(
-          //   '[onclick*="$"], [onclick*="jQuery"]'
-          // ),
-
-          // // Check for jQuery data
-          // hasJQueryData: Array.from(document.querySelectorAll('*')).some((el) =>
-          //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          //   Object.keys((el as any).dataset ?? {}).some((key) =>
-          //     key.startsWith('jquery')
-          //   )
-          // ),
-
-          // // Check for common jQuery plugins
-          // hasPlugins:
-          //   typeof window.$?.fn?.modal !== 'undefined' ||
-          //   typeof window.$?.fn?.tooltip !== 'undefined',
-
-          // // Check for jQuery AJAX
-          // hasAjax: typeof window.$?.ajax === 'function',
+          // Check for jQuery event system
+          hasEventSystem: (() => {
+            if (typeof window.jQuery === 'function') {
+              return (
+                typeof window.jQuery.Event === 'function' &&
+                typeof window.jQuery.event.special === 'object'
+              );
+            }
+            return false;
+          })(),
         };
-        return Object.values(markers).some(Boolean);
+
+        // Require at least three markers for higher confidence
+        return Object.values(markers).filter(Boolean).length >= 3;
       });
     },
   },

@@ -5,109 +5,160 @@ export const vue = [
     name: 'coreRuntime' as const,
     score: 0.3,
     scripts: [
-      // Vue global and runtime
-      /Vue\s*\.\s*createApp/,
-      /new\s+Vue\s*\(/,
-      /__vue__/,
-      /vue\/dist/,
-      // Vue runtime markers
-      /__v_/,
-      /\$vue/,
-      /\$nuxt/,
-      // Vue 3 specific
-      /\bvue3\b/,
-      /\[@vue\//,
-      // Common minified patterns
-      /_vm\.|_v\$/,
-      /__VUE_/,
+      // Vue 3 app initialization (production)
+      /const\s+[_$a-zA-Z][\w$]*\s*=\s*createApp\s*\(\s*\{[^}]*\}\s*\)/,
+
+      // Vue 2 initialization (minified)
+      /new Vue\(\{(?:[^{}]|{[^{}]*})*el:["'][^"']+["']/,
+
+      // Vue internal properties (minification-resistant)
+      /__v_isRef=!0/,
+      /__v_isReactive=!0/,
+      /__v_raw/,
+
+      // Vue runtime markers (production)
+      /\["__file"\]=["'][^"']+\.vue["']/,
+      /\$options\._componentTag=/,
+
+      // Vue 3 compiler output
+      /\[\$\$\]/, // props destructure
+      /\$setup=/, // setup function reference
+      /\$props,\$setup,\$data,\$options/, // instance properties
     ],
   },
   {
     name: 'rendering' as const,
     score: 0.3,
     scripts: [
-      // Core directives
-      /v-if|v-show|v-for/,
-      /v-model|v-bind|v-on/,
-      /v-html|v-text|v-pre/,
-      // Rendering system
-      /\$mount|\$nextTick/,
-      /\$refs|\$el|\$slots/,
-      /\$emit|\$on|\$off/,
-      // Vue 3 Fragments
-      /Teleport|Suspense/,
-      /KeepAlive/,
+      // Vue render functions (production)
+      /_createVNode\(\s*(?:["'][^"']+["']|\w+)\s*,\s*(?:null|\{[^}]*\}|\[[^\]]*\])/,
+      /createBlock\(\s*[\w$]+\s*,\s*(?:null|\{[^}]*\}|\[[^\]]*\])/,
+
+      // Vue 3 render markers (minified)
+      /openBlock\(\),createElementBlock\(/,
+      /createBaseVNode\(\s*["'][^"']+["']/,
+
+      // Vue directive handling (production)
+      /withDirectives\(\s*createVNode\(/,
+      /vShow,\[\[\$props\.show\]\]/,
+
+      // Slots compilation (minified)
+      /\$slots\s*\.\s*default\s*\?\s*renderList\(/,
+      /renderSlot\(\s*_ctx\.\$slots\s*,\s*["']default["']/,
     ],
   },
   {
     name: 'reactivity' as const,
     score: 0.25,
     scripts: [
-      // Vue 2 reactivity
-      /\$data|\$props/,
-      /\$watch|\$set|\$delete/,
-      // Vue 3 composition API
-      /ref\s*\(|reactive\s*\(/,
-      /computed\s*\(|watch\s*\(/,
-      /onMounted|onUnmounted/,
-      /provide\s*\(|inject\s*\(/,
-      /defineProps|defineEmits/,
-      /withDefaults\s*\(/,
+      // Vue 3 reactivity system (production)
+      /reactive\(\{(?:[^{}]|{[^{}]*})*\}\)/,
+      /ref\(\s*(?:[^()]+|\([^()]*\))*\s*\)/,
+
+      // Computed properties (minified)
+      /computed\(\s*\(\s*\)\s*=>\s*[^,}]+\)/,
+      /computed\(\{(?:[^{}]|{[^{}]*})*get:\s*function\s*\(\s*\)\s*\{/,
+
+      // Watch implementation (production)
+      /watch\(\s*(?:\(\s*\)\s*=>|function\s*\(\s*\)\s*\{)/,
+      /watchEffect\(\s*(?:\(\s*\)\s*=>|function\s*\(\s*\)\s*\{)/,
     ],
   },
   {
     name: 'components' as const,
     score: 0.25,
     scripts: [
-      // Component definition
-      /Vue\.component\s*\(/,
-      /defineComponent\s*\(/,
-      /createApp\s*\(/,
-      // Template compilation
-      /render\s*:|\$createElement/,
-      /template\s*:/,
-      // SFC markers
-      /\.vue["']/,
-      /script\s+setup\b/,
+      // Component registration (production)
+      /defineComponent\(\s*\{(?:[^{}]|{[^{}]*})*setup\s*\(\s*\{\s*props\s*\}/,
+
+      // Props declaration (minified)
+      /props:\s*\{(?:[^{}]|{[^{}]*})*type:\s*(?:String|Number|Boolean|Array|Object|Function)/,
+
+      // Lifecycle hooks (production)
+      /onMounted\(\s*\(\s*\)\s*=>\s*\{/,
+      /onUnmounted\(\s*\(\s*\)\s*=>\s*\{/,
+
+      // Component emits (minified)
+      /emits:\s*\{(?:[^{}]|{[^{}]*})*\}|emits:\s*\[(?:[^\[\]]*)\]/,
     ],
   },
   {
     name: 'routing' as const,
     score: 0.15,
     scripts: [
-      // Vue Router
-      /createRouter|useRouter/,
-      /RouterView|RouterLink/,
-      /\$router|\$route/,
-      // Route patterns
-      /beforeRouteEnter/,
-      /beforeRouteLeave/,
-      /router-link/,
-      /router-view/,
+      // Router initialization (production)
+      /createRouter\(\s*\{\s*history:\s*createWebHistory\(/,
+
+      // Route definitions (minified)
+      /routes:\s*\[\s*\{\s*path:\s*["'][^"']+["']\s*,\s*component:/,
+
+      // Navigation guards (production)
+      /beforeRouteEnter\s*\(\s*to\s*,\s*from\s*,\s*next\s*\)\s*\{/,
+
+      // Router link compilation (minified)
+      /RouterLink,\{to:[\w$]+\}/,
     ],
   },
   {
-    name: 'runtimeExecution' as const,
-    score: 0.3,
+    name: 'runtimeVueMarkers' as const,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Vue global
-          hasVueGlobal: typeof window.Vue !== 'undefined',
-          // Check for Vue devtools
-          hasDevTools: !!window.__VUE_DEVTOOLS_GLOBAL_HOOK__,
-          // Check for Vue instance
-          hasVueInstance: !!document.querySelector('[data-v-]'),
+          hasVue: window.__VUE__,
+          hasVueSetters: window.__VUE_SSR_SETTERS__,
+          hasVueInstanceSetters: window.__VUE_INSTANCE_SETTERS__,
+
           // Check for Vue 3 app container
-          hasVue3Container: !!document.querySelector('[__vue_app__]'),
-          // Check for Vuex state
-          hasVuex: !!window.__VUEX__,
-          // Check for common Vue directives
-          hasDirectives: !!document.querySelector('[v-show],[v-if],[v-for]'),
-          // Check for Vue router
-          hasRouter: !!window.__VUE_ROUTER_GLOBAL_HOOK__,
+          hasVue3: !!document.querySelector('[__vue-app__]'),
         };
-        return Object.values(markers).some(Boolean);
+
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).filter(Boolean).length >= 2;
+      });
+    },
+  },
+  {
+    name: 'runtimeVueLikePatterns' as const,
+    score: 0.4,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Check for Vue instance with production markers
+          hasVueInstance: (() => {
+            const elements = document.querySelectorAll('[data-v-]');
+            return (
+              elements.length > 0 &&
+              Array.from(elements).some((el) =>
+                el.getAttribute('data-v-')?.match(/^[a-f0-9]{8}$/)
+              )
+            );
+          })(),
+
+          // Check for Vue rendered content
+          hasRenderedContent: (() => {
+            const appRoot = document.querySelector('#app');
+            return (
+              appRoot &&
+              appRoot.children.length > 0 &&
+              Array.from(appRoot.children).some(
+                (el) =>
+                  el.hasAttribute('data-v-') ||
+                  el.innerHTML.includes('<!--v-if-->')
+              )
+            );
+          })(),
+
+          // Check for Vuex state in production
+          // eslint-disable-next-line no-prototype-builtins
+          hasVuexState: window.hasOwnProperty('__INITIAL_STATE__'),
+
+          // Check for Vue Router in production
+          hasRouter: !!document.querySelector('a[href^="/"][router-link]'),
+        };
+
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },

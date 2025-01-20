@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const TypescriptLogo = ({
+const TypescriptLogo = ({
   width = 24,
   height = 24,
   color = '#3178C6',

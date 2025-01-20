@@ -1,6 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-export const SucraseLogo = ({
+const SucraseLogo = ({
   width = 24,
   height = 24,
   color = '#2D5FD2',

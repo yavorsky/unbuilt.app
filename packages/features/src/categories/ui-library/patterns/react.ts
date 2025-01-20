@@ -5,112 +5,121 @@ export const react = [
     name: 'coreRuntime' as const,
     score: 0.3,
     scripts: [
-      // React core
-      /(?:window\.)?React/,
-      /__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
-      /(?:["'])(?:react|react-dom)(?:["'])/,
-      /\$\$typeof|Symbol\.for\(["']react\./,
-      // React internals
-      /_reactListening/,
-      /__reactFiber/,
-      /__reactProps/,
-      /__reactContainer/,
-      /_reactRootContainer/,
-      /\._reactInternals/,
-      // Common minified patterns
-      /\.__r|\$r|\$R/,
-      /_react[A-Z]/,
+      // Core React object detection - highly specific to React
+      /(?:window\.)?React=\{(?:[^}]+)\}/,
+      /\.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
+
+      // React symbol registration - unique to React
+      /Symbol\.for\(["']react\.element["']\)/,
+      /Symbol\.for\(["']react\.fragment["']\)/,
+      /Symbol\.for\(["']react\.forward_ref["']\)/,
+
+      // React internal properties (minification-resistant)
+      /__reactFiber[$_a-zA-Z0-9]+/, // Matches minified fiber refs
+      /__reactProps[$_a-zA-Z0-9]+/, // Matches minified props
+      /__reactContainer[$_a-zA-Z0-9]+/, // Matches minified container refs
+
+      // React error codes pattern (unique to React)
+      /Error\(formatProdErrorMessage\(\d+\)\)/,
+
+      // React production minified markers
+      /production\.min\.js["']\}?\)/,
+      /\?react\b.*?\.production\.min\.js/,
     ],
   },
   {
     name: 'rendering' as const,
     score: 0.3,
     scripts: [
-      // React DOM
-      /ReactDOM(?:\.|\[)/,
-      /(?:render|hydrate|createRoot)\s*\(/,
-      /hydrateRoot\s*\(/,
-      // React 18 specific
-      /createRoot\s*\(/,
-      /reactDom\.production\.min\.js/,
-      // Server markers
-      /data-reactroot/,
-      /data-react-hydrated/,
-      /reactjs\.linked/,
-      /react-mount/,
+      // React 18+ specific root APIs
+      /\.createRoot\([\s\S]{1,50}?\.render\(/,
+      /hydrateRoot\([\s\S]{1,50}?\.render\(/,
+
+      // React DOM specific patterns (minification-resistant)
+      /\breturn\s+ReactDOM\./,
+      /(?:document|container|root|element)\.querySelector\(['"]\[data-reactroot\]['"]\)/,
+
+      // React 18 concurrent features
+      /startTransition\s*\(\s*\(\s*\)\s*=>\s*\{/,
+      /\.createBlockingRoot\s*\(/,
+
+      // React hydration markers
+      /data-react-hydrated=["']/,
+      /hydrationData(?::\s*\{|=\{)/,
     ],
   },
   {
     name: 'jsxCompiled' as const,
     score: 0.25,
     scripts: [
-      // JSX runtime
-      /jsx\s*=\s*react\.jsx/,
-      /_jsx\(/,
-      /_jsxs\(/,
-      /_jsxDEV\(/,
-      /jsxDEV\(/,
-      /jsx\(/,
-      /jsxs\(/,
-      // JSX properties
-      /jsxRuntime/,
-      /jsxFileName/,
-      /jsxSourceLoc/,
-      // Common build patterns
-      /\[\s*"ref"\s*,\s*null\s*,/,
-      /\[\s*"key"\s*,\s*null\s*,/,
+      // Modern JSX Runtime (React 17+)
+      /import\s*\{\s*jsx\s*(?:as\s*_jsx)?\s*\}\s*from\s*["']react\/jsx-runtime["']/,
+
+      // JSX Development patterns (with source locations)
+      /_jsxDEV\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
+      /_jsxFileName\s*:\s*["'][^"']+["']/,
+
+      // Production JSX patterns
+      /_jsx\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
+      /_jsxs\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
+
+      // Classic JSX transform
+      /React\.createElement\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
     ],
   },
   {
     name: 'hooks' as const,
     score: 0.25,
     scripts: [
-      // Core hooks
-      /(?:React\.|[\W])use(?:State|Effect|Context|Reducer|Ref)\W/,
-      // Additional hooks
-      /(?:React\.|[\W])use(?:Callback|Memo|ImperativeHandle|LayoutEffect)\W/,
-      // React 18 hooks
-      /(?:React\.|[\W])use(?:Transition|DeferredValue|Id|SyncExternalStore)\W/,
-      // Hook internals
-      /(?:React\.|[\W])use(?:DebugValue|InsertionEffect)\W/,
-      /dispatcher\s*=\s*ReactCurrentDispatcher/,
-      /__react_hooks__/,
+      // Hook definitions (minification resistant)
+      /function\s+useState\s*\(\s*[a-zA-Z_$][\w$]*\s*\)\s*\{/,
+      /function\s+useEffect\s*\(\s*[a-zA-Z_$][\w$]*\s*,\s*\[/,
+
+      // React 18+ hooks with specific patterns
+      /useTransition\s*\(\s*\)\s*\{\s*(?:return\s+)?(?:React\._currentRenderer|dispatcher)/,
+      /useDeferredValue\s*\(\s*[a-zA-Z_$][\w$]*\s*\)\s*\{/,
+
+      // Hook internal markers (highly specific to React)
+      /__react_hooks__[$_a-zA-Z0-9]+/,
+      /dispatcher\s*=\s*ReactCurrentDispatcher\.current/,
+
+      // Custom hooks pattern (following React conventions)
+      /function\s+use[A-Z]/,
     ],
   },
   {
     name: 'components' as const,
     score: 0.2,
     scripts: [
-      // Core component APIs
-      /React\.(?:Component|PureComponent|Fragment)/,
-      /(?:React\.|[\W])(?:memo|lazy|Suspense|forwardRef)\(/,
-      /(?:React\.|[\W])(?:StrictMode|Profiler)\W/,
-      // Component internals
-      /\.__proto__\s*=\s*React\.Component/,
-      /\.contextTypes|\.propTypes|\.defaultProps|\.displayName/,
-      /\.\$\$typeof\s*=|\.\$\$typeof:/,
-      /\._owner=/,
-      // Error boundaries
-      /componentDidCatch|getDerivedStateFromError/,
+      // Class components (with inheritance)
+      /class\s+[A-Za-z_$][\w$]*\s+extends\s+(?:React\.)?Component\s*\{/,
+      /class\s+[A-Za-z_$][\w$]*\s+extends\s+(?:React\.)?PureComponent\s*\{/,
+
+      // Higher-order components
+      /(?:React\.|[\W])memo\s*\(\s*(?:function|class|_)/,
+      /(?:React\.|[\W])forwardRef\s*\(\s*(?:function|class|_)/,
+
+      // Error boundary methods
+      /(?:static\s+)?getDerivedStateFromError\s*\(\s*error\s*\)\s*\{/,
+      /componentDidCatch\s*\(\s*error\s*,\s*errorInfo\s*\)\s*\{/,
     ],
   },
   {
     name: 'reconciler' as const,
     score: 0.15,
     scripts: [
-      // React Fiber
-      /__reactFiber/,
-      /ReactCurrentOwner/,
-      /ReactCurrentDispatcher/,
-      /ReactCurrentBatchConfig/,
-      // Event system
-      /__reactEvents/,
-      /attachEvent/,
-      /capturePhase/,
-      // Scheduler
-      /Scheduler\.unstable_/,
-      /unstable_scheduleCallback/,
-      /requestIdleCallback/,
+      // Fiber reconciler (unique to React)
+      /__reactFiber[$_a-zA-Z0-9]+/,
+      /ReactCurrentOwner\s*=\s*\{/,
+      /ReactCurrentDispatcher\s*=\s*\{/,
+
+      // React 18 concurrent features
+      /ReactCurrentBatchConfig\s*=\s*\{/,
+      /Scheduler\.unstable_scheduleCallback/,
+
+      // React event system (specific to React)
+      /__reactEvents[$_a-zA-Z0-9]+/,
+      /reactEventHandlers[$_a-zA-Z0-9]+/,
     ],
   },
   {
@@ -119,16 +128,40 @@ export const react = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasReact: typeof window.React !== 'undefined',
-          hasReactDOM: typeof window.ReactDOM !== 'undefined',
-          hasDispatcher:
-            !!window.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED,
-          // Check for React root
-          hasReactRoot: !!document.querySelector('[data-reactroot]'),
-          // Check for React devtools hook
-          hasDevTools: !!window.__REACT_DEVTOOLS_GLOBAL_HOOK__,
+          // Check for React global object with specific properties
+          hasReact:
+            typeof window.React === 'object' &&
+            !!window.React.createElement &&
+            !!window.React.Component,
+
+          // Check for ReactDOM with modern APIs
+          hasReactDOM:
+            typeof window.ReactDOM === 'object' &&
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Older version of react dom
+            (!!(window.ReactDOM as any).createRoot || !!window.ReactDOM.render),
+
+          // Check for React internals (highly specific)
+          hasInternals:
+            typeof window.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED ===
+            'object',
+
+          // Check for React DevTools
+          hasDevTools:
+            typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === 'object',
+
+          // Check for React root mount point
+          hasReactRoot: !!document.querySelector(
+            '[data-reactroot], [data-react-hydrated]'
+          ),
+
+          // Check for React Fiber root
+          hasFiberRoot: Object.keys(window).some((key) =>
+            key.startsWith('__reactContainer')
+          ),
         };
-        return Object.values(markers).some(Boolean);
+
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },
@@ -136,25 +169,33 @@ export const react = [
     name: 'ssr' as const,
     score: 0.2,
     browser: async (page: Page) => {
-      // Check for React SSR markers
-      return page!.evaluate(() => {
-        // Check for specific React SSR signatures
+      return page.evaluate(() => {
         const markers = {
-          // Data-reactroot attribute indicates React SSR
+          // Check for React SSR root
           hasReactRoot: !!document.querySelector('[data-reactroot]'),
 
-          // React hydration markers
+          // Check for React hydration markers (specific to React)
           hasHydrationComment:
-            document.documentElement.innerHTML.includes('<!--$-->'),
+            document.documentElement.innerHTML.includes('<!--$-->') ||
+            document.documentElement.innerHTML.includes('<!--/*-->'),
 
-          // React hydration errors in console can indicate SSR
-          hasHydrationError: window.__REACT_ERROR_OVERLAY__ !== undefined,
+          // Check for React hydration data attributes
+          hasHydrationMarkers: !!document.querySelector(
+            '[data-react-hydrated]'
+          ),
 
-          // Check if content is present before JS loads
-          hasInitialContent: document.body.children.length > 0,
+          // Check for SSR streaming markers
+          hasStreamingMarkers:
+            document.documentElement.innerHTML.includes('<!--$?-->') ||
+            document.documentElement.innerHTML.includes('<!--$!-->'),
+
+          // Check for React error overlay (SSR specific)
+          hasErrorOverlay:
+            typeof window.__REACT_ERROR_OVERLAY__ !== 'undefined',
         };
 
-        return Object.values(markers).some(Boolean);
+        // Require at least two SSR markers for confidence
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },

@@ -5,86 +5,98 @@ export const ember = [
     name: 'coreRuntime' as const,
     score: 0.3,
     scripts: [
-      // Core Ember
-      /\bEmber\b|\bEmber\./,
-      /ember-cli/,
-      /ember\.debug\.js/,
-      /ember\.prod\.js/,
-      // Ember Data
-      /DS\.Model/,
-      /DS\.attr/,
-      /DS\.belongsTo/,
-      // Runtime markers
-      /__ember_auto_import__/,
-      /EMBER_ENV/,
-      /EmberENV/,
+      // Core Ember initialization patterns
+      /defineProperty\(Ember,["']VERSION["'],\{configurable:!1,enumerable:!0,value:["']\d+\.\d+\.\d+["']\}\)/,
+      /\.resolveRegistration\(["']config:environment["']\)/,
+
+      // Dependency Injection system (production)
+      /var \w+=new WeakMap,\w+=new WeakMap/,
+      /\._super\.apply\(this,arguments\)/,
+
+      // Ember Object model core features
+      /\.extend\(\{[^}]*init:function\(\)\{[^}]*this\._super\.apply\(this,arguments\)/,
+      /\.reopen\(\{[^}]*willDestroy:function\(\)\{/,
+
+      // Ember's internal property observation system
+      /notifyPropertyChange\(this,["'][^"']+["']\)/,
+      /addObserver\(this,["'][^"']+["']\)/,
     ],
   },
   {
     name: 'components' as const,
     score: 0.3,
     scripts: [
-      // Component patterns
-      /extend\s*\(\s*['"]Component['"]\)/,
-      /Ember\.Component\.extend/,
-      /\{\{yield\}\}/,
-      // Glimmer components
-      /class\s+\w+\s+extends\s+Component/,
-      /@tracked/,
-      /@service/,
-      // Actions and events
-      /this\.send\(/,
-      /this\.actions\./,
-      /action\s*\(/,
+      // Glimmer component definitions (production)
+      /setComponentTemplate\((\w+),class extends(\w+\.)?Component\{/,
+      /createTemplateFactory\(\{id:["'][^"']+["'],block:/,
+
+      // Classic component patterns (production)
+      /Component\.extend\(\{(?:[^{}]|{[^{}]*})*\}\)/,
+
+      // Component lifecycle hooks (minified)
+      /didInsertElement:function\(\)\{/,
+      /willDestroyElement:function\(\)\{/,
+
+      // Tracked properties implementation
+      /this\.__tracked__\w+/,
+      /tracked\w+\.set\(this,/,
     ],
   },
   {
     name: 'templates' as const,
     score: 0.25,
     scripts: [
-      // Handlebars templates
-      /\{\{#if\}\}|\{\{#each\}\}/,
-      /\{\{#unless\}\}|\{\{#with\}\}/,
-      /\{\{action\}\}|\{\{on\}\}/,
-      // Template helpers
-      /\{\{input\}\}|\{\{textarea\}\}/,
-      /\{\{link-to\}\}/,
-      /\{\{get\}\}|\{\{mut\}\}/,
-      // Component invocation
-      /\{\{[A-Z][^}]+\}\}/,
-      /\{\{component\s+/,
+      // Production template compilation output
+      /function\(\){return\{\w+:function\(\)\{var \w+=this\.\w+/,
+
+      // Helper invocations (production)
+      /helpers\[["'][^"']+["']\]\.compute\(/,
+
+      // Component invocation patterns
+      /component\$\w+\(this,this\./,
+      /modifier\$\w+\(this,this\./,
+
+      // Glimmer template compilation
+      /createTemplateFactory\(\{[^}]*"block":\[/,
     ],
   },
   {
     name: 'routing' as const,
     score: 0.2,
     scripts: [
-      // Router patterns
-      /Router\.map\s*\(/,
-      /this\.route\(/,
-      /this\.transitionTo/,
-      // Route hooks
-      /beforeModel|afterModel/,
-      /setupController/,
-      /resetController/,
-      // Route components
-      /\{\{outlet\}\}/,
-      /LinkComponent/,
+      // Router initialization (production)
+      /Router\.map\(function\(\)\{this\.route\(/,
+
+      // Route class definition patterns
+      /Route\.extend\(\{(?:[^{}]|{[^{}]*})*model:function\([^)]*\)\{/,
+
+      // Transition methods (minified)
+      /\.transitionTo\(["'][^"']+["']\)/,
+      /\.replaceWith\(["'][^"']+["']\)/,
+
+      // Route lifecycle hooks
+      /beforeModel:function\(\w+\)\{/,
+      /afterModel:function\(\w+,\w+\)\{/,
     ],
   },
   {
     name: 'data' as const,
     score: 0.15,
     scripts: [
-      // Ember Data
-      /DS\.Store/,
-      /DS\.RecordArray/,
-      /createRecord|deleteRecord/,
-      // Relationships
-      /hasMany|belongsTo/,
-      // Adapters and serializers
-      /RESTAdapter|JSONAPIAdapter/,
-      /RESTSerializer|JSONAPISerializer/,
+      // Model definitions (production)
+      /Model\.extend\(\{(?:[^{}]|{[^{}]*})*\}\)/,
+
+      // Relationship definitions (minified)
+      /belongsTo\(["'][^"']+["']\)/,
+      /hasMany\(["'][^"']+["']\)/,
+
+      // Store operations (production)
+      /store\.findRecord\(["'][^"']+["'],/,
+      /store\.query\(["'][^"']+["'],/,
+
+      // Adapter/Serializer patterns
+      /JSONAPIAdapter\.extend\(/,
+      /JSONAPISerializer\.extend\(/,
     ],
   },
   {
@@ -93,23 +105,24 @@ export const ember = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for Ember global
-          hasEmber: typeof window.Ember !== 'undefined',
+          // Check only for production Ember features
+          hasEmber: typeof window.Ember === 'object' && !!window.Ember.VERSION,
+
+          // Check for actual rendered components
+          hasEmberViews: !!document.querySelector('.ember-view'),
+
           // Check for Ember Data
-          hasEmberData: typeof window.DS !== 'undefined',
-          // Check for Ember testing helpers
-          // @ts-expect-error - Ember require modification is not defined in the global scope
-          hasTestHelpers: typeof window.require?.has?.('ember-qunit'),
-          // Check for Ember application
-          hasApp: !!window.Ember?.Application?.BOOTED,
-          // Check for Ember debugging
-          hasDebug: !!window.Ember?.Debug,
-          // Check for common Ember elements
-          hasEmberView: !!document.querySelector('[id^="ember"]'),
-          // Check for Ember CLI
-          hasEmberCli: !!window.EmberENV,
+          hasEmberData: typeof window.DS === 'object' && !!window.DS.Model,
+
+          // Check for actual route rendering
+          hasRouting: !!document.querySelector('.ember-application'),
+
+          // Check for rendered components
+          hasComponents: document.querySelectorAll('[id^="ember"]').length > 0,
         };
-        return Object.values(markers).some(Boolean);
+
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },

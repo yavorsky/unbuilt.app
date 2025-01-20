@@ -25,7 +25,7 @@ export default async function TechnologyPage<T extends AnalysisTechnologies>({
   });
 
   return (
-    <main className="flex-1 p-2 lg:p-8 md:p-8 pt-24">
+    <main className="flex-1 px-2 lg:px-8 md:px-8 pt-24">
       <TechnologyDashboard
         initialData={data}
         type={params.type}

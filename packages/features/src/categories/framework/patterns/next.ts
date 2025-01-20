@@ -7,16 +7,13 @@ export const next = [
     score: 1.0,
     scripts: [
       // Core Next.js-specific globals and identifiers
-      /__NEXT_DATA__/,
-      /__NEXT_LOADED_PAGES__/,
       /window\.__NEXT_P\s*=/, // Next.js page loader
       /__NEXT_CROSS_ORIGIN/,
-      /__next_.+/,
     ],
   },
   {
     name: 'dom-markers' as const,
-    score: 0.9,
+    score: 0.3,
     scripts: [
       // Next.js-specific DOM attributes and classes
       /data-nextjs-page/,
@@ -28,7 +25,7 @@ export const next = [
   },
   {
     name: 'hydration' as const,
-    score: 0.8,
+    score: 0.3,
     scripts: [
       // Next.js-specific hydration markers
       /__NEXT_HYDRATED_STATE__/,
@@ -38,7 +35,7 @@ export const next = [
   },
   {
     name: 'browser-check' as const,
-    score: 0.9,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -51,7 +48,7 @@ export const next = [
     },
   },
   {
-    score: 0.3,
+    score: 1,
     name: 'ssr' as const,
     scripts: [/getServerSideProps/, /getInitialProps/],
     browser: async (page: Page) => {

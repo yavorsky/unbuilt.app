@@ -1,30 +1,46 @@
 export const sucrase = [
   {
-    name: 'core' as const,
-    score: 1,
+    name: 'moduleSystem' as const,
+    score: 0.3,
     scripts: [
-      // Sucrase's unique module transformation pattern (with specific variable naming)
-      /createCommonjsModule\s*\(\s*function\s*\(module,\s*exports\)\s*\{\s*"use strict";\s*Object\.defineProperty\(exports,\s*"__esModule",\s*\{\s*value:\s*true\s*\}\);?\s*exports\.__/,
+      // Sucrase's unique module initialization without extra wrappers or helpers
+      /exports\.__esModule\s*=\s*true;\s*exports\.\w+\s*=\s*void\s*0/,
 
-      // Sucrase's specific import helpers with double dollar signs
-      /function\s*__importStar\$\$\s*\(m\)\s*\{\s*(?:if\s*\(m\s*&&\s*m\.__esModule\)\s*return\s*m;\s*var\s*exports\s*=\s*\{\};?\s*for\s*\(var\s*k\s*in\s*m\)\s*if\s*\(k\s*!==\s*"default"\))/,
+      // Sucrase's minimal interop: direct assignment without helper functions
+      /exports\.default\s*=\s*\w+;\s*module\.exports\s*=\s*exports\.default/,
 
-      // Sucrase's unique export naming pattern (different from other transpilers)
-      /\$\$exports\.__esModule\s*=\s*true;\s*\$\$exports\.default\s*=\s*void\s*0/,
+      // Sucrase's unique ESM transformation style
+      /exports\.\{[^}]+\}\s*=\s*\w+[;,]\s*exports\./,
     ],
   },
   {
-    name: 'transforms' as const,
-    score: 1,
+    name: 'jsxTransform' as const,
+    score: 0.3,
     scripts: [
-      // Sucrase's unique ES wrapper implementation
-      /function\s*__esWrapper\s*\(\)\s*\{\s*var\s*\$\$exports\s*=\s*\{\};\s*\$\$exports\.__esModule\s*=\s*true/,
+      // Sucrase's minimal JSX transformation: direct createElement calls without wrappers
+      /React\.createElement\(\s*[\w$]+,\s*(?:\{[^}]*\}|null),\s*(?:[^;,]+)\)/,
 
-      // Sucrase's specific wildcard import helper with unique error handling
-      /function\s*__interopRequireWildcard\$\$\s*\(obj\)\s*\{\s*if\s*\(!obj\s*\|\|\s*typeof\s*obj\s*!==\s*['"]object['"]\s*&&\s*typeof\s*obj\s*!==\s*['"]function['"]\)/,
+      // Sucrase's fragment handling without extra variables or helpers
+      /React\.createElement\(React\.Fragment,\s*null,\s*(?:[^;,]+)\)/,
+    ],
+  },
+  {
+    name: 'classTransforms' as const,
+    score: 0.25,
+    scripts: [
+      // Sucrase's static property assignment: direct without helpers
+      /Object\.defineProperty\(\w+,\s*["']\w+["'],\s*\{\s*enumerable:\s*true,\s*value:\s*(?:[^}]+)\}\)/,
+    ],
+  },
+  {
+    name: 'optimization' as const,
+    score: 0.2,
+    scripts: [
+      // Sucrase's optimized output: minimal variable declarations
+      /var\s+(\w+)\s*=\s*(?:require\(["'][^"']+["']\)|\w+)(?:\s*,\s*\w+\s*=\s*(?:require\(["'][^"']+["']\)|\w+))*;/,
 
-      // Sucrase's default export helper with specific null checking
-      /function\s*__importDefault\$\$\s*\(obj\)\s*\{\s*return\s*obj\s*&&\s*obj\.__esModule\s*\?\s*obj\s*:\s*\{\s*default:\s*obj\s*\};?\s*\}/,
+      // Sucrase's optimized destructuring: direct assignment
+      /var\s*\{\s*(?:\w+\s*(?::\s*\w+)?\s*(?:,\s*\w+\s*(?::\s*\w+)?)*\s*)\}\s*=\s*\w+;/,
     ],
   },
 ];
