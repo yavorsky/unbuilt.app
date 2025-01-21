@@ -16,7 +16,7 @@ export interface Pattern<Name extends string = string> {
 
 type InferPatternNames<T> = T extends Pattern<infer Name>[] ? Name : never;
 
-type AllPatternNames<T> = {
+export type AllPatternNames<T> = {
   [K in keyof T]: InferPatternNames<T[K]>;
 }[keyof T];
 

@@ -1,4 +1,4 @@
-import QueueService, { Queue, Job } from 'bull';
+import QueueService, { Queue, Job, QueueOptions } from 'bull';
 import {
   AnalyzeResult,
   OnProgressResult,
@@ -69,7 +69,7 @@ export class QueueManager {
           stalledInterval: 30000, // Check for stalled jobs (in ms)
           maxStalledCount: 1, // Mark as stalled for 1 check
         },
-      });
+      } as QueueOptions);
 
       // Initialize browser manager
       this.browserManager = new BrowserManager();
@@ -94,7 +94,13 @@ export class QueueManager {
             job.progress(progress);
           };
 
-          const result = await analyze(job.data.url, page, browser, onProgress);
+          const result = await analyze(
+            job.data.url,
+            job.id as string,
+            page,
+            browser,
+            onProgress
+          );
           console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
           return result;
         } catch (error) {
@@ -149,6 +155,7 @@ export class QueueManager {
     return this.queue.add(
       {
         url,
+        id: opts.jobId,
         timestamp: new Date().toISOString(),
         duration: 0,
         analysis: {},

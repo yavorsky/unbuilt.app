@@ -1,5 +1,6 @@
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
+import { columnMapping } from '../utils/column-mapping';
 
 export type TimeRange = 'week' | 'month' | '3months' | 'year';
 
@@ -8,23 +9,6 @@ export interface TechnologyTrend {
   technologies: Record<string, number>; // technology name -> usage percentage
   totalAnalyzed: number;
 }
-
-// Map our type to database column
-const columnMapping = {
-  framework: 'framework',
-  uiLibrary: 'ui_library',
-  httpClient: 'http_client',
-  stateManagement: 'state_management',
-  bundler: 'bundler',
-  minifier: 'minifier',
-  router: 'router',
-  transpiler: 'transpiler',
-  modules: 'modules',
-  stylingProcessor: 'styling_processor',
-  dates: 'dates',
-  translations: 'translations',
-  // add other mappings as needed
-} as const;
 
 export async function getTechnologyTrendsQuery(
   type: AnalysisTechnologies,

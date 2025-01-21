@@ -18,7 +18,7 @@ export interface TechnologyInfo {
  * Save a new tech stack analysis
  */
 export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
-  console.log('STORE RESULT', { id, url: analysisData.url });
+  console.log('Result is saved', { id, url: analysisData.url });
   try {
     const { data, error } = await supabase
       .from('tech_stack_analysis')

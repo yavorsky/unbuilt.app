@@ -11,7 +11,7 @@ export const detect = async (
   analysis?: AnalysisFeatures
 ) => {
   return detectFeature({
-    type: 'translations',
+    type: 'transpiler',
     resources,
     page,
     browser,

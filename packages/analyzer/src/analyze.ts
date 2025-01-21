@@ -24,6 +24,7 @@ import { errors } from './utils/errors.js';
 
 export const analyze = async (
   url: string,
+  id: string,
   page: Page,
   browser: Browser,
   handleProgress: OnProgress
@@ -44,7 +45,13 @@ export const analyze = async (
     timeout: 30000,
   });
 
-  const onProgress = createProgressTracker(url, handleProgress, startedAt, 15);
+  const onProgress = createProgressTracker(
+    url,
+    id,
+    handleProgress,
+    startedAt,
+    15
+  );
   const analysis = {} as AnalysisFeaturesWithStats;
 
   analysis.bundler = await bundler.detect(page, browser, resources);
@@ -91,7 +98,6 @@ export const analyze = async (
   onProgress({ stats: analysis.stats });
 
   // Run checks again to get more accurate results having context from all features
-  let x;
   [
     analysis.bundler,
     analysis.transpiler,
@@ -127,6 +133,7 @@ export const analyze = async (
 
   const result = {
     url,
+    id,
     timestamp: finishedAt.toISOString(),
     duration,
     analysis,
@@ -139,6 +146,7 @@ export const analyze = async (
 type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
 export type AnalyzeResult = {
   url: string;
+  id: string;
   timestamp: string;
   duration: number;
   analysis: AnalysisFeaturesWithStats;

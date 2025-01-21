@@ -1,6 +1,10 @@
 import { AnalyzeResult, OnProgressResult } from '@unbuilt/analyzer';
 import { QueueManager } from './queue-manager';
-import { saveAnalysis, getAnalysisById, getAnalyzysMetaByUrl } from './api';
+import {
+  saveAnalysis,
+  getAnalysisByIdQuery,
+  getAnalyzysMetaByUrlQuery,
+} from './api';
 import { v4 as uuidv4 } from 'uuid';
 import Bull from 'bull';
 
@@ -95,7 +99,7 @@ export class AnalysisManager {
 
   private async getCompletedAnalysis(id: string) {
     // If not in Redis, check Supabase
-    const { data: analysis, error } = await getAnalysisById(id);
+    const { data: analysis, error } = await getAnalysisByIdQuery(id);
 
     // TODO: Handle error
     if (error || !analysis) {
@@ -117,7 +121,7 @@ export class AnalysisManager {
 
   async getAnalyzysMetaByUrl(url: string) {
     try {
-      const { data } = await getAnalyzysMetaByUrl(url);
+      const { data } = await getAnalyzysMetaByUrlQuery(url);
       return { id: data?.id, analyzedAt: data?.analyzed_at };
     } catch (e) {
       console.error(e);
