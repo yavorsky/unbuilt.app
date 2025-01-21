@@ -3,22 +3,7 @@
 
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
-
-const columnMapping = {
-  framework: 'framework',
-  uiLibrary: 'ui_library',
-  httpClient: 'http_client',
-  stateManagement: 'state_management',
-  bundler: 'bundler',
-  minifier: 'minifier',
-  router: 'router',
-  transpiler: 'transpiler',
-  modules: 'modules',
-  stylingProcessor: 'styling_processor',
-  dates: 'dates',
-  translations: 'translations',
-  // add other mappings as needed
-} as const;
+import { columnMapping } from '../utils/column-mapping';
 
 export interface WebsiteData {
   id: string;
@@ -62,7 +47,7 @@ export async function getTechnologyWebsitesQuery<
   const { data, error } = await supabase.rpc('get_unique_technology_websites', {
     technology_column: dbColumn,
     technology_value: technology,
-    confidence_threshold: 0.8,
+    confidence_threshold: 0.5,
     search_term: search || null,
     page_number: page,
     items_per_page: pageSize,

@@ -1,8 +1,8 @@
 import { Browser, Page } from 'playwright';
 import { patterns } from './patterns/index.js';
 import { Resources } from '@unbuilt/resources';
-import { calculateResults } from '../../utils/calculate-results.js';
 import { AnalysisFeatures } from '../../types/analysis.js';
+import { detectFeature } from '../../utils/detect-feature.js';
 
 export const detect = async (
   page: Page,
@@ -10,22 +10,12 @@ export const detect = async (
   resources: Resources,
   analysis?: AnalysisFeatures
 ) => {
-  const { result, getAllResultsWithConfidence, getAllResults } =
-    await calculateResults({
-      type: 'bundler',
-      resources,
-      page,
-      browser,
-      patterns,
-      analysis,
-    });
-
-  return {
+  return detectFeature({
     type: 'bundler',
-    name: result.name,
-    confidence: result.confidence,
-    detectedFeatures: result.matched,
-    secondaryMatches: getAllResultsWithConfidence(0.3, true),
-    _getAllResults: getAllResults,
-  };
+    resources,
+    page,
+    browser,
+    patterns,
+    analysis,
+  });
 };

@@ -50,8 +50,8 @@ export const emotion = [
     dependencies: (analysis: AnalysisFeatures) => {
       // TODO: Imrpove this check to be more accurate based on MUI version (5+). Add 4 to jss.
       return (
-        analysis.stylingLibraries.items.mui.confidence > 0.5 ||
-        analysis.stylingLibraries.items.chakra.confidence > 0.5
+        analysis.stylingLibraries.items.mui?.confidence > 0.5 ||
+        analysis.stylingLibraries.items.chakra?.confidence > 0.5
       );
     },
   },

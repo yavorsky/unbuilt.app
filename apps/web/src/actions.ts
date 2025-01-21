@@ -126,8 +126,8 @@ export const getAnalysisMetaByUrl = async (url: string) => {
   return analysisMeta;
 };
 
-export async function getTechnologyStats() {
-  return getTechnologyStatsQuery();
+export async function getTechnologyStats(type: AnalysisTechnologies) {
+  return getTechnologyStatsQuery(type);
 }
 
 export async function getTechnologyTrends(

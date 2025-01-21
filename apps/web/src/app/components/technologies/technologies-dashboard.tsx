@@ -1,4 +1,3 @@
-import { TechnologyStats } from '@/types';
 import { TechnologyTypeSection } from './technology-section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -18,7 +17,7 @@ const sections = [
   { title: 'Translations', type: 'translations', key: 'translations' },
 ] as const;
 
-export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
+export function TechnologiesDashboard() {
   return (
     <Tabs defaultValue={sections[0].key} className="container mx-auto px-4">
       <div>
@@ -46,8 +45,6 @@ export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
       </div>
       <div className="grid grid-cols-1 gap-6 pt-4">
         {sections.map((section) => {
-          const statsForType = stats[section.key];
-
           return (
             <TabsContent
               value={section.type}
@@ -58,7 +55,6 @@ export function TechnologiesDashboard({ stats }: { stats: TechnologyStats }) {
                 key={section.key}
                 title={section.title}
                 type={section.type}
-                data={statsForType || {}}
               />
             </TabsContent>
           );
