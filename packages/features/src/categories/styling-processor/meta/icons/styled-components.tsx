@@ -1,4 +1,4 @@
-import { LogoProps } from '../../../../../types/meta.js';
+import { LogoProps } from '../../../../types/meta.js';
 
 export const StyledComponentsLogo = ({
   width = 24,

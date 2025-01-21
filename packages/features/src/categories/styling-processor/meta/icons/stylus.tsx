@@ -1,4 +1,4 @@
-import { LogoProps } from '../../../../../types/meta.js';
+import { LogoProps } from '../../../../types/meta.js';
 
 export const StylusLogo = ({
   width = 25, // Maintains original aspect ratio with 24px height

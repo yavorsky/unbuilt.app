@@ -1,5 +1,5 @@
 import { lazy } from 'react';
-import { Meta } from '../../../../types/meta.js';
+import { Meta } from '../../../types/meta.js';
 
 export const styledComponents: Meta = {
   name: 'Styled Components',
