@@ -1,4 +1,4 @@
-import { AnalysisFeatures } from '../../../../types/analysis.js';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const emotion = [
   {

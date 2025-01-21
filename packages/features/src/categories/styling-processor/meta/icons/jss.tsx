@@ -1,4 +1,4 @@
-import { LogoProps } from '../../../../../types/meta.js';
+import { LogoProps } from '../../../../types/meta.js';
 
 const JSSLogo = ({ width = 24, height = 24, className = '' }: LogoProps) => {
   const calculatedHeight = height || width;
