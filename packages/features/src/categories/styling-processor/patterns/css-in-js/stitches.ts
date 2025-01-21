@@ -1,117 +1,61 @@
-import { Page } from 'playwright';
-
 export const stitches = [
   {
-    name: 'core' as const,
-    score: 1,
+    name: 'coreRuntime' as const,
+    score: 0.3,
     scripts: [
-      // Stitches specific component creation
-      /createStitches\s*\(\s*{\s*theme:\s*{/,
+      // Stitches global object pattern
+      /__stitches=\{prefix:"[\w-]+",insertionMethod:[\d]+/,
 
-      // Stitches unique prefix handling
-      /prefix:\s*['"][a-z]+['"]\s*,/,
+      // Stitches runtime config pattern
+      /insertionMethod:[\d]+,[\w]+:"[\w-]+-(?:keyframes|global|themed)"/,
 
-      // Stitches specific theme definition
-      /\$theme:\s*createTheme\(\s*{\s*['"]\w+['"]/,
+      // Stitches unique theme creation
+      /createTheme\(["'](?:light|dark|[\w-]+)_theme["']\)/,
 
-      // Stitches unique styled pattern with hash
-      /styled\(\s*\w+,\s*{\s*[^}]+hash:\s*['"][a-zA-Z0-9]+['"]/,
-
-      // Stitches specific CSS property handling
-      /\$\w+:\s*\{\s*[^}]+cssProperty:\s*['"]\w+['"]/,
-
-      // Stitches utils definition
-      /utils:\s*{\s*\w+:\s*\([^)]+\)\s*=>\s*\({/,
+      // Stitches unique configuration object
+      /\{media:\{[^}]+\},theme:\{[^}]+\},utils:\{[^}]+\},prefix:["'][\w-]+["']\}/,
     ],
   },
   {
-    name: 'components' as const,
-    score: 1,
+    name: 'componentPatterns' as const,
+    score: 0.3,
     scripts: [
-      // Stitches specific variant pattern
-      /variants:\s*{\s*\w+:\s*{\s*[^}]+:\s*{\s*[^}]+}}\s*}/,
+      // Stitches unique component creation with configuration
+      /styled\([^)]+,\{variants:\{[\w-]+:\{[\w-]+:\{transform:/,
 
-      // Stitches unique compound variants
-      /compoundVariants:\s*\[\s*{\s*variants:\s*{\s*\w+:/,
+      // Stitches compound variants pattern
+      /compoundVariants:\[\{variants:\{[\w-]+:["'][\w-]+["']\}/,
 
-      // Stitches specific defaultVariants
-      /defaultVariants:\s*{\s*\w+:\s*['"]\w+['"]\s*}/,
-
-      // Stitches unique component composition
-      /const\s+\w+\s*=\s*styled\(\s*\w+\s*,\s*{\s*extend:\s*\w+/,
+      // Stitches specific prop type definitions
+      /type\s+\w+Props=ComponentProps<typeof\s+\w+>&\{variants:\{/,
     ],
   },
   {
-    name: 'browser' as const,
-    score: 1.4,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const evidence = {
-          // Check for Stitches specific class naming pattern
-          hasStitchesClasses: Array.from(
-            document.querySelectorAll('[class]')
-          ).some((el) => {
-            const classNames = Array.from(el.classList);
-            // Stitches unique hash format
-            return classNames.some((className) =>
-              /^[a-z]{1,6}-[a-zA-Z0-9]{6,8}$/.test(className)
-            );
-          }),
+    name: 'uniqueMarkers' as const,
+    score: 0.3,
+    stylesheets: [
+      // Stitches CSS Classes Pattern
+      /\.sxtchs[\w-]*[\da-f]{4,8}/,
 
-          // Check for Stitches data attributes
-          hasStitchesAttrs: Array.from(document.querySelectorAll('*')).some(
-            (el) =>
-              el
-                .getAttributeNames()
-                .some((attr) => attr.startsWith('data-stitches'))
-          ),
+      // Stitches keyframes pattern
+      /@keyframes\s+sxtchs-[\da-f]{4,8}-anim/,
 
-          // Check for Stitches style tags
-          hasStitchesTags: !!document.querySelector('style[data-stitches]'),
-
-          // Check for Stitches runtime
-          hasStitchesRuntime: !!(
-            window.__stitches__ || window.__STITCHES_CONTEXT__
-          ),
-
-          // Check for Stitches specific style rules
-          hasStitchesRules: Array.from(document.styleSheets).some((sheet) => {
-            try {
-              const rules = Array.from(sheet.cssRules);
-              return rules.some((rule) => {
-                if (rule instanceof CSSStyleRule) {
-                  // Stitches specific selector pattern
-                  return /\.[a-z]{1,6}-[a-zA-Z0-9]{6,8}(?![a-zA-Z0-9-])/.test(
-                    rule.selectorText
-                  );
-                }
-                return false;
-              });
-            } catch {
-              return false;
-            }
-          }),
-        };
-
-        return Object.values(evidence).some(Boolean);
-      });
-    },
+      // Stitches variant class pattern
+      /\.sxtchs[\w-]*[\da-f]{4,8}-variant/,
+    ],
   },
   {
-    name: 'tokens' as const,
-    score: 1,
-    scripts: [
-      // Stitches specific token format
-      /\$colors:\s*{\s*\$\w+:/,
-      /\$space:\s*{\s*\$\w+:/,
-      /\$sizes:\s*{\s*\$\w+:/,
-      /\$fonts:\s*{\s*\$\w+:/,
+    name: 'cssProperties' as const,
+    score: 0.3,
+    stylesheets: [
+      // Stitches unique CSS variable pattern
+      /--sxtchs-[\da-f]{4,8}-[\w-]+/,
 
-      // Stitches unique token reference
-      /\$theme\.\$\w+\.\$\w+/,
+      // Stitches theme variables pattern
+      /var\(--sxtchs-[\da-f]{4,8}-themed-[\w-]+\)/,
 
-      // Stitches token composition
-      /createThemeMap\(\s*{\s*\w+:\s*\$\w+/,
+      // Stitches computed styles pattern
+      /calc\(var\(--sxtchs-[\da-f]{4,8}-[\w-]+\)[^)]*\)/,
     ],
   },
 ];

@@ -15,6 +15,8 @@ import {
   dates,
   router,
   getStats,
+  AnalysisFeatures,
+  Stats,
 } from '@unbuilt/features';
 import { Resources } from '@unbuilt/resources';
 import { checkUrlAvailability } from './utils/check-for-availability.js';
@@ -25,7 +27,7 @@ export const analyze = async (
   page: Page,
   browser: Browser,
   handleProgress: OnProgress
-) => {
+): Promise<AnalyzeResult> => {
   const startedAt = new Date();
 
   const isAvailable = await checkUrlAvailability(page, url);
@@ -42,79 +44,102 @@ export const analyze = async (
     timeout: 30000,
   });
 
-  const onProgress = createProgressTracker(url, handleProgress, startedAt, 14);
+  const onProgress = createProgressTracker(url, handleProgress, startedAt, 15);
+  const analysis = {} as AnalysisFeaturesWithStats;
 
-  const bundlerAnalysis = await bundler.detect(page, browser, resources);
-  onProgress({ bundler: bundlerAnalysis });
-  const transpilerAnalysis = await transpiler.detect(page, browser, resources);
-  onProgress({ transpiler: transpilerAnalysis });
-  const frameworkAnalysis = await framework.detect(page, browser, resources);
-  onProgress({ framework: frameworkAnalysis });
-  const minifierAnalysis = await minifier.detect(page, browser, resources);
-  onProgress({ minifier: minifierAnalysis });
-  const stylingProcessorAnalysis = await stylingProcessor.detect(
+  analysis.bundler = await bundler.detect(page, browser, resources);
+  onProgress({ bundler: analysis.bundler });
+  analysis.transpiler = await transpiler.detect(page, browser, resources);
+  onProgress({ transpiler: analysis.transpiler });
+  analysis.framework = await framework.detect(page, browser, resources);
+  onProgress({ framework: analysis.framework });
+  analysis.minifier = await minifier.detect(page, browser, resources);
+  onProgress({ minifier: analysis.minifier });
+  analysis.stylingProcessor = await stylingProcessor.detect(
     page,
     browser,
     resources
   );
-  onProgress({ stylingProcessor: stylingProcessorAnalysis });
-  const modulesAnalysis = await modules.detect(page, browser, resources);
-  onProgress({ modules: modulesAnalysis });
-  const uiLibraryAnalysis = await uiLibrary.detect(page, browser, resources);
-  onProgress({ uiLibrary: uiLibraryAnalysis });
-  const httpClientAnalysis = await httpClient.detect(page, browser, resources);
-  onProgress({ httpClient: httpClientAnalysis });
-  const stateManagementAnalysis = await stateManagement.detect(
+  onProgress({ stylingProcessor: analysis.stylingProcessor });
+  analysis.modules = await modules.detect(page, browser, resources);
+  onProgress({ modules: analysis.modules });
+  analysis.uiLibrary = await uiLibrary.detect(page, browser, resources);
+  onProgress({ uiLibrary: analysis.uiLibrary });
+  analysis.httpClient = await httpClient.detect(page, browser, resources);
+  onProgress({ httpClient: analysis.httpClient });
+  analysis.stateManagement = await stateManagement.detect(
     page,
     browser,
     resources
   );
-  onProgress({ stateManagement: stateManagementAnalysis });
-  const datesAnalysis = await dates.detect(page, browser, resources);
-  onProgress({ dates: datesAnalysis });
-  const routerAnalysis = await router.detect(page, browser, resources);
-  onProgress({ router: routerAnalysis });
-  const stylingLibrariesAnalysis = await stylingLibraries.detect(
+  onProgress({ stateManagement: analysis.stateManagement });
+  analysis.dates = await dates.detect(page, browser, resources);
+  onProgress({ dates: analysis.dates });
+  analysis.router = await router.detect(page, browser, resources);
+  onProgress({ router: analysis.router });
+  analysis.stylingLibraries = await stylingLibraries.detect(
     page,
     browser,
     resources
   );
-  onProgress({ stylingLibraries: stylingLibrariesAnalysis });
+  onProgress({ stylingLibraries: analysis.stylingLibraries });
 
-  const translationsAnalysis = await translations.detect(
-    page,
-    browser,
-    resources
-  );
-  onProgress({ translations: translationsAnalysis });
+  analysis.translations = await translations.detect(page, browser, resources);
+  onProgress({ translations: analysis.translations });
 
-  const stats = await getStats(page);
-  onProgress({ stats });
+  analysis.stats = await getStats(page);
+  onProgress({ stats: analysis.stats });
+
+  // Run checks again to get more accurate results having context from all features
+  let x;
+  [
+    analysis.bundler,
+    analysis.transpiler,
+    analysis.framework,
+    analysis.minifier,
+    analysis.stylingProcessor,
+    analysis.modules,
+    analysis.uiLibrary,
+    analysis.httpClient,
+    analysis.stateManagement,
+    analysis.dates,
+    analysis.router,
+    analysis.stylingLibraries,
+    analysis.translations,
+  ] = await Promise.all([
+    bundler.detect(page, browser, resources, analysis),
+    transpiler.detect(page, browser, resources, analysis),
+    framework.detect(page, browser, resources, analysis),
+    minifier.detect(page, browser, resources, analysis),
+    stylingProcessor.detect(page, browser, resources, analysis),
+    modules.detect(page, browser, resources, analysis),
+    uiLibrary.detect(page, browser, resources, analysis),
+    httpClient.detect(page, browser, resources, analysis),
+    stateManagement.detect(page, browser, resources, analysis),
+    dates.detect(page, browser, resources, analysis),
+    router.detect(page, browser, resources, analysis),
+    stylingLibraries.detect(page, browser, resources, analysis),
+    translations.detect(page, browser, resources, analysis),
+  ]);
 
   const finishedAt = new Date();
   const duration = finishedAt.getTime() - startedAt.getTime();
 
-  return {
+  const result = {
     url,
     timestamp: finishedAt.toISOString(),
     duration,
-    analysis: {
-      bundler: bundlerAnalysis,
-      transpiler: transpilerAnalysis,
-      framework: frameworkAnalysis,
-      minifier: minifierAnalysis,
-      stylingProcessor: stylingProcessorAnalysis,
-      modules: modulesAnalysis,
-      router: routerAnalysis,
-      dates: datesAnalysis,
-      translations: translationsAnalysis,
-      stateManagement: stateManagementAnalysis,
-      uiLibrary: uiLibraryAnalysis,
-      httpClient: httpClientAnalysis,
-      stylingLibraries: stylingLibrariesAnalysis,
-      stats,
-    },
+    analysis,
   };
+
+  handleProgress(result, 100);
+  return result;
 };
 
-export type AnalyzeResult = Awaited<ReturnType<typeof analyze>>;
+type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
+export type AnalyzeResult = {
+  url: string;
+  timestamp: string;
+  duration: number;
+  analysis: AnalysisFeaturesWithStats;
+};

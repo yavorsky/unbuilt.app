@@ -34,3 +34,4 @@ export const createProgressTracker = (
     return stageResult;
   };
 };
+export type OnProgressTracked = ReturnType<typeof createProgressTracker>;

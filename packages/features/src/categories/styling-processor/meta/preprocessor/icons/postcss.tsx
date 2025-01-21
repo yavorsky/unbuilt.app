@@ -3,6 +3,7 @@ import { LogoProps } from '../../../../../types/meta.js';
 export const PostCSSLogo = ({
   width = 24,
   height = 24,
+  color = 'red',
   className = '',
 }: LogoProps) => {
   const calculatedHeight = height || width;
@@ -12,6 +13,7 @@ export const PostCSSLogo = ({
       width={width}
       height={calculatedHeight}
       role="img"
+      fill={color}
       viewBox="0 0 24 24"
       className={className}
       xmlns="http://www.w3.org/2000/svg"

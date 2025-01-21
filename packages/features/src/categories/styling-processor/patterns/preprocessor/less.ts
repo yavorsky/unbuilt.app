@@ -1,117 +1,36 @@
-import { Page } from 'playwright';
-
 export const less = [
   {
-    name: 'lessMixins' as const,
-    score: 1,
+    name: 'guardCompilation' as const,
+    score: 0.3,
     stylesheets: [
-      // Less-specific mixin patterns with namespace
-      /#[\w-]+\s*>\s*\.[a-zA-Z][\w-]*\s*\([^)]*\)\s*;/,
-
-      // Less-specific parametric mixins
-      /\.[a-zA-Z][\w-]*\s*\(@[^:]+:\s*[^)]+\)\s*{/,
-
-      // Less-specific guard expressions (unique to Less)
-      /when\s*\(\s*(?:default|not|and|,|\s*@[\w-]+\s*(?:[<>]=?|=)\s*[@\d]+\s*)+\)/,
-
-      // Less-specific mixin references
-      /#[\w-]+[^{]*\{\s*\.[a-zA-Z][\w-]*\s*\([^)]*\)\s*;/,
+      // Less-unique guard patterns (not found in any other preprocessor)
+      /\.-?[_a-zA-Z][\w-]*\[default\]\{/, // Default guard compilation
+      /\.-?[_a-zA-Z][\w-]*\[[\w\s><=!]+\]\{/, // Compiled guard expressions
+      /when\(iscolor\([@\w-]+\)\)/, // Less-specific type guards
     ],
   },
   {
-    name: 'lessOperations' as const,
-    score: 1,
+    name: 'extendCompilation' as const,
+    score: 0.3,
     stylesheets: [
-      // Less-specific color operations (not in Sass/Stylus)
-      /tint\(\s*@[\w-]+\s*,\s*[\d.]+%?\s*\)/,
-      /shade\(\s*@[\w-]+\s*,\s*[\d.]+%?\s*\)/,
-
-      // Less-specific units and calculations
-      /@[\w-]+\s*\+\s*\(\s*\d+\s*\*\s*@[\w-]+\s*\)/,
-
-      // Less-specific string operations
-      /~["']\s*@{[\w-]+}\s*["']/,
+      // Less-specific extend compilation markers
+      /\[data-less-[\da-f]{8}\]/, // Less's unique hash format
+      /less-[\da-f]{8}-extend/, // Less's extend compilation marker
+      /\.-?[_a-zA-Z][\w-]*e\[[\da-f]{8}\]/, // Less's extend pattern
     ],
   },
   {
-    name: 'lessVariables' as const,
-    score: 1,
+    name: 'lessSpecificPatterns' as const,
+    score: 0.3,
     stylesheets: [
-      // Less-specific variable interpolation (different from Sass)
-      /@\{[\w-]+\}\s*(?:\/|\.|\+|-|\*)/,
+      // Less's unique property merging
+      /\+\s*_[\da-f]{8}(?!\w)/, // Less's merge marker
 
-      // Less-specific variable definition pattern
-      /@[\w-]+:\s*\s*~["'][^"']+["']/,
+      // Less's unique plugin pattern
+      /@plugin\s+"less-plugin-[\w-]+";/,
 
-      // Less-specific property variable usage
-      /\[@[\w-]+\]:\s*[^;]+;/,
-    ],
-  },
-  {
-    name: 'browser' as const,
-    score: 1.4,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const evidence = {
-          // Check for Less-specific comments
-          hasLessComments: Array.from(document.styleSheets).some((sheet) => {
-            try {
-              return Array.from(sheet.cssRules).some(
-                (rule) =>
-                  rule.cssText.includes('/* Less') ||
-                  rule.cssText.includes('// Less')
-              );
-            } catch {
-              return false;
-            }
-          }),
-
-          // Check for Less-specific variable patterns in CSS
-          hasLessVariables: Array.from(document.styleSheets).some((sheet) => {
-            try {
-              return Array.from(sheet.cssRules).some((rule) => {
-                if (rule instanceof CSSStyleRule) {
-                  // Look for Less variable interpolation artifacts
-                  return /@\{[\w-]+\}/.test(rule.cssText);
-                }
-                return false;
-              });
-            } catch {
-              return false;
-            }
-          }),
-
-          // Check for Less-specific mixin artifacts
-          hasLessMixins: Array.from(document.styleSheets).some((sheet) => {
-            try {
-              return Array.from(sheet.cssRules).some((rule) => {
-                if (rule instanceof CSSStyleRule) {
-                  return /#[\w-]+\s*>\s*\.[\w-]+/.test(rule.selectorText);
-                }
-                return false;
-              });
-            } catch {
-              return false;
-            }
-          }),
-        };
-
-        return Object.values(evidence).some(Boolean);
-      });
-    },
-  },
-  {
-    name: 'imports' as const,
-    score: 0.8,
-    stylesheets: [
-      // Less-specific import statements
-      /@import\s+\(\s*reference\s*\)\s*["'][^"']+\.less["']/,
-
-      // Less-specific import options
-      /@import\s+\([\w\s,]*once[\w\s,]*\)/,
-
-      // Less-specific import with namespace
-      /@import\s+\([\w\s,]*multiple[\w\s,]*\)/,
+      // Less's unique dynamic property name compilation
+      /--less-[\da-f]{8}-prop/,
     ],
   },
 ];

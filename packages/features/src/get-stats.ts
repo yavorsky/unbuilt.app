@@ -1,6 +1,7 @@
 import { Page } from 'playwright';
+import { Stats } from './types/stats.js';
 
-export const getStats = async (page: Page) => {
+export const getStats = async (page: Page): Promise<Stats> => {
   const resourceMetrics = await page!.evaluate(() => {
     const resources = performance.getEntriesByType('resource');
 
