@@ -3,9 +3,9 @@ import { AnalysisKeys } from '@unbuilt/analyzer';
 
 /**
  * Search for sites using multiple technologies
- * Example: searchByTechStack({ framework: 'React', bundler: 'Webpack' })
+ * Example: searchByTechStackQuery({ framework: 'React', bundler: 'Webpack' })
  */
-export async function searchByTechStack(
+export async function searchByTechStackQuery(
   technologies: Partial<Record<AnalysisKeys, string>>,
   minConfidence: number = 0
 ) {

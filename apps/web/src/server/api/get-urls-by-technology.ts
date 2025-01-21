@@ -1,7 +1,7 @@
 import { AnalysisKeys } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
 
-export async function getUrlsByTechnology(
+export async function getUrlsByTechnologyQuery(
   techType: AnalysisKeys,
   techName: string,
   minConfidence: number = 0

@@ -8,6 +8,7 @@ export type OnProgress = (
 
 export const createProgressTracker = (
   url: string,
+  id: string,
   onProgress: OnProgress,
   startedAt: Date,
   totalResults: number
@@ -26,6 +27,7 @@ export const createProgressTracker = (
 
     const stageResult = {
       url,
+      id,
       timestamp: finishedAt.toISOString(),
       duration,
       analysis: calculatedResults,

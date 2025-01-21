@@ -1,5 +1,4 @@
-// User-facing function to detect a feature, which will return desired detection result.
-
+// Input parameters type - reusing the same structure but with different generics
 import { Browser, Page } from 'playwright';
 import { AnalysisFeatures, AnalysisKeys } from '../types/analysis.js';
 import {
@@ -10,8 +9,7 @@ import {
 } from './calculate-results.js';
 import { Resources } from '@unbuilt/resources';
 
-// Input parameters type
-export type DetectFeatureParams<
+export type DetectMultipleFeaturesParams<
   K extends AnalysisKeys,
   T extends Record<string, Pattern<string>[]>,
 > = {
@@ -25,45 +23,38 @@ export type DetectFeatureParams<
   debug?: boolean;
 };
 
-// Return type
-export type DetectFeatureResult<
-  K extends AnalysisKeys,
+// Return type for multiple features
+export type DetectMultipleFeaturesResult<
   T extends Record<string, Pattern<string>[]>,
 > = {
-  type: K;
-  name: keyof T | 'unknown';
-  confidence: number;
+  items: Record<keyof T, FeatureResult<AllPatternNames<T>>>;
   detectedFeatures: Set<AllPatternNames<T>>;
-  secondaryMatches: Record<keyof T, FeatureResult<AllPatternNames<T>>>;
   _getAllResults?: () => Record<keyof T, FeatureResult<AllPatternNames<T>>>;
 };
 
 // Updated function signature using the new types
-export async function detectFeature<
+export async function detectMultipleFeatures<
   K extends AnalysisKeys,
   T extends Record<string, Pattern<string>[]>,
->(params: DetectFeatureParams<K, T>): Promise<DetectFeatureResult<K, T>> {
-  const { result, getAllResultsWithConfidence, getAllResults } =
+>(
+  params: DetectMultipleFeaturesParams<K, T>
+): Promise<DetectMultipleFeaturesResult<T>> {
+  const { getAllResultsWithConfidence, getAllResults, result } =
     await calculateResults<T>({
-      type: params.type,
       resources: params.resources,
       page: params.page,
       browser: params.browser,
       patterns: params.patterns,
+      type: params.type,
       analysis: params.analysis,
       minConfidence: params.minConfidence,
       debug: params.debug,
     });
+  const items = getAllResultsWithConfidence(params.minConfidence ?? 0.3);
 
   return {
-    type: params.type,
-    name: result.name,
-    confidence: result.confidence,
+    items,
     detectedFeatures: result.matched,
-    secondaryMatches: getAllResultsWithConfidence(
-      params.minConfidence ?? 0.3,
-      true
-    ),
     _getAllResults: getAllResults,
   };
 }

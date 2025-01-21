@@ -1,25 +1,30 @@
+import { Browser, Page } from 'playwright';
 import * as allFeatures from '../index.js';
+import { Resources } from '@unbuilt/resources';
+
+type AnalysisResult<
+  T extends (
+    page: Page,
+    browser: Browser,
+    resources: Resources,
+    analysis?: AnalysisFeatures
+  ) => Promise<unknown>,
+> = Awaited<ReturnType<T>>;
 
 export type AnalysisFeatures = {
-  bundler: Awaited<ReturnType<typeof allFeatures.bundler.detect>>;
-  framework: Awaited<ReturnType<typeof allFeatures.framework.detect>>;
-  minifier: Awaited<ReturnType<typeof allFeatures.minifier.detect>>;
-  stylingProcessor: Awaited<
-    ReturnType<typeof allFeatures.stylingProcessor.detect>
-  >;
-  modules: Awaited<ReturnType<typeof allFeatures.modules.detect>>;
-  uiLibrary: Awaited<ReturnType<typeof allFeatures.uiLibrary.detect>>;
-  stateManagement: Awaited<
-    ReturnType<typeof allFeatures.stateManagement.detect>
-  >;
-  httpClient: Awaited<ReturnType<typeof allFeatures.httpClient.detect>>;
-  router: Awaited<ReturnType<typeof allFeatures.router.detect>>;
-  translations: Awaited<ReturnType<typeof allFeatures.translations.detect>>;
-  dates: Awaited<ReturnType<typeof allFeatures.dates.detect>>;
-  stylingLibraries: Awaited<
-    ReturnType<typeof allFeatures.stylingLibraries.detect>
-  >;
-  transpiler: Awaited<ReturnType<typeof allFeatures.transpiler.detect>>;
+  bundler: AnalysisResult<typeof allFeatures.bundler.detect>;
+  framework: AnalysisResult<typeof allFeatures.framework.detect>;
+  minifier: AnalysisResult<typeof allFeatures.minifier.detect>;
+  stylingProcessor: AnalysisResult<typeof allFeatures.stylingProcessor.detect>;
+  modules: AnalysisResult<typeof allFeatures.modules.detect>;
+  uiLibrary: AnalysisResult<typeof allFeatures.uiLibrary.detect>;
+  stateManagement: AnalysisResult<typeof allFeatures.stateManagement.detect>;
+  httpClient: AnalysisResult<typeof allFeatures.httpClient.detect>;
+  router: AnalysisResult<typeof allFeatures.router.detect>;
+  translations: AnalysisResult<typeof allFeatures.translations.detect>;
+  dates: AnalysisResult<typeof allFeatures.dates.detect>;
+  stylingLibraries: AnalysisResult<typeof allFeatures.stylingLibraries.detect>;
+  transpiler: AnalysisResult<typeof allFeatures.transpiler.detect>;
 };
 
 export type AnalysisKeys = keyof AnalysisFeatures;

@@ -9,16 +9,7 @@ export * as minifier from './categories/minifier/index.js';
 export * as minifierMeta from './categories/minifier/meta/index.js';
 
 export * as stylingProcessor from './categories/styling-processor/index.js';
-import * as cssInJsMeta from './categories/styling-processor/meta/css-in-js/index.js';
-import * as preprocessorMeta from './categories/styling-processor/meta/preprocessor/index.js';
-export { cssInJsMeta, preprocessorMeta };
-// Combine 2 types into 1 for consistency
-export const stylingProcessorMeta = {
-  meta: {
-    ...cssInJsMeta.cssInJsMeta,
-    ...preprocessorMeta.preprocessorMeta,
-  } as const,
-} as const;
+export * as stylingProcessorMeta from './categories/styling-processor/meta/index.js';
 
 export * as modules from './categories/modules/index.js';
 export * as modulesMeta from './categories/modules/meta/index.js';
