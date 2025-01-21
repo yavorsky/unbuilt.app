@@ -1,8 +1,8 @@
 import { Browser, Page } from 'playwright';
 import { Resources } from '@unbuilt/resources';
 import { patterns } from './patterns/index.js';
-import { calculateResults } from '../../utils/calculate-results.js';
 import { AnalysisFeatures } from '../../types/analysis.js';
+import { detectFeature } from '../../utils/detect-feature.js';
 
 export const detect = async (
   page: Page,
@@ -10,24 +10,12 @@ export const detect = async (
   resources: Resources,
   analysis?: AnalysisFeatures
 ) => {
-  const { result, getAllResultsWithConfidence, getAllResults } =
-    await calculateResults({
-      resources,
-      page,
-      browser,
-      patterns,
-      analysis,
-      type: 'dates',
-    });
-
-  const secondaryMatches = getAllResultsWithConfidence(0.3, true);
-
-  return {
+  return detectFeature({
     type: 'modules',
-    name: result.name,
-    detectedFeatures: result.matched,
-    confidence: result.confidence,
-    secondaryMatches,
-    _getAllResults: getAllResults,
-  };
+    resources,
+    page,
+    browser,
+    patterns,
+    analysis,
+  });
 };

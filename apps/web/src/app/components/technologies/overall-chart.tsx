@@ -1,24 +1,22 @@
 'use client';
 
+import { useChartConfigForTechnology } from '@/app/hooks/use-chart-config';
 import {
-  ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import { AnalysisKeys } from '@unbuilt/analyzer';
+import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import { Bar, BarChart, XAxis, YAxis } from 'recharts';
 
 export const OverallChart = ({
-  chartConfig,
   data,
   type,
 }: {
-  chartConfig: ChartConfig;
   data: { name: string; count: number }[];
-  type: AnalysisKeys;
+  type: AnalysisTechnologies;
 }) => {
   // Adding fill field for BarChart entries
   const dataWithColors = useMemo(() => {
@@ -29,6 +27,7 @@ export const OverallChart = ({
   }, [data]);
 
   const router = useRouter();
+  const chartConfig = useChartConfigForTechnology(type);
 
   const handleBarClick = useCallback(
     (item: { name: string; count: number }) => {

@@ -5,7 +5,7 @@ export const commonjs: Meta = {
   name: 'CommonJS',
   website:
     'https://en.wikipedia.org/wiki/CommonJS#:~:text=CommonJS%20is%20a%20project%20to,js.',
-  tags: ['Module System'],
+  tags: ['Bundled'],
   description:
     'Project to standardize the module ecosystem for JavaScript outside of web browsers.',
   Icon: lazy(() => import('./icons/commonjs.jsx')),

@@ -1,4 +1,4 @@
-import { swc } from '../../transpiler/patterns/swc.js';
+import { swc } from './swc.js';
 import { babelMinify } from './babel-minify.js';
 import { closure } from './closure.js';
 import { esbuild } from './esbuild.js';

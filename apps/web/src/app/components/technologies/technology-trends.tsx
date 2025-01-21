@@ -1,26 +1,28 @@
 'use client';
 
 import React, { useMemo } from 'react';
-import { ChartConfig } from '@/components/ui/chart';
 import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { TrendCard } from './trend-card';
 import { TrendsChart } from './trends-chart';
 import { useTrends } from '@/app/hooks/technologies/use-trends';
 import { TrendingUp } from 'lucide-react';
+import { useChartConfigForTechnology } from '@/app/hooks/use-chart-config';
+import { AnalysisTechnologies } from '@unbuilt/analyzer';
 
 interface TechnologyTrendsProps {
   data: TechnologyTrend[];
-  chartConfig: ChartConfig;
+  type: AnalysisTechnologies;
 }
 
-export function TechnologyTrends({ data, chartConfig }: TechnologyTrendsProps) {
+export function TechnologyTrends({ data, type }: TechnologyTrendsProps) {
   const trends = useTrends(data);
+  const chartConfig = useChartConfigForTechnology(type);
 
   const risingTrend = trends.find((t) => t.direction === 'up');
   const decliningTrend = trends.find((t) => t.direction === 'down');
   const risingTrendTitle = useMemo(() => {
     if (risingTrend) {
-      const chartLabel = chartConfig[risingTrend.name].label;
+      const chartLabel = chartConfig[risingTrend.name]?.label;
       const status = risingTrend.direction === 'up' ? 'rising' : 'declining';
       const changePercent = Math.round(risingTrend.change);
       return (

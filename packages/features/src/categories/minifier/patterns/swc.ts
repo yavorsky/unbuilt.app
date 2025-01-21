@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-export const swcMinify = [
+export const swc = [
   {
     name: 'compilation' as const,
     score: 0.5,

@@ -20,6 +20,7 @@ import {
   TechnologyMetaResults,
 } from '@/app/utils/get-technology-meta';
 import { getResultsName } from '@/app/utils';
+import { Badge } from '@/components/ui/badge';
 
 export function SingleResultAnalysisCard<
   N extends AnalysisTechnologies,
@@ -136,7 +137,16 @@ export function SingleResultAnalysisCard<
       </CardHeader>
       <CardContent className="p-0">
         <div className="p-6 space-y-4">
-          <div className="space-y-2">
+          <div className="space-y-3">
+            {resultMeta?.tags?.map((tag) => (
+              <Badge
+                key={tag}
+                variant="outline"
+                className="text-xs bg-slate-700 text-slate-200 border-0"
+              >
+                {tag}
+              </Badge>
+            ))}
             {!isUnknown &&
               'secondaryMatches' in analysis &&
               Object.keys(analysis.secondaryMatches).length > 0 && (
