@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const react = [
   {
@@ -197,6 +198,13 @@ export const react = [
         // Require at least two SSR markers for confidence
         return Object.values(markers).filter(Boolean).length >= 2;
       });
+    },
+  },
+  {
+    name: 'isNextJs' as const,
+    score: 1,
+    dependencies: (analysis: AnalysisFeatures) => {
+      return analysis.framework.name === 'next';
     },
   },
 ];

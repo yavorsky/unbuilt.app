@@ -1,7 +1,7 @@
 import { lazy } from 'react';
 import { Meta } from '../../../../types/meta.js';
 
-export const postcss: Meta = {
+export const postCSS: Meta = {
   name: 'PostCSS',
   website: 'https://postcss.org',
   tags: ['Preprocessor'],

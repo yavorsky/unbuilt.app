@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const nextRouter = [
   {
@@ -102,5 +103,12 @@ export const nextRouter = [
       /next\/dist\/client\/components\/navigation/,
       /next\/dist\/compiled\/react-server/,
     ],
+  },
+  {
+    name: 'isNextJs' as const,
+    score: 0.7,
+    dependencies: (analysis: AnalysisFeatures) => {
+      return analysis.framework.name === 'next';
+    },
   },
 ];

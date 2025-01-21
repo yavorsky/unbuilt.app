@@ -1,5 +1,7 @@
 import { Resources } from '@unbuilt/resources';
 import { Browser, Page } from 'playwright';
+import { isMatch } from 'super-regex';
+import { AnalysisFeatures, AnalysisKeys } from '../types/analysis.js';
 
 export interface Pattern<Name extends string = string> {
   score: number;
@@ -9,6 +11,7 @@ export interface Pattern<Name extends string = string> {
   documents?: RegExp[];
   filenames?: RegExp[];
   browser?: (page: Page, browser: Browser) => boolean | Promise<boolean>;
+  dependencies?: (analysis: AnalysisFeatures) => boolean;
 }
 
 type InferPatternNames<T> = T extends Pattern<infer Name>[] ? Name : never;
@@ -38,13 +41,18 @@ export interface CalculationResult<
   getAllResults(): Record<keyof T, FeatureResult<AllPatternNames<T>>>;
 }
 
+type ProcessPatternsResult<Names extends string> = {
+  totalScore: number;
+  matchedPatterns: Set<Names>;
+};
+
 async function processPatterns<Names extends string>(
   patterns: Pattern<Names>[],
   resources: Resources,
   page: Page,
   browser: Browser,
   debug: boolean = false
-): Promise<{ totalScore: number; matchedPatterns: Set<Names> }> {
+): Promise<ProcessPatternsResult<Names>> {
   const scriptsContent = resources.getAllScriptsContent();
   const stylesheetsContent = resources.getAllScriptsContent();
   const documentsContent = resources.getAllScriptsContent();
@@ -61,7 +69,14 @@ async function processPatterns<Names extends string>(
       for (const runtimePattern of pattern.scripts) {
         let matched = false;
         try {
-          matched = runtimePattern.test(totalContent);
+          matched = isMatch(runtimePattern, totalContent, { timeout: 500 });
+          if (matched === undefined) {
+            console.log(
+              'Timeout while running runtime script pattern',
+              pattern.name,
+              runtimePattern
+            );
+          }
         } catch (e) {
           console.error(
             `Error while running filename pattern for ${pattern.name}`,
@@ -162,28 +177,100 @@ async function processPatterns<Names extends string>(
   return result;
 }
 
+// Let's keep it sync specifically to not decrease performance
+function processOnAnalyzePatterns<Names extends string>(
+  patterns: Pattern<Names>[],
+  previousResult: ProcessPatternsResult<Names>,
+  analysis: AnalysisFeatures,
+  debug: boolean = false
+): ProcessPatternsResult<Names> {
+  const result = {
+    totalScore: previousResult.totalScore,
+    matchedPatterns: previousResult.matchedPatterns,
+  };
+
+  for (const pattern of patterns) {
+    if (pattern.dependencies) {
+      let isMatched = false;
+      try {
+        isMatched = pattern.dependencies(analysis);
+      } catch (e) {
+        console.error(
+          `Error while running browser pattern for ${pattern.name}`,
+          e
+        );
+      }
+      if (isMatched) {
+        result.totalScore += pattern.score;
+        result.matchedPatterns.add(pattern.name);
+        if (debug) {
+          console.log('Matched Browser: ', pattern.name, pattern.score);
+        }
+      }
+    }
+  }
+
+  return result;
+}
+
 export async function calculateResults<
   T extends Record<string, Pattern<string>[]>,
->(
-  resources: Resources,
-  page: Page,
-  browser: Browser,
-  patterns: T,
-  minConfidence: number = 0.3,
-  debug: boolean = false
-): Promise<CalculationResult<T>> {
+>({
+  resources,
+  page,
+  browser,
+  patterns,
+  analysis = null,
+  type,
+  minConfidence = 0.3,
+  debug = false,
+}: {
+  resources: Resources;
+  page: Page;
+  type: AnalysisKeys;
+  browser: Browser;
+  patterns: T;
+  analysis?: AnalysisFeatures | null;
+  minConfidence?: number;
+  debug?: boolean;
+}): Promise<CalculationResult<T>> {
+  // If the process already completed and we are taking recalculation
+  const prevResult = analysis?.[type]?._getAllResults?.() as Record<
+    string,
+    FeatureResult<AllPatternNames<T>>
+  >;
+
   const results = await Promise.all(
     Object.entries(patterns).map(async ([name, patternList]) => {
       if (debug) {
         console.log('Processing patterns for', name);
       }
-      const processed = await processPatterns(
-        patternList,
-        resources,
-        page,
-        browser,
-        debug
-      );
+      const featureScore = prevResult?.[name as keyof typeof prevResult];
+      let processed: {
+        totalScore: number;
+        matchedPatterns: Set<string>;
+      };
+
+      // Second calculation
+      if (analysis && featureScore) {
+        processed = processOnAnalyzePatterns(
+          patternList,
+          {
+            totalScore: featureScore?.confidence,
+            matchedPatterns: featureScore?.matched,
+          },
+          analysis
+        );
+      } else {
+        // Initial calculation
+        processed = await processPatterns(
+          patternList,
+          resources,
+          page,
+          browser,
+          debug
+        );
+      }
       return {
         name,
         confidence: processed.totalScore,

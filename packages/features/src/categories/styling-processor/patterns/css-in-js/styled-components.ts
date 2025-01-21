@@ -1,115 +1,50 @@
-import { Page } from 'playwright';
-
 export const styledComponents = [
   {
-    name: 'runtime' as const,
-    score: 1,
+    name: 'uniqueMarkers' as const,
+    score: 0.3,
     scripts: [
-      // Styled-components specific class naming with hash
-      /sc-[a-zA-Z0-9]+-[a-zA-Z0-9]{8}/,
-
-      // Styled-components unique component wrapping pattern
-      /StyledComponent\[\$\$typeof\]\s*=\s*REACT_STYLED_COMPONENT/,
-
-      // Styled-components specific template object handling
-      /_styledComponents\$\$createStyledComponent/,
-
-      // Styled-components unique generated identifiers
-      /__WEBPACK_IMPORTED_MODULE_[0-9]+_styled_components__/,
-
-      // Styled-components specific theme context
-      /__WEBPACK_DEFAULT_EXPORT__\.withTheme/,
-
-      // Styled-components unique runtime registration
-      /registeredComponents\.push\(this\)/,
+      // Styled-components unique runtime markers (survives minification)
+      /\[\$\$typeof\]=Symbol\.for\(["']sc_element["']\)/,
+      /\.__sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}={/,
+      /\.styledComponentId=["']sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}["']/,
     ],
   },
   {
-    name: 'styles' as const,
-    score: 1,
+    name: 'runtimeFeatures' as const,
+    score: 0.3,
     scripts: [
-      // Styled-components specific CSS processing
-      /css(?:From|To|For)\s*:\s*function\s*\(\s*strings,\s*[^)]+\)\s*{/,
-
-      // Styled-components keyframes handling
-      /keyframes\s*:\s*function\s*\(\s*strings,\s*[^)]+\)\s*{/,
-
-      // Styled-components unique style construction
-      /constructWithOptions\s*\(\s*componentConstructor,\s*tag,\s*options\)/,
-
-      // Styled-components specific style tag management
-      /makeStyleTag\s*\(\s*target,\s*tagEl,\s*insertBefore\)/,
+      // Styled-components specific internal APIs
+      /\.withConfig\(\{"componentId":["']sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}["']\}\)/,
+      /\.attrs\(\{["']data-sc-[\da-zA-Z]{8}["']:/,
+      /sc_createGlobalStyle\(/,
     ],
   },
   {
-    name: 'browser' as const,
-    score: 1.4,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const evidence = {
-          // Check for styled-components specific style tags
-          hasStyledTags: !!(
-            document.querySelector('style[data-styled]') ||
-            document.querySelector('style[data-styled-components]') ||
-            document.querySelector('style[data-styled-version]')
-          ),
+    name: 'cssGeneration' as const,
+    score: 0.3,
+    stylesheets: [
+      // Styled-components specific class patterns
+      /\.sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}\[data-sc-[\da-zA-Z]{8}\]/,
 
-          // Check for styled-components unique class pattern
-          hasStyledClasses: Array.from(
-            document.querySelectorAll('[class]')
-          ).some((el) =>
-            el.className?.match?.(/sc-[a-zA-Z0-9]+-[a-zA-Z0-9]{8}/)
-          ),
+      // Styled-components keyframes pattern
+      /@keyframes\s+sc-keyframes-[\da-zA-Z]{8}/,
 
-          // Check for styled-components specific data attributes
-          hasStyledAttrs: Array.from(document.querySelectorAll('*')).some(
-            (el) =>
-              el
-                .getAttributeNames()
-                .some(
-                  (attr) =>
-                    attr.startsWith('sc-') || attr.startsWith('data-styled-')
-                )
-          ),
-
-          // Check for styled-components runtime in window
-          hasStyledRuntime: !!(
-            window.__styled_components__ || window.__STYLED_COMPONENTS_CONTEXT__
-          ),
-
-          // Check for styled-components specific sheet structure
-          hasStyledSheets: Array.from(document.styleSheets).some((sheet) => {
-            try {
-              return Array.from(sheet.cssRules).some((rule) => {
-                if (rule instanceof CSSStyleRule) {
-                  return rule.selectorText.includes('.sc-');
-                }
-                return false;
-              });
-            } catch {
-              return false;
-            }
-          }),
-        };
-
-        return Object.values(evidence).some(Boolean);
-      });
-    },
+      // Styled-components global styles marker
+      /sc-global-[\da-zA-Z]{8}/,
+    ],
   },
   {
-    name: 'ssr' as const,
-    score: 1,
-    scripts: [
-      // Styled-components SSR specific patterns
-      /ServerStyleSheet/,
-      /StyleSheetManager/,
-      /sheet\.collectStyles/,
-      /sheet\.getStyleElement/,
-      /sheet\.seal/,
+    name: 'cssProperties' as const,
+    score: 0.3,
+    stylesheets: [
+      // Styled-components unique prop interpolation
+      /\[data-sc-[\da-zA-Z]{8}\]{/,
 
-      // Styled-components streaming specific patterns
-      /interleaveWithNodeStream/,
-      /sheet\.interleaveWithNodeStream/,
+      // Styled-components themed props pattern
+      /--sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}/,
+
+      // Styled-components dynamic interpolation
+      /content:var\(--sc-[\da-zA-Z]{8}-[\da-zA-Z]{4}\)/,
     ],
   },
 ];

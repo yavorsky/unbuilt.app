@@ -1,101 +1,71 @@
-import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../../types/analysis.js';
 
 export const emotion = [
   {
-    name: 'compilation' as const,
-    score: 1,
+    name: 'uniqueMarkers' as const,
+    score: 0.3,
     scripts: [
-      // Emotion's unique style tag data attribute
-      /<style\s+data-emotion="[^"]*"/,
+      // Emotion's unique cache setup (survives minification)
+      /\{"key":"[\w-]+","nonce":"[\w-]*","insertionPoint":[\w\s\."]+\}/,
 
-      // Emotion's specific class naming pattern with hash
-      /css-[a-zA-Z0-9]+-[a-zA-Z0-9]{8}/,
+      // Emotion's specific component wrapping
+      /\.withComponent=function\([\w$]+\)\{return[\w$]+\([\w$]+,\{target:[\w$]+\.target\}\)\}/,
 
-      // Emotion's unique style composition
-      /styles\.concat\(emotion\.css\([^)]+\)\)/,
-
-      // Emotion's specific keyframes naming
-      /keyframes-[a-zA-Z0-9]+-[a-zA-Z0-9]{8}/,
-
-      // Emotion's unique style object serialization
-      /emotion\.serializeStyles\(\[/,
-
-      // Emotion's specific cache usage
-      /cache\.registered\[/,
-
-      // Emotion's unique styled component pattern
-      /emotion\.styled\([^)]+\)\([^)]+\)/,
-
-      // Emotion's unique css prop handling
-      /css:\s*emotion\.css\(`[^`]+`\)/,
+      // Emotion's unique symbol registration
+      /Symbol\.for\(["']emotion-[\w-]+["']\)/,
     ],
   },
   {
-    name: 'runtime' as const,
-    score: 1,
+    name: 'componentPatterns' as const,
+    score: 0.3,
     scripts: [
-      // Emotion's specific theme context usage
-      /ThemeContext\._currentValue/,
+      // Emotion's specific component creation (with minification)
+      /\.withComponent\(["'][\w-]+["']\)\.withConfig\(\{["']label["']:/,
 
-      // Emotion's unique style insertion
-      /insertStyles\(cache,\s*serialized,\s*isStringTag\)/,
+      // Emotion's unique prop handling
+      /\.defaultProps=\{className:["']css-[\w-]+["']\}/,
 
-      // Emotion's specific label pattern
-      /label:\s*"[^"]+",\s*target:\s*"[^"]+"/,
-
-      // Emotion's unique memoization pattern
-      /__emotion_memoize__/,
-
-      // Emotion's specific style registration
-      /registerStyles\(cache,\s*serialized,\s*isStringTag\)/,
+      // Emotion's specific theme consumer
+      /ThemeContext\._currentValue2?\.[\w$]+/,
     ],
   },
   {
-    name: 'browser' as const,
-    score: 1.4,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const evidence = {
-          // Check for Emotion's specific style tags
-          hasEmotionStyles: !!document.querySelector('style[data-emotion]'),
+    name: 'cssGeneration' as const,
+    score: 0.3,
+    stylesheets: [
+      // Emotion's specific class patterns
+      /\.css-[\w-]+-EmotionCSS-[\w-]+\[data-emotion-[\w-]+\]/,
 
-          // Check for Emotion's unique class pattern
-          hasEmotionClasses: Array.from(
-            document.querySelectorAll('[class]')
-          ).some((el) =>
-            el.className?.match?.(/css-[a-zA-Z0-9]+-[a-zA-Z0-9]{8}/)
-          ),
+      // Emotion's keyframes pattern
+      /@keyframes\s+emotion-[\w-]+-[\w-]+/,
 
-          // Check for Emotion's keyframes
-          hasEmotionKeyframes: Array.from(document.styleSheets).some(
-            (sheet) => {
-              try {
-                return Array.from(sheet.cssRules).some((rule) => {
-                  if (rule instanceof CSSKeyframesRule) {
-                    return rule.name.startsWith('keyframes-');
-                  }
-                  return false;
-                });
-              } catch {
-                return false;
-              }
-            }
-          ),
-
-          // Check for Emotion's cache in window
-          hasEmotionCache: !!(
-            window.__emotion_cache__ ||
-            Object.keys(window).some(
-              (key) => key.includes('__emotion_') || key.includes('__EMOTION_')
-            )
-          ),
-
-          // Check for Emotion's specific data attributes
-          hasEmotionAttributes: !!document.querySelector('[data-emotion-css]'),
-        };
-
-        return Object.values(evidence).some(Boolean);
-      });
+      // Emotion's global styles marker
+      /\[data-emotion-global-[\w-]+\]/,
+    ],
+  },
+  {
+    name: 'dependencies' as const,
+    score: 0.5,
+    // Higher confidence when MUI is present as it uses Emotion by default
+    dependencies: (analysis: AnalysisFeatures) => {
+      // TODO: Imrpove this check to be more accurate based on MUI version (5+). Add 4 to jss.
+      return (
+        analysis.stylingLibraries.items.mui.confidence > 0.5 ||
+        analysis.stylingLibraries.items.chakra.confidence > 0.5
+      );
     },
+  },
+  {
+    name: 'packageMarkers' as const,
+    score: 0.3,
+    scripts: [
+      // Emotion's package-specific markers
+      /\[@emotion\/styled\]/,
+      /\[@emotion\/react\]/,
+      /\[@emotion\/css\]/,
+
+      // Emotion's unique import pattern
+      /import\s*\{\s*css\s*\}\s*from\s*["']@emotion\/react["']/,
+    ],
   },
 ];
