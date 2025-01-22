@@ -11,7 +11,7 @@ export const statuses = {
   NO_URL: 'NO_URL',
 } as const;
 
-type AnalysisMeta = { id: string; analyzedAt: string };
+type AnalysisMeta = { id: string | undefined; analyzedAt: string | undefined };
 type State = Record<URL, AnalysisMeta>;
 
 export const useExistingAnalysisMeta = (url: URL) => {

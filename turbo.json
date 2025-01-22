@@ -1,15 +1,20 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".env"],
-  "globalEnv": ["NODE_ENV"],
+  "globalDependencies": [".env", ".env.local"],
+  "globalEnv": ["NODE_ENV", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "build/**"],
-      "env": ["NEXT_PUBLIC_*"]
+      "env": ["NEXT_PUBLIC_*", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID", "REDIS_HOST", "REDIS_PORT"]
     },
     "lint": {
       "outputs": []
+    },
+    "update-types": {
+      "cache": false,
+      "env": ["SUPABASE_ID"],
+      "outputs": ["supabase/database.types.ts"]
     },
     "dev": {
       "cache": false,

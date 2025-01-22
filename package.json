@@ -11,6 +11,7 @@
     "dev": "turbo run dev",
     "build": "turbo run build",
     "lint": "turbo run lint -- --fix",
+    "update-types": "turbo run update-types --filter=@unbuilt/app",
     "test": "turbo run test"
   },
   "devDependencies": {

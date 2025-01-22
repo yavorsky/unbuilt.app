@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "worker": "ts-node scripts/start-worker.ts"
+    "update-types": "./scripts/update-supabase-types.sh"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
@@ -49,6 +49,7 @@
   },
   "devDependencies": {
     "@next/eslint-plugin-next": "^15.0.3",
+    "env-cmd": "^10.1.0",
     "@types/lodash-es": "^4.17.12",
     "@types/node": "^20",
     "@types/react": "^18",
@@ -59,6 +60,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "globals": "^15.13.0",
     "postcss": "^8.4.47",
+    "supabase": "^2.6.8",
     "tailwindcss": "^3.4.14"
   },
   "license": "MIT",

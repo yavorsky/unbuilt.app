@@ -11,6 +11,7 @@ jobs:
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
 
     steps:
       - name: Checkout code
@@ -22,21 +23,24 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID
           script: |
             cd /home/server/unbuilt-app && \
             # Create .env file in the root directory
             rm -f .env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
+            echo "SUPABASE_KEY=${SUPABASE_ID}" >> .env && \
             # Create .env in the web app directory for monorepo
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
+            echo "SUPABASE_KEY=${SUPABASE_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
             export SUPABASE_URL=${SUPABASE_URL} && \
             export SUPABASE_KEY=${SUPABASE_KEY} && \
+            export SUPABASE_KEY=${SUPABASE_ID} && \
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \

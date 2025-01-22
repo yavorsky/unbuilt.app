@@ -46,9 +46,9 @@ export async function getTechnologyWebsitesQuery<
 
   const { data, error } = await supabase.rpc('get_unique_technology_websites', {
     technology_column: dbColumn,
-    technology_value: technology,
+    technology_value: technology as string,
     confidence_threshold: 0.5,
-    search_term: search || null,
+    search_term: search,
     page_number: page,
     items_per_page: pageSize,
   });
