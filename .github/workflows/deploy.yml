@@ -30,17 +30,17 @@ jobs:
             rm -f .env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
-            echo "SUPABASE_KEY=${SUPABASE_ID}" >> .env && \
+            echo "SUPABASE_ID=${SUPABASE_ID}" >> .env && \
             # Create .env in the web app directory for monorepo
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
-            echo "SUPABASE_KEY=${SUPABASE_ID}" >> apps/web/.env && \
+            echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
             export SUPABASE_URL=${SUPABASE_URL} && \
             export SUPABASE_KEY=${SUPABASE_KEY} && \
-            export SUPABASE_KEY=${SUPABASE_ID} && \
+            export SUPABASE_ID=${SUPABASE_ID} && \
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
