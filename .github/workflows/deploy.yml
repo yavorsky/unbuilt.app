@@ -26,11 +26,6 @@ jobs:
           envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID
           script: |
             cd /home/server/unbuilt-app && \
-            # Create .env file in the root directory
-            rm -f .env && \
-            echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
-            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
-            echo "SUPABASE_ID=${SUPABASE_ID}" >> .env && \
             # Create .env in the web app directory for monorepo
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
