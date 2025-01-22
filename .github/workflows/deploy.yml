@@ -33,9 +33,6 @@ jobs:
             echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
-            export SUPABASE_URL=${SUPABASE_URL} && \
-            export SUPABASE_KEY=${SUPABASE_KEY} && \
-            export SUPABASE_ID=${SUPABASE_ID} && \
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
