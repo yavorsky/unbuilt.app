@@ -35,7 +35,7 @@ export const CardsGrid: FC<{
       return '';
     }
     // Unbuilding or initializing
-    if (isLoading) {
+    if (isLoading || status === 'delayed') {
       return 'Unbuilding';
     }
     if (status === 'failed') {
