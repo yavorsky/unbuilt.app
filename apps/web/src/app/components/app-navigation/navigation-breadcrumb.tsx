@@ -1,3 +1,5 @@
+'use client';
+
 import { useToast } from '@/hooks/use-toast';
 import {
   Breadcrumb,
@@ -6,8 +8,6 @@ import {
   BreadcrumbList,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import Link from 'next/link';
-import { LogoIcon } from '../icons/logo';
 import { URLBreadcrumb } from '../analysis-result/url-breadcrumb';
 import { useCallback, useMemo } from 'react';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
@@ -19,11 +19,12 @@ import {
   getTechnologyMetaForType,
   TechnologyMetaResults,
 } from '@/app/utils/get-technology-meta';
+import { useActiveRoute } from '@/app/hooks/use-active-route';
 
 export function NavigationBreadcrumb<
   T extends AnalysisTechnologies,
   M extends TechnologyMetaResults<T>,
->({ activeRoute }: { activeRoute: 'ANALYZE' | 'TECHNOLOGIES' | undefined }) {
+>() {
   const params = useParams<{
     name: string;
     type: T;
@@ -32,6 +33,7 @@ export function NavigationBreadcrumb<
   const { activeAnalysis } = useActiveAnalysis();
 
   const { activeCategoryLabel } = useActiveCategory();
+  const activeRoute = useActiveRoute();
 
   const truncatedUrl = useMemo(() => {
     if (!activeAnalysis?.url) {
@@ -108,23 +110,7 @@ export function NavigationBreadcrumb<
 
   return (
     <Breadcrumb>
-      <BreadcrumbList>
-        <BreadcrumbItem className="text-xl">
-          <BreadcrumbLink asChild>
-            <Link
-              href="/"
-              className="flex items-center justify-center text-lg font-semibold text-foreground"
-            >
-              <LogoIcon size={40} />
-              <span className="ml-2 hidden sm:inline">
-                Unbuilt
-                <span className="text-foreground/80">.app</span>
-              </span>
-            </Link>
-          </BreadcrumbLink>
-        </BreadcrumbItem>
-        {breadcrumbForRoute}
-      </BreadcrumbList>
+      <BreadcrumbList>{breadcrumbForRoute}</BreadcrumbList>
     </Breadcrumb>
   );
 }
