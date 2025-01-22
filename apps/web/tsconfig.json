@@ -25,6 +25,7 @@
   "extends": "../../tsconfig.json",
   "include": [
     "src",
+    "supabase/database.types.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ]
