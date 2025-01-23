@@ -1,3 +1,5 @@
+import { AnalysisFeatures } from '../../../types/analysis.js';
+
 export const esbuild = [
   {
     name: 'compilation' as const,
@@ -23,5 +25,15 @@ export const esbuild = [
     name: 'chunks' as const,
     score: 0.3,
     filenames: [/\.esbuild\.min\.js$/],
+  },
+  {
+    name: 'isEsbuild' as const,
+    score: 0.4,
+    dependencies: (analysis: AnalysisFeatures) => {
+      // There's option to set terser as minifier for esbuild or vite.
+      return (
+        analysis.bundler.name === 'esbuild' || analysis.bundler.name === 'vite'
+      );
+    },
   },
 ];

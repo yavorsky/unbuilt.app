@@ -20,7 +20,7 @@ const TanStackLogo = ({
       viewBox="0 0 100 100"
       className={className}
       fill={color}
-      enable-background="new 0 0 100 100"
+      enableBackground="new 0 0 100 100"
     >
       <title>TanStack Router</title>
       <path

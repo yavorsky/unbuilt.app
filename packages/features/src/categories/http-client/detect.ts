@@ -17,5 +17,6 @@ export const detect = async (
     browser,
     patterns,
     analysis,
+    debug: true,
   });
 };

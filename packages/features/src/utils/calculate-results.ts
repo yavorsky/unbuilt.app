@@ -9,6 +9,7 @@ export interface Pattern<Name extends string = string> {
   scripts?: RegExp[];
   stylesheets?: RegExp[];
   documents?: RegExp[];
+  headers?: Record<string, RegExp>;
   filenames?: RegExp[];
   browser?: (page: Page, browser: Browser) => boolean | Promise<boolean>;
   dependencies?: (analysis: AnalysisFeatures) => boolean;
