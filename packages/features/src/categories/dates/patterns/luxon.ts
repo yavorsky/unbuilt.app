@@ -1,79 +1,60 @@
-import { Page } from 'playwright';
-
 export const luxon = [
   {
-    name: 'coreRuntime' as const,
-    score: 0.3,
+    name: 'coreImplementation' as const,
+    score: 0.9,
     scripts: [
-      // Core Luxon classes and imports
-      /DateTime\s*\.\s*(?:now|local|utc|fromISO|fromHTTP|fromSQL)/,
-      /Duration\s*\.\s*(?:from|fromISO|fromMillis)/,
-      /Interval\s*\.\s*(?:from|fromISO|fromDateTimes)/,
+      // Luxon's specific error messages with exact format that won't appear in other libraries
+      /"Zone required with IANA name"/,
+      /"Unique zone required"/,
+      /"Can't subtract an invalid DateTime"/,
+      /"Missing locale data for "/,
 
-      // Specific Luxon methods
-      /\.(?:plus|minus|startOf|endOf|toFormat|toISO|toLocal|toUTC)/,
-      /\.(?:setZone|toFormat|toLocaleString|toJSDate|valueOf|diff)/,
+      // Luxon's unique internal validation messages
+      /"Could not create DateTime from invalid JSON"/,
+      /"Numbers in toRelative\(\) are required to be Integers"/,
 
-      // Format tokens (unique to Luxon)
-      /(?:DDDD|MMMM|kkkk|ZZZZ|ZZZZZ|WWWW|ooo)/,
-      /ff{1,3}|SS{2,4}/,
+      // Luxon's unique instance marker
+      /isLuxonDateTime:\s*true/,
 
-      // Zone handling
-      /Settings\.defaultZone/,
-      /IANAZone|FixedOffsetZone|LocalZone/,
-      /Zone\.(?:utc|local|SYSTEM)/,
+      // Luxon's specific error class patterns
+      /"Zone is an abstract class"/,
 
-      // Error handling
-      /InvalidDateTime|InvalidDuration|InvalidInterval/,
-      /InvalidZone|ConflictingZone/,
-    ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const markers = {
-          // Check for Luxon global
-          hasLuxon: typeof window.luxon !== 'undefined',
-
-          // Check for main classes
-          hasDateTime: !!window.luxon?.DateTime,
-          hasDuration: !!window.luxon?.Duration,
-          hasInterval: !!window.luxon?.Interval,
-
-          // Check for settings
-          hasSettings: !!window.luxon?.Settings,
-
-          // Check for zones
-          hasZones: !!window.luxon?.IANAZone,
-        };
-        return Object.values(markers).some(Boolean);
-      });
-    },
-  },
-  {
-    name: 'methods' as const,
-    score: 0.2,
-    scripts: [
-      // Common method combinations
-      /\.(?:toISO|toISODate|toISOTime|toISOWeekDate)/,
-      /\.(?:toLocal|toLocaleParts|toLocaleString)/,
-      /\.(?:setLocale|setZone|setLocale)/,
-
-      // Specific API patterns
-      /\.(?:isValid|invalidReason|invalidExplanation)/,
-      /\.(?:toObject|toMillis|toSeconds|toJSON)/,
-
-      // Math operations
-      /\.(?:plus|minus|diff)\(\{/,
-      /\.(?:startOf|endOf)\(['"][\w]+['"]\)/,
+      // Luxon's specific formatting implementation
+      /formatToParts\([^)]*\).*?timeZoneName.*?offsetName/,
+      /type\s*===\s*"timeZoneName"/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /luxon(?:\.min)?\.js$/,
-      /luxon\.[a-f0-9]+\.js$/,
-      /\bluxon\.(?:esm|umd|cjs)\.js$/,
-      /luxon-\w+\.js$/,
+    name: 'errorSystem' as const,
+    score: 0.8,
+    scripts: [
+      // Luxon's error inheritance pattern
+      /LuxonError\s*=.*?function.*?_Error\)/,
+      /inheritsLoose\([^,]+,\s*_Error\)/,
+    ],
+  },
+  {
+    name: 'infoClass' as const,
+    score: 0.9,
+    scripts: [
+      // Luxon's Info class usage - completely unique to Luxon
+      /Info\.features\(\)\.zones/,
+      /Info\.features\(\)\.intl/,
+      /Info\.features\(\)\.relative/,
+      /Info\.meridiems\(/,
+    ],
+  },
+  {
+    name: 'dateTimeConfig' as const,
+    score: 0.8,
+    scripts: [
+      // Luxon's unique DateTime configuration patterns
+      /\{numberingSystem:\s*["'][^"']+["'],\s*outputCalendar:\s*["'][^"']+["']\}/,
+      /\{conversionAccuracy:\s*["']casual["']\}/,
+
+      // Luxon's specific Settings usage
+      /Settings\.throwOnInvalid\s*=\s*true/,
+      /Settings\.defaultZone\s*=/,
     ],
   },
 ];
