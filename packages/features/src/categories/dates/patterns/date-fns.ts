@@ -1,79 +1,77 @@
-import { Page } from 'playwright';
-
 export const dateFns = [
   {
-    name: 'coreRuntime' as const,
-    score: 0.3,
+    name: 'coreImplementation' as const,
+    score: 0.9,
     scripts: [
-      // Core imports/functions
-      /from\s+["']date-fns["']/,
-      /(?:import|require)\s*\{?\s*(?:format|parse|add|sub|diff|is)[A-Z]\w+\s*\}?\s*from\s*["']date-fns["']/,
-
-      // Common date-fns functions
-      /(?:parse|format|add|sub|differenceIn|startOf|endOf|is(?:Before|After|Same|Valid|Weekend|Future|Past))/,
-      /(?:get|set|add|sub)(?:Hours|Minutes|Seconds|Milliseconds|Days|Months|Years|Weeks)/,
-
-      // Format strings (unique to date-fns)
-      /(?:yyyy|YYYY|MM|dd|DD|HH|mm|ss|T)/,
-      /P(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+S)?)?/,
-
-      // Locale handling
-      /from\s+["']date-fns\/locale["']/,
-      /\/date-fns\/locale\//,
-
-      // FP variant
-      /from\s+["']date-fns\/fp["']/,
-      /\/date-fns\/fp\//,
-    ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const markers = {
-          // Check for common functions in global scope
-          hasFunctions:
-            typeof window.format === 'function' ||
-            typeof window.parse === 'function',
-
-          // Check for date-fns namespace
-          hasNamespace: !!window.dateFns,
-
-          // Check for fp variant
-          hasFp: !!window.dateFnsFp,
-
-          // Check for locale functions
-          hasLocale:
-            typeof window.formatRelative === 'function' ||
-            typeof window.formatDistance === 'function',
-        };
-        return Object.values(markers).some(Boolean);
-      });
-    },
-  },
-  {
-    name: 'modules' as const,
-    score: 0.2,
-    scripts: [
-      // ESM imports
-      /\/_lib\/\w+\/index\.js/,
-      /\/_lib\/locale\/\w+\/index\.js/,
-
-      // Common function combinations
-      /(?:formatDistance|formatRelative|formatDuration)/,
-      /(?:eachDayOfInterval|eachWeekOfInterval|eachMonthOfInterval|eachYearOfInterval)/,
-      /(?:lastDayOf|firstDayOf)(?:Week|Month|Year|Quarter)/,
-
-      // Error messages specific to date-fns
-      /is not a valid date/,
-      /requires \d+ arguments? but received \d+/,
+      // date-fns specific error messages from core implementation
+      /"weekStartsOn must be between 0 and 6 inclusively"/,
+      /"startDate or endDate for interval cannot be Invalid Date"/,
+      /"The step must be a number between 0 and 7 inclusively"/,
+      /"useAdditionalDayPeriodTokens must be used with isProtectedDayPeriodToken"/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /date-fns(?:\.min)?\.js$/,
-      /date-fns\/\w+\.js$/,
-      /date-fns-\w+\.js$/,
-      /\bdate-fns\.[a-f0-9]+\.js$/,
+    name: 'uniqueFunctions' as const,
+    score: 0.8,
+    scripts: [
+      // Combinations of unique date-fns function names that survive minification
+      /eachWeekendOfInterval\([^)]+\)|eachWeekendOfMonth\([^)]+\)|eachWeekendOfYear\([^)]+\)/,
+      /differenceInBusinessDays\([^)]+\)|addBusinessDays\([^)]+\)|subBusinessDays\([^)]+\)/,
+      /differenceInCalendarISOWeeks\([^)]+\)|startOfISOWeek\([^)]+\)|lastDayOfISOWeek\([^)]+\)/,
+
+      // Unique quarters handling functions
+      /getQuarter\([^)]+\)|setQuarter\([^)]+\)|startOfQuarter\([^)]+\)|lastDayOfQuarter\([^)]+\)/,
+
+      // Specific ISO week-numbering year functions
+      /getISOWeekYear\([^)]+\)|startOfISOWeekYear\([^)]+\)|endOfISOWeekYear\([^)]+\)/,
+    ],
+  },
+  {
+    name: 'formatUsage' as const,
+    score: 0.7,
+    scripts: [
+      // Unique date-fns format string combinations
+      /format\([^,]+,\s*["']PPPPp["']\)/,
+      /format\([^,]+,\s*["']RRRR["']\)/,
+      /formatISO9075\([^)]+\)/,
+
+      // Specific format with locale
+      /format\([^,]+,\s*["'][^"']+["'],\s*\{locale:\s*[^}]+\}\)/,
+    ],
+  },
+  {
+    name: 'localeSetup' as const,
+    score: 0.7,
+    scripts: [
+      // date-fns specific locale setup patterns
+      /"Wrong first weekday of week"/,
+      /"ordinalNumber function is required"/,
+      /"localizer function is required"/,
+    ],
+  },
+  {
+    name: 'intervalUsage' as const,
+    score: 0.8,
+    scripts: [
+      // Unique interval functions
+      /eachDayOfInterval\([^)]+\)|eachHourOfInterval\([^)]+\)|eachMinuteOfInterval\([^)]+\)/,
+
+      // Interval checking with specific options
+      /isWithinInterval\([^,]+,\s*\{start:[^,]+,\s*end:[^}]+\}\)/,
+
+      // Are intervals overlapping
+      /areIntervalsOverlapping\([^,]+,\s*[^,]+(?:,\s*\{inclusive:\s*(?:true|false)\}\s*)?\)/,
+    ],
+  },
+  {
+    name: 'fpUsage' as const,
+    score: 0.6,
+    scripts: [
+      // date-fns/fp specific usage
+      /import\s*\{[^}]*\}\s*from\s*["']date-fns\/fp["']/,
+
+      // Functional programming style with date-fns
+      /pipe\(\s*(?:addDays|addMonths|addYears)\s*\(\d+\)\s*,\s*(?:format|formatDistance|formatRelative)/,
     ],
   },
 ];

@@ -2,83 +2,59 @@ import { Page } from 'playwright';
 
 export const moment = [
   {
-    name: 'coreRuntime' as const,
-    score: 0.3,
+    name: 'coreImplementation' as const,
+    score: 0.5,
     scripts: [
-      // Global Moment object
-      /moment(?:\.|\[)/,
-      /moment\.version/,
-      /moment\.fn\./,
+      // Moment's internal object check
+      /obj\._isAMomentObject/,
+      /instanceof\s+Moment/,
 
-      // Core functionality
-      /moment\.(?:utc|parseZone|unix)/,
-      /moment\.duration/,
-      /moment\.locale/,
+      // Moment's specific version checks
+      /moment\.version\s*===\s*undefined\s*&&\s*moment\.default/,
+      /typeof\s+moment\.version\s*!==\s*['"]string['"]/,
 
-      // Format tokens
-      /[YQMDWHhmsSw]{1,4}/, // Format patterns
-      /\[\w+\s*(?:Mo|Do|DDDo|[\w\s]*?o)\]/, // Ordinal formats
-
-      // Localization
-      /moment\.defineLocale/,
-      /moment\.updateLocale/,
-      /moment\.locale\(/,
-
-      // Plugins and extensions
-      /moment\.(?:tz|timezone)/,
-      /moment\.calendar/,
-      /moment\.relativeTime/,
+      // Moment's specific error messages
+      /'Moment Timezone requires Moment\.js\. See https:\/\/momentjs\.com\/timezone\/docs\/#\/use-it\/browser\/'/,
+      /"Moment Timezone setDefault\(\) requires Moment\.js >= [0-9.]+/,
     ],
+  },
+  {
+    name: 'hooksSystem' as const,
+    score: 0.6,
+    scripts: [
+      // Moment's hooks system - highly specific to moment.js
+      /hooks\.version\s*=\s*['"][0-9.]+['"]/,
+      /hooks\.fn\s*=\s*proto/,
+      /hooks\.(?:min|max|now|utc|unix|months|isDate)\s*=\s*/,
+
+      // Moment's specific hook callback setup
+      /setHookCallback\(createLocal\)/,
+    ],
+  },
+  {
+    name: 'userUsage' as const,
+    score: 0.7,
+    scripts: [
+      // Common moment.js usage patterns
+      /moment\(["'][^'"]+["']\)/,
+      /moment\.locale\(["'][a-zA-Z-]+["']\)/,
+
+      // Moment timezone specific usage
+      /moment\.tz\(["'][^'"]+["']\)/,
+      /moment\.tz\.zone\(/,
+    ],
+  },
+  {
+    // Runtime detection through browser globals
+    name: 'runtime-check' as const,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Check for global moment
           hasMoment: typeof window.moment !== 'undefined',
-
-          // Check for version
-          hasVersion: !!window.moment?.version,
-
-          // Check for locales
-          hasLocales: typeof window.moment?.locale === 'function',
-
-          // Check for timezone support
-          hasTimezone: !!window.moment?.tz,
-
-          // Check for relative time
-          hasRelativeTime:
-            typeof window.moment?.duration?.fn?.humanize === 'function',
         };
         return Object.values(markers).some(Boolean);
       });
     },
-  },
-  {
-    name: 'localization' as const,
-    score: 0.2,
-    scripts: [
-      // Common locale patterns
-      /weekdays|months/,
-      /dayOfMonthOrdinalParse/,
-      /relativeTime/,
-      /calendar\s*:\s*\{/,
-
-      // Format strings
-      /YYYY[-\/]MM[-\/]DD/,
-      /DD[-\/]MM[-\/]YYYY/,
-
-      // Ordinal formatting
-      /(?:Mo|Do|DDDo|[\w\s]*?o)\b/,
-      /ordinal\s*:/,
-    ],
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /moment(?:\.min)?\.js$/,
-      /moment-with-locales(?:\.min)?\.js$/,
-      /moment-timezone(?:\.min)?\.js$/,
-      /locale\/[a-z-]+\.js$/,
-    ],
   },
 ];
