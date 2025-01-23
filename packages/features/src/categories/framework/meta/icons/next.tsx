@@ -67,3 +67,4 @@ export const NextLogo = ({
     </svg>
   );
 };
+export default NextLogo;

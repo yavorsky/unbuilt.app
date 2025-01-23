@@ -1,98 +1,67 @@
-import { Page } from 'playwright';
-
 export const relay = [
   {
-    name: 'coreRuntime' as const,
-    score: 0.4,
+    name: 'coreImplementation' as const,
+    score: 0.9,
     scripts: [
-      // Relay-specific imports
-      /import\s+(?:\* as\s+)?(?:Relay|Environment|Network)\s+from\s+['"]relay-runtime['"]/,
-      /import\s+\{[^}]*(?:useFragment|usePaginationFragment|useRefetchableFragment)[^}]*\}\s+from\s+['"]react-relay['"]/,
+      // Relay's unique internal directive strings
+      /"RelayRequiredFields"/,
+      /"RelayLiveResolvers"/,
+      /"RelayDefaultMask"/,
+      /"RelayConnectionHandler"/,
 
-      // Relay-specific environment setup
-      /new\s+Environment\s*\(\s*\{[^}]*store:/,
-      /RelayEnvironmentProvider\s+environment/,
+      // Relay's specific record source implementation details
+      /"getRootField: Expected id/,
+      /"getLinkedRecords: Expected array of records"/,
 
-      // Relay-specific hooks with type parameters
-      /use(?:Fragment|LazyLoadQuery|PaginationFragment|RefetchableFragment)\s*<[^>]*>/,
+      // Relay's unique error messages for missing fields
+      /"Expected id for record .* missing field/,
+      /"Expected record .* to have a .* selection/,
 
-      // Relay-specific directives in GraphQL
-      /graphql\s*`[^`]*@(?:refetchable|pagination|argumentDefinitions|connection)\b[^`]*`/,
-
-      // Relay-specific generated artifacts
-      /\$\$\w+_fragment_ref$/,
-      /\$\$\w+_ref$/,
-      /\$\$\w+_graphql$/,
-    ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const hasRelayMarkers =
-          !!window.__RELAY_PAYLOADS__ ||
-          !!window.__RELAY_STORE__ ||
-          !!window.__RELAY_ENVIRONMENT__;
-
-        const hasRelayStore = () => {
-          try {
-            // Check for Relay-specific store properties
-            return Object.values(window).some(
-              (obj) =>
-                obj &&
-                typeof obj === 'object' &&
-                'holdGC' in obj &&
-                'releasingGC' in obj &&
-                'getStore' in obj &&
-                'getNetwork' in obj
-            );
-          } catch {
-            return false;
-          }
-        };
-
-        return hasRelayMarkers || hasRelayStore();
-      });
-    },
-  },
-  {
-    name: 'patterns' as const,
-    score: 0.3,
-    scripts: [
-      // Relay-specific store operations
-      /(?:store|environment)\.(?:retain|publish|lookup|notify|subscribe|holdGC|releaseGC)\s*\(/,
-
-      // Relay-specific network layer
-      /Network\.create\s*\(\s*(?:async\s*)?\([^)]*\)\s*=>\s*\{[^}]*\}\s*\)/,
-
-      // Relay-specific mutation patterns
-      /commitMutation\s*\(\s*environment\s*,\s*\{[^}]*optimisticResponse:/,
-      /useMutation\s*<\s*\w+Mutation\s*>/,
-
-      // Relay-specific compiler output
-      /import\s+\w+\$data\s+from\s+['"]\.\/__generated__/,
-      /type\s+\w+\$key\s*=/,
-
-      // Relay-specific fragment patterns
-      /@refetchable\s*\(\s*queryName:\s*["']\w+["']\s*\)/,
-      /@connection\s*\(\s*key:\s*["']\w+["']\s*\)/,
+      // Relay's garbage collection messages
+      /"Relay: Expected .* to be registered before cleaning up"/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Relay-specific generated files
-      /\/__generated__\/.*\.graphql\.ts$/i,
-      /\.relay\.generated\.[jt]s$/i,
+    name: 'storeImplementation' as const,
+    score: 0.8,
+    scripts: [
+      // Relay's store implementation messages
+      /"RelayModernStore: Mutation",\s*"RetainQuery"/,
+      /"RelayModernStore: Operation",\s*"CommitPayload"/,
 
-      // Relay-specific configuration
-      /relay\.config\.[jt]s$/i,
-      /relay-compiler\.json$/i,
+      // Relay's unique store field patterns
+      /"__id",\s*"__typename",\s*"__isNode"/,
 
-      // Relay-specific build artifacts
-      /relay-runtime(?:\.min)?\.js$/i,
-      /react-relay(?:\.min)?\.js$/i,
+      // Relay's specific data masking messages
+      /"RelayReader: Expected .* to be a scalar"/,
+    ],
+  },
+  {
+    name: 'connectionImplementation' as const,
+    score: 0.8,
+    scripts: [
+      // Relay's specific connection key format
+      /"connection:.*\$.*\$.*connections"/,
 
-      // Relay-specific file structure
-      /(?:^|\/)relay\/(?:environment|network|store)/i,
+      // Relay's unique connection metadata
+      /"__connection_next_edge_index"/,
+
+      // Relay's specific connection handler messages
+      /"Connection handler .* cannot handle undefined"/,
+    ],
+  },
+  {
+    name: 'buildPatterns' as const,
+    score: 0.7,
+    scripts: [
+      // Relay's unique compiler output format
+      /"RelayConcreteNode\.(?:LinkedField|ScalarField|Fragment)"/,
+
+      // Relay's operation consistency check messages
+      /"RelayModernEnvironment: Operation",\s*".*"\s*already exists"/,
+
+      // Relay's fragment spread validation
+      /"RelayValidator: Fragment spread .* unused"/,
     ],
   },
 ];
