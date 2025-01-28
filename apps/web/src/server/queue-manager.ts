@@ -14,7 +14,7 @@ import { BrowserContext } from 'playwright';
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-const ANALYSIS_TIMEOUT = 30000; // 30 seconds
+export const ANALYSIS_TIMEOUT = 40000; // 40 seconds
 
 export class QueueManager {
   private static instance: QueueManager;
@@ -57,7 +57,7 @@ export class QueueManager {
             delay: RETRY_DELAY,
           },
           timeout: ANALYSIS_TIMEOUT,
-          stallInterval: 30000, // Check for stalled jobs every 30 seconds
+          stallInterval: ANALYSIS_TIMEOUT, // Check for stalled jobs every 30 seconds
           maxStalledCount: 1, // Number of times a job can be marked as stalled before being moved to failed
         },
         limiter: {
@@ -66,7 +66,7 @@ export class QueueManager {
           bounceBack: true, // Queue up if limit is hit
         },
         settings: {
-          stalledInterval: 30000, // Check for stalled jobs (in ms)
+          stalledInterval: ANALYSIS_TIMEOUT, // Check for stalled jobs (in ms)
           maxStalledCount: 1, // Mark as stalled for 1 check
         },
       } as QueueOptions);
@@ -87,11 +87,10 @@ export class QueueManager {
           if (!browser) throw new Error('Browser not available');
 
           const page = await context.newPage();
-          page.setDefaultNavigationTimeout(30000);
 
-          const onProgress: OnProgress = (partialResult, progress) => {
-            job.update(partialResult);
-            job.progress(progress);
+          const onProgress: OnProgress = async (partialResult, progress) => {
+            await job.update(partialResult);
+            await job.progress(progress);
           };
 
           const result = await analyze(
@@ -102,8 +101,15 @@ export class QueueManager {
             onProgress
           );
           console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
+          try {
+            await context.close();
+          } catch (closeError) {
+            console.error(`[Job ${job.id}] Error closing context:`, closeError);
+          }
           return result;
         } catch (error) {
+          console.log(`[Job ${job.id}] Failed:`, error);
+
           const e = error as Error;
           if (e.message === errors.RESOURCE_NOT_AVAILABLE) {
             // Expected error, so no need to retry
