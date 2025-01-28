@@ -86,7 +86,7 @@ export function SingleResultAnalysisCard<
   const resultMeta = getTechnologyMetaForType(name, analysis.name as M);
   const ResultIcon = resultMeta?.Icon ?? Icon;
 
-  const isUnknown = analysis.name === 'unknown';
+  const isUnknown = analysis.name === 'unknown' || analysis.name === null;
   const discoveredStatus = isUnknown ? 'unknown' : 'discovered';
 
   return (
@@ -107,11 +107,7 @@ export function SingleResultAnalysisCard<
               <div className="flex items-center gap-3 mt-1">
                 <div className="w-5 flex justify-center items-center">
                   <Suspense>
-                    <ResultIcon
-                      width={18}
-                      height={18}
-                      className="h-6 w-6 text-indigo-400"
-                    />
+                    <ResultIcon width={18} height={18} className="h-6 w-6" />
                   </Suspense>
                 </div>
                 <div className="flex items-center gap-2">

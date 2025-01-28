@@ -1,13 +1,14 @@
 // A simple utility method that convers category id to a human readable label.
 // We'll replace it with translations library in the future.
 
-import { AnalysisKeys, AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalysisFeaturesWithStats, AnalysisKeys } from '@unbuilt/analyzer';
 
-const categoryLabelsMap: Record<keyof AnalyzeResult['analysis'], string> = {
+const categoryLabelsMap: Record<keyof AnalysisFeaturesWithStats, string> = {
   bundler: 'Bundler',
   dates: 'Dates Library',
   framework: 'Framework',
   httpClient: 'HTTP Client',
+  platform: 'Platform',
   uiLibrary: 'UI Library',
   minifier: 'Minifier',
   modules: 'Modules',

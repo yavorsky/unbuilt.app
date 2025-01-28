@@ -19,6 +19,8 @@ import { useDateFormat } from '@/hooks/use-date-format';
 import { useTheme } from 'next-themes';
 import { ErrorState } from '../error-state';
 import { useTruncatedUrl } from '@/hooks/use-truncated-url';
+import { PlatformCard } from './cards/platform';
+import { TranslationsCard } from './cards/translations';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -113,7 +115,7 @@ export const CardsGrid: FC<{
               <DatesCard dates={result?.analysis.dates} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <ModulesCard modules={result?.analysis.modules} />
+              <TranslationsCard translations={result?.analysis.translations} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <StylingLibrariesCard
@@ -124,6 +126,12 @@ export const CardsGrid: FC<{
               <StylingProcessorCard
                 stylingProcessor={result?.analysis.stylingProcessor}
               />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <ModulesCard modules={result?.analysis.modules} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <PlatformCard platform={result?.analysis.platform} />
             </div>
           </div>
         </Suspense>

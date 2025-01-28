@@ -19,23 +19,28 @@ export function extractSecondaryMatches(analysis: AnalyzeResult['analysis']) {
     stateManagement: analysis.stateManagement?.secondaryMatches || {},
     uiLibrary: analysis.uiLibrary?.secondaryMatches || {},
     httpClient: analysis.httpClient?.secondaryMatches || {},
+    platform: analysis.platform?.secondaryMatches || {},
   };
 
   return result;
 }
 
 export function extractDetectedFeatures(analysis: AnalyzeResult['analysis']) {
-  const result: Partial<Record<TechnologyKeys, string[]>> = {};
-
-  if (analysis.transpiler?.detectedFeatures) {
-    result.transpiler = Array.from(analysis.transpiler.detectedFeatures);
-  }
-  if (analysis.framework?.detectedFeatures) {
-    result.framework = Array.from(analysis.framework.detectedFeatures);
-  }
-  if (analysis.uiLibrary?.detectedFeatures) {
-    result.uiLibrary = Array.from(analysis.uiLibrary.detectedFeatures);
-  }
+  const result: Partial<Record<TechnologyKeys, string[]>> = {
+    bundler: Array.from(analysis.bundler?.detectedFeatures),
+    transpiler: Array.from(analysis.transpiler?.detectedFeatures),
+    framework: Array.from(analysis.framework?.detectedFeatures),
+    minifier: Array.from(analysis.minifier?.detectedFeatures),
+    stylingProcessor: Array.from(analysis.stylingProcessor?.detectedFeatures),
+    modules: Array.from(analysis.modules?.detectedFeatures),
+    router: Array.from(analysis.router?.detectedFeatures),
+    dates: Array.from(analysis.dates?.detectedFeatures),
+    translations: Array.from(analysis.translations?.detectedFeatures),
+    stateManagement: Array.from(analysis.stateManagement?.detectedFeatures),
+    uiLibrary: Array.from(analysis.uiLibrary?.detectedFeatures),
+    httpClient: Array.from(analysis.httpClient?.detectedFeatures),
+    platform: Array.from(analysis.platform?.detectedFeatures),
+  };
 
   return result;
 }

@@ -61,6 +61,8 @@ export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
       translations: analysisData.analysis.translations?.name ?? null,
       translations_confidence:
         analysisData.analysis.translations?.confidence ?? null,
+      platform: analysisData.analysis.platform?.name ?? null,
+      platform_confidence: analysisData.analysis.platform?.confidence ?? null,
 
       // Stats
       resource_count: analysisData.analysis.stats.resourceCount,

@@ -10,5 +10,7 @@ export const columnMapping = {
   modules: 'modules',
   stylingProcessor: 'styling_processor',
   dates: 'dates',
+  platform: 'platform',
+  stylingLibraries: 'styling_libraries',
   translations: 'translations',
 } as const;
