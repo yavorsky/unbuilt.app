@@ -14,7 +14,7 @@ import { BrowserContext } from 'playwright';
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-export const ANALYSIS_TIMEOUT = 40000; // 40 seconds
+export const ANALYSIS_TIMEOUT = 50000; // 50 seconds
 
 export class QueueManager {
   private static instance: QueueManager;

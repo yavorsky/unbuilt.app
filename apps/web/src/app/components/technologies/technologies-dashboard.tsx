@@ -13,6 +13,7 @@ const sections = [
   { title: 'Bundlers', type: 'bundler', key: 'bundler' },
   { title: 'Routers', type: 'router', key: 'router' },
   { title: 'Transpilers', type: 'transpiler', key: 'transpiler' },
+  { title: 'Platforms', type: 'platform', key: 'platform' },
   { title: 'Minifiers', type: 'minifier', key: 'minifier' },
   { title: 'Translations', type: 'translations', key: 'translations' },
 ] as const;
