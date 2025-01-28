@@ -3,7 +3,7 @@ import { LogoProps } from '../../../../types/meta.js';
 export const JotaiLogo = ({
   width = 24,
   height = 24,
-  color = '#000000',
+  color = 'currentColor',
   className = '',
 }: LogoProps) => {
   const calculatedHeight = height * (99.77 / 289.19); // maintain aspect ratio
@@ -14,7 +14,7 @@ export const JotaiLogo = ({
       width={width}
       height={calculatedHeight}
       viewBox="0 0 289.19 99.77"
-      className={className}
+      className={`text-black dark:text-white ${className}`}
     >
       <title>Jotai</title>
       <path
@@ -40,3 +40,4 @@ export const JotaiLogo = ({
     </svg>
   );
 };
+export default JotaiLogo;
