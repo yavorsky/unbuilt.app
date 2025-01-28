@@ -52,7 +52,7 @@ export const postCSS = [
     name: 'isTailwind' as const,
     score: 0.3,
     dependencies: (analysis: AnalysisFeatures) => {
-      return analysis.stylingLibraries.items.tailwindCSS.confidence > 0.5;
+      return analysis.stylingLibraries?.items?.tailwindCSS?.confidence > 0.5;
     },
   },
 ];
