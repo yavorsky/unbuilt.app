@@ -7,32 +7,10 @@ export const jQuery = [
     scripts: [
       // jQuery factory definition (production)
       /typeof\s+jQuery\s*===?\s*["']function["']/,
-      /\(function\s*\(\s*global\s*,\s*factory\s*\)\s*\{\s*(?:[^{}]|\{[^{}]*\})*jQuery\s*=\s*factory/,
 
       // jQuery.fn patterns (highly specific)
       /jQuery\.fn\s*=\s*jQuery\.prototype\s*=\s*\{/,
       /jQuery\.extend\(\s*\{\s*(?:[^{}]|\{[^{}]*\})*\}\s*\)/,
-
-      // jQuery internal markers (minified but unique)
-      /jQuery\.(?:cssHooks|cssNumber|cssProps|style)\s*=/,
-      /jQuery\.(?:error|noop|now|isEmptyObject)\s*=/,
-    ],
-  },
-  {
-    name: 'domManipulation' as const,
-    score: 0.25,
-    scripts: [
-      // jQuery-specific DOM manipulation (not generic methods)
-      /\.before\(\s*function\s*\(\s*\)\s*\{\s*return\s+jQuery/,
-      /\.after\(\s*function\s*\(\s*\)\s*\{\s*return\s+jQuery/,
-
-      // jQuery unique selectors and methods
-      /jQuery\.find\s*=\s*Sizzle/,
-      /jQuery\.unique\s*=\s*Sizzle\.uniqueSort/,
-
-      // jQuery-specific attribute handling
-      /jQuery\.attrHooks\s*=\s*\{/,
-      /jQuery\.propHooks\s*=\s*\{/,
     ],
   },
   {
@@ -98,34 +76,9 @@ export const jQuery = [
             }
             return false;
           })(),
-
-          // Check for jQuery data
-          hasJQueryData: (() => {
-            if (typeof window.jQuery === 'function') {
-              const el = document.createElement('div');
-              const testKey = 'jqueryDataTest';
-              window.jQuery(el).data(testKey, true);
-              const hasData = !!window.jQuery(el).data(testKey);
-              window.jQuery(el).removeData(testKey);
-              return hasData;
-            }
-            return false;
-          })(),
-
-          // Check for jQuery event system
-          hasEventSystem: (() => {
-            if (typeof window.jQuery === 'function') {
-              return (
-                typeof window.jQuery.Event === 'function' &&
-                typeof window.jQuery.event.special === 'object'
-              );
-            }
-            return false;
-          })(),
         };
 
-        // Require at least three markers for higher confidence
-        return Object.values(markers).filter(Boolean).length >= 3;
+        return Object.values(markers).filter(Boolean).length > 0;
       });
     },
   },

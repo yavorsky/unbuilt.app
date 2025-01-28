@@ -3,29 +3,21 @@ import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const react = [
   {
-    name: 'coreRuntime' as const,
-    score: 0.3,
+    name: 'coreRuntime',
+    score: 0.9, // Highest score for React-specific internals
     scripts: [
-      // Core React object detection - highly specific to React
-      /(?:window\.)?React=\{(?:[^}]+)\}/,
-      /\.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/,
+      // React-specific internal markers that aren't used by other libraries
+      /__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED/, // Unique to React, present since early versions
 
-      // React symbol registration - unique to React
-      /Symbol\.for\(["']react\.element["']\)/,
-      /Symbol\.for\(["']react\.fragment["']\)/,
-      /Symbol\.for\(["']react\.forward_ref["']\)/,
+      // React's internal namespacing - unique to React
+      /__reactFiber[$\w]+/, // React Fiber implementation detail
+      /__reactContainer[$\w]+/, // React 18+ root container refs
 
-      // React internal properties (minification-resistant)
-      /__reactFiber[$_a-zA-Z0-9]+/, // Matches minified fiber refs
-      /__reactProps[$_a-zA-Z0-9]+/, // Matches minified props
-      /__reactContainer[$_a-zA-Z0-9]+/, // Matches minified container refs
+      // React's symbol registration - specific implementation details
+      /Symbol\.for\(['"]react\.[\w.]+['"]\)/,
 
-      // React error codes pattern (unique to React)
-      /Error\(formatProdErrorMessage\(\d+\)\)/,
-
-      // React production minified markers
-      /production\.min\.js["']\}?\)/,
-      /\?react\b.*?\.production\.min\.js/,
+      // React's internal property names - specific to React's implementation
+      /\b(?:__reactEventHandlers|__reactProps)[$\w]+/, // Event system markers
     ],
   },
   {
@@ -43,10 +35,6 @@ export const react = [
       // React 18 concurrent features
       /startTransition\s*\(\s*\(\s*\)\s*=>\s*\{/,
       /\.createBlockingRoot\s*\(/,
-
-      // React hydration markers
-      /data-react-hydrated=["']/,
-      /hydrationData(?::\s*\{|=\{)/,
     ],
   },
   {
@@ -61,58 +49,33 @@ export const react = [
       /_jsxFileName\s*:\s*["'][^"']+["']/,
 
       // Production JSX patterns
-      /_jsx\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
-      /_jsxs\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
-
-      // Classic JSX transform
-      /React\.createElement\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
+      /_jsxs?\s*\(\s*[A-Za-z_$][\w$]*\s*,\s*\{/,
     ],
   },
   {
-    name: 'hooks' as const,
-    score: 0.25,
+    name: 'internals',
+    score: 0.4,
     scripts: [
-      // Hook definitions (minification resistant)
-      /function\s+useState\s*\(\s*[a-zA-Z_$][\w$]*\s*\)\s*\{/,
-      /function\s+useEffect\s*\(\s*[a-zA-Z_$][\w$]*\s*,\s*\[/,
+      // Data attributes specific to React that survive minification
+      /\[data-reactroot\]/,
+      /data-react-hydrated/,
 
-      // React 18+ hooks with specific patterns
-      /useTransition\s*\(\s*\)\s*\{\s*(?:return\s+)?(?:React\._currentRenderer|dispatcher)/,
-      /useDeferredValue\s*\(\s*[a-zA-Z_$][\w$]*\s*\)\s*\{/,
+      // React's error boundaries pattern (unique to React)
+      /__reactError[$\w]+/,
 
-      // Hook internal markers (highly specific to React)
-      /__react_hooks__[$_a-zA-Z0-9]+/,
-      /dispatcher\s*=\s*ReactCurrentDispatcher\.current/,
+      // React's specific event system markers
+      /__reactEventHandlers[$\w]+/,
 
-      // Custom hooks pattern (following React conventions)
-      /function\s+use[A-Z]/,
-    ],
-  },
-  {
-    name: 'components' as const,
-    score: 0.2,
-    scripts: [
-      // Class components (with inheritance)
-      /class\s+[A-Za-z_$][\w$]*\s+extends\s+(?:React\.)?Component\s*\{/,
-      /class\s+[A-Za-z_$][\w$]*\s+extends\s+(?:React\.)?PureComponent\s*\{/,
-
-      // Higher-order components
-      /(?:React\.|[\W])memo\s*\(\s*(?:function|class|_)/,
-      /(?:React\.|[\W])forwardRef\s*\(\s*(?:function|class|_)/,
-
-      // Error boundary methods
-      /(?:static\s+)?getDerivedStateFromError\s*\(\s*error\s*\)\s*\{/,
-      /componentDidCatch\s*\(\s*error\s*,\s*errorInfo\s*\)\s*\{/,
+      // React's scheduler markers (unique to React)
+      /__scheduleUpdate/,
     ],
   },
   {
     name: 'reconciler' as const,
-    score: 0.15,
+    score: 0.3,
     scripts: [
       // Fiber reconciler (unique to React)
       /__reactFiber[$_a-zA-Z0-9]+/,
-      /ReactCurrentOwner\s*=\s*\{/,
-      /ReactCurrentDispatcher\s*=\s*\{/,
 
       // React 18 concurrent features
       /ReactCurrentBatchConfig\s*=\s*\{/,

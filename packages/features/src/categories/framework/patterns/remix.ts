@@ -9,7 +9,6 @@ export const remix = [
       /__remixContext/,
       /__remixManifest/,
       /__remixRouteModules/,
-      /window\.__remixRouteModules/,
       /__remix_entry__/,
     ],
   },
@@ -50,13 +49,6 @@ export const remix = [
           // DOM markers
           hasRemixDataElements: !!document.querySelector('[data-remix-run]'),
           hasRemixStateElements: !!document.querySelector('[data-remix-state]'),
-
-          // Script markers
-          hasRemixScripts: Array.from(document.scripts).some(
-            (script) =>
-              script.src?.includes('entry.client') ||
-              script.getAttribute('data-remix-run') !== null
-          ),
         };
         return Object.values(markers).some(Boolean);
       });

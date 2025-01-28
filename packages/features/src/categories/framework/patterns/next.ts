@@ -1,5 +1,4 @@
-import { Browser, Page } from 'playwright';
-import { detectSSRSignals } from '../helpers/detect-ssr-signals.js';
+import { Page } from 'playwright';
 
 export const next = [
   {
@@ -17,10 +16,6 @@ export const next = [
     scripts: [
       // Next.js-specific DOM attributes and classes
       /data-nextjs-page/,
-      /data-next-page/,
-      /data-next-page-transitions/,
-      /data-n-href/, // Next.js style preload marker
-      /data-next-font/,
     ],
   },
   {
@@ -35,11 +30,11 @@ export const next = [
   },
   {
     name: 'browser-check' as const,
-    score: 1,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasNextData: !!window.next,
+          hasNextVersion: !!window.next?.version,
           hasNextRouteLoader: typeof window.__NEXT_P !== 'undefined',
           hasNextRegistry: typeof window.__NEXT_LOADED_PAGES__ !== 'undefined',
         };
@@ -48,7 +43,7 @@ export const next = [
     },
   },
   {
-    score: 1,
+    score: 2,
     name: 'ssr' as const,
     scripts: [/getServerSideProps/, /getInitialProps/],
     browser: async (page: Page) => {
@@ -77,11 +72,12 @@ export const next = [
     },
   },
   // Generic SSR detection
-  {
-    score: 0,
-    name: 'ssr' as const,
-    browser: async (page: Page, browser: Browser) => {
-      return detectSSRSignals(page, browser);
-    },
-  },
+  // Disabling for now since this check takes too long
+  // {
+  //   score: 0,
+  //   name: 'ssr-2' as const,
+  //   browser: async (page: Page, browser: Browser) => {
+  //     return detectSSRSignals(page, browser);
+  //   },
+  // },
 ];

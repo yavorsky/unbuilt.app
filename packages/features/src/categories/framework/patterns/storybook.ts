@@ -6,11 +6,7 @@ export const storybook = [
     score: 1.0,
     scripts: [
       // Storybook-specific globals and identifiers that survive minification
-      /window\.__STORYBOOK_CLIENT_API__/,
-      /window\.__STORYBOOK_STORY_STORE__/,
-      /window\.__STORYBOOK_ADDONS_CHANNEL__/,
       /__STORYBOOK_PREVIEW__/,
-      /storybook-preview-iframe/,
     ],
   },
   {
@@ -19,11 +15,8 @@ export const storybook = [
     scripts: [
       // Storybook-specific DOM markers and attributes
       /data-storybook(-.*)?/,
-      /storybook-iframe/,
       /storybook-wrapper/,
-      /sb-show-main/,
       /sb-previewBlock/,
-      /class="sb-show/,
     ],
   },
   {
@@ -39,7 +32,7 @@ export const storybook = [
   },
   {
     name: 'browser-check' as const,
-    score: 0.9,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -48,6 +41,9 @@ export const storybook = [
             typeof window?.__STORYBOOK_CLIENT_API__ !== 'undefined',
           hasStoryStore:
             typeof window?.__STORYBOOK_STORY_STORE__ !== 'undefined',
+          hasStoryChannel:
+            typeof window?.__STORYBOOK_ADDONS_CHANNEL__ !== 'undefined',
+
           // Check for Storybook UI elements
           hasPreviewIframe: !!document.querySelector(
             '#storybook-preview-iframe'
@@ -61,7 +57,7 @@ export const storybook = [
     },
   },
   {
-    score: 0.3,
+    score: 0.5,
     name: 'addons' as const,
     scripts: [
       // Storybook addons patterns
@@ -69,7 +65,6 @@ export const storybook = [
       /STORYBOOK_ADDON_ACTIONS/,
       /STORYBOOK_ADDON_BACKGROUNDS/,
       /STORYBOOK_ADDON_DOCS/,
-      /storybook-addon-/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
