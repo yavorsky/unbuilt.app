@@ -19,7 +19,6 @@ export const nuxt = [
       // Nuxt-specific DOM attributes and markers
       /data-n-head/,
       /data-n-head-ssr/,
-      /data-hid/, // Nuxt head identifier
       /_nuxt\//, // Nuxt asset prefix
     ],
   },
@@ -58,11 +57,8 @@ export const nuxt = [
     name: 'chunks' as const,
     score: 0.8,
     filenames: [
-      // Build output directories
-      /\.nuxt\//,
-      // Configuration files
-      /nuxt\.config\./,
       // Generated directories
+      /\.nuxt\//,
       /_nuxt\//,
       /\/_nuxt\//,
     ],

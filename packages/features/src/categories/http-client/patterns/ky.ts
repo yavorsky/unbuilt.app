@@ -39,9 +39,6 @@ export const ky = [
     name: 'errorHandling' as const,
     score: 0.8,
     scripts: [
-      // Ky's unique error instance with response property pattern
-      /\.response\.(?:status|statusText|headers|body)/,
-
       // Ky's specific error handling with HTTPError
       /\{\s*status,\s*statusText,\s*response\s*\}\s*=\s*error/,
     ],
