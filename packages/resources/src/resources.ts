@@ -1,11 +1,5 @@
-import { Page } from 'playwright';
-import {
-  Resource,
-  ResourceAnalysis,
-  ResourcesMap,
-  ResourceType,
-  ScriptsMap,
-} from './types.js';
+import { Page, Request, Response } from 'playwright';
+import { Resource, ResourcesMap, ResourceType, ScriptsMap } from './types.js';
 
 export class Resources {
   private page: Page;
@@ -20,8 +14,16 @@ export class Resources {
 
   async initialize() {
     await this.page.route('**/*', async (route) => {
-      const request = route.request();
-      const resourceType = request.resourceType();
+      let resourceType: string;
+      let request: Request;
+      try {
+        request = route.request();
+        resourceType = request.resourceType();
+      } catch (error) {
+        console.error('[Page request **/*]', error);
+        await route.continue();
+        return;
+      }
 
       let content = null;
       // Intercept JS content
@@ -30,8 +32,14 @@ export class Resources {
         resourceType === 'stylesheet' ||
         resourceType === 'document'
       ) {
-        const response = await route.fetch();
-        content = await response.text();
+        try {
+          const response = await route.fetch();
+          content = await response.text();
+        } catch (error) {
+          console.error('[Page route **/*]', error);
+          await route.abort();
+          return;
+        }
       }
       this.set(
         {
@@ -47,26 +55,34 @@ export class Resources {
     });
 
     // Setup response handling
-    this.page.on('response', async (response) => {
-      const request = response.request();
-      const url = request.url();
-
-      if (this.has(url)) {
-        const resource = this.get(url);
-        if (!resource) {
-          return;
-        }
-        if (resource.size > 0 && resource.status) {
-          this.set({
-            ...resource,
-            size: (await response.body()).length,
-            status: response.status(),
-            timing: Date.now() - resource.timing,
-          });
-        }
-      }
-    });
+    this.page.on('response', this.handleResponse);
   }
+
+  handleResponse = async (response: Response) => {
+    let url: string;
+    try {
+      const request = response.request();
+      url = request.url();
+    } catch (error) {
+      console.error('[Page response]', error);
+      return;
+    }
+
+    if (this.has(url)) {
+      const resource = this.get(url);
+      if (!resource) {
+        return;
+      }
+      if (resource.size > 0 && resource.status) {
+        this.set({
+          ...resource,
+          size: (await response.body()).length,
+          status: response.status(),
+          timing: Date.now() - resource.timing,
+        });
+      }
+    }
+  };
 
   set(resource: Resource, content?: string | null) {
     this.resourcesMap.set(resource.url, {
@@ -160,64 +176,45 @@ export class Resources {
     return result;
   }
 
-  async analyze(): Promise<ResourceAnalysis> {
-    const resources = Array.from(this.resourcesMap.values());
-
-    const jsResources = resources.filter((r) => r.type === 'script');
-    const cssResources = resources.filter((r) => r.type === 'stylesheet');
-    const imageResources = resources.filter((r) => r.type === 'image');
-    const fontResources = resources.filter((r) => r.type === 'font');
-
-    return {
-      js: {
-        count: jsResources.length,
-        size: jsResources.reduce((sum, r) => sum + r.size, 0),
-        external: jsResources.filter((r) => !r.url.includes(this.page!.url()))
-          .length,
-        inline: await this.countInlineScripts(),
-      },
-      css: {
-        count: cssResources.length,
-        size: cssResources.reduce((sum, r) => sum + r.size, 0),
-        external: cssResources.filter((r) => !r.url.includes(this.page!.url()))
-          .length,
-        inline: await this.countInlineStyles(),
-      },
-      images: {
-        count: imageResources.length,
-        size: imageResources.reduce((sum, r) => sum + r.size, 0),
-        optimized: await this.countOptimizedImages(),
-      },
-      fonts: {
-        count: fontResources.length,
-        size: fontResources.reduce((sum, r) => sum + r.size, 0),
-        preloaded: await this.countPreloadedFonts(),
-      },
-    };
+  private clearAllMaps() {
+    // Clear all resource maps and cache
+    this.resourcesMap?.clear();
+    this.scriptsMap?.clear();
+    this.stylesheetsMap?.clear();
+    this.documentsMap?.clear();
+    this.cache?.clear();
   }
 
-  private async countInlineScripts(): Promise<number> {
-    return this.page!.evaluate(
-      () => document.querySelectorAll('script:not([src])').length
-    );
-  }
+  async cleanup() {
+    try {
+      // Remove the route handler
+      await this.page.unroute('**/*');
 
-  private async countInlineStyles(): Promise<number> {
-    return this.page!.evaluate(() => document.querySelectorAll('style').length);
-  }
+      // Remove response event listener
+      await this.page.removeListener('response', this.handleResponse);
 
-  private async countOptimizedImages(): Promise<number> {
-    return this.page!.evaluate(
-      () =>
-        document.querySelectorAll(
-          'img[srcset], img[loading="lazy"], picture source'
-        ).length
-    );
-  }
+      const client = await this.page.context().newCDPSession(this.page);
+      await client.send('Network.clearBrowserCache');
+      await client.send('Network.clearBrowserCookies');
+      await client.detach();
 
-  private async countPreloadedFonts(): Promise<number> {
-    return this.page!.evaluate(
-      () => document.querySelectorAll('link[rel="preload"][as="font"]').length
-    );
+      // Clear all maps using the extracted method
+      this.clearAllMaps();
+
+      // Clear any circular references
+      if (this.page) {
+        // @ts-expect-error - Clear the reference to allow garbage collection
+        this.page = null;
+      }
+
+      // Force garbage collection if available in the environment
+      if (global.gc) {
+        global.gc();
+      }
+    } catch (error) {
+      console.error('[Resources] Error during cleanup:', error);
+      // Even if there's an error, try to clear maps to prevent memory leaks
+      this.clearAllMaps();
+    }
   }
 }

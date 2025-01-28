@@ -16,6 +16,9 @@ export class BrowserManager {
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
+          // No need to preserve web security in headless mode without any session
+          '--disable-web-security',
+          '--disable-features=IsolateOrigins,site-per-process',
           '--disable-gpu',
         ],
       });
