@@ -5,43 +5,67 @@ export const lucide = [
     name: 'compilation' as const,
     score: 0.6,
     scripts: [
-      // Optimized imports - combined patterns with length limits
-      /(?:from\s+["']lucide|import\s*\{[^}]{1,200}\}\s*from\s*["']lucide)(?:-react)?\b/,
+      // Import patterns - captures both default and named imports
+      /(?:from\s+["']lucide|import\s*\{[^}]{1,200}\}\s*from\s*["']lucide)(?:-react|-vue|-svelte|-angular)?\b/,
 
-      // Optimized icon usage - consolidated common icons with boundary
-      /\<(?:Camera|User|Settings|ChevronDown|Menu|Search|Bell|Home|Plus|X|Check)\b/,
+      // Icon component patterns - focusing on unique Lucide naming conventions
+      /\<(?:LucideIcon|Icon(?:Base|Props|Context)|createLucideIcon)\b/,
 
-      // Optimized class patterns - combined with boundary
-      /lucide-[a-zA-Z-]{1,30}\b/,
+      // Unique Lucide icon attribute combinations
+      /(?:strokeLinecap|strokeLinejoin|strokeWidth)="(?:round|2)"/,
 
-      // Optimized SVG patterns - consolidated with boundaries
-      /(?:stroke-(?:[23]|linecap="round"|linejoin="round")|currentColor)\b/,
+      // Lucide-specific icon names with semantic boundaries
+      /\b(?:ArrowRight(?:Circle|Square)|ChevronDown(?:Circle|Square)|FileText|MessageCircle|MoreVertical|Settings2|UserCircle2)\b/,
+
+      // Lucide-specific class naming patterns
+      /lucide-icon-[a-zA-Z0-9-]{1,40}\b/,
+
+      // Lucide configuration patterns
+      /\.setDefault\(\{[^}]*strokeLinecap:\s*["']round["']/,
     ],
   },
   {
     name: 'browser' as const,
-    score: 0.7,
+    score: 0.8,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Optimized attribute check - single query with multiple attributes
-          hasLucideAttributes:
-            document.querySelector(
-              'svg[stroke="currentColor"][fill="none"][stroke-width="2"]'
-            ) !== null,
+          // Check for Lucide's unique SVG structure and attributes
+          hasLucideSVGPattern: (() => {
+            const svgs = document.querySelectorAll(
+              'svg[stroke="currentColor"]'
+            );
+            return Array.from(svgs).some(
+              (svg) =>
+                svg.getAttribute('stroke-width') === '2' &&
+                svg.getAttribute('stroke-linecap') === 'round' &&
+                svg.getAttribute('stroke-linejoin') === 'round' &&
+                svg.getAttribute('fill') === 'none'
+            );
+          })(),
 
-          // Class check - already optimal
+          // Check for Lucide-specific data attributes
+          hasLucideDataAttrs:
+            document.querySelector('[data-lucide],[data-feather]') !== null,
+
+          // Check for Lucide's global namespace objects
+          hasLucideGlobals: !!(
+            window.lucide ||
+            window.LucideIcon ||
+            window.createLucideIcon
+          ),
+
+          // Check for Lucide's unique class patterns
           hasLucideClasses:
-            document.querySelector('[class*="lucide-"]') !== null,
-
-          // Optimized SVG structure check - more efficient query
-          hasLucideSVGStructure:
             document.querySelector(
-              'svg[stroke-linecap="round"][stroke-linejoin="round"]'
+              '.lucide,.lucide-icon,[class*="lucide-"]'
             ) !== null,
 
-          // Global check - simplified
-          hasLucideGlobal: typeof window.lucide === 'object',
+          // Check for Lucide's unique element structure
+          hasLucideElements:
+            document.querySelector(
+              'svg > [stroke-linecap="round"][stroke-linejoin="round"]'
+            ) !== null,
         };
 
         return Object.values(markers).some(Boolean);
@@ -50,17 +74,36 @@ export const lucide = [
   },
   {
     name: 'files' as const,
-    score: 0.2,
+    score: 0.3,
     filenames: [
-      // Optimized package files - combined patterns with boundaries
-      /lucide(?:-react)?(?:\.[a-f0-9]{8})?\.js$/,
+      // Package files with hash patterns
+      /lucide(?:-react|-vue|-svelte|-angular)?(?:\.[a-f0-9]{8,12})?\.(?:js|mjs|cjs)$/,
 
-      // Optimized chunk names - added length limits
-      /chunk-lucide-[\w-]{1,30}\.js$/,
-      /icons\.[a-f0-9]{8}\.js$/,
+      // Chunk files with Lucide-specific naming
+      /chunk-lucide-[a-zA-Z0-9-]{1,40}\.js$/,
 
-      // Optimized build outputs - added hash length limit
-      /vendor\.lucide\.[a-f0-9]{8}\.js$/,
+      // Icon-specific chunk patterns
+      /icons-lucide\.[a-f0-9]{8,12}\.js$/,
+
+      // Vendor bundles containing Lucide
+      /vendor\.(?:lucide|icons)\.[a-f0-9]{8,12}\.js$/,
+
+      // ESM module patterns
+      /lucide\.esm\.[a-f0-9]{8,12}\.js$/,
+    ],
+  },
+  {
+    name: 'styles' as const,
+    score: 0.2,
+    stylesheets: [
+      // Lucide-specific CSS class patterns
+      /\.lucide(?:-icon)?(?:\[[^\]]+\]|\.[a-zA-Z0-9-]+)?\s*\{[^}]*\}/,
+
+      // Lucide animation classes
+      /\.lucide-(?:spin|pulse|rotate-\d+)/,
+
+      // Icon-specific styling
+      /(?:\.lucide|\[data-lucide\])\s*>\s*\*/,
     ],
   },
 ];
