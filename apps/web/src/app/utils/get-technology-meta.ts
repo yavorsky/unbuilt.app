@@ -12,10 +12,14 @@ import {
   datesMeta,
   stylingLibrariesMeta,
   transpilerMeta,
+  platformMeta,
 } from '@unbuilt/features';
-import type { Meta } from '@unbuilt/features';
+import type { AnalysisFeatures, Meta } from '@unbuilt/features';
 
-const technologyMetaMap = {
+const technologyMetaMap: Record<
+  keyof AnalysisFeatures,
+  Record<string, Record<string, Meta<string[] | undefined>>>
+> = {
   bundler: bundlerMeta,
   framework: frameworkMeta,
   minifier: minifierMeta,
@@ -25,6 +29,7 @@ const technologyMetaMap = {
   stateManagement: stateManagementMeta,
   httpClient: httpClientMeta,
   router: routerMeta,
+  platform: platformMeta,
   translations: translationsMeta,
   dates: datesMeta,
   stylingLibraries: stylingLibrariesMeta,

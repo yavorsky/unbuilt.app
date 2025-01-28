@@ -4,6 +4,7 @@ import {
   bundler,
   framework,
   httpClient,
+  platform,
   translations,
   minifier,
   modules,
@@ -36,14 +37,24 @@ export const analyze = async (
     throw new Error(errors.RESOURCE_NOT_AVAILABLE);
   }
 
-  // TODO: Resources to function
   const resources = new Resources(page);
-  await resources.initialize();
 
-  await page.goto(url, {
-    waitUntil: 'networkidle',
-    timeout: 30000,
-  });
+  try {
+    await resources.initialize();
+
+    await page.goto(url, {
+      waitUntil: 'domcontentloaded', // First wait for DOM
+      timeout: 25000,
+    });
+    // Then wait for additional states
+    await Promise.all([
+      page.waitForLoadState('load', { timeout: 15000 }),
+      page.waitForLoadState('networkidle', { timeout: 15000 }),
+    ]);
+  } catch (error) {
+    console.error('[Resources loading error]', error);
+    throw new Error(errors.RESOURCE_NOT_AVAILABLE);
+  }
 
   const onProgress = createProgressTracker(
     url,
@@ -54,12 +65,16 @@ export const analyze = async (
   );
   const analysis = {} as AnalysisFeaturesWithStats;
 
+  analysis.framework = await framework.detect(page, browser, resources);
+  onProgress({ framework: analysis.framework });
+  analysis.uiLibrary = await uiLibrary.detect(page, browser, resources);
+  onProgress({ uiLibrary: analysis.uiLibrary });
+  analysis.router = await router.detect(page, browser, resources);
+  onProgress({ router: analysis.router });
   analysis.bundler = await bundler.detect(page, browser, resources);
   onProgress({ bundler: analysis.bundler });
   analysis.transpiler = await transpiler.detect(page, browser, resources);
   onProgress({ transpiler: analysis.transpiler });
-  analysis.framework = await framework.detect(page, browser, resources);
-  onProgress({ framework: analysis.framework });
   analysis.minifier = await minifier.detect(page, browser, resources);
   onProgress({ minifier: analysis.minifier });
   analysis.stylingProcessor = await stylingProcessor.detect(
@@ -70,10 +85,10 @@ export const analyze = async (
   onProgress({ stylingProcessor: analysis.stylingProcessor });
   analysis.modules = await modules.detect(page, browser, resources);
   onProgress({ modules: analysis.modules });
-  analysis.uiLibrary = await uiLibrary.detect(page, browser, resources);
-  onProgress({ uiLibrary: analysis.uiLibrary });
   analysis.httpClient = await httpClient.detect(page, browser, resources);
   onProgress({ httpClient: analysis.httpClient });
+  analysis.platform = await platform.detect(page, browser, resources);
+  onProgress({ platform: analysis.platform });
   analysis.stateManagement = await stateManagement.detect(
     page,
     browser,
@@ -82,8 +97,6 @@ export const analyze = async (
   onProgress({ stateManagement: analysis.stateManagement });
   analysis.dates = await dates.detect(page, browser, resources);
   onProgress({ dates: analysis.dates });
-  analysis.router = await router.detect(page, browser, resources);
-  onProgress({ router: analysis.router });
   analysis.stylingLibraries = await stylingLibraries.detect(
     page,
     browser,
@@ -112,6 +125,7 @@ export const analyze = async (
     analysis.router,
     analysis.stylingLibraries,
     analysis.translations,
+    analysis.platform,
   ] = await Promise.all([
     bundler.detect(page, browser, resources, analysis),
     transpiler.detect(page, browser, resources, analysis),
@@ -126,6 +140,7 @@ export const analyze = async (
     router.detect(page, browser, resources, analysis),
     stylingLibraries.detect(page, browser, resources, analysis),
     translations.detect(page, browser, resources, analysis),
+    platform.detect(page, browser, resources, analysis),
   ]);
 
   const finishedAt = new Date();
@@ -140,10 +155,13 @@ export const analyze = async (
   };
 
   handleProgress(result, 100);
+
+  await resources.cleanup();
+
   return result;
 };
 
-type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
+export type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
 export type AnalyzeResult = {
   url: string;
   id: string;

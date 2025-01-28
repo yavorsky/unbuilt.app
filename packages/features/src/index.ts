@@ -38,6 +38,9 @@ export * as stylingLibrariesMeta from './categories/styling-libraries/meta/index
 export * as transpiler from './categories/transpiler/index.js';
 export * as transpilerMeta from './categories/transpiler/meta/index.js';
 
+export * as platform from './categories/platform/index.js';
+export * as platformMeta from './categories/platform/meta/index.js';
+
 // Utils to calculate results
 export * from './utils/index.js';
 
