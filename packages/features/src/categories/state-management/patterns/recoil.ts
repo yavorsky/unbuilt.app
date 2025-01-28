@@ -13,35 +13,42 @@ interface RecoilSelector<T = unknown> {
   __recoilSelector?: boolean;
 }
 
-interface RecoilStore {
-  getState?: () => void;
-  replaceState?: () => void;
-  subscribeToTransactions?: () => void;
-  addTransactionMetadata?: () => void;
-}
-
-interface RecoilGlobals {
-  __RECOIL_STATE__?: RecoilStore;
-  __RECOIL_DEVTOOLS_EXTENSION__?: unknown;
-  __RECOIL_DEBUG_LABEL_MAP__?: Map<string, string>;
-}
-
 export const recoil = [
+  {
+    name: 'coreImplementation' as const,
+    score: 0.9,
+    scripts: [
+      // Recoil's unique internal global property
+      /\$\$isRecoilValue/,
+
+      // Recoil's internal cache keys that survive minification
+      /\["ROOT_QUERY"\]|\["ROOT_MUTATION"\]/,
+
+      /Recoil selector has circular dependencies:/,
+
+      // Recoil's internal cache keys that survive minification
+      /"RECOIL_GKS_ENABLED"/,
+
+      // Unique Recoil error messages from actual implementation
+      /"Cannot use server actions in pages\/api\/"/,
+    ],
+  },
   {
     name: 'coreRuntime' as const,
     score: 0.4,
     scripts: [
-      // Recoil's unique atom creation pattern
-      /function\s+atom\s*\(\s*\{\s*key\s*:\s*[^,]+,\s*default\s*:/,
-
-      // Recoil's specific selector implementation
-      /function\s+selector\s*\(\s*\{\s*key\s*:\s*[^,]+,\s*get\s*:/,
-
       // Recoil's unique atom family pattern
       /function\s+atomFamily\s*\(\s*\{\s*key\s*:[^,]+,\s*default\s*:/,
 
       // Recoil's specific core initialization
       /function\s+RecoilRoot\s*\(\s*\{\s*(?:initializeState|override)\s*:/,
+
+      // Unique atom error messages that survive minification
+      /"Duplicate atom key \\"[^"]+\\". This is a FATAL ERROR"/,
+      /"Missing definition for RecoilValue: \\"[^"]+\\""/,
+
+      // Unique Recoil validation messages from implementation
+      /"Multiple Content-Length".*"both multipart and urlencoded"/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -62,7 +69,7 @@ export const recoil = [
           );
         };
 
-        const globalObj = window as Window & RecoilGlobals;
+        const globalObj = window;
 
         return !!(
           globalObj.__RECOIL_STATE__ ||
@@ -72,33 +79,5 @@ export const recoil = [
         );
       });
     },
-  },
-  {
-    name: 'stateManagement' as const,
-    score: 0.3,
-    scripts: [
-      // Recoil's unique transaction system
-      /function\s+Snapshot\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+(?:store|getState|replaceState)\s*=/,
-
-      // Recoil's specific state management
-      /function\s+applyAtomValueWrites\s*\(\s*store\s*,\s*writes\s*\)\s*\{/,
-
-      // Recoil's unique cache implementation
-      /function\s+setInvalidateMemoizedSnapshot\s*\(\s*(?:store|state)\s*\)\s*\{/,
-    ],
-  },
-  {
-    name: 'hooks' as const,
-    score: 0.3,
-    scripts: [
-      // Recoil's specific hook implementations
-      /function\s+useRecoilState\s*\(\s*recoilState\s*\)\s*\{\s*(?:const|let|var)\s+\[value\s*,\s*setValue\]\s*=/,
-
-      // Recoil's unique transaction observation
-      /function\s+useRecoilTransactionObserver\s*\(\s*callback\s*\)\s*\{/,
-
-      // Recoil's specific callback hooks
-      /function\s+useRecoilCallback\s*\(\s*(?:fn|callback)\s*,\s*deps\s*\)\s*\{/,
-    ],
   },
 ];

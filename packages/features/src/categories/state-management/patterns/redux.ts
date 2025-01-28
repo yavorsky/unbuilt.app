@@ -5,6 +5,9 @@ export const redux = [
     name: 'coreRuntime' as const,
     score: 0.5,
     scripts: [
+      /"@@redux\/INIT[^"]+"/,
+      /"@@redux\/REPLACE[^"]+"/,
+      /"@@redux\/PROBE_UNKNOWN_ACTION[^"]+"/,
       // Redux's unique store implementation with currentReducer and currentState
       /function\s+createStore\s*\([^)]*\)\s*\{\s*(?:var|let|const)\s+currentReducer\s*=\s*reducer(?:\s*;)?\s*(?:var|let|const)\s+currentState\s*=\s*preloadedState/,
 
@@ -14,8 +17,12 @@ export const redux = [
       // Redux's specific store enhancer pattern
       /if\s*\(typeof\s+enhancer\s*!==\s*['"]undefined['"]\)\s*\{\s*if\s*\(typeof\s+enhancer\s*!==\s*['"]function['"]\)\s*\{\s*throw/,
 
-      // Redux's unique action type validation
-      /if\s*\(\s*typeof\s+action\.type\s*===\s*['"]undefined['"]\s*\)\s*\{\s*throw\s+new\s+Error\s*\(['"](Actions|Reducers)[^'"]*['"]\)/,
+      // Redux's unique error message URLs that survive minification
+      /visit https:\/\/redux\.js\.org\/Errors\?code=/,
+
+      // Redux's specific Symbol.observable implementation
+      /"@@observable"/,
+      /Symbol\.observable\|\|"@@observable"/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -46,31 +53,46 @@ export const redux = [
     },
   },
   {
-    name: 'toolkit' as const,
-    score: 0.3,
+    name: 'dispatchValidation' as const,
+    score: 0.8,
     scripts: [
-      // RTK's unique createSlice implementation details
-      /createSlice\s*\(\s*\{\s*name:\s*[^,]+,\s*initialState:[^,]+,\s*reducers:\s*\{[\s\S]*\}\s*\}\)/,
-
-      // RTK's specific Immer integration pattern
-      /produce\s*\(\s*state\s*,\s*(?:function\s*\([^)]*\)|[^,]+)\s*=>\s*\{\s*state\./,
-
-      // RTK's unique createEntityAdapter implementation
-      /createEntityAdapter\s*\(\s*\{\s*selectId:\s*(?:function\s*\([^)]*\)|[^,]+)\s*=>\s*[^,]+(?:,\s*sortComparer:\s*(?:function\s*\([^)]*\)|[^}]+))?\s*\}\)/,
+      // Redux's unique dispatch validation error messages
+      /"Actions must be plain objects\. Instead, the actual type was: '[^']+'\. You may need to add middleware"/,
+      /'Actions may not have an undefined "type" property'/,
+      /"Action \\"type\\" property must be a string"/,
+    ],
+  },
+  {
+    name: 'devToolsMarkers' as const,
+    score: 0.7,
+    scripts: [
+      // Redux DevTools specific messages and formats
+      /"You may not call store\.subscribe\(\) while the reducer is executing"/,
+      /"Reducers may not dispatch actions"/,
+      /"The slice reducer for key [^"]+ returned undefined during initialization"/,
     ],
   },
   {
     name: 'reactRedux' as const,
     score: 0.3,
     scripts: [
-      // React-Redux's unique Subscription implementation
-      /function\s+createSubscription\s*\(store\)\s*\{\s*(?:var|let|const)\s+unsubscribe\s*;\s*function\s+onStateChange\s*\(\)/,
+      // React-Redux's unique context symbol
+      /Symbol\.for\(["']react-redux-context["']\)/,
 
-      // React-Redux's specific store validation
-      /function\s+checkStoreShape\s*\(store\)\s*\{\s*(?:var|const|let)\s+missingMethods\s*=\s*\[\s*(?:['"]getState['"],?\s*['"]dispatch['"],?\s*['"]subscribe['"]\s*)*\]\.filter\(/,
+      // React-Redux's specific error messages
+      /"Invalid value of type .* for mapDispatchToProps argument when connecting component/,
 
-      // React-Redux's unique batch implementation
-      /function\s+batch\s*\(callback\)\s*\{\s*return\s*callback\(\)\s*\}/,
+      // React-Redux's HOC pattern with unique ref name
+      /Connect\([^)]+\).*reactReduxForwardedRef/,
+
+      // React-Redux's internal property
+      /\["__reactRedux"\]/,
+
+      // React-Redux's specific subscription handling
+      /notifyNestedSubs/,
+
+      // React-Redux's unique state sync patterns
+      /\{reactReduxForwardedRef:.*getServerState:.*\}/,
     ],
   },
 ];
