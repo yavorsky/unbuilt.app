@@ -125,7 +125,7 @@ export const react = [
   },
   {
     name: 'runtimeExecution' as const,
-    score: 0.3,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -141,7 +141,7 @@ export const react = [
             // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Older version of react dom
             (!!(window.ReactDOM as any).createRoot || !!window.ReactDOM.render),
 
-          // Check for React internals (highly specific)
+          // Check for React internals
           hasInternals:
             typeof window.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED ===
             'object',
