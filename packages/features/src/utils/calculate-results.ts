@@ -67,6 +67,9 @@ async function processPatterns<Names extends string>(
 
   for (const pattern of patterns) {
     if (pattern.scripts) {
+      if (debug) {
+        console.time('scripts');
+      }
       for (const runtimePattern of pattern.scripts) {
         let matched = false;
         try {
@@ -98,9 +101,15 @@ async function processPatterns<Names extends string>(
           }
         }
       }
+      if (debug) {
+        console.timeEnd('Patterns');
+      }
     }
 
     if (pattern.stylesheets) {
+      if (debug) {
+        console.time('stylesheets');
+      }
       for (const runtimePattern of pattern.stylesheets) {
         let matched = false;
         try {
@@ -125,9 +134,15 @@ async function processPatterns<Names extends string>(
           }
         }
       }
+      if (debug) {
+        console.timeEnd('stylesheets');
+      }
     }
 
     if (pattern.filenames) {
+      if (debug) {
+        console.time('filenames');
+      }
       for (const filenamePattern of pattern.filenames) {
         let matched = false;
         try {
@@ -153,9 +168,15 @@ async function processPatterns<Names extends string>(
           }
         }
       }
+      if (debug) {
+        console.timeEnd('filenames');
+      }
     }
 
     if (pattern.browser) {
+      if (debug) {
+        console.time('browser');
+      }
       let isMatched = false;
       try {
         isMatched = await pattern.browser(page, browser);
@@ -171,6 +192,9 @@ async function processPatterns<Names extends string>(
         if (debug) {
           console.log('Matched Browser: ', pattern.name, pattern.score);
         }
+      }
+      if (debug) {
+        console.timeEnd('browser');
       }
     }
   }
