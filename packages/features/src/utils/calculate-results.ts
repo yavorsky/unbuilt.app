@@ -52,7 +52,8 @@ async function processPatterns<Names extends string>(
   resources: Resources,
   page: Page,
   browser: Browser,
-  debug: boolean = false
+  debug: boolean = false,
+  type: string = ''
 ): Promise<ProcessPatternsResult<Names>> {
   const scriptsContent = resources.getAllScriptsContent();
   const stylesheetsContent = resources.getAllScriptsContent();
@@ -68,7 +69,7 @@ async function processPatterns<Names extends string>(
   for (const pattern of patterns) {
     if (pattern.scripts) {
       if (debug) {
-        console.time('scripts');
+        console.time(`scripts ${type}`);
       }
       for (const runtimePattern of pattern.scripts) {
         let matched = false;
@@ -91,24 +92,24 @@ async function processPatterns<Names extends string>(
         if (matched) {
           result.totalScore += pattern.score;
           result.matchedPatterns.add(pattern.name);
-          if (debug) {
-            console.log(
-              'Matched runtime scripts: ',
-              pattern.name,
-              pattern.score,
-              runtimePattern
-            );
-          }
+          // if (debug) {
+          //   console.log(
+          //     'Matched runtime scripts: ',
+          //     pattern.name,
+          //     pattern.score,
+          //     runtimePattern
+          //   );
+          // }
         }
       }
       if (debug) {
-        console.timeEnd('Patterns');
+        console.timeEnd(`scripts ${type}`);
       }
     }
 
     if (pattern.stylesheets) {
       if (debug) {
-        console.time('stylesheets');
+        console.time(`stylesheets ${type}`);
       }
       for (const runtimePattern of pattern.stylesheets) {
         let matched = false;
@@ -124,24 +125,24 @@ async function processPatterns<Names extends string>(
         if (matched) {
           result.totalScore += pattern.score;
           result.matchedPatterns.add(pattern.name);
-          if (debug) {
-            console.log(
-              'Matched runtime stylesheets: ',
-              pattern.name,
-              pattern.score,
-              runtimePattern
-            );
-          }
+          // if (debug) {
+          //   console.log(
+          //     'Matched runtime stylesheets: ',
+          //     pattern.name,
+          //     pattern.score,
+          //     runtimePattern
+          //   );
+          // }
         }
       }
       if (debug) {
-        console.timeEnd('stylesheets');
+        console.timeEnd(`stylesheets ${type}`);
       }
     }
 
     if (pattern.filenames) {
       if (debug) {
-        console.time('filenames');
+        console.time(`filenames ${type}`);
       }
       for (const filenamePattern of pattern.filenames) {
         let matched = false;
@@ -158,24 +159,24 @@ async function processPatterns<Names extends string>(
         if (matched) {
           result.totalScore += pattern.score;
           result.matchedPatterns.add(pattern.name);
-          if (debug) {
-            console.log(
-              'Matched filenames: ',
-              pattern.name,
-              pattern.score,
-              filenamePattern
-            );
-          }
+          // if (debug) {
+          //   console.log(
+          //     'Matched filenames: ',
+          //     pattern.name,
+          //     pattern.score,
+          //     filenamePattern
+          //   );
+          // }
         }
       }
       if (debug) {
-        console.timeEnd('filenames');
+        console.timeEnd(`filenames ${type}`);
       }
     }
 
     if (pattern.browser) {
       if (debug) {
-        console.time('browser');
+        console.time(`browser ${type}`);
       }
       let isMatched = false;
       try {
@@ -189,12 +190,12 @@ async function processPatterns<Names extends string>(
       if (isMatched) {
         result.totalScore += pattern.score;
         result.matchedPatterns.add(pattern.name);
-        if (debug) {
-          console.log('Matched Browser: ', pattern.name, pattern.score);
-        }
+        // if (debug) {
+        //   console.log('Matched Browser: ', pattern.name, pattern.score);
+        // }
       }
       if (debug) {
-        console.timeEnd('browser');
+        console.timeEnd(`browser ${type}`);
       }
     }
   }
@@ -293,7 +294,8 @@ export async function calculateResults<
           resources,
           page,
           browser,
-          debug
+          debug,
+          name
         );
       }
       return {
