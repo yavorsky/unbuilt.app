@@ -5,48 +5,51 @@ export const shadcn = [
     name: 'compilation' as const,
     score: 0.6,
     scripts: [
-      // Optimized data attribute pattern - consolidated into a single regex with non-capturing groups
+      // shadcn/ui specific data attributes
       /data-\[tw-(?:accordion|alert|aspect|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context|dialog|dropdown|hover|input|label|menubar|navigation|popover|progress|radio|scroll|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)\]/,
 
-      // Optimized class variant pattern - reduced backtracking
+      // shadcn/ui's specific variant patterns
       /class=["'](?:[^"']{0,100}?\s)?(?:destructive|outline|secondary|ghost|link)(?:\s[^"']{0,100})?["']/,
 
-      // Optimized component imports - consolidated pattern
+      // shadcn/ui's unique component file structure
       /from\s+["']@\/components\/ui\/(?:accordion|alert-dialog|aspect-ratio|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context-menu|dialog|dropdown-menu|hover-card|input|label|menubar|navigation-menu|popover|progress|radio-group|scroll-area|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)["']/,
 
-      // Optimized theme imports - more specific boundary
+      // shadcn/ui specific theme imports
       /from\s+["']@\/components\/ui\/themes\/(?:light|dark)["']/,
 
-      // Optimized hook pattern - consolidated
-      /use(?:Toast|Dialog|Sheet|Command|Dropdown|HoverCard|Tabs)Context\b/,
-
-      // Optimized variant configuration - bounded search
+      // shadcn/ui's variant configuration
       /\{[^}]{0,500}variant:\s*['"](?:destructive|outline|secondary|ghost|link)["']/,
+
+      // shadcn/ui specific component configuration
+      /cn\(\s*buttonVariants\(\{[^}]*variant:/,
+      /cn\(\s*alertVariants\(\{[^}]*variant:/,
+      /cn\(\s*cardVariants\(\{[^}]*variant:/,
+
+      // shadcn/ui's specific className patterns with cn utility
+      /cn\(\s*["'](?:fixed|absolute)\s+(?:inset-0|inset-x-0|inset-y-0)\s+z-50\s+flex\s+items-center\s+justify-center["']/,
     ],
   },
   {
     name: 'browser' as const,
-    score: 0.7,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Optimized selectors - using more specific attribute selectors
-          hasShadcnComponents: [
-            '[data-tw-accordion]',
-            '[data-tw-alert-dialog]',
-            '[data-tw-hover-card]',
-            '[data-tw-dropdown-menu]',
-          ].some((selector) => document.querySelector(selector)),
-
-          // Optimized variant class check - more specific selector
+          // Check for shadcn/ui specific variants
           hasVariants:
             document.querySelector(
               '.destructive[class*="hover:bg-destructive"]'
             ) !== null,
 
-          // Theme config check remains the same as it's already optimal
+          // Check for shadcn/ui theme configuration
           hasThemeConfig:
             document.querySelector('[data-shadcn-theme]') !== null,
+
+          // Check for shadcn/ui specific class combinations
+          hasShadcnStyles:
+            document.querySelector(
+              '[class*="rounded-md bg-background p-4 text-foreground"]'
+            ) !== null,
         };
 
         try {
@@ -57,22 +60,5 @@ export const shadcn = [
         }
       });
     },
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Optimized component files pattern - removed unnecessary capturing groups
-      /(?:^|\/)@shadcn\/ui\/(?:accordion|alert-dialog|aspect-ratio|avatar|badge|calendar|card|carousel|checkbox|collapsible|command|context-menu|dialog|dropdown-menu|hover-card|input|label|menubar|navigation-menu|popover|progress|radio-group|scroll-area|select|separator|sheet|skeleton|slider|switch|table|tabs|textarea|toggle|tooltip)$/,
-
-      // Configuration files - already optimal
-      /components\.json$/,
-      /registry\.json$/,
-      /shadcn\.config\.ts$/,
-
-      // Build outputs - added length limits
-      /shadcn-ui\.registry\.[a-f0-9]{8}\.js$/,
-      /shadcn-components\.[a-f0-9]{8}\.js$/,
-    ],
   },
 ];
