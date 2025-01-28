@@ -69,7 +69,7 @@ async function processPatterns<Names extends string>(
   for (const pattern of patterns) {
     if (pattern.scripts) {
       if (debug) {
-        console.time(`scripts ${type}`);
+        console.time(`scripts ${type} ${pattern.name}`);
       }
       for (const runtimePattern of pattern.scripts) {
         let matched = false;
@@ -103,13 +103,13 @@ async function processPatterns<Names extends string>(
         }
       }
       if (debug) {
-        console.timeEnd(`scripts ${type}`);
+        console.timeEnd(`scripts ${type} ${pattern.name}`);
       }
     }
 
     if (pattern.stylesheets) {
       if (debug) {
-        console.time(`stylesheets ${type}`);
+        console.time(`stylesheets ${type} ${pattern.name}`);
       }
       for (const runtimePattern of pattern.stylesheets) {
         let matched = false;
@@ -136,13 +136,13 @@ async function processPatterns<Names extends string>(
         }
       }
       if (debug) {
-        console.timeEnd(`stylesheets ${type}`);
+        console.timeEnd(`stylesheets ${type} ${pattern.name}`);
       }
     }
 
     if (pattern.filenames) {
       if (debug) {
-        console.time(`filenames ${type}`);
+        console.time(`filenames ${type} ${pattern.name}`);
       }
       for (const filenamePattern of pattern.filenames) {
         let matched = false;
@@ -170,13 +170,13 @@ async function processPatterns<Names extends string>(
         }
       }
       if (debug) {
-        console.timeEnd(`filenames ${type}`);
+        console.timeEnd(`filenames ${type} ${pattern.name}`);
       }
     }
 
     if (pattern.browser) {
       if (debug) {
-        console.time(`browser ${type}`);
+        console.time(`browser ${type} ${pattern.name}`);
       }
       let isMatched = false;
       try {
@@ -195,7 +195,7 @@ async function processPatterns<Names extends string>(
         // }
       }
       if (debug) {
-        console.timeEnd(`browser ${type}`);
+        console.timeEnd(`browser ${type} ${pattern.name}`);
       }
     }
   }
