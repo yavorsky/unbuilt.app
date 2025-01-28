@@ -14,7 +14,8 @@ import { BrowserContext } from 'playwright';
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-export const ANALYSIS_TIMEOUT = 50000; // 50 seconds
+export const ANALYSIS_TIMEOUT = 60000; // 50 seconds
+const STALL_CHECK_INTERVAL = 30 * 1000; // Check for stalled jobs every 30 seconds
 
 export class QueueManager {
   private static instance: QueueManager;
@@ -57,8 +58,8 @@ export class QueueManager {
             delay: RETRY_DELAY,
           },
           timeout: ANALYSIS_TIMEOUT,
-          stallInterval: ANALYSIS_TIMEOUT, // Check for stalled jobs every 30 seconds
-          maxStalledCount: 1, // Number of times a job can be marked as stalled before being moved to failed
+          stallInterval: STALL_CHECK_INTERVAL, // Check for stalled jobs
+          maxStalledCount: 2, // Number of times a job can be marked as stalled before being moved to failed
         },
         limiter: {
           max: CONCURRENT_JOBS, // Match with number of browser instances
@@ -66,8 +67,9 @@ export class QueueManager {
           bounceBack: true, // Queue up if limit is hit
         },
         settings: {
-          stalledInterval: ANALYSIS_TIMEOUT, // Check for stalled jobs (in ms)
-          maxStalledCount: 1, // Mark as stalled for 1 check
+          lockDuration: ANALYSIS_TIMEOUT,
+          stallInterval: STALL_CHECK_INTERVAL, // Check for stalled jobs (in ms)
+          maxStalledCount: 2,
         },
       } as QueueOptions);
 
