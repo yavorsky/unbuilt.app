@@ -22,21 +22,27 @@ interface PiniaStore extends PiniaStoreMethods, PiniaInternals {}
 
 export const pinia = [
   {
+    name: 'coreImplementation' as const,
+    score: 0.9,
+    scripts: [
+      // Pinia's unique Symbol and emoji prefix that survive minification
+      /Symbol\(["']pinia["']\)/,
+      /"🍍 Pinia \(root\)"/,
+      /"🍍 "/,
+
+      // Pinia's specific error messages with unique prefix
+      /"\[Pinia\]: skipping hmr because store doesn't exist yet"/,
+
+      // Pinia's specific event and mutation type strings
+      /"pinia:mutations"/,
+      /MutationType\.direct/,
+      /MutationType\.patchFunction/,
+      /MutationType\.patchObject/,
+    ],
+  },
+  {
     name: 'coreRuntime' as const,
     score: 0.4,
-    scripts: [
-      // Pinia's unique store creation pattern
-      /function\s+defineStore\s*\(\s*idOrOptions\s*,\s*setup\s*,\s*setupOptions\s*\)\s*\{\s*let\s+id\s*;?\s*let\s+options;?\s*(?:const|let|var)\s+isSetupStore/,
-
-      // Pinia's specific store setup implementation
-      /function\s+createOptionsStore\s*\(\s*id\s*,\s*options\s*,\s*pinia\s*,\s*hot\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*reactive/,
-
-      // Pinia's unique plugin system implementation
-      /function\s+createPinia\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+scope\s*=\s*effectScope\s*\(true\)/,
-
-      // Pinia's specific state management
-      /function\s+patchObject\s*\(\s*(?:state|source|target)\s*,\s*(?:state|source|target)\s*,\s*(?:store|replaced)\s*\)\s*\{/,
-    ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const isPiniaStore = (obj: unknown): obj is PiniaStore => {
@@ -78,31 +84,20 @@ export const pinia = [
     },
   },
   {
-    name: 'storeFeatures' as const,
-    score: 0.3,
+    name: 'stateImplementation' as const,
+    score: 0.8,
     scripts: [
-      // Pinia's unique state subscription system
-      /function\s+addSubscription\s*\(\s*(?:subscriptions|store)\s*,\s*callback\s*,\s*detached\s*,\s*onCleanup\s*\)\s*\{\s*(?:const|let|var)\s+removeSubscription/,
-
-      // Pinia's specific store reset implementation
-      /\$reset\s*:\s*function\s*\(\s*\)\s*\{\s*(?:const|let|var)\s+store\s*=\s*this\s*;\s*store\.\$patch\s*\(\s*\(state\)\s*=>/,
-
-      // Pinia's unique store $patch implementation
-      /\$patch\s*:\s*function\s*\(\s*partialStateOrMutator\s*\)\s*\{\s*(?:let|const|var)\s+subscriptionMutation/,
+      // Pinia's specific logo URL that survives minification
+      /"https:\/\/pinia\.vuejs\.org\/logo\.svg"/,
     ],
   },
   {
-    name: 'devtools' as const,
-    score: 0.3,
+    name: 'devtoolsImplementation' as const,
+    score: 0.7,
     scripts: [
-      // Pinia's unique devtools integration
-      /function\s+addStoreToDevtools\s*\(\s*app\s*,\s*store\s*\)\s*\{\s*if\s*\(typeof\s*window\s*!==\s*['"]undefined['"]/,
-
-      // Pinia's specific state tracking for devtools
-      /function\s+formatDisplay\s*\(\s*display\s*\)\s*\{\s*return\s*\{\s*_custom:\s*\{\s*display\s*\}/,
-
-      // Pinia's unique devtools hook pattern
-      /\$subscribe\s*\(\s*callback\s*,\s*options\s*\)\s*\{\s*(?:const|let|var)\s+removeSubscription\s*=\s*addSubscription/,
+      // Pinia's specific devtools markers that survive minification
+      /"__PINIA__"/,
+      /"__PINIA_DEVTOOLS_GLOBAL_HOOK__"/,
     ],
   },
 ];

@@ -30,17 +30,21 @@ export const ngrx = [
     name: 'coreRuntime' as const,
     score: 0.4,
     scripts: [
-      // NgRx's unique store creation pattern
-      /function\s+createReducerFactory\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+(?:\w+)\s*=\s*combineReducers\s*\([^)]*\)/,
+      // NgRx's unique injection tokens that survive minification
+      /"@ngrx\/store\/init"/,
+      /"@ngrx\/store Internal Root Guard"/,
+      /"@ngrx\/store Internal Initial State"/,
+      /"@ngrx\/store Initial State"/,
 
-      // NgRx's specific action creation pattern
-      /function\s+createAction\s*\([^)]*\)\s*\{\s*return\s*(?:function\s*\([^)]*\)|[^=]+=>)\s*\{\s*return\s*\{\s*type:/,
+      // NgRx's specific update action type
+      /"@ngrx\/store\/update-reducers"/,
 
-      // NgRx's unique effect decoration
-      /@Effect\s*\(\s*\)\s*\w+\$?\s*=\s*this\.actions\$\.pipe\s*\(/,
+      // NgRx's internal state property names
+      /\["\$\$isNgrxMockEnvironment"\]/,
+      /\["\$ngrxMockState"\]/,
 
-      // NgRx's specific store module implementation
-      /StoreModule\.forRoot\s*\(\s*\{\s*(?:\w+\s*:\s*\w+(?:,\s*)?)*\}\s*\)/,
+      // NgRx's unique error messages
+      /"The root Store has been provided more than once. Feature modules should provide feature states instead."/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
@@ -73,6 +77,20 @@ export const ngrx = [
     },
   },
   {
+    name: 'storeFeatures' as const,
+    score: 0.8,
+    scripts: [
+      // NgRx's unique store feature injection tokens
+      /"@ngrx\/store Store Features"/,
+      /"@ngrx\/store Internal Store Features"/,
+      /"@ngrx\/store Feature Reducers"/,
+
+      // NgRx's unique metadata keys
+      /"@ngrx\/store\/metaReducers"/,
+      /"@ngrx\/store\/reducers"/,
+    ],
+  },
+  {
     name: 'effects' as const,
     score: 0.3,
     scripts: [
@@ -87,17 +105,14 @@ export const ngrx = [
     ],
   },
   {
-    name: 'selectors' as const,
-    score: 0.3,
+    name: 'moduleImports' as const,
+    score: 0.7,
     scripts: [
-      // NgRx's unique selector creation
-      /function\s+createSelector\s*\([^)]*\)\s*\{\s*(?:const|let|var)\s+selectors\s*=\s*arguments/,
-
-      // NgRx's specific memoization implementation
-      /function\s+defaultMemoize\s*\(\s*projectFn\s*,\s*isArgumentsEqual\s*\)\s*\{\s*(?:let|var)\s+lastArguments\s*=\s*null/,
-
-      // NgRx's unique feature selector pattern
-      /createFeatureSelector\s*\(\s*['"`]\w+['"`]\s*\)/,
+      // NgRx module imports
+      /["']\@ngrx\/store["']/,
+      /["']\@ngrx\/effects["']/,
+      /["']\@ngrx\/entity["']/,
+      /["']\@ngrx\/store-devtools["']/,
     ],
   },
 ];
