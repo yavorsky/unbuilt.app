@@ -5,9 +5,6 @@ export const nuxt = [
     name: 'core' as const,
     score: 1.0,
     scripts: [
-      // Core Nuxt globals and identifiers
-      /__NUXT__/,
-      /window\.__NUXT__/,
       /$nuxt/, // Nuxt 2 global instance
       /\$nuxt\./,
     ],
@@ -17,8 +14,6 @@ export const nuxt = [
     score: 0.9,
     scripts: [
       // Nuxt-specific DOM attributes and markers
-      /data-n-head/,
-      /data-n-head-ssr/,
       /_nuxt\//, // Nuxt asset prefix
     ],
   },
@@ -34,7 +29,7 @@ export const nuxt = [
   },
   {
     name: 'browser-check' as const,
-    score: 0.9,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -43,11 +38,7 @@ export const nuxt = [
           hasNuxtInstance: typeof window.$nuxt !== 'undefined',
 
           // DOM markers
-          hasNuxtHead: !!document.querySelector('[data-n-head]'),
           hasNuxtContainer: !!document.getElementById('__nuxt'),
-
-          // Asset patterns
-          hasNuxtAssets: !!document.querySelector('[data-hid]'),
         };
         return Object.values(markers).some(Boolean);
       });

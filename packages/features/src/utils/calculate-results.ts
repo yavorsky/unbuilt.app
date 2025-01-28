@@ -66,141 +66,197 @@ async function processPatterns<Names extends string>(
     matchedPatterns: new Set<Names>(),
   };
 
+  // Process each pattern sequentially
   for (const pattern of patterns) {
-    if (pattern.scripts) {
-      if (debug) {
-        console.time(`scripts ${type} ${pattern.name}`);
-      }
-      for (const runtimePattern of pattern.scripts) {
-        let matched = false;
-        try {
-          matched = isMatch(runtimePattern, totalContent, { timeout: 500 });
-          if (matched === undefined) {
-            console.log(
-              'Timeout while running runtime script pattern',
-              pattern.name,
-              runtimePattern
-            );
-          }
-        } catch (e) {
-          console.error(
-            `Error while running filename pattern for ${pattern.name}`,
-            e
-          );
-        }
+    await processPattern(pattern, {
+      totalContent,
+      filenames,
+      page,
+      browser,
+      debug,
+      type,
+      result,
+    });
+  }
 
-        if (matched) {
-          result.totalScore += pattern.score;
-          result.matchedPatterns.add(pattern.name);
-          // if (debug) {
-          //   console.log(
-          //     'Matched runtime scripts: ',
-          //     pattern.name,
-          //     pattern.score,
-          //     runtimePattern
-          //   );
-          // }
-        }
-      }
-      if (debug) {
-        console.timeEnd(`scripts ${type} ${pattern.name}`);
-      }
-    }
-
-    if (pattern.stylesheets) {
-      if (debug) {
-        console.time(`stylesheets ${type} ${pattern.name}`);
-      }
-      for (const runtimePattern of pattern.stylesheets) {
-        let matched = false;
-        try {
-          matched = runtimePattern.test(totalContent);
-        } catch (e) {
-          console.error(
-            `Error while running filename pattern for ${pattern.name}`,
-            e
-          );
-        }
-
-        if (matched) {
-          result.totalScore += pattern.score;
-          result.matchedPatterns.add(pattern.name);
-          // if (debug) {
-          //   console.log(
-          //     'Matched runtime stylesheets: ',
-          //     pattern.name,
-          //     pattern.score,
-          //     runtimePattern
-          //   );
-          // }
-        }
-      }
-      if (debug) {
-        console.timeEnd(`stylesheets ${type} ${pattern.name}`);
-      }
-    }
-
-    if (pattern.filenames) {
-      if (debug) {
-        console.time(`filenames ${type} ${pattern.name}`);
-      }
-      for (const filenamePattern of pattern.filenames) {
-        let matched = false;
-        try {
-          matched = filenames.some((filename) =>
-            filenamePattern.test(filename)
-          );
-        } catch (e) {
-          console.error(
-            `Error while running filename pattern for ${pattern.name}`,
-            e
-          );
-        }
-        if (matched) {
-          result.totalScore += pattern.score;
-          result.matchedPatterns.add(pattern.name);
-          // if (debug) {
-          //   console.log(
-          //     'Matched filenames: ',
-          //     pattern.name,
-          //     pattern.score,
-          //     filenamePattern
-          //   );
-          // }
-        }
-      }
-      if (debug) {
-        console.timeEnd(`filenames ${type} ${pattern.name}`);
-      }
-    }
-
-    if (pattern.browser) {
-      if (debug) {
-        console.time(`browser ${type} ${pattern.name}`);
-      }
-      let isMatched = false;
-      try {
-        isMatched = await pattern.browser(page, browser);
-      } catch (e) {
-        console.error(
-          `Error while running browser pattern for ${pattern.name}`,
-          e
-        );
-      }
-      if (isMatched) {
-        result.totalScore += pattern.score;
-        result.matchedPatterns.add(pattern.name);
-        // if (debug) {
-        //   console.log('Matched Browser: ', pattern.name, pattern.score);
-        // }
-      }
-      if (debug) {
-        console.timeEnd(`browser ${type} ${pattern.name}`);
-      }
-    }
+  if (debug) {
+    console.log(Array.from(result.matchedPatterns));
   }
 
   return result;
+}
+
+async function processPattern<Names extends string>(
+  pattern: Pattern<Names>,
+  context: {
+    totalContent: string;
+    filenames: string[];
+    page: Page;
+    browser: Browser;
+    debug: boolean;
+    type: string;
+    result: ProcessPatternsResult<Names>;
+  }
+): Promise<void> {
+  const { totalContent, filenames, page, browser, debug, type, result } =
+    context;
+
+  // 1. Process scripts
+  if (pattern.scripts) {
+    if (debug) {
+      console.time(`scripts ${type} ${pattern.name}`);
+    }
+
+    // Process each script pattern sequentially
+    for (const runtimePattern of pattern.scripts) {
+      await processScriptPattern(runtimePattern, pattern, totalContent, result);
+    }
+
+    if (debug) {
+      console.timeEnd(`scripts ${type} ${pattern.name}`);
+    }
+  }
+
+  // 2. Process stylesheets
+  if (pattern.stylesheets) {
+    if (debug) {
+      console.time(`stylesheets ${type} ${pattern.name}`);
+    }
+
+    // Process each stylesheet pattern sequentially
+    for (const runtimePattern of pattern.stylesheets) {
+      await processStylesheetPattern(
+        runtimePattern,
+        pattern,
+        totalContent,
+        result
+      );
+    }
+
+    if (debug) {
+      console.timeEnd(`stylesheets ${type} ${pattern.name}`);
+    }
+  }
+
+  // 3. Process filenames
+  if (pattern.filenames) {
+    if (debug) {
+      console.time(`filenames ${type} ${pattern.name}`);
+    }
+
+    // Process each filename pattern sequentially
+    for (const filenamePattern of pattern.filenames) {
+      await processFilenamePattern(filenamePattern, pattern, filenames, result);
+    }
+
+    if (debug) {
+      console.timeEnd(`filenames ${type} ${pattern.name}`);
+    }
+  }
+
+  // 4. Process browser check
+  if (pattern.browser) {
+    if (debug) {
+      console.time(`browser ${type} ${pattern.name}`);
+    }
+
+    await processBrowserPattern(pattern, page, browser, result);
+
+    if (debug) {
+      console.timeEnd(`browser ${type} ${pattern.name}`);
+    }
+  }
+}
+
+async function processScriptPattern<Names extends string>(
+  runtimePattern: RegExp,
+  pattern: Pattern<Names>,
+  totalContent: string,
+  result: ProcessPatternsResult<Names>
+): Promise<void> {
+  try {
+    const matched = await Promise.resolve(
+      isMatch(runtimePattern, totalContent, { timeout: 500 })
+    );
+
+    if (matched === undefined) {
+      console.log(
+        'Timeout while running runtime script pattern',
+        pattern.name,
+        runtimePattern
+      );
+      return;
+    }
+
+    if (matched) {
+      result.totalScore += pattern.score;
+      result.matchedPatterns.add(pattern.name);
+    }
+  } catch (e) {
+    console.error(`Error while running script pattern for ${pattern.name}`, e);
+  }
+}
+
+async function processStylesheetPattern<Names extends string>(
+  runtimePattern: RegExp,
+  pattern: Pattern<Names>,
+  totalContent: string,
+  result: ProcessPatternsResult<Names>
+): Promise<void> {
+  try {
+    const matched = await Promise.resolve(runtimePattern.test(totalContent));
+
+    if (matched) {
+      result.totalScore += pattern.score;
+      result.matchedPatterns.add(pattern.name);
+    }
+  } catch (e) {
+    console.error(
+      `Error while running stylesheet pattern for ${pattern.name}`,
+      e
+    );
+  }
+}
+
+async function processFilenamePattern<Names extends string>(
+  filenamePattern: RegExp,
+  pattern: Pattern<Names>,
+  filenames: string[],
+  result: ProcessPatternsResult<Names>
+): Promise<void> {
+  try {
+    const matched = await Promise.resolve(
+      filenames.some((filename) => filenamePattern.test(filename))
+    );
+
+    if (matched) {
+      result.totalScore += pattern.score;
+      result.matchedPatterns.add(pattern.name);
+    }
+  } catch (e) {
+    console.error(
+      `Error while running filename pattern for ${pattern.name}`,
+      e
+    );
+  }
+}
+
+async function processBrowserPattern<Names extends string>(
+  pattern: Pattern<Names>,
+  page: Page,
+  browser: Browser,
+  result: ProcessPatternsResult<Names>
+): Promise<void> {
+  try {
+    const isMatched = await pattern.browser?.(page, browser);
+
+    if (isMatched) {
+      result.totalScore += pattern.score;
+      result.matchedPatterns.add(pattern.name);
+    }
+  } catch (e) {
+    console.error(`Error while running browser pattern for ${pattern.name}`, e);
+  }
 }
 
 // Let's keep it sync specifically to not decrease performance
