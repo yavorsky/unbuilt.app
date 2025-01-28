@@ -44,7 +44,7 @@ export const analyze = async (
 
     await page.goto(url, {
       waitUntil: 'domcontentloaded', // First wait for DOM
-      timeout: 25000,
+      timeout: 15000,
     });
     // Then wait for additional states
     await Promise.all([
@@ -65,50 +65,92 @@ export const analyze = async (
   );
   const analysis = {} as AnalysisFeaturesWithStats;
 
+  console.time('framework');
   analysis.framework = await framework.detect(page, browser, resources);
   onProgress({ framework: analysis.framework });
+  console.timeEnd('framework');
+
+  console.time('uiLibrary');
   analysis.uiLibrary = await uiLibrary.detect(page, browser, resources);
   onProgress({ uiLibrary: analysis.uiLibrary });
+  console.timeEnd('uiLibrary');
+
+  console.time('router');
   analysis.router = await router.detect(page, browser, resources);
   onProgress({ router: analysis.router });
+  console.timeEnd('router');
+
+  console.time('bundler');
   analysis.bundler = await bundler.detect(page, browser, resources);
   onProgress({ bundler: analysis.bundler });
+  console.timeEnd('bundler');
+
+  console.time('transpiler');
   analysis.transpiler = await transpiler.detect(page, browser, resources);
   onProgress({ transpiler: analysis.transpiler });
+  console.timeEnd('transpiler');
+
+  console.time('minifier');
   analysis.minifier = await minifier.detect(page, browser, resources);
   onProgress({ minifier: analysis.minifier });
+  console.timeEnd('minifier');
+
+  console.time('stylingProcessor');
   analysis.stylingProcessor = await stylingProcessor.detect(
     page,
     browser,
     resources
   );
   onProgress({ stylingProcessor: analysis.stylingProcessor });
+  console.timeEnd('stylingProcessor');
+
+  console.time('modules');
   analysis.modules = await modules.detect(page, browser, resources);
   onProgress({ modules: analysis.modules });
+  console.timeEnd('modules');
+
+  console.time('httpClient');
   analysis.httpClient = await httpClient.detect(page, browser, resources);
   onProgress({ httpClient: analysis.httpClient });
+  console.timeEnd('httpClient');
+
+  console.time('platform');
   analysis.platform = await platform.detect(page, browser, resources);
   onProgress({ platform: analysis.platform });
+  console.timeEnd('platform');
+
+  console.time('stateManagement');
   analysis.stateManagement = await stateManagement.detect(
     page,
     browser,
     resources
   );
   onProgress({ stateManagement: analysis.stateManagement });
+  console.timeEnd('stateManagement');
+
+  console.time('dates');
   analysis.dates = await dates.detect(page, browser, resources);
   onProgress({ dates: analysis.dates });
+  console.timeEnd('dates');
+
+  console.time('stylingLibraries');
   analysis.stylingLibraries = await stylingLibraries.detect(
     page,
     browser,
     resources
   );
   onProgress({ stylingLibraries: analysis.stylingLibraries });
+  console.timeEnd('stylingLibraries');
 
+  console.time('translations');
   analysis.translations = await translations.detect(page, browser, resources);
   onProgress({ translations: analysis.translations });
+  console.timeEnd('translations');
 
+  console.time('stats');
   analysis.stats = await getStats(page);
   onProgress({ stats: analysis.stats });
+  console.timeEnd('stats');
 
   // Run checks again to get more accurate results having context from all features
   [
