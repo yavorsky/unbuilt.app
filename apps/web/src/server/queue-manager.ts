@@ -14,7 +14,7 @@ import { BrowserContext } from 'playwright';
 const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
-export const ANALYSIS_TIMEOUT = 60000; // 60 seconds
+export const ANALYSIS_TIMEOUT = 70000; // 70 seconds
 const STALL_CHECK_INTERVAL = 30 * 1000; // Check for stalled jobs every 30 seconds
 
 export class QueueManager {
@@ -84,8 +84,10 @@ export class QueueManager {
           `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${JSON.stringify(job.data)}`
         );
 
-        // There's an issue with stalled jobs, where it's finished, but new iteration is appearing.
-        // It's likely a bug in bull, as the job should be removed from the queue when it's finished.
+        // Here we are covering case, when job was timed out and moved to stalled.
+        // After that, when queue is ready it becomes available. But in this case, we have some chance of the job
+        // to be completed, since the promise was resolved after bull moved it to stalled.
+        // Since we can't just cancel the job from second execution (due to lack of bull API), we want to have early return.
         if (job.progress() === 100) return job.data;
 
         try {
