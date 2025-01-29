@@ -39,9 +39,9 @@ export const analyze = async (
 
   const resources = new Resources(page);
 
-  try {
-    await resources.initialize();
+  await resources.initialize();
 
+  try {
     await page.goto(url, {
       waitUntil: 'domcontentloaded', // First wait for DOM
       timeout: 15000,
@@ -53,7 +53,7 @@ export const analyze = async (
     ]);
   } catch (error) {
     console.error('[Resources loading error]', error);
-    throw new Error(errors.RESOURCE_NOT_AVAILABLE);
+    throw new Error('Error loading resources');
   }
 
   const onProgress = createProgressTracker(

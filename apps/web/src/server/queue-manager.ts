@@ -81,7 +81,7 @@ export class QueueManager {
       this.queue.process(CONCURRENT_JOBS, async (job) => {
         let context: BrowserContext | undefined;
         console.log(
-          `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${job.data}`
+          `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${JSON.stringify(job.data)}`
         );
 
         try {
