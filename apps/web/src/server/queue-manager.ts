@@ -81,7 +81,7 @@ export class QueueManager {
       this.queue.process(CONCURRENT_JOBS, async (job) => {
         let context: BrowserContext | undefined;
         console.log(
-          `[Job ${job.id}] Starting processing for ${job.data.url} -- ${await job.getState()}`
+          `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${job.data}`
         );
 
         try {
@@ -96,13 +96,6 @@ export class QueueManager {
             await job.update(partialResult);
             await job.progress(progress);
           };
-
-          if (await job.isDelayed()) {
-            console.log('Starting delayed job');
-            console.log('Job return value:', job.returnvalue);
-            console.log('Job data:', job.data);
-            console.log('Job progress:', job.progress());
-          }
 
           const result = await analyze(
             job.data.url,
