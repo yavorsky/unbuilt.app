@@ -42,7 +42,7 @@ export * as platform from './categories/platform/index.js';
 export * as platformMeta from './categories/platform/meta/index.js';
 
 // Utils to calculate results
-export * from './utils/index.js';
+export * from './detector/index.js';
 
 // Additional metadata we can extract during analysis
 export { getStats } from './get-stats.js';

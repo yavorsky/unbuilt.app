@@ -6,6 +6,7 @@ import { reactRouter } from './react-router.js';
 import { remixRouter } from './remix-router.js';
 import { solidRouter } from './solid-router.js';
 import { tanstackRouter } from './tanstack-router.js';
+import { vueRouter } from './vue-router.js';
 
 export const meta = {
   tanstackRouter,
@@ -13,6 +14,7 @@ export const meta = {
   nextRouter,
   gatsbyRouter,
   qwikRouter,
+  vueRouter,
   reactRouter,
   remixRouter,
   solidRouter,

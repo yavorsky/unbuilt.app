@@ -1,15 +1,14 @@
-// Input parameters type - reusing the same structure but with different generics
+// User-facing function to detect a feature, which will return desired detection result.
+
 import { Browser, Page } from 'playwright';
 import { AnalysisFeatures, AnalysisKeys } from '../types/analysis.js';
-import {
-  AllPatternNames,
-  calculateResults,
-  FeatureResult,
-  Pattern,
-} from './calculate-results.js';
+import { calculateResults } from './calculate-results.js';
 import { Resources } from '@unbuilt/resources';
+import { AllPatternNames, Pattern } from '../types/pattern.js';
+import { FeatureResult } from '../types/feature.js';
 
-export type DetectMultipleFeaturesParams<
+// Input parameters type
+export type DetectFeatureParams<
   K extends AnalysisKeys,
   T extends Record<string, Pattern<string>[]>,
 > = {
@@ -23,38 +22,45 @@ export type DetectMultipleFeaturesParams<
   debug?: boolean;
 };
 
-// Return type for multiple features
-export type DetectMultipleFeaturesResult<
+// Return type
+export type DetectFeatureResult<
+  K extends AnalysisKeys,
   T extends Record<string, Pattern<string>[]>,
 > = {
-  items: Record<keyof T, FeatureResult<AllPatternNames<T>>>;
+  type: K;
+  name: keyof T | 'unknown';
+  confidence: number;
   detectedFeatures: Set<AllPatternNames<T>>;
+  secondaryMatches: Record<keyof T, FeatureResult<AllPatternNames<T>>>;
   _getAllResults?: () => Record<keyof T, FeatureResult<AllPatternNames<T>>>;
 };
 
 // Updated function signature using the new types
-export async function detectMultipleFeatures<
+export async function detectFeature<
   K extends AnalysisKeys,
   T extends Record<string, Pattern<string>[]>,
->(
-  params: DetectMultipleFeaturesParams<K, T>
-): Promise<DetectMultipleFeaturesResult<T>> {
-  const { getAllResultsWithConfidence, getAllResults, result } =
+>(params: DetectFeatureParams<K, T>): Promise<DetectFeatureResult<K, T>> {
+  const { result, getAllResultsWithConfidence, getAllResults } =
     await calculateResults<T>({
+      type: params.type,
       resources: params.resources,
       page: params.page,
       browser: params.browser,
       patterns: params.patterns,
-      type: params.type,
       analysis: params.analysis,
       minConfidence: params.minConfidence,
       debug: params.debug,
     });
-  const items = getAllResultsWithConfidence(params.minConfidence ?? 0.3);
 
   return {
-    items,
+    type: params.type,
+    name: result.name,
+    confidence: result.confidence,
     detectedFeatures: result.matched,
+    secondaryMatches: getAllResultsWithConfidence(
+      params.minConfidence ?? 0.3,
+      true
+    ),
     _getAllResults: getAllResults,
   };
 }

@@ -12,10 +12,10 @@ export const turbopack = [
       /TURBOPACK/, // Constants usually preserved
       /\[\[SSR\]\]/, // Special syntax usually preserved
       // Match both full and potentially minified require patterns
-      /(__turbopack_require__|__t)[\s\n]*=/,
-      /(__turbopack_external_require__|__te)[\s\n]*=/,
+      /(__turbopack_require__)[\s\n]*=/,
+      /(__turbopack_external_require__)[\s\n]*=/,
       // Cache patterns with optional minification
-      /(__turbopack_cache__|__tc)[\s\n]*=/,
+      /(__turbopack_cache__)[\s\n]*=/,
     ],
   },
   {
@@ -23,11 +23,9 @@ export const turbopack = [
     score: 0.9,
     scripts: [
       // Module system patterns with minification variants
-      /(__turbopack_export__|__tx)[\s\n]*=/,
-      /(__turbopack_import__|__ti)[\s\n]*=/,
+      /(__turbopack_export__)[\s\n]*=/,
+      /(__turbopack_import__)[\s\n]*=/,
       /(turbopack_modules|_tm)[\s\n]*=/,
-      // Look for structural patterns instead of specific names
-      /\(\s*\{\s*['"]\w+['"]\s*:\s*\[\s*function\s*\(/, // Module definition structure
     ],
   },
   {
@@ -37,14 +35,6 @@ export const turbopack = [
       // Runtime patterns focusing on structural elements
       /(turbopack\/runtime)/,
       /chunk_global_id/,
-    ],
-  },
-  {
-    name: 'turbopack-chunk-structure' as const,
-    score: 0.6,
-    scripts: [
-      // Common Turbopack structural patterns
-      /\(\s*window\s*\.\s*\w+\s*=\s*window\s*\.\s*\w+\s*\|\|\s*\[\s*\]\s*\)/,
     ],
   },
   {

@@ -2,7 +2,7 @@ import { Browser, Page } from 'playwright';
 import { Resources } from '@unbuilt/resources';
 import { patterns } from './patterns/index.js';
 import { AnalysisFeatures } from '../../types/analysis.js';
-import { detectMultipleFeatures } from '../../utils/detect-multiple-features.js';
+import { detectMultipleFeatures } from '../../detector/detect-multiple-features.js';
 
 export const detect = async (
   page: Page,

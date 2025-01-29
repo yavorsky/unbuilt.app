@@ -4,12 +4,11 @@ export const vite = [
     score: 1.0,
     scripts: [
       /import\.meta\.env\.VITE_/,
-      /new\s+URL\((?:["'`])[@\w\/-]+["'`],\s*import\.meta\.url\)/,
       // Core Vite markers - highly specific
       /\/@vite\/client/,
       /vite\/dist\/client/,
       /vite\/modulepreload-polyfill/,
-      /__vite_/,
+      /\[vite\]/,
       /__vite__bundler/,
       /__vite__xhr/,
       /__vite__log/,
@@ -17,11 +16,35 @@ export const vite = [
       /__vite__baseUrl/,
       /__vite_ws/,
       /__vite__loadChunk/,
+      /__vite__moveToHead/,
+      /__vite__injectRef/,
+      /__vite__mapDeps/,
+
+      /\b\w+\.vitePluginDetected\b/,
+    ],
+  },
+  {
+    name: 'errors' as const,
+    score: 1.4,
+    scripts: [
+      /\[vite\]\s+Failed\s+to\s+load/i,
+      /new\s+Event\(\s*["']vite:preloadError["']/,
+    ],
+  },
+  {
+    name: 'styles' as const,
+    score: 0.2,
+    stylesheets: [
+      // Vite-specific error overlay
+      /\.vite-error-overlay/,
+
+      // Vite-specific HMR indicator
+      /\[vite-hmr-indicator\]/,
     ],
   },
   // This is shared between Rollup and Vite
   {
-    score: 0.7,
+    score: 0.4,
     name: 'imports' as const,
     scripts: [
       /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
@@ -34,7 +57,7 @@ export const vite = [
   },
   // This is shared between Rollup and Vite
   {
-    score: 0.6,
+    score: 0.5,
     name: 'exports' as const,
     scripts: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
   },
@@ -95,7 +118,16 @@ export const vite = [
     scripts: [
       // Vite-specific plugins
       /vite-plugin-/,
-      /virtual:ssr-/,
+    ],
+  },
+  {
+    name: 'ssr' as const,
+    score: 0.8,
+    scripts: [
+      // Vite-specific SSR
+      /__vite_ssr_/,
+      /__vite_ssr_dynamic_import__/,
+      /__vite_ssr_import__/,
     ],
   },
   {

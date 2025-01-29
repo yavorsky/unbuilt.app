@@ -1,5 +1,5 @@
 import { Browser, Page } from 'playwright';
-import { calculateSimilarity } from '../../../utils/calculate-similarity.js';
+import { calculateSimilarity } from '../../../detector/calculate-similarity.js';
 
 export const detectSSRSignals = async (page: Page, browser: Browser) => {
   const signals = await collectSSRSignals(page, browser);
