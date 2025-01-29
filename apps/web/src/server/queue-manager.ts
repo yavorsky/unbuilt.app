@@ -84,6 +84,10 @@ export class QueueManager {
           `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${JSON.stringify(job.data)}`
         );
 
+        // There's an issue with stalled jobs, where it's finished, but new iteration is appearing.
+        // It's likely a bug in bull, as the job should be removed from the queue when it's finished.
+        if (job.progress() === 100) return job.data;
+
         try {
           context = await this.browserManager?.getBrowserContext();
           if (!context) throw new Error('Browser context not available');
@@ -106,17 +110,9 @@ export class QueueManager {
           );
           console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
           if (await job.isDelayed()) {
-            console.log('Job is delayed');
             try {
-              console.log('Updating job');
               await job.update(result);
-              console.log('updated job');
               await job.progress(100);
-              console.log('progress 100');
-              await job.moveToCompleted();
-              console.log('moved to completed');
-              await this.queue?.removeJobs(job.id + '');
-              console.log('job is completed');
             } catch (updateError) {
               console.error(
                 `[Job ${job.id}] Error finishing job:`,
