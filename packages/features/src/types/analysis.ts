@@ -1,6 +1,6 @@
 import { Browser, Page } from 'playwright';
-import * as allFeatures from '../index.js';
 import { Resources } from '@unbuilt/resources';
+import * as allFeatures from '../index.js';
 
 type AnalysisResult<
   T extends (

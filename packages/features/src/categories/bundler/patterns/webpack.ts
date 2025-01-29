@@ -16,13 +16,13 @@ export const webpack = [
   },
   {
     name: 'chunks' as const,
-    score: 1.2,
+    score: 1,
     scripts: [
       // Webpack-specific chunk patterns
       /webpackJsonp/,
       /webpackChunk/,
       /__webpack_require__\.e/,
-      /(self|window)\.webpackChunk_N_E/,
+      /(self|window)\.webpackChunk_[\w_]+=/,
       /installedChunks\[chunkId\]/,
     ],
   },
@@ -77,8 +77,6 @@ export const webpack = [
     scripts: [
       // Webpack-specific asset patterns
       /__webpack_require__\.p/,
-      // These asset patterns might be too generic - consider removing
-      /(asset\/resource|asset\/source|asset\/inline)/,
     ],
   },
   {
@@ -90,19 +88,6 @@ export const webpack = [
       /webpackDevServer/,
       /\/\/# sourceURL=webpack/,
       // Removing generic NODE_ENV checks
-    ],
-  },
-  {
-    name: 'output' as const,
-    score: 0.2,
-    filenames: [
-      // Note: Most of these patterns are somewhat generic
-      // and might match other bundlers' output
-      // Consider using only when combined with other webpack-specific patterns
-      /\d+\.[a-f0-9]{8,}\.chunk\.js$/,
-      /chunk-\w+\.[a-f0-9]{8,}\.js$/,
-      /chunks\/\w+\.[a-f0-9]{8,}\.js$/,
-      // Removing most generic bundle patterns
     ],
   },
   {
