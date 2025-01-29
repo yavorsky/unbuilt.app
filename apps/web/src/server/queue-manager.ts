@@ -81,7 +81,7 @@ export class QueueManager {
       this.queue.process(CONCURRENT_JOBS, async (job) => {
         let context: BrowserContext | undefined;
         console.log(
-          `[Job ${job.id}] Starting processing for ${job.data.url} -- ${job.getState()}`
+          `[Job ${job.id}] Starting processing for ${job.data.url} -- ${await job.getState()}`
         );
 
         try {
@@ -117,8 +117,12 @@ export class QueueManager {
             try {
               console.log('Updating job');
               await job.update(result);
+              console.log('updated job');
               await job.progress(100);
+              console.log('progress 100');
               await job.moveToCompleted();
+              console.log('moved to completed');
+              await this.queue?.removeJobs(job.id + '');
               console.log('job is completed');
             } catch (updateError) {
               console.error(
