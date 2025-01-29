@@ -104,10 +104,13 @@ export class QueueManager {
           );
           console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
           if (await job.isDelayed()) {
+            console.log('Job is delayed');
             try {
+              console.log('Updating job');
               await job.update(result);
               await job.progress(100);
               await job.moveToCompleted();
+              console.log('job is completed');
             } catch (updateError) {
               console.error(
                 `[Job ${job.id}] Error finishing job:`,
