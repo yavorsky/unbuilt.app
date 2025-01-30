@@ -531,7 +531,12 @@ export type Database = {
         | "jss"
         | "stitches"
         | "styledComponents"
-      translations_type: "unknown" | "i18next" | "reactIntl" | "vueI18n"
+      translations_type:
+        | "unknown"
+        | "i18next"
+        | "reactIntl"
+        | "vueI18n"
+        | "reactI18next"
       transpiler_type:
         | "unknown"
         | "babel"
