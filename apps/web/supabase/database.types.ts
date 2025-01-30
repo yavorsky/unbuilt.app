@@ -484,6 +484,7 @@ export type Database = {
         | "webflow"
         | "wix"
         | "wordpress"
+        | "weebly"
       router_type:
         | "unknown"
         | "tanstackRouter"

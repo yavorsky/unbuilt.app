@@ -1,3 +1,4 @@
+import { weebly } from './weebly.js';
 import { shopify } from './shopify.js';
 import { squarespace } from './squarespace.js';
 import { webflow } from './webflow.js';
@@ -8,6 +9,7 @@ export const patterns = {
   shopify,
   squarespace,
   webflow,
+  weebly,
   wix,
   wordpress,
 } as const;
