@@ -17,7 +17,6 @@ export const svelteRouter = [
 
       // SvelteKit Router specific initializers (minification resistant)
       /initializeClientNavigation\(/,
-      /handleNavigate\(\{from:/,
       /setupNavigationListeners\(/,
       /disableScrollHandling\(/,
 
@@ -93,7 +92,6 @@ export const svelteRouter = [
       /handleMissingId\(/,
       /handleDataError\(/,
       /redirect\((?:\d{3}|\w+\.status)\s*,\s*(?:url|location):/,
-      /error\((?:\d{3}|\w+\.status)\s*,\s*(?:message|text):/,
     ],
   },
   {

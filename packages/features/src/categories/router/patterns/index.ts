@@ -7,17 +7,21 @@ import { remixRouter } from './remix-router.js';
 import { solidRouter } from './solid-router.js';
 import { svelteRouter } from './svelte-router.js';
 import { tanstackRouter } from './tanstack-router.js';
+import { vitepressRouter } from './vitepress-router.js';
 import { vueRouter } from './vue-router.js';
+import { vuepressRouter } from './vuepress-router.js';
 
 export const patterns = {
-  reactRouter,
-  qwikRouter,
-  solidRouter,
   angularRouter,
+  solidRouter,
+  vitepressRouter,
+  vuepressRouter,
+  vueRouter,
+  reactRouter,
   gatsbyRouter,
   nextRouter,
   remixRouter,
   svelteRouter,
   tanstackRouter,
-  vueRouter,
+  qwikRouter,
 };

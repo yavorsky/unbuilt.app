@@ -9,6 +9,12 @@ import {
 import { GithubIcon } from '../icons/github';
 import { useActiveRoute } from '@/app/hooks/use-active-route';
 import { ToggleTheme } from '../toggle-theme';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
 
 export const AppNavigationMenu = () => {
   const activeRoute = useActiveRoute();
@@ -18,7 +24,7 @@ export const AppNavigationMenu = () => {
       <NavigationMenuList>
         <NavigationMenuItem>
           <NavigationMenuLink
-            className={`inline-flex h-9 rounded-md px-4 py-2 text-sm text-foreground/70 data-[active=true]:text-foreground hover:text-foreground`}
+            className={`inline-flex h-9 rounded-md px-2 lg:px-4 md:px-4 py-2 text-sm text-foreground/70 data-[active=true]:text-foreground hover:text-foreground`}
             data-active={activeRoute === 'ANALYZE'}
             href="/"
           >
@@ -28,12 +34,27 @@ export const AppNavigationMenu = () => {
 
         <NavigationMenuItem>
           <NavigationMenuLink
-            className={`inline-flex h-9 px-4 py-2 text-sm text-foreground/70  data-[active=true]:text-foreground hover:text-foreground`}
+            className="inline-flex h-9 px-2 lg:px-4 md:px-4 py-2 text-sm text-foreground/70  data-[active=true]:text-foreground hover:text-foreground"
             data-active={activeRoute === 'TECHNOLOGIES'}
             href="/technologies"
           >
             Technologies
           </NavigationMenuLink>
+        </NavigationMenuItem>
+        <NavigationMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="text-sm text-foreground/70 hover:text-foreground px-2 lg:px-4 md:px-4 py-2">
+              Apps
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="text-sm">
+              <DropdownMenuItem disabled>
+                <b>Browser Extension</b> - <span>Coming Soon</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem disabled>
+                <b>CLI</b> - <span>Coming Soon</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </NavigationMenuItem>
         <NavigationMenuItem>
           <NavigationMenuLink

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { LogoIcon } from '../icons/logo';
 import { AppNavigationMenu } from './app-navigation-menu';
 import { NavigationBreadcrumb } from './navigation-breadcrumb';
+import { LogoText } from './logo-text';
 
 export const AppNavigation = () => {
   return (
@@ -16,10 +17,7 @@ export const AppNavigation = () => {
                 className="flex items-center justify-center text-lg font-semibold text-foreground"
               >
                 <LogoIcon size={40} />
-                <span className="ml-2 hidden sm:inline">
-                  Unbuilt
-                  <span className="text-foreground/80">.app</span>
-                </span>
+                <LogoText />
               </Link>
               <NavigationBreadcrumb />
             </div>

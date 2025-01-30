@@ -61,7 +61,7 @@ export const vuepress = [
             document.querySelector('div[vp-content], div.vp-content') !== null,
         };
 
-        return Object.values(markers).length >= 2;
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },

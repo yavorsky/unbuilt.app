@@ -1,87 +1,41 @@
 import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const reactIntl = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.5,
     scripts: [
-      // Core FormatJS/react-intl imports and components
-      /IntlProvider/,
-      /FormattedMessage/,
-      /useIntl/,
-      /injectIntl/,
+      // react-intl's specific class definition pattern
+      /displayName:\s*["']FormattedMessage["']/,
 
-      // Message descriptors
-      /defineMessages\s*\(/,
-      /id:\s*["'][^"']+["']/,
-      /defaultMessage:\s*["'][^"']+["']/,
+      // react-intl's specific mixin properties
+      /ReactIntlMixin.*getMessageFormat.*getDateTimeFormat.*getNumberFormat/,
 
-      // Common formatters
-      /FormattedNumber/,
-      /FormattedDate/,
-      /FormattedTime/,
-      /FormattedRelativeTime/,
-      /FormattedPlural/,
-
-      // ICU message syntax
-      /\{[^}]+,\s*(?:select|plural|number|date|time)\s*,/,
-      /\{[\w]+,\s*(?:select|plural)\s*,\s*(?:[^{}]*\{[^{}]+\})+[^{}]*\}/,
-
-      // Hook patterns
-      /useIntl\(\)\.formatMessage/,
-      /useIntl\(\)\.format(?:Number|Date|Time|RelativeTime)/,
+      // react-intl's unique component initialization
+      /FormattedHTMLMessage.*FormattedNumber.*FormattedRelative/,
     ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const markers = {
-          // Check for React Intl globals
-          hasIntl: !!window.ReactIntl,
+  },
+  {
+    name: 'components' as const,
+    score: 0.4,
+    scripts: [
+      // react-intl's specific component property validation
+      /propTypes:\s*\{\s*tagName:\s*React\.PropTypes\.string,\s*message:\s*React\.PropTypes\.string\.isRequired\}/,
 
-          // Check for formatters
-          hasFormatters: !!window.ReactIntl?.FormattedMessage,
+      // react-intl's unique format options specification
+      /formatOptions:\s*\[["']localeMatcher["'],\s*["']timeZone["'],\s*["']hour12["']/,
 
-          // Check for hooks
-          hasHooks: !!window.ReactIntl?.useIntl,
-
-          // Check for provider
-          hasProvider: !!window.ReactIntl?.IntlProvider,
-
-          // Check for messages
-          hasMessages: !!window.ReactIntl?.defineMessages,
-        };
-        return Object.values(markers).some(Boolean);
-      });
+      // react-intl's specific error handling
+      /Could not find Intl message:\s*/,
+    ],
+  },
+  {
+    name: 'dependencies' as const,
+    score: -1,
+    dependencies: (analysis: AnalysisFeatures) => {
+      // Rare case to use without react
+      return analysis.uiLibrary.name !== 'react';
     },
-  },
-  {
-    name: 'formatting' as const,
-    score: 0.2,
-    scripts: [
-      // Number formatting
-      /style:\s*["'](?:decimal|currency|percent|unit)["']/,
-      /minimumFractionDigits/,
-      /maximumFractionDigits/,
-
-      // Date/Time formatting
-      /year:\s*["'](?:numeric|2-digit)["']/,
-      /timeZone:\s*["'][^"']+["']/,
-      /hour12:\s*(?:true|false)/,
-
-      // Plural/Select formatting
-      /selectordinal/,
-      /\=(?:zero|one|two|few|many|other)\s*\{/,
-      /offset:\s*\d+/,
-    ],
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /react-intl/,
-      /@formatjs\/intl/,
-      /compiled-lang\/[a-z-]+\.json$/,
-      /messages\/[a-z-]+\.json$/,
-      /intl\/[a-z-]+\.json$/,
-    ],
   },
 ];

@@ -6,6 +6,6 @@ export const vueI18n: Meta = {
   website: 'https://vue-i18n.intlify.dev/',
   tags: ['Translations'],
   description:
-    "i18next is an internationalization-framework written in and for JavaScript. But it's much more than that.",
-  Icon: lazy(() => import('./icons/vue-I18n.jsx')),
+    "Vue I18n is an internationalization-framework written in and for JavaScript. But it's much more than that.",
+  Icon: lazy(() => import('./icons/vue-i18n.jsx')),
 };

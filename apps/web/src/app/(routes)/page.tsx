@@ -17,13 +17,13 @@ export default function Root() {
       <div className="flex flex-col p-2 lg:p-8 md:p-8 pt-20">
         <div className="text-center mt-2 mb-10 lg:mt-16 lg:mb-16 md:mt-16 md:mb-16">
           <div className="flex items-center justify-center gap-2 mb-6">
-            <Image
+            {/* <Image
               src="/icon.svg"
               alt="Unbuilt app icon"
               width={40}
               height={40}
-              className="text-white mr-2"
-            />
+              className="text-white mr-2 hidden lg:inline md:inline"
+            /> */}
             <h1 className="text-4xl font-bold text-foreground">
               Unbuilt<span className="text-foreground/80">.app</span>
             </h1>

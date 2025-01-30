@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const vueRouter = [
   {
@@ -10,8 +11,6 @@ export const vueRouter = [
       /["']@vue\/router["']/,
 
       // Vue Router's unique global properties
-      /\$router\./,
-      /\$route\./,
       /__VUE_ROUTER__/,
       /__VUE_ROUTER_BASE__/,
 
@@ -21,13 +20,8 @@ export const vueRouter = [
       /\{name:["']router-link["']/,
       /\{name:["']router-view["']/,
 
-      // Vue Router specific initialization with its unique options
-      /createRouter\(\{(?:\s*history:\s*createWebHistory|routes:)/,
-      /useRouter\(\)\.(?:currentRoute|hasRoute|getRoutes)/,
-
       // Vue Router's internal instance markers
       /\[routerViewLocationKey\]/,
-      /\[routerKey\]/,
       /\[matchedRouteKey\]/,
       /\[viewDepthKey\]/,
       /\[routerViewKey\]/,
@@ -72,23 +66,8 @@ export const vueRouter = [
     name: 'patterns' as const,
     score: 0.2,
     scripts: [
-      // Vue Router's unique navigation guards
-      /beforeRouteEnter\s*\(\s*to\s*,\s*from\s*,\s*next\s*\)/,
-      /beforeRouteUpdate\s*\(\s*to\s*,\s*from\)/,
-      /beforeRouteLeave\s*\(\s*to\s*,\s*from\)/,
-
-      // Vue Router specific composition API
-      /useRoute\(\)\.(?:params|query|hash|matched)/,
-      /useRouter\(\)\.(?:push|replace|resolve|hasRoute)/,
-      /useLink\((?:props|inProps)\)/,
-
       // Vue Router's internal implementation details
       /\[START_LOCATION_NORMALIZED\]/,
-      /\[NavigationFailureType\]/,
-      /ErrorTypeMessages\[/,
-
-      // Vue Router's unique error types
-      /NAVIGATION_(?:ABORTED|CANCELLED|DUPLICATED|GUARD_[A-Z_]+)/,
 
       // Vue Router installation pattern
       /Vue\.use\(VueRouter(?:\s*,\s*\{|[\s\)])/,
@@ -96,15 +75,14 @@ export const vueRouter = [
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Only Vue Router specific file patterns
-      /vue-router(?:\.esm)?(?:\.min)?[-.]\w+\.js$/i,
-      /@vue[\\/]router[-.]\w+\.js$/i,
-      /router-view-functional[-.]\w+\.js$/i,
-      /router-link[-.]\w+\.js$/i,
-      /vue-router-composables[-.]\w+\.js$/i,
-    ],
+    name: 'isVue' as const,
+    score: 0.3,
+    dependencies: (analysis: AnalysisFeatures) => {
+      return (
+        analysis.uiLibrary.name === 'vue' &&
+        analysis.framework.name !== 'vitepress' &&
+        analysis.framework.name !== 'vuepress'
+      );
+    },
   },
 ];

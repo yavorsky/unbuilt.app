@@ -80,7 +80,7 @@ export const weebly = [
           hasWeeblyBlock: document.querySelector('.w-block') !== null,
           hasWeeblyWrapper: document.querySelector('.w-wrapper') !== null,
         };
-        return Object.values(markers).length >= 2;
+        return Object.values(markers).filter(Boolean).length >= 2;
       });
     },
   },
