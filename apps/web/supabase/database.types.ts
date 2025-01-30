@@ -497,6 +497,8 @@ export type Database = {
         | "solidRouter"
         | "svelteRouter"
         | "vueRouter"
+        | "vitepressRouter"
+        | "vuepressRouter"
       state_management_type:
         | "unknown"
         | "effector"

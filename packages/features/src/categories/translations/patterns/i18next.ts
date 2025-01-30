@@ -1,99 +1,105 @@
-import { Page } from 'playwright';
-
 export const i18next = [
   {
-    name: 'coreRuntime' as const,
+    name: 'initialization' as const,
+    score: 0.5,
+    scripts: [
+      // i18next's initialization states in constructor
+      /defaultNS:\s*\["translation"\]/,
+
+      // i18next's specific option structure
+      /pluralSeparator:\s*["']_["']/,
+
+      // i18next's unique flags combination
+      /isInitialized:\s*!0,\s*isInitializing:\s*!0/,
+    ],
+  },
+  {
+    name: 'backendHandling' as const,
+    score: 0.4,
+    scripts: [
+      // i18next's specific backend options
+      /maxParallelReads:\d+,\s*maxRetries:\d+,\s*retryTimeout:\d+/,
+
+      // i18next's resource loading states
+      /isInitialized\s*\?\s*n\s*\(\s*\)\s*:\s*this\.on\(["']initialized["']/,
+    ],
+  },
+  {
+    name: 'pluralHandling' as const,
     score: 0.3,
     scripts: [
-      // Core i18next object and initialization
-      /i18next\./,
-      /\.use\((?:Backend|LanguageDetector|initReactI18next)\)/,
-      /i18next\.init\(/,
-      /(?:import|require)\s+i18next/,
+      // i18next's specific plural separator handling
+      /this\.options\.pluralSeparator\s*\|\|\s*["']_["']/,
 
-      // Common namespaces and keys
-      /\.t\(['"][^'"]+:[^'"]+['"]\)/, // namespace:key pattern
-      /\.t\(['"][^'"]+\.[^'"]+['"]\)/, // nested key pattern
-      /i18next\.exists\(/,
-      /i18next\.getFixedT\(/,
-
-      // Translation function patterns
-      /useTranslation\(\s*['"]\w+['"]\s*\)/,
-      /withTranslation\(\s*['"]\w+['"]\s*\)/,
-      /Trans\s+[^>]*i18nKey=/,
+      // i18next's ordinal handling structure
+      /ordinal:\s*!1,\s*offset:\s*\d+/,
     ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const markers = {
-          // Check for global i18next
-          hasI18next: typeof window.i18next !== 'undefined',
-
-          // Check for core methods
-          hasTranslation: typeof window.i18next?.t === 'function',
-
-          // Check for language handling
-          hasLanguage: !!window.i18next?.language,
-
-          // Check for plugins
-          hasBackend: !!window.i18next?.services?.backendConnector,
-
-          // Check for store
-          hasStore: !!window.i18next?.store?.data,
-        };
-        return Object.values(markers).some(Boolean);
-      });
-    },
   },
   {
-    name: 'plugins' as const,
-    score: 0.2,
+    name: 'initialization' as const,
+    score: 0.5,
     scripts: [
-      // Common plugins
-      /i18nextHttpBackend/,
-      /i18nextBrowserLanguageDetector/,
-      /i18next-http-backend/,
-      /i18next-browser-languagedetector/,
+      // i18next's unique initialization pattern
+      /this\.modules\.i18nFormat.*this\.modules\.external/,
 
-      // Framework integrations
-      /react-i18next/,
-      /next-i18next/,
-      /vue-i18next/,
-      /angular-i18next/,
+      // i18next's specific backend initialization
+      /backend\.init\s*\(\s*services\s*,\s*options\.backend\s*,\s*options\)/,
 
-      // Plugin initialization
-      /\.use\([^)]+\)\.use\([^)]+\)/,
-      /i18next\.modules\.external/,
+      // i18next's unique store pattern
+      /resourceStore\s*=\s*new\s+ResourceStore\s*\(\s*this\.data\s*,\s*this\.options\)/,
     ],
   },
   {
-    name: 'interpolation' as const,
-    score: 0.2,
+    name: 'resourceHandling' as const,
+    score: 0.4,
     scripts: [
-      // Interpolation patterns
-      /\{\{[^}]+\}\}/,
-      /\$t\([^)]+\)/,
-      /__\([^)]+\)/,
+      // i18next's unique resource bundle pattern
+      /addResourceBundle\s*\([^)]*skipCopy:\s*!1/,
 
-      // Plurals and contexts
-      /_plural|_zero|_one|_other/,
-      /_male|_female/,
-      /\{\{count\}\}/,
-
-      // Formatting
-      /interpolation:\s*\{/,
-      /formatSeparator/,
-      /format:\s*["']\w+["']/,
+      // i18next's resource loading pattern
+      /loadResources\s*\(\s*\w+\s*,\s*this\.options\.ns\s*,/,
     ],
   },
   {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      /i18next(?:\.min)?\.js$/,
-      /i18next\.[a-f0-9]+\.js$/,
-      /locales\/[a-z-]+\.json$/,
-      /translations\/[a-z-]+\.json$/,
-      /i18n\/[a-z-]+\.json$/,
+    name: 'pluralHandling' as const,
+    score: 0.4,
+    scripts: [
+      // i18next's specific plural resolver pattern
+      /pluralResolver\s*=\s*new\s+PluralResolver\s*\(\s*\w+\s*,\s*\{\s*prepend:\s*this\.options\.pluralSeparator/,
+
+      // i18next's specific suffix handling
+      /getSuffix\s*\([^)]*\)\s*\{[^}]*this\.getRule\s*\([^)]*\)\.select\s*\(/,
+
+      // i18next's plural rules pattern
+      /resolvedOptions\(\)\.pluralCategories\.sort\s*\(\s*\([^)]*\)\s*=>\s*\$\[\w+\]\s*-\s*\$\[\w+\]\s*\)/,
+    ],
+  },
+  {
+    name: 'icuFormat' as const,
+    score: 0.4,
+    scripts: [
+      // ICU specific message format pattern
+      /type:\s*["']messageFormatPattern["'],\s*elements:\s*\[/,
+
+      // ICU specific plural format
+      /type:\s*["']pluralFormat["'],\s*ordinal:\s*(?:true|false)/,
+
+      // ICU select format pattern
+      /type:\s*["']selectFormat["'],\s*options:\s*\{/,
+    ],
+  },
+  {
+    name: 'icuRuntime' as const,
+    score: 0.3,
+    scripts: [
+      // ICU formatter initialization
+      /formatter\.init\s*\(\s*services\s*,\s*options\)/,
+
+      // ICU message compilation
+      /compileMessage\s*\(\s*\w+\s*\)\s*\{[^}]*messageFormatPattern/,
+
+      // ICU format registration
+      /registerMessageResolver.*registerMessageCompiler/,
     ],
   },
 ];

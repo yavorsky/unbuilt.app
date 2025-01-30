@@ -3,28 +3,26 @@ import { Page } from 'playwright';
 export const vue = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.6,
     scripts: [
-      // Vue 3 app initialization (production)
-      /const\s+[_$a-zA-Z][\w$]*\s*=\s*createApp\s*\(\s*\{[^}]*\}\s*\)/,
-
-      // Vue 2 initialization (minified)
-      /new Vue\(\{(?:[^{}]|{[^{}]*})*el:["'][^"']+["']/,
-
       // Vue internal properties (minification-resistant)
       /__v_isRef=!0/,
       /__v_isReactive=!0/,
       /__v_raw/,
 
-      // Vue runtime markers (production)
-      /\["__file"\]=["'][^"']+\.vue["']/,
-      /\$options\._componentTag=/,
-
       // Vue 3 compiler output
       /\[\$\$\]/, // props destructure
-      /\$setup=/, // setup function reference
-      /\$props,\$setup,\$data,\$options/, // instance properties
     ],
+  },
+  {
+    name: 'vue-2' as const,
+    score: 0.2,
+    scripts: [/new Vue\(\{(?:[^{}]|{[^{}]*})*el:["'][^"']+["']/],
+  },
+  {
+    name: 'vue-3' as const,
+    score: 0.2,
+    scripts: [/const\s+[_$a-zA-Z][\w$]*\s*=\s*createApp\s*\(\s*\{[^}]*\}\s*\)/],
   },
   {
     name: 'rendering' as const,
@@ -48,23 +46,6 @@ export const vue = [
     ],
   },
   {
-    name: 'reactivity' as const,
-    score: 0.25,
-    scripts: [
-      // Vue 3 reactivity system (production)
-      /reactive\(\{(?:[^{}]|{[^{}]*})*\}\)/,
-      /ref\(\s*(?:[^()]+|\([^()]*\))*\s*\)/,
-
-      // Computed properties (minified)
-      /computed\(\s*\(\s*\)\s*=>\s*[^,}]+\)/,
-      /computed\(\{(?:[^{}]|{[^{}]*})*get:\s*function\s*\(\s*\)\s*\{/,
-
-      // Watch implementation (production)
-      /watch\(\s*(?:\(\s*\)\s*=>|function\s*\(\s*\)\s*\{)/,
-      /watchEffect\(\s*(?:\(\s*\)\s*=>|function\s*\(\s*\)\s*\{)/,
-    ],
-  },
-  {
     name: 'components' as const,
     score: 0.25,
     scripts: [
@@ -74,29 +55,8 @@ export const vue = [
       // Props declaration (minified)
       /props:\s*\{(?:[^{}]|{[^{}]*})*type:\s*(?:String|Number|Boolean|Array|Object|Function)/,
 
-      // Lifecycle hooks (production)
-      /onMounted\(\s*\(\s*\)\s*=>\s*\{/,
-      /onUnmounted\(\s*\(\s*\)\s*=>\s*\{/,
-
       // Component emits (minified)
       /emits:\s*\{(?:[^{}]|{[^{}]*})*\}|emits:\s*\[(?:[^\[\]]*)\]/,
-    ],
-  },
-  {
-    name: 'routing' as const,
-    score: 0.15,
-    scripts: [
-      // Router initialization (production)
-      /createRouter\(\s*\{\s*history:\s*createWebHistory\(/,
-
-      // Route definitions (minified)
-      /routes:\s*\[\s*\{\s*path:\s*["'][^"']+["']\s*,\s*component:/,
-
-      // Navigation guards (production)
-      /beforeRouteEnter\s*\(\s*to\s*,\s*from\s*,\s*next\s*\)\s*\{/,
-
-      // Router link compilation (minified)
-      /RouterLink,\{to:[\w$]+\}/,
     ],
   },
   {
@@ -120,7 +80,7 @@ export const vue = [
   },
   {
     name: 'runtimeVueLikePatterns' as const,
-    score: 0.4,
+    score: 0.8,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -152,9 +112,6 @@ export const vue = [
           // Check for Vuex state in production
           // eslint-disable-next-line no-prototype-builtins
           hasVuexState: window.hasOwnProperty('__INITIAL_STATE__'),
-
-          // Check for Vue Router in production
-          hasRouter: !!document.querySelector('a[href^="/"][router-link]'),
         };
 
         // Require at least two markers for more reliable detection

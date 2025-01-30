@@ -10,6 +10,13 @@ export const remix = [
       /__remixManifest/,
       /__remixRouteModules/,
       /__remix_entry__/,
+      /isOutsideRemixApp:/,
+      /💿 Hey developer 👋.*remix\.run\/guides\/errors/,
+      /remix\.run\/route\/meta/,
+      /Unknown @remix-run\/router error/,
+      /["']remix-router-transitions["']/,
+      /You are trying to use a blocker on a POP navigation.*@remix-run\/router/,
+      /All route meta functions must return an array of meta objects/,
     ],
   },
   {
@@ -28,10 +35,8 @@ export const remix = [
     score: 0.8,
     scripts: [
       // Remix-specific hydration markers
-      /__remixContext\.state/,
-      /__remixContext\.url/,
-      /__remixContext\.matches/,
-      /__remixContext\.routeData/,
+      /when your app is loading JS modules.*clientLoader.*remix\.run\/route\/hydrate-fallback/,
+      /dangerouslySetInnerHTML:.*💿 Hey developer/,
     ],
   },
   {
@@ -55,8 +60,13 @@ export const remix = [
     },
   },
   {
-    name: 'chunks' as const,
-    score: 0.8,
-    filenames: [/remix\.config\./, /remix\.init\./],
+    name: 'headers' as const,
+    score: 1,
+    headers: {
+      'X-Remix-Reload-Document': /.+/i,
+      'X-Remix-Replace': /.+/i,
+      'X-Remix-Revalidate': /.+/i,
+      'X-Remix-Response': /.+/i,
+    },
   },
 ];
