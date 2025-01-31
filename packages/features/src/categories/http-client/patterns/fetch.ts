@@ -2,7 +2,7 @@
 export const fetch = [
   {
     name: 'requestConfiguration' as const,
-    score: 0.5,
+    score: 1,
     scripts: [
       // Basic fetch call with options object - handles minified code
       /(?:^|[^.a-zA-Z])fetch\s*\([^,)]+,\s*\{[^}]*(?:method|body|mode|credentials|keepalive|headers):/i,
@@ -36,7 +36,7 @@ export const fetch = [
       return ['ky', 'swr', 'urql', 'nextServerActions'].some(
         (dep) =>
           dep === analysis.httpClient.name &&
-          analysis.httpClient.confidence > 0.3
+          analysis.httpClient.confidence > 0.5
       );
     },
   },

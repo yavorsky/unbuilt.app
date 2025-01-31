@@ -16,6 +16,7 @@ export class Resources {
     await this.page.route('**/*', async (route) => {
       let resourceType: string;
       let request: Request;
+
       try {
         request = route.request();
         resourceType = request.resourceType();
