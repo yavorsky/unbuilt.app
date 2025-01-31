@@ -9,9 +9,10 @@ import os from 'os';
 import { BrowserManager } from './browser-manager';
 import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
+import { setUserHeaders } from './utils/set-user-headers';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.
-const CONCURRENT_JOBS = Math.max(1, Math.floor(os.cpus().length * 0.75));
+const CONCURRENT_JOBS = 1; //Math.max(1, Math.floor(os.cpus().length * 0.75));
 const MAX_RETRY_ATTEMPTS = 3;
 const RETRY_DELAY = 5000; // 5 seconds
 export const ANALYSIS_TIMEOUT = 70000; // 70 seconds
@@ -97,6 +98,7 @@ export class QueueManager {
           if (!browser) throw new Error('Browser not available');
 
           const page = await context.newPage();
+          await setUserHeaders(page);
 
           const onProgress: OnProgress = async (partialResult, progress) => {
             await job.update(partialResult);

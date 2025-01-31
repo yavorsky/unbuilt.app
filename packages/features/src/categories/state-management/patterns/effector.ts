@@ -1,7 +1,7 @@
 export const effector = [
   {
     name: 'coreImplementation' as const,
-    score: 0.9,
+    score: 0.3,
     scripts: [
       // Effector's unique error messages
       /"Handlers map can contain only effects as keys"/,
@@ -17,7 +17,7 @@ export const effector = [
   },
   {
     name: 'storeImplementation' as const,
-    score: 0.8,
+    score: 0.3,
     scripts: [
       // Effector's unique store operations
       /\{store:\s*t\.stateRef,\s*to:\s*['"]stack["']\}/,
@@ -28,18 +28,6 @@ export const effector = [
 
       // Effector's specific sidMap pattern
       /\.sidMap\[O\([^,]+,\s*['"]sid["']\)\]/,
-    ],
-  },
-  {
-    name: 'combinators' as const,
-    score: 0.8,
-    scripts: [
-      // Effector's unique combine implementation details
-      /type:\s*['"](?:list|shape)["']/,
-      /derived:\s*1/,
-
-      // Effector's specific map operations
-      /softRead:\s*1/,
     ],
   },
 ];

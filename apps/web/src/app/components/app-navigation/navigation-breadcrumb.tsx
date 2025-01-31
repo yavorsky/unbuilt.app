@@ -58,7 +58,7 @@ export function NavigationBreadcrumb<
           <BreadcrumbSeparator className="hidden md:inline" />
           <URLBreadcrumb
             className="hidden md:inline"
-            skipSubmit={!!activeCategoryLabel}
+            skipSubmit
             skipBackground
             variant="medium"
             url={truncatedUrl}

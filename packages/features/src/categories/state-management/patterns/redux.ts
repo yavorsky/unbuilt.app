@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const redux = [
   {
     name: 'coreRuntime' as const,
-    score: 0.5,
+    score: 0.3,
     scripts: [
       /"@@redux\/INIT[^"]+"/,
       /"@@redux\/REPLACE[^"]+"/,
@@ -19,10 +19,6 @@ export const redux = [
 
       // Redux's unique error message URLs that survive minification
       /visit https:\/\/redux\.js\.org\/Errors\?code=/,
-
-      // Redux's specific Symbol.observable implementation
-      /"@@observable"/,
-      /Symbol\.observable\|\|"@@observable"/,
     ],
     browser: async (page: Page) => {
       return page.evaluate(() => {

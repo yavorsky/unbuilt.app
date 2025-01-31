@@ -5,9 +5,18 @@ export const dateFns = [
     scripts: [
       // date-fns specific error messages from core implementation
       /"weekStartsOn must be between 0 and 6 inclusively"/,
+      /firstWeekContainsDate must be between 1 and 7 inclusively/,
       /"startDate or endDate for interval cannot be Invalid Date"/,
       /"The step must be a number between 0 and 7 inclusively"/,
       /"useAdditionalDayPeriodTokens must be used with isProtectedDayPeriodToken"/,
+    ],
+  },
+  {
+    name: 'additionalTokens' as const,
+    score: 0.5,
+    scripts: [
+      /firstWeekContainsDate/,
+      /["']abbreviated["'].*["']narrow["'].*["']short["'].*["']wide["']/,
     ],
   },
   {
