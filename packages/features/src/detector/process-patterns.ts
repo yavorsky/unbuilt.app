@@ -41,7 +41,7 @@ export async function processPatterns<Names extends string>(
   }
 
   if (debug) {
-    console.log(Array.from(result.matchedPatterns));
+    console.log(type, Array.from(result.matchedPatterns));
   }
 
   return result;
