@@ -13,14 +13,7 @@ export const preact = [
       /__preactattr_[$_a-zA-Z0-9]+/,
       /__component[$_a-zA-Z0-9]+/,
 
-      // Preact's VNode properties (with variable name variations)
-      /\.__[vkbe][$_a-zA-Z0-9]*/, // Matches minified VNode properties
-
-      // Preact's createElement (h) with proper boundaries
-      /(?:^|[^a-zA-Z0-9_$])h\s*\(\s*(?:["'][^\s"']+["']|[A-Za-z_$][\w$]*)\s*,\s*(?:\{|\w+\b|null)\)/,
-
       // Preact's production build markers
-      /\.production\.min\.js["']\}?\)/,
       /\?preact\b.*?\.production\.min\.js/,
     ],
   },
@@ -105,22 +98,14 @@ export const preact = [
       // Preact Signals implementation
       /from\s+["']@preact\/signals(?:-core)?["']/,
 
-      // Signal creation and computation patterns
-      /(?:^|[^a-zA-Z0-9_$])signal\s*\(\s*(?:[^()]*)\s*\)/,
-      /(?:^|[^a-zA-Z0-9_$])computed\s*\(\s*\(\s*\)\s*=>\s*\{/,
-
       // Signal internals (minification-resistant)
       /__value\s*=\s*value/,
       /__subscribers\s*=\s*new\s+Set/,
-
-      // Signal integration with Preact
-      /signals\.__/,
-      /SIGNAL\s*=/,
     ],
   },
   {
     name: 'runtimeExecution' as const,
-    score: 0.3,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
