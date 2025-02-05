@@ -10,7 +10,17 @@ import { useDateFormat } from '@/hooks/use-date-format';
 import { validateUrl } from '@/app/utils/validate-url';
 import { InputWithSubmit } from '../input-with-submit';
 
-export const AnalyzeForm = () => {
+export const AnalyzeForm = ({
+  buttonClassName,
+  selectOnOpen = false,
+  onAnalyzisStarted,
+  forceNewAnalysis = false,
+}: {
+  buttonClassName?: string;
+  selectOnOpen?: boolean;
+  forceNewAnalysis?: boolean;
+  onAnalyzisStarted?: () => void;
+}) => {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
@@ -28,6 +38,7 @@ export const AnalyzeForm = () => {
       title: `Starting analysis for ${url}`,
       description: 'Usually takes up to 10 seconds.',
     });
+    onAnalyzisStarted?.();
     const result = await analyzeWebsite(form);
     if (result.analysisId) {
       return router.push(`/analysis/${result.analysisId}`);
@@ -36,7 +47,7 @@ export const AnalyzeForm = () => {
       return;
     }
     setIsPending(false);
-  }, [url, router]);
+  }, [url, router, onAnalyzisStarted]);
 
   const handleNavigateToExistingAnalysis = useCallback(() => {
     if (existingAnalysis.status === 'NOT_FOUND') {
@@ -50,6 +61,8 @@ export const AnalyzeForm = () => {
   }, [existingAnalysis, router]);
 
   const isLoading = existingAnalysis.status === 'PENDING' || isPending;
+  const shouldStartNewAnalysis =
+    !forceNewAnalysis && existingAnalysis.status === 'FOUND';
 
   return (
     <form
@@ -58,7 +71,7 @@ export const AnalyzeForm = () => {
         if (existingAnalysis.status === 'PENDING') {
           return;
         }
-        if (existingAnalysis.status === 'FOUND') {
+        if (shouldStartNewAnalysis) {
           handleNavigateToExistingAnalysis();
         } else {
           handleStartNewAnalyis();
@@ -78,8 +91,10 @@ export const AnalyzeForm = () => {
         autoCapitalize="off"
         autoCorrect="off"
         validate={validateUrl}
+        buttonClassName={buttonClassName}
+        selectOnOpen={selectOnOpen}
         tooltipContent={
-          existingAnalysis.status === 'FOUND' ? (
+          shouldStartNewAnalysis ? (
             <p>
               See latest results for this web app from <b>{formattedDate}</b>
             </p>

@@ -11,7 +11,10 @@ import React, {
   InputHTMLAttributes,
   useCallback,
   ReactNode,
+  useEffect,
+  useRef,
 } from 'react';
+import { cn } from '../utils';
 
 interface InputWithSubmitProps extends InputHTMLAttributes<HTMLInputElement> {
   onInputChange?: (url: string) => void;
@@ -19,6 +22,8 @@ interface InputWithSubmitProps extends InputHTMLAttributes<HTMLInputElement> {
   value: string;
   tooltipContent?: ReactNode;
   isLoading?: boolean;
+  buttonClassName?: string;
+  selectOnOpen?: boolean;
 }
 
 export const InputWithSubmit = ({
@@ -26,11 +31,18 @@ export const InputWithSubmit = ({
   isLoading,
   className,
   tooltipContent,
+  buttonClassName,
+  selectOnOpen = false,
   validate,
   onInputChange,
   ...props
 }: InputWithSubmitProps) => {
   const isValidValue = validate?.(value) ?? true;
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.select();
+  }, [selectOnOpen]);
 
   const handleUrlUpdate = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +53,7 @@ export const InputWithSubmit = ({
   const dataState = isLoading ? 'loading' : '';
 
   return (
-    <div className="relative z-20 overflow-hidden rounded-[18px]">
+    <div className="relative z-20 overflow-hidden rounded-[18px] mx-4 md:mx-0">
       <div
         className="absolute inset-0 z-[-1] hidden data-[state=loading]:block bg-transparent rounded-[18px]"
         data-state={dataState}
@@ -49,18 +61,20 @@ export const InputWithSubmit = ({
         <div
           className="w-[100px] aspect-[2/1] absolute animate-border-rotate
                   bg-[radial-gradient(100%_100%_at_right,#760ec3,transparent_50%)] [offset-path:border-box] [offset-anchor:100%_50%]"
-        ></div>
+        />
       </div>
       <Input
         onChange={handleUrlUpdate}
         value={value}
+        ref={inputRef}
         data-state={dataState}
-        className={`bg-accent h-14 [background-clip:padding-box] pl-6 pr-32 border-2 border-transparent rounded-[18px] focus:border-indigo-500 focus-visible:ring-0 ${className}`}
+        className={`bg-accent text-lg md:text-base h-14 [background-clip:padding-box] pl-6 pr-32 border-[3px] data-[state=loading]:border-transparent border-transparent rounded-[18px] focus-visible:ring-0 ${className}`}
         {...props}
       />
       <div className="absolute right-3 top-1/2 -translate-y-1/2">
         <TooltipProvider>
-          {/* <Tooltip>
+          {/* TODO: Implement it for Dev Mode
+          <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       type="button"
@@ -90,7 +104,10 @@ export const InputWithSubmit = ({
             <TooltipTrigger asChild>
               <Button
                 type="submit"
-                className="flex-1 px-8 h-9 transition-all duration-300 ease-in-out bg-[#4455FF] hover:bg-[#4455FF]/80 disabled:opacity-30 rounded-[8px] border-0 text-white"
+                className={cn(
+                  'flex-1 px-8 h-9 transition-all duration-300 ease-in-out bg-action hover:bg-action/80 text-action-foreground disabled:opacity-30 rounded-[8px] border-0',
+                  buttonClassName
+                )}
                 disabled={isLoading || !isValidValue}
               >
                 <span>Unbuild</span>

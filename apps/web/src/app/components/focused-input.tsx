@@ -1,5 +1,5 @@
 import { Button, Input } from '@/components/ui';
-import { Loader2, Pencil, Repeat2Icon } from 'lucide-react';
+import { Loader2, MoveRightIcon, Pencil, Repeat2Icon } from 'lucide-react';
 import React, {
   useState,
   InputHTMLAttributes,
@@ -11,6 +11,8 @@ import React, {
   useEffect,
   forwardRef,
 } from 'react';
+import { useActiveAnalysis } from '../contexts/active-analysis';
+import { validateUrl } from '../utils';
 
 interface FocusedInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'className'> {
@@ -18,7 +20,6 @@ interface FocusedInputProps
   value: string;
   withSubmit?: boolean;
   withPencil?: boolean;
-  isPending?: boolean;
   skipBackground?: boolean;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -31,7 +32,6 @@ const FocusedInput = forwardRef<HTMLInputElement, FocusedInputProps>(
       className = '',
       withSubmit = false,
       withPencil = false,
-      isPending = false,
       skipBackground = false,
       ...props
     },
@@ -125,15 +125,12 @@ const FocusedInput = forwardRef<HTMLInputElement, FocusedInputProps>(
         </div>
         {withSubmit && isFocused && (
           <Button
-            className="absolute -right-12 bg-blue-700 hover:bg-blue-600 mt-1 border-0 px-2 py-4 z-30"
-            variant="outline"
+            className="absolute -right-20 top-1/2 -translate-y-1/2 px-4 py-4 z-30 bg-primary hover:bg-primary/80 text-primary-foreground"
             type="submit"
+            variant="ghost"
+            disabled={!validateUrl(value)}
           >
-            {isPending ? (
-              <Loader2 className="h-5 w-5 animate-spin text-white" />
-            ) : (
-              <Repeat2Icon className="h-5 w-5 text-white" />
-            )}
+            Unbuild
           </Button>
         )}
       </div>

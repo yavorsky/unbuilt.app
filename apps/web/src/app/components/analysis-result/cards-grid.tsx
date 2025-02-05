@@ -1,11 +1,5 @@
-import { FC, Suspense, useEffect, useMemo, useRef } from 'react';
-import {
-  Loader2,
-  Repeat,
-  Repeat2,
-  Repeat2Icon,
-  RepeatIcon,
-} from 'lucide-react';
+import { FC, Suspense, useEffect, useMemo } from 'react';
+import { Loader2 } from 'lucide-react';
 import { Breadcrumb, BreadcrumbList } from '@/components/ui/breadcrumb';
 import { OnProgressResult } from '@unbuilt/analyzer';
 import { FrameworkCard } from './cards/framework';
@@ -27,8 +21,7 @@ import { ErrorState } from '../error-state';
 import { useTruncatedUrl } from '@/hooks/use-truncated-url';
 import { PlatformCard } from './cards/platform';
 import { TranslationsCard } from './cards/translations';
-import { AnalyzeButton } from '../analyze-button';
-import { Button } from '@/components/ui';
+import { NewAnalysisDialog } from '../new-analysis-dialog';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -38,11 +31,6 @@ export const CardsGrid: FC<{
   isLoading: boolean;
 }> = ({ result, status, error, isLoading }) => {
   const truncatedUrl = useTruncatedUrl(result?.url);
-  const urlInputRef = useRef<HTMLInputElement>(null);
-
-  const focusUrlInput = () => {
-    urlInputRef.current?.focus();
-  };
 
   const actionLabel = useMemo(() => {
     // Loading Result
@@ -76,7 +64,6 @@ export const CardsGrid: FC<{
               <h3 className="text-foreground text-3xl">{actionLabel}</h3>
               {truncatedUrl ? (
                 <URLBreadcrumb
-                  ref={urlInputRef}
                   skipBackground={theme === 'light'}
                   variant="large"
                   url={truncatedUrl}
@@ -92,10 +79,7 @@ export const CardsGrid: FC<{
             <>Tech stack results based on the analysis from {formattedDate}.</>
           )}
           {truncatedUrl && (
-            <Button variant="link" onClick={focusUrlInput}>
-              <span>Unbuild again</span>
-              <Repeat2Icon className="h-4 w-4" />
-            </Button>
+            <NewAnalysisDialog initialUrl={truncatedUrl} selectOnOpen />
           )}
         </span>
       </div>
