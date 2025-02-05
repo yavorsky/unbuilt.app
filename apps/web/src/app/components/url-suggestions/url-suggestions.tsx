@@ -5,11 +5,11 @@ const urlSuggestionsList = [
   'nextjs.org',
   'react.dev',
   'vuejs.org',
-  'stripe.com',
-  'github.com',
   'wix.com',
-  'shopify.com',
-  'nytimes.com',
+  // 'stripe.com',
+  // 'github.com',
+  // 'shopify.com',
+  // 'nytimes.com',
 ];
 
 export const URLSuggestions = () => {
@@ -20,8 +20,8 @@ export const URLSuggestions = () => {
   }
 
   return (
-    <div className="flex-0 mt-16 flex justify-center items-center relative flex-col">
-      <span className="text-foreground/40 mb-6">
+    <div className="flex-0 mt-0 flex justify-center items-center relative flex-col">
+      <span className="text-foreground/40 mb-4">
         Or try some popular options:
       </span>
       <div className="grid grid-cols-4 max-[640px]:grid-cols-2 gap-3">

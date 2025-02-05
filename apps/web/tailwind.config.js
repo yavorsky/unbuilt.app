@@ -17,6 +17,9 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 			keyframes: {
+				'border-rotate': {
+					to: { 'offset-distance': '100%' }
+        },
         float: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10px)' },
@@ -24,6 +27,7 @@ module.exports = {
       },
       animation: {
         float: 'float 3s ease-in-out infinite',
+        'border-rotate': 'border-rotate 6s linear infinite',
       },
   		colors: {
   			background: 'hsl(var(--background))',

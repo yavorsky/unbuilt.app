@@ -2,28 +2,20 @@
 
 import { useCallback, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Button,
-  Tooltip,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui';
-import { URLInput } from './url-input';
 import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form';
-import { TooltipContent } from '@radix-ui/react-tooltip';
-import { ArrowRight, Loader2, PlusCircle } from 'lucide-react';
 import { useExistingAnalysisMeta } from '@/app/hooks/use-existing-analysis';
 import { analyzeWebsite } from '@/actions';
 import { toast } from '@/hooks/use-toast';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { validateUrl } from '@/app/utils/validate-url';
+import { InputWithSubmit } from '../input-with-submit';
 
 export const AnalyzeForm = () => {
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { url, changeUrl } = useAnalysisForm();
 
-  const { url } = useAnalysisForm();
   const existingAnalysis = useExistingAnalysisMeta(url);
 
   const formattedDate = useDateFormat(existingAnalysis.analyzedAt);
@@ -53,11 +45,11 @@ export const AnalyzeForm = () => {
     if (existingAnalysis.status === 'PENDING') {
       return;
     }
+    setIsPending(true);
     return router.push(`/analysis/${existingAnalysis.id}`);
   }, [existingAnalysis, router]);
 
   const isLoading = existingAnalysis.status === 'PENDING' || isPending;
-  const isValidUrl = validateUrl(url);
 
   return (
     <form
@@ -72,84 +64,35 @@ export const AnalyzeForm = () => {
           handleStartNewAnalyis();
         }
       }}
-      className="space-y-4"
+      className="space-y-4 justify-center items-center min-w-[400px] max-w-[420px]"
     >
-      <div className="flex w-full items-around space-x mb-2 flex-col">
-        <URLInput name="url" id="url" required />
-        <div className="flex overflow-hidden mt-4 gap-2">
-          {existingAnalysis.status === 'FOUND' ? (
-            <>
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleStartNewAnalyis();
-                      }}
-                      className="transition-all duration-300 h-10 ease-in-out text-foreground hover:text-foreground bg-secondary/60 hover:bg-secondary disabled:bg-secondary/20 border-0"
-                      disabled={isLoading || !isValidUrl}
-                      variant="outline"
-                    >
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Unbuild Again
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="p-2 bg-gray-900/90 backdrop-blur-sm border-gray-800 text-foreground/80 rounded-lg text-sm">
-                    <p className="text-center">
-                      Re-trigger the new analysis process. (Usually takes up to
-                      10 seconds)
-                      <br />
-                      Useful if latest analysis is old or new technology was
-                      added.
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      type="submit"
-                      className="flex-1 transition-all h-10 duration-300 ease-in-out bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300 text-white"
-                      disabled={isLoading || !isValidUrl}
-                    >
-                      <span className="hidden sm:inline">Latest Analysis</span>
-                      <span className="sm:hidden">Latest</span>
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent className="p-2 bg-gray-900/90 backdrop-blur-sm border-gray-800 text-foreground/80 rounded-lg text-sm">
-                    <p>
-                      See latest results for this web app from{' '}
-                      <b>{formattedDate}</b>
-                    </p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </>
+      <InputWithSubmit
+        id="url"
+        type="text"
+        value={url}
+        onInputChange={changeUrl}
+        placeholder="https://"
+        spellCheck="false"
+        autoFocus
+        isLoading={isLoading}
+        autoCapitalize="off"
+        autoCorrect="off"
+        validate={validateUrl}
+        tooltipContent={
+          existingAnalysis.status === 'FOUND' ? (
+            <p>
+              See latest results for this web app from <b>{formattedDate}</b>
+            </p>
           ) : (
-            <Button
-              type="submit"
-              className="w-full transition-all duration-300 h-10 ease-in-out min-w-[200px] text-white bg-blue-700 hover:bg-blue-600 disabled:bg-blue-300/20 border-0"
-              disabled={isLoading || !validateUrl(url)}
-            >
-              {isLoading ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <>
-                  Unbuild
-                  <ArrowRight className="ml-0 h-4 w-4" />
-                </>
-              )}
-            </Button>
-          )}
-        </div>
-      </div>
+            <p>Start new analysis</p>
+          )
+        }
+      />
 
-      <p className="text-sm text-foreground/30">
+      {/* <p className="text-sm text-foreground/30">
         Unbuilt.app is currently in development phase. Some results could be
         wrong.
-      </p>
+      </p> */}
       {error && <p className="text-red-500 text-base mt-4">{error}</p>}
     </form>
   );
