@@ -99,7 +99,6 @@ export const URLBreadcrumb = forwardRef<HTMLInputElement, URLBreadcrumbProps>(
             onBlur={handleBlur}
             className={`text-foreground border-none outline-none p-0 focus:ring-0 ${textClass}`}
             withSubmit={!skipSubmit}
-            isPending={isPending}
           />
         </form>
       </BreadcrumbItem>
