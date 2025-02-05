@@ -18,7 +18,7 @@ export default function RoutesLayout({
         </Suspense>
         <div className="flex-1 flex flex-col">
           {children}
-          <footer className="w-full p-4 mt-auto">
+          <footer className="w-full p-4 mt-auto text-sm">
             <div className="max-w-3xl mx-auto text-center mb-2 text-foreground/50">
               Free and Open Source. Currently collecting data and improving
               algorithms.{' '}
