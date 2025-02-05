@@ -41,7 +41,9 @@ export const InputWithSubmit = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.select();
+    if (selectOnOpen) {
+      inputRef.current?.select();
+    }
   }, [selectOnOpen]);
 
   const handleUrlUpdate = useCallback(

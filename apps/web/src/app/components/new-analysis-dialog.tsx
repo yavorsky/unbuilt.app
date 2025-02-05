@@ -39,8 +39,8 @@ export function NewAnalysisDialog({
           <DialogHeader>
             <DialogTitle>New Analysis</DialogTitle>
             <DialogDescription>
-              Unbuild <b>{initialUrl}</b> again to refresh results or start a
-              new analysis. The process will take up to 10 seconds depends on
+              Unbuild <b>{initialUrl}</b> again to refresh results or unbuild
+              another app. The process will take up to 10 seconds depends on
               service queue.
             </DialogDescription>
           </DialogHeader>
