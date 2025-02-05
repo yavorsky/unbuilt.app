@@ -15,12 +15,11 @@ const urlSuggestionsList = [
 export const URLSuggestions = () => {
   const { touched, changeUrl } = useAnalysisForm();
 
-  if (touched) {
-    return;
-  }
-
   return (
-    <div className="flex-0 mt-0 flex justify-center items-center relative flex-col">
+    <div
+      data-state={touched ? 'touched' : 'untouched'}
+      className="flex-0 mt-0 flex justify-center items-center relative flex-col data-[state=touched]:invisible"
+    >
       <span className="text-foreground/40 mb-4">
         Or try some popular options:
       </span>

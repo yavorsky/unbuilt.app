@@ -8,7 +8,7 @@ import { LogoIcon } from '../components/icons/logo';
 export default function Root() {
   return (
     <AnalysisFormProvider initialUrl="">
-      <div className="flex flex-col p-2 lg:p-8 md:p-8 pt-20 page sm:mt-10 md:mt-40 gap-8">
+      <div className="flex flex-col page gap-8 flex-1 p-2 md:p-8 mt-24 md:mt-0 md:justify-center justify-start">
         <div className="text-center">
           <div className="flex items-center justify-center flex-col mb-6">
             <div className="relative w-[120px] h-[120px] flex items-center justify-center flex-col gap-y-4">
