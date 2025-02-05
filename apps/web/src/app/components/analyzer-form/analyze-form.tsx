@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form';
 import { useExistingAnalysisMeta } from '@/app/hooks/use-existing-analysis';
@@ -25,6 +25,7 @@ export const AnalyzeForm = ({
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { url, changeUrl } = useAnalysisForm();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const existingAnalysis = useExistingAnalysisMeta(url);
 
@@ -60,22 +61,32 @@ export const AnalyzeForm = ({
     return router.push(`/analysis/${existingAnalysis.id}`);
   }, [existingAnalysis, router]);
 
-  const isLoading = existingAnalysis.status === 'PENDING' || isPending;
   const shouldStartNewAnalysis =
     !forceNewAnalysis && existingAnalysis.status === 'FOUND';
+
+  useEffect(() => {
+    if (!isSubmitted || existingAnalysis.status === 'PENDING') {
+      return;
+    }
+    // TODO: Add error handling to display error and refresh isSubmitted
+    if (shouldStartNewAnalysis) {
+      handleNavigateToExistingAnalysis();
+    } else {
+      handleStartNewAnalyis();
+    }
+  }, [
+    isSubmitted,
+    existingAnalysis,
+    shouldStartNewAnalysis,
+    handleNavigateToExistingAnalysis,
+    handleStartNewAnalyis,
+  ]);
 
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
-        if (existingAnalysis.status === 'PENDING') {
-          return;
-        }
-        if (shouldStartNewAnalysis) {
-          handleNavigateToExistingAnalysis();
-        } else {
-          handleStartNewAnalyis();
-        }
+        setIsSubmitted(true);
       }}
       className="space-y-4 justify-center items-center min-w-[400px] max-w-[420px]"
     >
@@ -87,7 +98,7 @@ export const AnalyzeForm = ({
         placeholder="https://"
         spellCheck="false"
         autoFocus
-        isLoading={isLoading}
+        isLoading={isPending}
         autoCapitalize="off"
         autoCorrect="off"
         validate={validateUrl}
