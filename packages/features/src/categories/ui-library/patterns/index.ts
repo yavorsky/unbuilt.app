@@ -8,6 +8,7 @@ import { solid } from './solid.js';
 import { svelte } from './svelte.js';
 import { vue } from './vue.js';
 import { jQuery } from './jQuery.js';
+import { webComponents } from './web-components.js';
 
 export const patterns = {
   react,
@@ -20,4 +21,5 @@ export const patterns = {
   svelte,
   jQuery,
   vue,
+  webComponents,
 } as const;
