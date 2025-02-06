@@ -34,7 +34,7 @@ export const webComponents = [
   },
   {
     name: 'lifecycleCallbacks' as const,
-    score: 1,
+    score: 0.7,
     scripts: [
       /* Matches Web Component lifecycle callbacks
       - connectedCallback() {
