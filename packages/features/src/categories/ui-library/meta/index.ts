@@ -8,6 +8,7 @@ import { react } from './react.js';
 import { solid } from './solid.js';
 import { svelte } from './svelte.js';
 import { vue } from './vue.js';
+import { webComponents } from './web-components.js';
 
 export const meta = {
   react,
@@ -20,4 +21,5 @@ export const meta = {
   inferno,
   vue,
   jQuery,
+  webComponents,
 } as const;
