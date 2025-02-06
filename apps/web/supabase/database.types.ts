@@ -558,6 +558,7 @@ export type Database = {
         | "inferno"
         | "vue"
         | "jQuery"
+        | "webComponents"
     }
     CompositeTypes: {
       image_metrics: {
