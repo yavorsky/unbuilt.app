@@ -5,7 +5,6 @@ import {
   analyze,
   errors,
 } from '@unbuilt/analyzer';
-import os from 'os';
 import { BrowserManager } from './browser-manager';
 import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';

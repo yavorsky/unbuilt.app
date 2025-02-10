@@ -5,6 +5,7 @@ import {
   extractSecondaryMatches,
 } from '../utils/extract-secondary-matches';
 import { Json, TablesInsert } from '../../../supabase/database.types';
+import { toSnakeCase } from '../utils/convert-keys';
 
 export interface TechnologyInfo {
   type?: string;
@@ -67,11 +68,10 @@ export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
       // Stats
       resource_count: analysisData.analysis.stats.resourceCount,
       total_size: analysisData.analysis.stats.totalSize,
-      script_metrics: analysisData.analysis.stats.scriptMetrics,
-      image_metrics: {
-        lazy_loaded: analysisData.analysis.stats.imageMetrics?.lazyLoaded,
-        total: analysisData.analysis.stats.imageMetrics?.total,
-      },
+      script_metrics: toSnakeCase(analysisData.analysis.stats.scriptMetrics),
+      style_metrics: toSnakeCase(analysisData.analysis.stats.styleMetrics),
+      image_metrics: toSnakeCase(analysisData.analysis.stats.imageMetrics),
+      dom_metrics: toSnakeCase(analysisData.analysis.stats.domMetrics),
 
       // Additional data including secondary matches
       additional_data: {

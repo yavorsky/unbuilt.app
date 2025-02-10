@@ -149,6 +149,7 @@ export const analyze = async (
 
   console.time('stats');
   analysis.stats = await getStats(page);
+  console.log(analysis.stats, 'analysis.statsanalysis.statsanalysis.stats');
   onProgress({ stats: analysis.stats });
   console.timeEnd('stats');
 
