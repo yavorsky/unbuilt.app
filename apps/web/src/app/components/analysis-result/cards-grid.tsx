@@ -141,7 +141,7 @@ export const CardsGrid: FC<{
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
             </div>
-            <div className="col-span-6 lg:col-span-6">
+            <div className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-6">
               <StatsCard stats={result?.analysis.stats} />
             </div>
           </div>
