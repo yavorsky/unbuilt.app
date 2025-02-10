@@ -53,6 +53,9 @@ export type Database = {
           created_at: string | null
           dates: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence: number | null
+          dom_metrics:
+            | Database["public"]["CompositeTypes"]["dom_metrics"]
+            | null
           duration: number
           framework: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence: number | null
@@ -78,6 +81,9 @@ export type Database = {
             | Database["public"]["Enums"]["state_management_type"]
             | null
           state_management_confidence: number | null
+          style_metrics:
+            | Database["public"]["CompositeTypes"]["style_metrics"]
+            | null
           styling_processor:
             | Database["public"]["Enums"]["styling_processor_type"]
             | null
@@ -99,6 +105,9 @@ export type Database = {
           created_at?: string | null
           dates?: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence?: number | null
+          dom_metrics?:
+            | Database["public"]["CompositeTypes"]["dom_metrics"]
+            | null
           duration: number
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
@@ -124,6 +133,9 @@ export type Database = {
             | Database["public"]["Enums"]["state_management_type"]
             | null
           state_management_confidence?: number | null
+          style_metrics?:
+            | Database["public"]["CompositeTypes"]["style_metrics"]
+            | null
           styling_processor?:
             | Database["public"]["Enums"]["styling_processor_type"]
             | null
@@ -145,6 +157,9 @@ export type Database = {
           created_at?: string | null
           dates?: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence?: number | null
+          dom_metrics?:
+            | Database["public"]["CompositeTypes"]["dom_metrics"]
+            | null
           duration?: number
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
@@ -170,6 +185,9 @@ export type Database = {
             | Database["public"]["Enums"]["state_management_type"]
             | null
           state_management_confidence?: number | null
+          style_metrics?:
+            | Database["public"]["CompositeTypes"]["style_metrics"]
+            | null
           styling_processor?:
             | Database["public"]["Enums"]["styling_processor_type"]
             | null
@@ -561,14 +579,31 @@ export type Database = {
         | "webComponents"
     }
     CompositeTypes: {
+      dom_metrics: {
+        total_nodes: number | null
+        max_depth: number | null
+        total_size: number | null
+      }
       image_metrics: {
         lazy_loaded: number | null
         total: number | null
+        total_size: number | null
       }
       script_metrics: {
         async: number | null
         defer: number | null
         modules: number | null
+        inline: number | null
+        cross_origin: number | null
+        preload: number | null
+        total_size: number | null
+      }
+      style_metrics: {
+        inline: number | null
+        total: number | null
+        preload: number | null
+        modules: number | null
+        total_size: number | null
       }
     }
   }

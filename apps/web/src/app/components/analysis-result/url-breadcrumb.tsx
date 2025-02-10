@@ -32,7 +32,7 @@ export const URLBreadcrumb = forwardRef<HTMLInputElement, URLBreadcrumbProps>(
       []
     );
 
-    const [isPending, setIsPending] = useState(false);
+    const [, setIsPending] = useState(false);
     const router = useRouter();
     const urlIsChanged = newUrl !== url;
 

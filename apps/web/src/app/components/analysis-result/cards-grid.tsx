@@ -22,6 +22,8 @@ import { useTruncatedUrl } from '@/hooks/use-truncated-url';
 import { PlatformCard } from './cards/platform';
 import { TranslationsCard } from './cards/translations';
 import { NewAnalysisDialog } from '../new-analysis-dialog';
+import { StatsCard } from './cards/stats';
+import { ComingSoonCard } from './cards/coming-soon';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -86,7 +88,6 @@ export const CardsGrid: FC<{
       {status !== 'failed' ? (
         <Suspense>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
-            {/* First row - two items */}
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <FrameworkCard framework={result?.analysis.framework} />
             </div>
@@ -96,7 +97,7 @@ export const CardsGrid: FC<{
 
             {/* All subsequent items */}
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <RouterCard router={result?.analysis.router} />
+              <PlatformCard platform={result?.analysis.platform} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <BundlerCard bundler={result?.analysis.bundler} />
@@ -106,6 +107,9 @@ export const CardsGrid: FC<{
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <MinifierCard minifier={result?.analysis.minifier} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <RouterCard router={result?.analysis.router} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <HTTPClientCard httpClient={result?.analysis.httpClient} />
@@ -135,7 +139,10 @@ export const CardsGrid: FC<{
               <ModulesCard modules={result?.analysis.modules} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <PlatformCard platform={result?.analysis.platform} />
+              <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
+            </div>
+            <div className="col-span-6 lg:col-span-6">
+              <StatsCard stats={result?.analysis.stats} />
             </div>
           </div>
         </Suspense>

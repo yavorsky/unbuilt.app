@@ -1,5 +1,6 @@
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { formatStylingLibrariesResponse } from './format-styling-libraries-response';
+import { toCamelCase } from './convert-keys';
 
 export const formatAnalyzisResponse = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- this is a response from the API. We'll fix supabase auto-generation later
@@ -128,8 +129,10 @@ export const formatAnalyzisResponse = (
       stats: {
         resourceCount: data.resource_count,
         totalSize: data.total_size,
-        scriptMetrics: data.script_metrics,
-        imageMetrics: data.image_metrics,
+        scriptMetrics: toCamelCase(data.script_metrics),
+        styleMetrics: toCamelCase(data.style_metrics ?? {}),
+        imageMetrics: toCamelCase(data.image_metrics),
+        domMetrics: toCamelCase(data.dom_metrics ?? {}),
       },
     },
   };

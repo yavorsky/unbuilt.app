@@ -41,6 +41,9 @@ export const AnalyzeForm = ({
     });
     onAnalyzisStarted?.();
     const result = await analyzeWebsite(form);
+
+    console.log(result.analysisId, 'result.analysisId');
+
     if (result.analysisId) {
       return router.push(`/analysis/${result.analysisId}`);
     } else if (result.error) {
@@ -61,23 +64,24 @@ export const AnalyzeForm = ({
     return router.push(`/analysis/${existingAnalysis.id}`);
   }, [existingAnalysis, router]);
 
-  const shouldStartNewAnalysis =
+  const shouldNavigateToExistingAnalysis =
     !forceNewAnalysis && existingAnalysis.status === 'FOUND';
 
   useEffect(() => {
-    if (!isSubmitted || existingAnalysis.status === 'PENDING') {
+    if (!isSubmitted || existingAnalysis.status === 'PENDING' || isPending) {
       return;
     }
     // TODO: Add error handling to display error and refresh isSubmitted
-    if (shouldStartNewAnalysis) {
+    if (shouldNavigateToExistingAnalysis) {
       handleNavigateToExistingAnalysis();
     } else {
       handleStartNewAnalyis();
     }
   }, [
     isSubmitted,
+    isPending,
     existingAnalysis,
-    shouldStartNewAnalysis,
+    shouldNavigateToExistingAnalysis,
     handleNavigateToExistingAnalysis,
     handleStartNewAnalyis,
   ]);
@@ -105,7 +109,7 @@ export const AnalyzeForm = ({
         buttonClassName={buttonClassName}
         selectOnOpen={selectOnOpen}
         tooltipContent={
-          shouldStartNewAnalysis ? (
+          shouldNavigateToExistingAnalysis ? (
             <p>
               See latest results for this web app from <b>{formattedDate}</b>
             </p>
