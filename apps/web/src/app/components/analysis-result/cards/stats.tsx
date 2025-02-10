@@ -46,7 +46,7 @@ export const StatsCard: FC<{
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full max-w-md sm:max-w-[none]">
       <CardHeader>
         <CardTitle>Analysis resources</CardTitle>
         <p className="text-xs text-muted-foreground">
@@ -78,7 +78,7 @@ export const StatsCard: FC<{
                 </div>
               </div>
             </div>
-            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col">
+            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col mt-2">
               <div className="text-xl font-semibold">
                 {stats.scriptMetrics.modules +
                   stats.scriptMetrics.inline +
@@ -118,7 +118,7 @@ export const StatsCard: FC<{
                 </div>
               </div>
             </div>
-            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col">
+            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col mt-2">
               <div className="text-xl font-semibold">
                 {stats.styleMetrics.total}
               </div>
@@ -146,7 +146,7 @@ export const StatsCard: FC<{
                 </div>
               </div>
             </div>
-            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col">
+            <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col mt-2">
               <div className="text-xl font-semibold">
                 {stats.domMetrics.totalNodes}
               </div>
