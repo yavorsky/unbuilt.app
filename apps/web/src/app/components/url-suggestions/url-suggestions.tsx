@@ -12,8 +12,12 @@ const urlSuggestionsList = [
   // 'nytimes.com',
 ];
 
-export const URLSuggestions = () => {
-  const { touched, changeUrl } = useAnalysisForm();
+export const URLSuggestions = ({
+  onChangeUrl,
+}: {
+  onChangeUrl: (url: string) => void;
+}) => {
+  const { touched } = useAnalysisForm();
 
   return (
     <div
@@ -30,7 +34,7 @@ export const URLSuggestions = () => {
             variant="secondary"
             key={url}
             onClick={() => {
-              changeUrl(url);
+              onChangeUrl(url);
             }}
           >
             {url}

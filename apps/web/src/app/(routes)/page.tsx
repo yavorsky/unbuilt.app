@@ -1,7 +1,6 @@
 'use client';
 
 import { AnalyzeForm } from '../components/analyzer-form/analyze-form';
-import { URLSuggestions } from '../components/url-suggestions/url-suggestions';
 import { AnalysisFormProvider } from '../contexts/analysis-form';
 import { LogoIcon } from '../components/icons/logo';
 
@@ -28,9 +27,8 @@ export default function Root() {
         </div>
 
         <div className="flex-0 flex justify-center items-center relative">
-          <AnalyzeForm />
+          <AnalyzeForm withAutosuggestions />
         </div>
-        <URLSuggestions />
       </div>
     </AnalysisFormProvider>
   );

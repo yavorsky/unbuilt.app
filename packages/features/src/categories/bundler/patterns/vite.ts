@@ -130,14 +130,4 @@ export const vite = [
       /__vite_ssr_import__/,
     ],
   },
-  {
-    name: 'query-params' as const,
-    score: 0.4,
-    scripts: [
-      // Vite-specific query parameters
-      /\?v=[a-zA-Z0-9]+/, // Vite's cache busting
-      /\?used&v=[a-zA-Z0-9]+/,
-      /\?import&v=[a-zA-Z0-9]+/,
-    ],
-  },
 ];

@@ -10,7 +10,7 @@ export function ComingSoonCard<N extends AnalysisTechnologies>({
   isLoading: boolean;
 }) {
   const className =
-    'max-w-md backdrop-blur-sm border-border group transition-opacity duration-300 min-h-40 opacity-50 hover:opacity-100';
+    'max-w-md backdrop-blur-sm border-border group transition-opacity duration-300 min-h-40 opacity-70 hover:opacity-100';
 
   if (isLoading) {
     return (

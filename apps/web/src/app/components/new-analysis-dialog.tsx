@@ -10,7 +10,6 @@ import {
 import { Repeat2Icon } from 'lucide-react';
 import { AnalyzeForm } from './analyzer-form';
 import { AnalysisFormProvider } from '../contexts/analysis-form';
-import { useCallback } from 'react';
 
 export function NewAnalysisDialog({
   initialUrl = '',
@@ -19,10 +18,6 @@ export function NewAnalysisDialog({
   initialUrl: string;
   selectOnOpen?: boolean;
 }) {
-  const handleAnalysisStarted = useCallback(() => {
-    console.log('started');
-  }, []);
-
   return (
     <AnalysisFormProvider initialUrl={initialUrl}>
       <Dialog>
@@ -49,7 +44,6 @@ export function NewAnalysisDialog({
               <AnalyzeForm
                 buttonClassName="bg-primary text-primary-foreground hover:bg-primary/90"
                 selectOnOpen={selectOnOpen}
-                onAnalyzisStarted={handleAnalysisStarted}
                 forceNewAnalysis
               />
             </div>

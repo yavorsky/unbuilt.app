@@ -1,90 +1,79 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form';
 import { useExistingAnalysisMeta } from '@/app/hooks/use-existing-analysis';
-import { analyzeWebsite } from '@/actions';
-import { toast } from '@/hooks/use-toast';
 import { useDateFormat } from '@/hooks/use-date-format';
 import { validateUrl } from '@/app/utils/validate-url';
 import { InputWithSubmit } from '../input-with-submit';
+import { useStartNewAnalysis } from '@/app/hooks/use-start-new-analysis';
+import { URLSuggestions } from '../url-suggestions';
 
 export const AnalyzeForm = ({
   buttonClassName,
   selectOnOpen = false,
-  onAnalyzisStarted,
   forceNewAnalysis = false,
+  withAutosuggestions = false,
 }: {
   buttonClassName?: string;
   selectOnOpen?: boolean;
   forceNewAnalysis?: boolean;
-  onAnalyzisStarted?: () => void;
+  withAutosuggestions?: boolean;
 }) => {
-  const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const { url, changeUrl } = useAnalysisForm();
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const isPendingRef = useRef(false);
 
   const existingAnalysis = useExistingAnalysisMeta(url);
 
   const formattedDate = useDateFormat(existingAnalysis.analyzedAt);
 
-  const handleStartNewAnalyis = useCallback(async () => {
-    setIsPending(true);
-    const form = new FormData();
-    form.append('url', url);
-    toast({
-      title: `Starting analysis for ${url}`,
-      description: 'Usually takes up to 10 seconds.',
-    });
-    onAnalyzisStarted?.();
-    const result = await analyzeWebsite(form);
-
-    console.log(result.analysisId, 'result.analysisId');
-
-    if (result.analysisId) {
-      return router.push(`/analysis/${result.analysisId}`);
-    } else if (result.error) {
-      setError(result.error);
-      return;
-    }
-    setIsPending(false);
-  }, [url, router, onAnalyzisStarted]);
+  const { startNewAnalysis, error } = useStartNewAnalysis();
 
   const handleNavigateToExistingAnalysis = useCallback(() => {
     if (existingAnalysis.status === 'NOT_FOUND') {
       throw new Error('No existing analysis found');
     }
-    if (existingAnalysis.status === 'PENDING') {
-      return;
-    }
-    setIsPending(true);
-    return router.push(`/analysis/${existingAnalysis.id}`);
+    router.push(`/analysis/${existingAnalysis.id}`);
   }, [existingAnalysis, router]);
 
   const shouldNavigateToExistingAnalysis =
     !forceNewAnalysis && existingAnalysis.status === 'FOUND';
 
   useEffect(() => {
-    if (!isSubmitted || existingAnalysis.status === 'PENDING' || isPending) {
+    if (
+      !isSubmitted ||
+      existingAnalysis.status === 'PENDING' ||
+      isPendingRef.current
+    ) {
       return;
     }
-    // TODO: Add error handling to display error and refresh isSubmitted
-    if (shouldNavigateToExistingAnalysis) {
-      handleNavigateToExistingAnalysis();
-    } else {
-      handleStartNewAnalyis();
+    try {
+      isPendingRef.current = true;
+      if (shouldNavigateToExistingAnalysis) {
+        handleNavigateToExistingAnalysis();
+      } else {
+        startNewAnalysis(url);
+      }
+    } finally {
+      isPendingRef.current = false;
+      setIsSubmitted(false);
     }
   }, [
     isSubmitted,
-    isPending,
+    url,
     existingAnalysis,
+    startNewAnalysis,
     shouldNavigateToExistingAnalysis,
     handleNavigateToExistingAnalysis,
-    handleStartNewAnalyis,
   ]);
+
+  const changeUrlAndSubmit = (url: string) => {
+    changeUrl(url);
+    setIsSubmitted(true);
+  };
 
   return (
     <form
@@ -92,7 +81,7 @@ export const AnalyzeForm = ({
         e.preventDefault();
         setIsSubmitted(true);
       }}
-      className="space-y-4 justify-center items-center min-w-[400px] max-w-[420px]"
+      className="space-y-8 justify-center items-center min-w-[400px] max-w-[420px]"
     >
       <InputWithSubmit
         id="url"
@@ -102,7 +91,7 @@ export const AnalyzeForm = ({
         placeholder="https://"
         spellCheck="false"
         autoFocus
-        isLoading={isPending}
+        isLoading={isSubmitted}
         autoCapitalize="off"
         autoCorrect="off"
         validate={validateUrl}
@@ -124,6 +113,10 @@ export const AnalyzeForm = ({
         wrong.
       </p> */}
       {error && <p className="text-red-500 text-base mt-4">{error}</p>}
+
+      {withAutosuggestions && (
+        <URLSuggestions onChangeUrl={changeUrlAndSubmit} />
+      )}
     </form>
   );
 };
