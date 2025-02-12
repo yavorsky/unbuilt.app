@@ -7,6 +7,10 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import LoaderText from '../../loader-text';
 import { SizeDisplay } from '../../size-display';
+import { isNumber, isNaN } from 'lodash-es';
+
+const shouldDisplayMetric = (value: number | null | undefined) =>
+  isNumber(value) && !isNaN(value);
 
 export const StatsCard: FC<{
   stats: AnalyzeResult['analysis']['stats'] | undefined;
@@ -44,6 +48,12 @@ export const StatsCard: FC<{
       </Card>
     );
   }
+
+  const defaultStylesheetsCount =
+    stats.styleMetrics.total -
+    (stats.styleMetrics.preload +
+      stats.styleMetrics.modules +
+      stats.styleMetrics.inline);
 
   return (
     <Card className="w-full max-w-md sm:max-w-[none]">
@@ -97,22 +107,16 @@ export const StatsCard: FC<{
                   <p className="text-sm font-medium">StyleSheets</p>
                   <div className="flex space-x-4">
                     <p className="text-xs text-muted-foreground">
-                      Inline: <b>{stats.styleMetrics.inline}</b>
+                      Inline: <b>{stats.styleMetrics.inline || 0}</b>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Modules: <b>{stats.styleMetrics.modules}</b>
+                      Modules: <b>{stats.styleMetrics.modules || 0}</b>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Preload: <b>{stats.styleMetrics.preload}</b>
+                      Preload: <b>{stats.styleMetrics.preload || 0}</b>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Default:{' '}
-                      <b>
-                        {stats.styleMetrics.total -
-                          (stats.styleMetrics.preload +
-                            stats.styleMetrics.modules +
-                            stats.styleMetrics.inline)}
-                      </b>
+                      Default: <b>{defaultStylesheetsCount || 0}</b>
                     </p>
                   </div>
                 </div>
@@ -120,7 +124,7 @@ export const StatsCard: FC<{
             </div>
             <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col mt-2">
               <div className="text-xl font-semibold">
-                {stats.styleMetrics.total}
+                {stats.styleMetrics.total || 0}
               </div>
               <p className="text-xs text-muted-foreground">StyleSheets</p>
             </div>
@@ -136,11 +140,11 @@ export const StatsCard: FC<{
                     <p className="text-xs text-muted-foreground">
                       Nodes Size:{' '}
                       <b>
-                        <SizeDisplay bytes={stats.domMetrics.totalSize} />
+                        <SizeDisplay bytes={stats.domMetrics.totalSize || 0} />
                       </b>
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Max Depth: <b>{stats.domMetrics.maxDepth} nodes</b>
+                      Max Depth: <b>{stats.domMetrics.maxDepth || 0} nodes</b>
                     </p>
                   </div>
                 </div>
@@ -148,7 +152,7 @@ export const StatsCard: FC<{
             </div>
             <div className="bg-secondary/50 p-2 rounded-lg flex justify-center items-center flex-col mt-2">
               <div className="text-xl font-semibold">
-                {stats.domMetrics.totalNodes}
+                {stats.domMetrics.totalNodes || 0}
               </div>
               <p className="text-xs text-muted-foreground">Total Nodes</p>
             </div>

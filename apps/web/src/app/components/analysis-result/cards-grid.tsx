@@ -58,7 +58,7 @@ export const CardsGrid: FC<{
   const { theme } = useTheme();
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto pb-6">
       <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
         <div className="flex-1 flex items-start justify-start">
           <Breadcrumb>

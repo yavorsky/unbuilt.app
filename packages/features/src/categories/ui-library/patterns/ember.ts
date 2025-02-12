@@ -9,10 +9,6 @@ export const ember = [
       /defineProperty\(Ember,["']VERSION["'],\{configurable:!1,enumerable:!0,value:["']\d+\.\d+\.\d+["']\}\)/,
       /\.resolveRegistration\(["']config:environment["']\)/,
 
-      // Dependency Injection system (production)
-      /var \w+=new WeakMap,\w+=new WeakMap/,
-      /\._super\.apply\(this,arguments\)/,
-
       // Ember Object model core features
       /\.extend\(\{[^}]*init:function\(\)\{[^}]*this\._super\.apply\(this,arguments\)/,
       /\.reopen\(\{[^}]*willDestroy:function\(\)\{/,
