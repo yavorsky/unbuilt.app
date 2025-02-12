@@ -7,10 +7,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useActiveAnalysis } from '@/app/contexts/active-analysis';
 import LoaderText from '../../loader-text';
 import { SizeDisplay } from '../../size-display';
-import { isNumber, isNaN } from 'lodash-es';
-
-const shouldDisplayMetric = (value: number | null | undefined) =>
-  isNumber(value) && !isNaN(value);
 
 export const StatsCard: FC<{
   stats: AnalyzeResult['analysis']['stats'] | undefined;

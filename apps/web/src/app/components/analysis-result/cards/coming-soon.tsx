@@ -1,14 +1,9 @@
 import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui';
 import { Skeleton } from '@/components/ui/skeleton';
-import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { Github, Sparkles, Twitter } from 'lucide-react';
 
-export function ComingSoonCard<N extends AnalysisTechnologies>({
-  isLoading,
-}: {
-  isLoading: boolean;
-}) {
+export function ComingSoonCard({ isLoading }: { isLoading: boolean }) {
   const className =
     'max-w-md backdrop-blur-sm border-border group transition-opacity duration-300 min-h-40 opacity-70 hover:opacity-100';
 

@@ -1,5 +1,5 @@
 import { Button, Input } from '@/components/ui';
-import { Loader2, MoveRightIcon, Pencil, Repeat2Icon } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import React, {
   useState,
   InputHTMLAttributes,
@@ -11,7 +11,6 @@ import React, {
   useEffect,
   forwardRef,
 } from 'react';
-import { useActiveAnalysis } from '../contexts/active-analysis';
 import { validateUrl } from '../utils';
 
 interface FocusedInputProps
