@@ -1,7 +1,8 @@
-import { BrowserContext, chromium, type Browser, type Page } from 'playwright';
+import { BrowserContext, type Browser, type Page } from 'playwright';
 import os from 'os';
 import { v4 as uuidv4 } from 'uuid';
 import { exec } from 'child_process';
+import { BrowserManager } from '@unbuilt/helpers';
 import path from 'path';
 import fs from 'fs/promises';
 import * as getPortModule from 'get-port';
@@ -19,57 +20,17 @@ interface ServerInstance {
   port: number;
 }
 
-const contextOptions = {
-  userAgent:
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-  viewport: { width: 1920, height: 1080 },
-  screen: { width: 1920, height: 1080 },
-  isMobile: false,
-  hasTouch: false,
-  javaScriptEnabled: true,
-  bypassCSP: true,
-  ignoreHTTPSErrors: true,
-} as const;
-
 let browser: Browser | null = null;
 let context: BrowserContext | null = null;
 
-async function getBrowser() {
-  if (!browser) {
-    // browser = await chromium.launch();
-    browser = await chromium.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        // No need to preserve web security in headless mode without any session
-        '--disable-web-security',
-        '--disable-features=IsolateOrigins,site-per-process',
-        '--disable-gpu',
-      ],
-    });
-
-    context = await browser.newContext(contextOptions);
-
-    await context.addInitScript(`
-      // Overwrite navigator properties
-      Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-      Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
-
-      // Add language preferences
-      Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
-
-      // Modify Chrome properties
-      window.chrome = {
-        runtime: {},
-        loadTimes: function() {},
-        csi: function() {},
-        app: {},
-      };
-    `);
+async function getBrowserContext() {
+  if (!context) {
+    const browserManager = new BrowserManager();
+    await browserManager.initialize(1);
+    context = await browserManager.getBrowserContext();
+    browser = context.browser();
   }
-  return browser;
+  return context;
 }
 
 async function createDevServer(
@@ -179,18 +140,17 @@ export async function initDetectionTest(
 
     console.log('After starting server...');
 
-    // Poll for server to start
-
     // Setup browser and page
-    const browser = await getBrowser();
+    const context = await getBrowserContext();
+    const browser = await context.browser();
     page = (await context?.newPage()) ?? null;
 
-    if (!page) {
+    if (!page || !browser) {
       throw new Error('Page is not defined');
     }
 
     // Run analysis
-    const testId = `test-${Date.now()}`;
+    const testId = uuidv4();
     console.log(
       'Running analysis...',
       `http://localhost:${server.port}`,
@@ -208,7 +168,7 @@ export async function initDetectionTest(
     return result;
   } catch (error) {
     // Cleanup on error
-    if (page) await page.close();
+    if (page) await page?.close();
     if (server) await server.close();
     await fs.rm(testDir, { recursive: true, force: true });
 
