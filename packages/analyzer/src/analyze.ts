@@ -34,7 +34,7 @@ export const analyze = async (
 
   const isAvailable = await checkUrlAvailability(page, url);
   if (!isAvailable) {
-    throw new Error(errors.RESOURCE_NOT_AVAILABLE);
+    throw new Error(errors.RESOURCE_NOT_AVAILABLE, { cause: url });
   }
 
   const resources = new Resources(page);
