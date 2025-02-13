@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest';
 import { initDetectionTest } from '../../utils/init.js';
 
-test('detects vite with react basic usage', async () => {
+test('detects vite bundler with react basic usage', async () => {
   const result = await initDetectionTest({
     outDir: 'dist',
     buildCommand: 'vite build',
@@ -131,6 +131,8 @@ test('detects vite with react basic usage', async () => {
     },
   }); // This will be the URL where test project is served
 
-  expect(result?.analysis.uiLibrary.name).toBe('react');
-  expect(result?.analysis.bundler.name).toBe('vite');
+  expect(result?.uiLibrary.name).toBe('react');
+  expect(result?.uiLibrary.confidence).toBeGreaterThan(1);
+  expect(result?.bundler.name).toBe('vite');
+  expect(result?.bundler.confidence).toBeGreaterThan(1);
 });

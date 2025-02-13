@@ -79,7 +79,7 @@ async function createDevServer(
 export async function initDetectionTest(
   config: TestProjectConfig,
   testName: string = 'unknown-test'
-): Promise<AnalyzeResult> {
+): Promise<AnalyzeResult['analysis'] | null> {
   const id = uuidv4();
   const testDir = path.join(os.tmpdir(), 'unbuilt-test', id);
   let server: ServerInstance | null = null;
@@ -151,11 +151,6 @@ export async function initDetectionTest(
 
     // Run analysis
     const testId = uuidv4();
-    console.log(
-      'Running analysis...',
-      `http://localhost:${server.port}`,
-      path.join(testDir)
-    );
 
     const result = await analyze(
       `http://localhost:${server.port}`,
@@ -165,7 +160,7 @@ export async function initDetectionTest(
       () => {}
     );
 
-    return result;
+    return result?.analysis || null;
   } catch (error) {
     // Cleanup on error
     if (page) await page?.close();
