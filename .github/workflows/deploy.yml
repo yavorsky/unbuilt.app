@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   test:
@@ -46,6 +49,7 @@ jobs:
 
   deploy:
     needs: test  # This ensures deploy only runs if tests pass
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
