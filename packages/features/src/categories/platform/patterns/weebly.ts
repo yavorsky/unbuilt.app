@@ -38,7 +38,7 @@ export const weebly = [
     },
   },
   {
-    name: 'isWebsite' as const,
+    name: 'isPublished' as const,
     score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
