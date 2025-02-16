@@ -1,6 +1,6 @@
 // testing/e2e/tests/react-libs.test.ts
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 describe('detects storybook with react and luxon', async () => {
   const result = await analyzeVirtualApp({

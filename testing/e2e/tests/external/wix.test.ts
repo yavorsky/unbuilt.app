@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeExternalApp } from '../../testkits/external-app.js';
+import { analyzeExternalApp } from '../../testkits/external/analyze-external-app.js';
 
 describe('detects Wix as platform', async () => {
   const result = await analyzeExternalApp({
