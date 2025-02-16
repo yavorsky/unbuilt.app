@@ -1,4 +1,17 @@
+import { Page } from 'playwright';
+
 export const vite = [
+  {
+    name: 'modulepreload-polyfill' as const,
+    score: 1,
+    scripts: [
+      // Vite's modulepreload polyfill - highly specific to Vite
+      /const\s+\w+=document\.createElement\("link"\)\.relList;if\(\w+&&\w+\.supports&&\w+\.supports\("modulepreload"\)\)return;/,
+
+      // Look for Vite's unique ep flag setting
+      /if\(\w+\.ep\)return;\w+\.ep=!0/,
+    ],
+  },
   {
     name: 'core' as const,
     score: 1.0,
@@ -129,5 +142,34 @@ export const vite = [
       /__vite_ssr_dynamic_import__/,
       /__vite_ssr_import__/,
     ],
+  },
+  {
+    name: 'runtime-check' as const,
+    score: 1,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Check for Vite's specific ep property on modulepreload links
+          hasViteEpProperty: (() => {
+            const modulePreloadLinks = document.querySelectorAll(
+              'link[rel="modulepreload"]'
+            );
+            if (modulePreloadLinks.length === 0) return false;
+            return Array.from(modulePreloadLinks).some((link) => 'ep' in link);
+          })(),
+
+          // Check for specific crossorigin module script setup
+          hasViteModuleStructure: (() => {
+            const scripts = document.querySelectorAll(
+              'script[type="module"][crossorigin]'
+            );
+            return scripts.length > 0;
+          })(),
+        };
+
+        // Require multiple markers to be present to avoid false positives
+        return markers.hasViteEpProperty && markers.hasViteModuleStructure;
+      });
+    },
   },
 ];

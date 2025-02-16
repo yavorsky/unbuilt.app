@@ -7,7 +7,7 @@ export const AnalysisFormProvider: FC<
   const [url, setUrl] = useState(initialUrl);
 
   const changeUrl = useCallback((url: string) => {
-    const value = url.replace(/https?:\/\//, '');
+    const value = url.replace(/https:\/\//, '');
     setUrl(value);
   }, []);
 
