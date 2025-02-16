@@ -1,6 +1,6 @@
 // testing/e2e/tests/vanilla-webpack.test.ts
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../utils/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
 
 describe('detects webpack, babel and axios in vanilla js app', async () => {
   const result = await analyzeVirtualApp({

@@ -1,4 +1,3 @@
-import { type Page } from 'playwright';
 import path from 'node:path';
 import { promisify } from 'node:util';
 import os from 'os';
@@ -6,24 +5,24 @@ import { v4 as uuidv4 } from 'uuid';
 import { ChildProcess, exec } from 'child_process';
 import fs from 'fs/promises';
 import * as getPortModule from 'get-port';
-import type { TestProjectConfig } from './types.js';
-import { analyze, AnalyzeResult } from '@unbuilt/analyzer';
+import type { VirtualAppConfig } from './types.js';
+import { AnalyzeResult } from '@unbuilt/analyzer';
 import { afterAll } from 'vitest';
 import { AppServerInstance, createAppServer } from './create-app-server.js';
-import { closeBrowser, getBrowserContext } from './browser-context.js';
+import { closeBrowser } from '../helpers/browser-context.js';
+import { analyzeApp } from '../helpers/analyze.js';
 
 const execPromise = promisify(exec);
 
 type Options = { preserveFiles?: boolean };
 export async function analyzeVirtualApp(
-  config: TestProjectConfig,
+  config: VirtualAppConfig,
   testName: string = 'unknown-test',
   { preserveFiles = false }: Options = {}
 ): Promise<AnalyzeResult['analysis']> {
   const id = uuidv4();
   const testDir = path.join(os.tmpdir(), 'unbuilt-test', id);
   let server: AppServerInstance | null = null;
-  let page: Page | null = null;
   let startProcess: ChildProcess | null = null;
 
   try {
@@ -125,26 +124,10 @@ export async function analyzeVirtualApp(
       server = await createAppServer(path.join(testDir, config.outDir), port);
     }
 
-    // Setup browser and page
-    const context = await getBrowserContext();
-    const browser = await context.browser();
-    page = (await context?.newPage()) ?? null;
-
-    if (!page || !browser) {
-      throw new Error('Page is not defined');
-    }
-
-    const result = await analyze(
-      `http://localhost:${server.port}`,
-      uuidv4(),
-      page,
-      browser
-    );
-
-    return result?.analysis || null;
+    const result = await analyzeApp(`http://localhost:${server.port}`);
+    return result;
   } catch (error) {
     // Cleanup on error
-    if (page) await page?.close();
     if (server) await server.close();
     if (!preserveFiles) {
       await fs.rm(testDir, { recursive: true, force: true });
@@ -152,7 +135,6 @@ export async function analyzeVirtualApp(
 
     throw error;
   } finally {
-    await page?.close();
     await server?.close();
     if (!preserveFiles) {
       await fs.rm(testDir, { recursive: true, force: true });
