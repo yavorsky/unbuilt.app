@@ -1,6 +1,6 @@
 // testing/e2e/tests/vue-dayjs.test.ts
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 describe('detects vue with day.js', async () => {
   const result = await analyzeVirtualApp({

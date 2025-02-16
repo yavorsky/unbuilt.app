@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 describe('detects vite bundler with react basic usage', async () => {
   const result = await analyzeVirtualApp({

@@ -1,7 +1,7 @@
 // Checking for Vite, Vue, Vue Router, ESM and Dynamic imports
 
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 describe('detects vue with code splitting', async () => {
   const result = await analyzeVirtualApp({
