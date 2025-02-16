@@ -12,6 +12,7 @@ describe('detects next.js with react and moment.js', async () => {
     dependencies: {
       next: 'latest',
       react: 'latest',
+      typescript: 'latest',
       'react-dom': 'latest',
       moment: 'latest',
     },
