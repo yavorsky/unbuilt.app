@@ -1,6 +1,6 @@
 // testing/e2e/tests/webpack-ts-apollo.test.ts
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../utils/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
 
 describe('detects webpack, typescript and apollo in vanilla app', async () => {
   const result = await analyzeVirtualApp({

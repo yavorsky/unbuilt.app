@@ -8,5 +8,5 @@
     "noEmit": true,
   },
   "extends": "../../tsconfig.json",
-  "include": ["utils", "tests"]
+  "include": ["testkits", "tests"]
 }

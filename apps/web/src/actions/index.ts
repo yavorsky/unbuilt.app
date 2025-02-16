@@ -7,7 +7,6 @@ import {
   AnalyzeResult,
   OnProgressResult,
 } from '@unbuilt/analyzer';
-import { normalizeUrl } from '../app/utils/normalize-url';
 import { getTechnologyStatsQuery } from '../server/api/get-all-technology-stats';
 import {
   getTechnologyTrendsQuery,
@@ -15,6 +14,7 @@ import {
 } from '../server/api/get-technology-trends';
 import { getTechnologyWebsitesQuery } from '../server/api/get-technology-websites';
 import { getAnalysis, getStatus, startAnalysis } from './analyzer';
+import { normalizeUrl } from '@unbuilt/helpers';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 

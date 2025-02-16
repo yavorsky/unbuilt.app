@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyzeVirtualApp } from '../../utils/virtual-app/index.js';
+import { analyzeVirtualApp } from '../../testkits/virtual-app/index.js';
 
 describe('detects next.js with react and moment.js', async () => {
   const result = await analyzeVirtualApp({

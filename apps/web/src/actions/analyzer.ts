@@ -1,7 +1,7 @@
 import { QueueManager } from '../server/queue-manager';
 import { AnalysisManager } from '../server/analysis-manager';
-import { normalizeUrl } from '../app/utils/normalize-url';
 import { AnalysisResults } from '.';
+import { normalizeUrl } from '@unbuilt/helpers';
 
 export type AnalyzeState = { error: string | null; analysisId?: string };
 
