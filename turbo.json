@@ -11,6 +11,9 @@
     "lint": {
       "outputs": []
     },
+    "test": {
+      "outputs": []
+    },
     "update-types": {
       "cache": false,
       "env": ["SUPABASE_ID"],
