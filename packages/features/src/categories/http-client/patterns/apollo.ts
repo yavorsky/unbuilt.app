@@ -11,6 +11,21 @@ export const apollo = [
 
       // Internal cache field metadata - unique to Apollo's field policy system
       /"keyArgs":\["sort","limit"\],"merge":function/,
+
+      // Apollo Error url
+      /https:\/\/go\.apollo\.dev\/c\/err#/,
+
+      // Symbol for Apollo error
+      /Symbol\.for\("ApolloErrorMessageHandler_[^"]+"\)/,
+
+      // Apollo data masking
+      /Symbol\.for\("apollo\.dataMasking"\)/,
+
+      // Fragment link
+      /http:\/\/dev\.apollodata\.com\/core\/fragments\.html/,
+
+      //Fragment warn
+      /Warning: fragment with name .+ already exists\.[^"]+unique-names/,
     ],
   },
   {

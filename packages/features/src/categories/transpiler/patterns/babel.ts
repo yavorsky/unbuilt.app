@@ -20,17 +20,30 @@ export const babel = [
   },
   {
     name: 'syntaxTransforms' as const,
-    score: 0.3,
+    score: 0.6,
     scripts: [
       // Class transformation patterns
       /var\s+\w+\s*=\s*function\s*\(\)\s*\{\s*function\s+\w+\([^)]*\)\s*\{[^}]*_classCallCheck\(this,\s*\w+\)/,
 
+      // Generator
+      /function\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\(\)\s*{\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*=\s*function\s*\(\)\s*{\s*return\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*}\s*;/,
+
       // Decorator transforms (babel specific)
       /_decorate\(\[\s*\w+(?:\s*,\s*\w+)*\s*\],\s*\w+\.prototype,\s*["'][^"']+["']/,
+
+      // Invoke
+      /[a-zA-Z$_][a-zA-Z$_0-9]*\._invoke\s*=\s*{\s*value\s*:\s*function\s*\([a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\)/,
+
+      // Wrap
+      /[a-zA-Z$_][a-zA-Z$_0-9]*\(\)\s*\.\s*mark\s*\(\s*function\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\(.*?\)\s*{\s*return\s*[a-zA-Z$_][a-zA-Z$_0-9]*\(\)\s*\.\s*wrap/,
 
       // Async transforms
       /function\s+_asyncToGenerator\s*\(\s*fn\s*\)\s*\{/,
       /regeneratorRuntime\.mark\(function\s+_callee\(/,
+      /function\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\([a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\)\s*{\s*try\s*{\s*var\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*=\s*[a-zA-Z$_][a-zA-Z$_0-9]*\[[a-zA-Z$_][a-zA-Z$_0-9]*\]\([a-zA-Z$_][a-zA-Z$_0-9]*\)/,
+
+      // Symbol iterator transform
+      /\[\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\|\|\s*"@@iterator"\s*\]/,
 
       // Object spread/rest transforms
       /function\s+_objectWithoutProperties\s*\([^)]+\)\s*\{/,

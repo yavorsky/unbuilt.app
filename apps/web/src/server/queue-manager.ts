@@ -5,9 +5,9 @@ import {
   analyze,
   errors,
 } from '@unbuilt/analyzer';
-import { BrowserManager } from './browser-manager';
 import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
+import { BrowserManager } from '@unbuilt/helpers';
 import { setUserHeaders } from './utils/set-user-headers';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.

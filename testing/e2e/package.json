@@ -1,0 +1,41 @@
+{
+  "name": "@unbuilt-testing/e2e",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
+    }
+  },
+  "scripts": {
+    "test": "vitest run --config vitest.config.ts"
+  },
+  "dependencies": {
+    "@unbuilt/resources": "^0.1.0",
+    "sirv": "^3.0.0",
+    "@unbuilt/features": "^0.1.0",
+    "@unbuilt/analyzer": "^0.1.0",
+    "@unbuilt/helpers": "^0.1.0",
+    "uuid": "^11.0.5",
+    "dotenv": "^16.4.7",
+    "vitest": "^0.34.2",
+    "vite": "^6.1.0",
+    "get-port": "^7.1.0",
+    "http-server": "^14.1.1"
+  },
+  "peerDependencies": {
+    "playwright": "^1.48.1"
+  },
+  "devDependencies": {
+    "@types/http-server": "^0.12.4"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Artem Yavorskyi",
+    "email": "aqson@me.com"
+  }
+}
