@@ -72,7 +72,7 @@ export const wordpress = [
     },
   },
   {
-    name: 'isWebsite' as const,
+    name: 'isPublished' as const,
     score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {

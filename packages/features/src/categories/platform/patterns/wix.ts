@@ -41,7 +41,7 @@ export const wix = [
     },
   },
   {
-    name: 'isWebsite' as const, // or isViewer
+    name: 'isPublished' as const, // or isViewer
     score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {

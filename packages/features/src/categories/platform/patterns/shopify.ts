@@ -33,7 +33,7 @@ export const shopify = [
     },
   },
   {
-    name: 'isStorefront' as const, // or isWebsite
+    name: 'isPublished' as const, // or isWebsite
     score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
