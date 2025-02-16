@@ -54,7 +54,7 @@ export async function createAppServer(
             conn.destroy();
           }
 
-          server.close((error) => {
+          server.close(() => {
             resolve();
           });
         });
