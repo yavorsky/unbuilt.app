@@ -49,7 +49,7 @@ export async function createAppServer(
 
     return {
       close: () => {
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve) => {
           for (const conn of connections) {
             conn.destroy();
           }
