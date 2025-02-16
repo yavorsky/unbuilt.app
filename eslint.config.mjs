@@ -28,7 +28,7 @@ export const baseConfig = [
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
       'prettier/prettier': 'error',  // Enable prettier rules

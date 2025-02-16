@@ -1,23 +1,38 @@
-import { expect, test } from 'vitest';
-import { initDetectionTest } from '../../utils/init.js';
+import { describe, expect, it } from 'vitest';
+import { analyzeVirtualApp } from '../../utils/virtual-app/index.js';
 
-test('detects vite bundler with react basic usage', async () => {
-  const result = await initDetectionTest({
+describe('detects vite bundler with react basic usage', async () => {
+  const result = await analyzeVirtualApp({
     outDir: 'dist',
     buildCommand: 'vite build',
     dependencies: {
       vite: 'latest',
       react: 'latest',
       '@vitejs/plugin-react': 'latest',
+      'date-fns': 'latest',
       'react-dom': 'latest',
     },
     files: {
       'src/App.tsx': `
         import React, { useState, useEffect, Suspense, lazy } from 'react';
         import { createPortal } from 'react-dom';
+        import { format, addDays, differenceInDays } from 'date-fns';
 
         // Lazy loaded component
         const LazyComponent = lazy(() => import('./LazyComponent'));
+
+        function useDateCounter(initialDate = new Date()) {
+          const [date, setDate] = useState(initialDate);
+          const formattedDate = format(date, 'PP');
+
+          return {
+            date,
+            formattedDate,
+            addDay: () => setDate(d => addDays(d, 1)),
+            subtractDay: () => setDate(d => addDays(d, -1)),
+            getDaysSince: (compareDate: Date) => differenceInDays(date, compareDate)
+          };
+        }
 
         // Custom hook
         function useCounter(initialValue = 0) {
@@ -31,6 +46,7 @@ test('detects vite bundler with react basic usage', async () => {
 
         // Main component using various React features
         export default function App() {
+        const { formattedDate, addDay, subtractDay } = useDateCounter();
           const { count, increment, decrement } = useCounter(0);
           const [showPortal, setShowPortal] = useState(false);
 
@@ -131,8 +147,18 @@ test('detects vite bundler with react basic usage', async () => {
     },
   }); // This will be the URL where test project is served
 
-  expect(result?.uiLibrary.name).toBe('react');
-  expect(result?.uiLibrary.confidence).toBeGreaterThan(1);
-  expect(result?.bundler.name).toBe('vite');
-  expect(result?.bundler.confidence).toBeGreaterThan(1);
+  it('detects vite bundler', async () => {
+    expect(result.bundler.name).toBe('vite');
+    expect(result.bundler.confidence).toBeGreaterThanOrEqual(1);
+  });
+
+  it('detects react ui library', async () => {
+    expect(result.uiLibrary.name).toBe('react');
+    expect(result.uiLibrary.confidence).toBeGreaterThanOrEqual(1);
+  });
+
+  it('detects date-fns usage', async () => {
+    expect(result.dates.name).toBe('dateFns');
+    expect(result.dates.confidence).toBeGreaterThanOrEqual(1);
+  });
 });

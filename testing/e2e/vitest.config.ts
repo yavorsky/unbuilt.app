@@ -4,10 +4,10 @@ export default defineConfig({
   test: {
     testTimeout: 30000,
     hookTimeout: 30000,
-    threads: true,
+    threads: false,
     retry: 2,
     sequence: {
-      shuffle: true,
+      shuffle: false,
     },
   },
 });

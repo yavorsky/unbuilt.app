@@ -103,7 +103,6 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   }, [clearActiveAnalysis]);
 
   const { updateActiveCategory } = useActiveCategory();
-  console.log(jobStatus);
 
   return (
     <div className="space-y-4" onClick={() => updateActiveCategory(null)}>

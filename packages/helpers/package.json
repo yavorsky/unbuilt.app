@@ -1,5 +1,5 @@
 {
-  "name": "@unbuilt-testing/e2e",
+  "name": "@unbuilt/helpers",
   "version": "0.1.0",
   "description": "",
   "type": "module",
@@ -12,26 +12,19 @@
     }
   },
   "scripts": {
-    "test": "vitest run --config vitest.config.ts"
+    "dev": "tsc -w",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src"
   },
   "dependencies": {
     "@unbuilt/resources": "^0.1.0",
-    "sirv": "^3.0.0",
-    "@unbuilt/features": "^0.1.0",
-    "@unbuilt/analyzer": "^0.1.0",
-    "@unbuilt/helpers": "^0.1.0",
-    "uuid": "^11.0.5",
-    "dotenv": "^16.4.7",
-    "vitest": "^0.34.2",
-    "vite": "^6.1.0",
-    "get-port": "^7.1.0",
-    "http-server": "^14.1.1"
+    "lucide-react": "^0.468.0",
+    "super-regex": "^1.0.0",
+    "react": "^18"
   },
   "peerDependencies": {
     "playwright": "^1.48.1"
-  },
-  "devDependencies": {
-    "@types/http-server": "^0.12.4"
   },
   "license": "MIT",
   "author": {

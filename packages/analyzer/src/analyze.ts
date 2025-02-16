@@ -28,7 +28,7 @@ export const analyze = async (
   id: string,
   page: Page,
   browser: Browser,
-  handleProgress: OnProgress
+  handleProgress?: OnProgress
 ): Promise<AnalyzeResult> => {
   const startedAt = new Date();
 
@@ -42,27 +42,36 @@ export const analyze = async (
   await resources.initialize();
 
   try {
+    // Initial domcontentloaded event. The main indicator page is ready to be analyzed.
+    // We'll still need to ensure all scripts are loaded later.
     await page.goto(url, {
       waitUntil: 'domcontentloaded', // First wait for DOM
       timeout: 15000,
     });
-    // Then wait for additional states
-    await Promise.all([
-      page.waitForLoadState('load', { timeout: 15000 }),
-      page.waitForLoadState('networkidle', { timeout: 15000 }),
-    ]);
   } catch (error) {
-    console.error('[Resources loading error]', error);
+    console.error('[Resources loading error]', error, url);
     throw new Error('Error loading resources');
   }
 
-  const onProgress = createProgressTracker(
+  try {
+    // Here we are loading for page load event and network idle. Sometimes, some requests are stuck.
+    // In this case, we assume that we wait for 10 seconds and start analysis ignoring stucked requests.
+    await Promise.all([
+      page.waitForLoadState('load', { timeout: 10000 }),
+      page.waitForLoadState('networkidle', { timeout: 10000 }),
+    ]);
+  } catch (e: unknown) {
+    // Skipping network idle
+    console.log('Skipping network idle', e);
+  }
+
+  const onProgress = createProgressTracker({
     url,
     id,
-    handleProgress,
+    onProgress: handleProgress,
     startedAt,
-    15
-  );
+    totalResults: 15,
+  });
   const analysis = {} as AnalysisFeaturesWithStats;
 
   console.time('framework');
@@ -149,7 +158,6 @@ export const analyze = async (
 
   console.time('stats');
   analysis.stats = await getStats(page);
-  console.log(analysis.stats, 'analysis.statsanalysis.statsanalysis.stats');
   onProgress({ stats: analysis.stats });
   console.timeEnd('stats');
 
@@ -197,7 +205,7 @@ export const analyze = async (
     analysis,
   };
 
-  handleProgress(result, 100);
+  handleProgress?.(result, 100);
 
   await resources.cleanup();
 

@@ -27,6 +27,7 @@
     "@radix-ui/react-tooltip": "^1.1.4",
     "@supabase/supabase-js": "^2.46.1",
     "@unbuilt/analyzer": "^0.1.0",
+    "@unbuilt/helpers": "^0.1.0",
     "@unbuilt/features": "^0.1.0",
     "@unbuilt/resources": "^0.1.0",
     "bull": "^4.16.3",

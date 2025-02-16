@@ -41,25 +41,43 @@ export const typescript = [
       /var\s+__importStar\s*=\s*\(this\s*&&\s*this\.__importStar\)\s*\|\|\s*function\s*\(mod\)\s*\{/,
 
       // Export assignments (tsc specific)
-      /exports\.\w+\s*=\s*void\s*0;/,
       /exports\.\w+\s*=\s*\{\s*__proto__:\s*null\s*\};/,
     ],
   },
   {
     name: 'classFeatures' as const,
-    score: 0.25,
+    score: 0.8,
     scripts: [
       // TSC's class feature implementation
-      /var\s+\w+\s*=\s*\/\*\*\s*\*\s*@class\s*\*\/\s*\(function\s*\(\)\s*\{/,
-
-      // TSC's private field implementation
-      /var\s+_\w+\s*=\s*new\s+WeakMap\(\);/,
-
-      // TSC's get/set accessors
-      /Object\.defineProperty\(\w+\.prototype,\s*["'][^"']+["'],\s*\{\s*(?:get|set):\s*function\s*\(\)\s*\{/,
-
-      // Abstract class check
-      /if\s*\(this\s+instanceof\s+\w+\)\s*{\s*throw\s+new\s+TypeError\("Abstract\s+class/,
+      /(?:\(0,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\.C6\)|__extends)\s*\(\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*,\s*_super\)/,
+    ],
+  },
+  {
+    name: 'propertyPattern' as const,
+    score: 0.8,
+    scripts: [
+      /Object\.defineProperty\s*\([a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*\{\s*enumerable:\s*(?:true|false),\s*get:\s*function/,
+    ],
+  },
+  {
+    name: 'exports' as const,
+    score: 0.8,
+    scripts: [
+      /r\.d\s*\(\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*,\s*\{\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*:\s*\(\)\s*=>\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\}\)/,
+    ],
+  },
+  {
+    name: 'void' as const,
+    score: 0.8,
+    scripts: [
+      /void\s+0\s*===\s*[a-zA-Z$_][a-zA-Z$_0-9]*|[a-zA-Z$_][a-zA-Z$_0-9]*\s*===\s*void\s+0/,
+    ],
+  },
+  {
+    name: 'assign' as const,
+    score: 0.6,
+    scripts: [
+      /(?:\(0,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\.Cl\)|__assign)\s*\(\s*\{\s*\}/,
     ],
   },
   {

@@ -6,13 +6,19 @@ export type OnProgress = (
   progress: number
 ) => void;
 
-export const createProgressTracker = (
-  url: string,
-  id: string,
-  onProgress: OnProgress,
-  startedAt: Date,
-  totalResults: number
-) => {
+export const createProgressTracker = ({
+  url,
+  id,
+  onProgress,
+  startedAt,
+  totalResults,
+}: {
+  url: string;
+  id: string;
+  onProgress?: OnProgress;
+  startedAt: Date;
+  totalResults: number;
+}) => {
   let results = 0;
   let calculatedResults: Partial<AnalyzeResult['analysis']> = {};
 
@@ -32,7 +38,7 @@ export const createProgressTracker = (
       duration,
       analysis: calculatedResults,
     };
-    onProgress(stageResult, (results / totalResults) * 100);
+    onProgress?.(stageResult, (results / totalResults) * 100);
     return stageResult;
   };
 };
