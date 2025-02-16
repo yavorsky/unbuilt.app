@@ -12,6 +12,7 @@
       "outputs": []
     },
     "test": {
+      "cache": false,
       "outputs": []
     },
     "update-types": {

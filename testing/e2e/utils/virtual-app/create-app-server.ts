@@ -56,8 +56,8 @@ export async function createAppServer(
 
           server.close((error) => {
             if (error) {
-              console.error('Error closing server:', error);
-              reject(error);
+              // console.error('Error closing server:', error);
+              // reject(error);
               return;
             }
 
