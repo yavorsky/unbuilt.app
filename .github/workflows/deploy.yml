@@ -23,6 +23,9 @@ jobs:
           node-version: '22'
           cache: 'yarn'
 
+      - name: Install Yarn
+        run: npm install -g yarn@1.22.19 # Latest version of Yarn 1
+
       - name: Install dependencies
         run: yarn install
 
