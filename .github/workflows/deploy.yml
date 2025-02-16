@@ -29,6 +29,9 @@ jobs:
       - name: Install dependencies
         run: yarn install
 
+      - name: Install playwright
+        run: yarn playwright install --with-deps
+
       - name: Build application
         run: yarn turbo run build
 
