@@ -1,55 +1,13 @@
-name: Test and Deploy
+name: Deploy
 
 on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
-          cache: 'yarn'
-
-      - name: Install Yarn
-        run: npm install -g yarn@1.22.19 # Latest version of Yarn 1
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Install playwright
-        run: yarn playwright install --with-deps
-
-      - name: Build application
-        run: yarn turbo run build
-
-      - name: Run lint
-        run: yarn lint
-
-      - name: Run tests
-        run: yarn test
-        env:
-          # Add any additional environment variables needed for testing
-          NODE_ENV: test
-
   deploy:
-    needs: test  # This ensures deploy only runs if tests pass
-    if: github.ref == 'refs/heads/main'
+    needs: test  # References the test job from test.yml
     runs-on: ubuntu-latest
     env:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -75,7 +33,6 @@ jobs:
           envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID
           script: |
             cd /home/server/unbuilt-app && \
-            # Create .env in the web app directory for monorepo
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
