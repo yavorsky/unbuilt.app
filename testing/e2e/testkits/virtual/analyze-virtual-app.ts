@@ -17,7 +17,6 @@ const execPromise = promisify(exec);
 type Options = { preserveFiles?: boolean };
 export async function analyzeVirtualApp(
   config: VirtualAppConfig,
-  testName: string = 'unknown-test',
   { preserveFiles = false }: Options = {}
 ): Promise<AnalyzeResult['analysis']> {
   const id = uuidv4();
@@ -43,7 +42,7 @@ export async function analyzeVirtualApp(
       path.join(testDir, 'package.json'),
       JSON.stringify(
         {
-          name: testName,
+          name: 'test-project',
           version: '1.0.0',
           dependencies: config.dependencies,
           scripts: {
