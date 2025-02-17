@@ -2,6 +2,28 @@ import { Page } from 'playwright';
 
 export const esbuild = [
   {
+    name: 'combined' as const,
+    score: 1,
+    scripts: [
+      // Combined detection
+      /^(?:var\s+[A-Za-z]+\s*=\s*Object\.[A-Za-z]+;\s*){2,}.*?(?:=>[\s\S]*?\{exports:\{\}\})/m,
+    ],
+  },
+  {
+    name: 'helpers' as const,
+    score: 0.7,
+    scripts: [
+      // Header helpers
+      /^var\s+[A-Za-z]+\s*=\s*Object\.create;\s*var\s+[A-Za-z]+\s*=\s*Object\.defineProperty;\s*var\s+[A-Za-z]+\s*=\s*Object\.getOwnPropertyDescriptor/,
+
+      // Prop getter
+      /(?:var|let|const)\s+[A-Za-z]+\s*=\s*\{\s*__proto__:\s*null\s*(?:,[\s\S]*?)?\}/,
+
+      // Module Wrapper Function Pattern
+      /var\s+[A-Za-z]+\s*=\s*\([^)]+\)\s*=>\s*\(\)\s*=>\s*\(.*?\{exports:\{\}\}.*?\)/,
+    ],
+  },
+  {
     name: 'core' as const,
     score: 0.3,
     scripts: [
@@ -31,7 +53,7 @@ export const esbuild = [
   },
   {
     name: 'moduleSystem' as const,
-    score: 0.2,
+    score: 0.7,
     scripts: [
       // Performance optimization for getter pattern with cache
       /\b\w+\.n\s*=\s*\(\w+\)\s*=>\s*{\s*var\s+\w+\s*=\s*\w+\s*&&\s*\w+\.\_\_esModule\s*\?\s*\(\)\s*=>\s*\w+\.default\s*:\s*\(\)\s*=>\s*\w+;\s*\w+\.d\(\w+,\s*{\s*a:\s*\w+\s*}\);\s*\w+\s*}/,

@@ -21,6 +21,7 @@ export const mobx = [
       /\.__mobxInstanceCount/,
       /\.__mobxGlobals/,
       /mobxGuid/,
+      /\[MobX\] minified error nr:/,
 
       // MobX's unique error URL pattern
       /https:\/\/github\.com\/mobxjs\/mobx\/blob\/main\/packages\/mobx\/src\/errors\.ts/,

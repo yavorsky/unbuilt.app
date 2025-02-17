@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const jQuery = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.9,
     scripts: [
       // jQuery factory definition (production)
       /typeof\s+jQuery\s*===?\s*["']function["']/,
@@ -11,11 +11,19 @@ export const jQuery = [
       // jQuery.fn patterns (highly specific)
       /jQuery\.fn\s*=\s*jQuery\.prototype\s*=\s*\{/,
       /jQuery\.extend\(\s*\{\s*(?:[^{}]|\{[^{}]*\})*\}\s*\)/,
+      /jQuery\.Deferred exception:/,
+      /!\ Bundled\ license\ information:[\s\S]*?jquery\/dist\/jquery\.js[\s\S]*?\*/,
+
+      // AMD
+      /define\("jquery"/,
+
+      // variable assign
+      /var\s+[a-zA-Z_$][0-9a-zA-Z_$]*\s*=\s*[a-zA-Z_$][0-9a-zA-Z_$]*\.jQuery\s*,\s*[a-zA-Z_$][0-9a-zA-Z_$]*\s*=\s*[a-zA-Z_$][0-9a-zA-Z_$]*\.\$/,
     ],
   },
   {
     name: 'events' as const,
-    score: 0.25,
+    score: 0.9,
     scripts: [
       // jQuery event system (unique to jQuery)
       /jQuery\.event\s*=\s*\{(?:[^{}]|\{[^{}]*\})*\}/,
@@ -30,7 +38,7 @@ export const jQuery = [
   },
   {
     name: 'effects' as const,
-    score: 0.3,
+    score: 0.8,
     scripts: [
       // jQuery-specific animation system
       /jQuery\.(?:Animation|Tween)\s*=\s*function\s*\(\s*elem\s*,\s*options\s*,\s*prop\s*,\s*end\s*\)\s*\{/,
@@ -44,7 +52,7 @@ export const jQuery = [
   },
   {
     name: 'ajax' as const,
-    score: 0.3,
+    score: 0.8,
     scripts: [
       // jQuery-specific AJAX implementation
       /jQuery\.(?:ajax|get|post|getJSON|getScript)\s*=\s*function\s*\(/,

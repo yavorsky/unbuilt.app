@@ -1,21 +1,19 @@
 export const superagent = [
   {
-    name: 'coreImplementation' as const,
+    name: 'messages' as const,
     score: 0.9,
     scripts: [
-      // SuperAgent's unique internal error messages
-      /"multiple Content-Length"/,
-      /"both multipart and urlencoded"/,
       /"no appendQueryString"/,
       /"no Request#pipe"/,
-
-      // SuperAgent's specific serializer error messages
-      /"unexpected attachments"/,
-      /"multiple attachments"/,
+      /Warning: superagent request was sent twice, because both \.end\(\) and \.then\(\) were called\. Never call \.end\(\) if you use promises/,
+      /Using browser-only version of superagent in non-browser environment/,
+      /superagent can't mix \.send\(\) and \.attach\(\)/,
+      /This is not supported in browser version of superagent/,
+      /Warning: \.end\(\) was called twice\. This is not supported in superagent/,
+      /Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc\./,
 
       // SuperAgent's unique implementation detail strings
       /"superagent first"/,
-      /"attach: failed to read"/,
     ],
   },
   {
