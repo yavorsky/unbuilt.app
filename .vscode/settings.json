@@ -1,7 +1,6 @@
 {
   "files.exclude": {
-    "**/.runtime-build": true,
-    "apps/slate-manager/.cache": true
+    "**/.runtime-build": true
   },
   "typescript.tsdk": "node_modules/typescript/lib",
   "editor.formatOnSave": false,
