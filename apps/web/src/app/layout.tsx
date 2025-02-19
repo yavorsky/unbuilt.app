@@ -4,6 +4,8 @@ import localFont from 'next/font/local';
 import './globals.css';
 import React from 'react';
 
+export const baseUrl = 'https://unbuilt.app';
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -16,11 +18,22 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: 'Unbuilt.app',
   applicationName: 'Unbuilt',
-  description: 'Website analyzer',
+  description:
+    'Website analyzer - See the exact technologies powering any web app',
   authors: [{ url: 'https://github.com/yavorsky', name: 'Artem Yavorskyi' }],
   creator: 'Artem Yavorskyi',
+  openGraph: {
+    title: 'Unbuilt.app',
+    description:
+      'Website analyzer - See the exact technologies powering any web app',
+    url: baseUrl,
+    siteName: 'Unbuilt.app',
+    locale: 'en_US',
+    type: 'website',
+  },
   icons: {
     // Favicon
     icon: [
