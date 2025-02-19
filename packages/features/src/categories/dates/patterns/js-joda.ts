@@ -12,6 +12,15 @@ export const jsJoda = [
       /"DateTimeException: Invalid value for YearOfEra"/,
       /"DateTimeException: Invalid value for MonthOfYear"/,
       /"UnsupportedTemporalTypeException: Unsupported field: FieldUnsupported"/,
+
+      // License
+      /@copyright.*js-joda.*contributors/,
+      /DateTimeFormatter.*ISO_LOCAL_DATE.*ISO_LOCAL_TIME/,
+      /MIN_SAFE_INTEGER.*MAX_SAFE_INTEGER.*safeToInt/,
+      /Pattern using \(localized\) text not implemented, use @js-joda\/locale plugin!/,
+      /time must be an instance of LocalTime or OffsetTime/,
+      /Pattern using (localized) text not implemented yet/,
+      /t === v\.MONTHS \|\| t === v\.YEARS \|\| t === v\.DECADES \|\| t === v\.CENTURIES \|\| t === v\.MILLENNIA \|\| t === v\.ERAS /,
     ],
   },
   {
@@ -37,5 +46,10 @@ export const jsJoda = [
       // js-joda specific clock usage
       /Clock\.system\(ZoneId\.of\([^)]+\)\)/,
     ],
+  },
+  {
+    name: 'vars' as const,
+    score: 0.3,
+    scripts: [/ALIGNED_DAY_OF_WEEK_IN_MONTH/, /ALIGNED_DAY_OF_WEEK_IN_YEAR/],
   },
 ];

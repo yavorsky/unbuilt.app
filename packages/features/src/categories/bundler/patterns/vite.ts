@@ -45,6 +45,12 @@ export const vite = [
     ],
   },
   {
+    // Esbuild usually doesnt't have comments. This will help to give other bundlers like rollup priority
+    name: 'noComments' as const,
+    score: -0.5,
+    scripts: [/\/\*![^*]+\*\//],
+  },
+  {
     name: 'styles' as const,
     score: 0.2,
     stylesheets: [
@@ -62,6 +68,7 @@ export const vite = [
     scripts: [
       /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
       /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*)*}\s*from\s*["'][^"']+["']/,
       // Dynamic imports
       /__import__\s*\(\s*["']\.\/chunk/,
       /from\s*["']\.\/chunk-[A-Z0-9]{8}\.js["']/,
@@ -72,7 +79,10 @@ export const vite = [
   {
     score: 0.5,
     name: 'exports' as const,
-    scripts: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
+    scripts: [
+      /export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      /export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*)*}\s*(?:from\s*["'][^"']+["'])?/g,
+    ],
   },
   {
     name: 'envVariables',
