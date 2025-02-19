@@ -10,6 +10,12 @@ export const esbuild = [
     ],
   },
   {
+    // Esbuild usually doesnt't have comments. This will help to give other bundlers like rollup priority
+    name: 'noComments' as const,
+    score: -0.5,
+    scripts: [/\/\*![^*]+\*\//],
+  },
+  {
     name: 'helpers' as const,
     score: 0.7,
     scripts: [
@@ -48,7 +54,15 @@ export const esbuild = [
       /from\s+["']\.\/((?!chunks\/)[^"']+)\.[A-Za-z0-9]{8}\.js["']/,
 
       // Optimized import grouping detection
-      /import\s*{\s*[_$]\s+as\s+[a-z],\s*[_$]\s+as\s+[a-z].*?}\s*from/,
+      /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*)*}\s*from\s*["'][^"']+["']/,
+    ],
+  },
+  {
+    name: 'exports' as const,
+    score: 0.3,
+    scripts: [
+      // Export pattern
+      /export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*)*}\s*(?:from\s*["'][^"']+["'])?/g,
     ],
   },
   {

@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const preact = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.9,
     scripts: [
       // Core Preact detection - highly specific patterns
       /(?:window\.)?preact=\{(?:[^}]+)\}/,
@@ -13,8 +13,12 @@ export const preact = [
       /__preactattr_[$_a-zA-Z0-9]+/,
       /__component[$_a-zA-Z0-9]+/,
 
-      // Preact's production build markers
-      /\?preact\b.*?\.production\.min\.js/,
+      // Preact's CSS property detection
+      /\/(?:acit|ex(?:s|g|n|p|\\$)|rph|grid|ows|mnc|ntw|ine\[ch\]|zoo|\\^ord|itera)\/i/,
+      // VNode Properties
+      /(?:\.|\[["']|\[)__(?:v|k|e|c|b|u|i|d|h|P|m|s|f)\b/,
+      // Internal hooks props
+      /(?:\.|\[["']|\[)__(?:H|h|N|c|P|u|f)\b/,
     ],
   },
   {
@@ -43,10 +47,6 @@ export const preact = [
     scripts: [
       // Preact hooks implementation (specific to Preact)
       /options\.__h\s*&&\s*options\.__h\s*\([^)]+\)/,
-
-      // Hook initialization patterns
-      /__h\s*=\s*\[\]/,
-      /__H\s*=\s*\{__h:/,
 
       // Preact's hook cleanup
       /__c\s*=\s*!__c/,

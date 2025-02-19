@@ -18,13 +18,17 @@ export const rollup = [
       /Object\.defineProperty\s*\(\s*exports,\s*['"]__esModule['"],\s*\{\s*value:\s*true\s*\}\s*\);\s*\/\*\s*Rollup\s*/,
     ],
   },
+  {
+    name: 'comments' as const,
+    score: 0.3,
+    scripts: [/\/\*![^*]+\*\//],
+  },
   // This is shared between Rollup and Vite
   {
     score: 0.7,
     name: 'imports' as const,
     scripts: [
-      /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
-      /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*)*}\s*from\s*["'][^"']+["']/,
       // Dynamic imports
       /__import__\s*\(\s*["']\.\/chunk/,
       // From patterns
@@ -36,7 +40,10 @@ export const rollup = [
   {
     score: 0.6,
     name: 'exports' as const,
-    scripts: [/export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/],
+    scripts: [
+      /export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      /export\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+(?:as\s+[a-zA-Z$_][a-zA-Z0-9$_]*)?\s*)*}\s*(?:from\s*["'][^"']+["'])?/g,
+    ],
   },
   {
     name: 'chunkLoading' as const,
