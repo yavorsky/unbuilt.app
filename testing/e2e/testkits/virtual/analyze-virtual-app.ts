@@ -50,6 +50,7 @@ export async function analyzeVirtualApp(
             build: config.buildCommand,
             start: config.startCommand,
           },
+          ...(config.packageJson ?? {}),
         },
         null,
         2

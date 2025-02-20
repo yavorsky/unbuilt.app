@@ -3,20 +3,37 @@ import { Page } from 'playwright';
 export const ember = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 0.9,
     scripts: [
+      // Imports
+      /@ember\/-internals\/[a-zA-Z-]+/,
+
       // Core Ember initialization patterns
       /defineProperty\(Ember,["']VERSION["'],\{configurable:!1,enumerable:!0,value:["']\d+\.\d+\.\d+["']\}\)/,
-      /\.resolveRegistration\(["']config:environment["']\)/,
+      /Ember - JavaScript Application Framework/,
 
       // Ember Object model core features
-      /\.extend\(\{[^}]*init:function\(\)\{[^}]*this\._super\.apply\(this,arguments\)/,
-      /\.reopen\(\{[^}]*willDestroy:function\(\)\{/,
 
       // Ember's internal property observation system
       /notifyPropertyChange\(this,["'][^"']+["']\)/,
-      /addObserver\(this,["'][^"']+["']\)/,
+
+      // File path
+      /define\(['"]@ember\/[^"']+["']/,
+
+      // Load hooks
+      /'EMBER_LOAD_HOOKS'/,
+
+      // Deprecations url
+      /deprecations\.emberjs\.com/,
+
+      // Declare scope
+      /function\s*\(global,\s*Ember\)/,
     ],
+  },
+  {
+    name: 'glimmer' as const,
+    score: 0.9,
+    scripts: [/define\(['"]([@]glimmer\/[^"']+)["']/],
   },
   {
     name: 'components' as const,
@@ -28,14 +45,6 @@ export const ember = [
 
       // Classic component patterns (production)
       /Component\.extend\(\{(?:[^{}]|{[^{}]*})*\}\)/,
-
-      // Component lifecycle hooks (minified)
-      /didInsertElement:function\(\)\{/,
-      /willDestroyElement:function\(\)\{/,
-
-      // Tracked properties implementation
-      /this\.__tracked__\w+/,
-      /tracked\w+\.set\(this,/,
     ],
   },
   {
@@ -45,70 +54,39 @@ export const ember = [
       // Production template compilation output
       /function\(\){return\{\w+:function\(\)\{var \w+=this\.\w+/,
 
-      // Helper invocations (production)
-      /helpers\[["'][^"']+["']\]\.compute\(/,
-
-      // Component invocation patterns
-      /component\$\w+\(this,this\./,
-      /modifier\$\w+\(this,this\./,
-
       // Glimmer template compilation
       /createTemplateFactory\(\{[^}]*"block":\[/,
     ],
   },
   {
-    name: 'routing' as const,
-    score: 0.2,
-    scripts: [
-      // Router initialization (production)
-      /Router\.map\(function\(\)\{this\.route\(/,
-
-      // Route class definition patterns
-      /Route\.extend\(\{(?:[^{}]|{[^{}]*})*model:function\([^)]*\)\{/,
-
-      // Transition methods (minified)
-      /\.transitionTo\(["'][^"']+["']\)/,
-      /\.replaceWith\(["'][^"']+["']\)/,
-
-      // Route lifecycle hooks
-      /beforeModel:function\(\w+\)\{/,
-      /afterModel:function\(\w+,\w+\)\{/,
-    ],
-  },
-  {
-    name: 'data' as const,
-    score: 0.15,
-    scripts: [
-      // Model definitions (production)
-      /Model\.extend\(\{(?:[^{}]|{[^{}]*})*\}\)/,
-
-      // Relationship definitions (minified)
-      /belongsTo\(["'][^"']+["']\)/,
-      /hasMany\(["'][^"']+["']\)/,
-
-      // Store operations (production)
-      /store\.findRecord\(["'][^"']+["'],/,
-      /store\.query\(["'][^"']+["'],/,
-
-      // Adapter/Serializer patterns
-      /JSONAPIAdapter\.extend\(/,
-      /JSONAPISerializer\.extend\(/,
-    ],
-  },
-  {
-    name: 'runtimeExecution' as const,
-    score: 0.3,
+    name: 'rumtimeEnv' as const,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check only for production Ember features
           hasEmber: typeof window.Ember === 'object' && !!window.Ember.VERSION,
+          hasEmberEnv: typeof window.EmberENV === 'object',
+        };
 
+        // Require at least two markers for more reliable detection
+        return Object.values(markers).some(Boolean);
+      });
+    },
+  },
+  {
+    name: 'runtimeExecution' as const,
+    score: 1,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
           // Check for actual rendered components
-          hasEmberViews: !!document.querySelector('.ember-view'),
+          hasEmberViews: !!document.querySelector(
+            '.ember-view, .ember-application'
+          ),
 
           // Check for Ember Data
-          hasEmberData: typeof window.DS === 'object' && !!window.DS.Model,
+          hasEmberData: typeof window.DS === 'object',
 
           // Check for actual route rendering
           hasRouting: !!document.querySelector('.ember-application'),
@@ -118,7 +96,7 @@ export const ember = [
         };
 
         // Require at least two markers for more reliable detection
-        return Object.values(markers).filter(Boolean).length >= 2;
+        return Object.values(markers).some(Boolean);
       });
     },
   },

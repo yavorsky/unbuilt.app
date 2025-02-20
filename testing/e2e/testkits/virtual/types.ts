@@ -6,4 +6,5 @@ export interface VirtualAppConfig {
   env?: Record<string, string>;
   port?: number;
   outDir: string;
+  packageJson?: Record<string, unknown>;
 }
