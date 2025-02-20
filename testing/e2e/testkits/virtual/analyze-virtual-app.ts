@@ -45,6 +45,7 @@ export async function analyzeVirtualApp(
           name: 'test-project',
           version: '1.0.0',
           dependencies: config.dependencies,
+          packageManager: 'npm@10.2.4',
           scripts: {
             build: config.buildCommand,
             start: config.startCommand,
@@ -59,19 +60,27 @@ export async function analyzeVirtualApp(
     console.log('Running `npm install`...');
     await execPromise('npm install', { cwd: testDir });
     console.log('Running `npm run build`...');
-    const port = await getPortModule.default({
-      port: getPortModule.portNumbers(4000, 5000),
-    });
+    const port =
+      config.port ??
+      (await getPortModule.default({
+        port: getPortModule.portNumbers(4000, 5000),
+      }));
 
-    const { stdout, stderr } = await execPromise('npm run build', {
-      cwd: testDir,
-      env: {
-        ...process.env,
-        ...config.env,
-        PORT: port.toString(),
-        NODE_ENV: 'production',
-      },
-    });
+    let stdout = '';
+    let stderr = '';
+    if (config.buildCommand) {
+      const result = await execPromise('npm run build', {
+        cwd: testDir,
+        env: {
+          ...process.env,
+          ...config.env,
+          PORT: port.toString(),
+          NODE_ENV: 'production',
+        },
+      });
+      stdout += result.stdout;
+      stderr += result.stderr;
+    }
     if (stdout.trim() !== '') {
       console.log('Build stdout:', stdout);
     }

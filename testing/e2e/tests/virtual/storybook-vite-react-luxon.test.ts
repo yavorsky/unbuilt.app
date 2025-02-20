@@ -7,14 +7,14 @@ describe('detects storybook with react and luxon', async () => {
     outDir: 'storybook-static',
     buildCommand: 'storybook build',
     dependencies: {
-      react: 'latest',
-      'react-dom': 'latest',
-      luxon: 'latest',
-      '@storybook/react': 'latest',
-      '@storybook/react-vite': 'latest',
-      '@storybook/addon-essentials': 'latest',
-      vite: 'latest',
-      '@vitejs/plugin-react': 'latest',
+      react: '19.0.0',
+      'react-dom': '19.0.0',
+      luxon: '3.5.0',
+      '@storybook/react': '8.5.8',
+      '@storybook/react-vite': '8.5.8',
+      '@storybook/addon-essentials': '8.5.8',
+      vite: '6.1.1',
+      '@vitejs/plugin-react': '4.3.4',
     },
     files: {
       'src/components/DateDisplay.tsx': `

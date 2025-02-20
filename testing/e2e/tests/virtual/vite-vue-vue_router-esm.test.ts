@@ -8,11 +8,11 @@ describe('detects vue with code splitting', async () => {
     outDir: 'dist',
     buildCommand: 'vite build',
     dependencies: {
-      vue: 'latest',
-      'vue-router': 'latest',
-      '@vitejs/plugin-vue': 'latest',
-      vite: 'latest',
-      lodash: 'latest',
+      vue: '3.5.13',
+      'vue-router': '4.5.0',
+      '@vitejs/plugin-vue': '5.2.1',
+      vite: '6.1.1',
+      lodash: '4.17.21',
     },
     files: {
       'src/components/AsyncComponent.vue': `

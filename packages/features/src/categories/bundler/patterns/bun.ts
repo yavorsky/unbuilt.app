@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-export const bunBundler = [
+export const bun = [
   {
     name: 'bundleInitialization' as const,
     score: 0.3,

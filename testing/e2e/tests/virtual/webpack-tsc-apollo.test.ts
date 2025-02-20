@@ -7,13 +7,13 @@ describe('detects webpack, typescript and apollo in vanilla app', async () => {
     outDir: 'dist',
     buildCommand: 'webpack --mode production',
     dependencies: {
-      typescript: 'latest',
-      webpack: 'latest',
-      'webpack-cli': 'latest',
-      '@apollo/client': 'latest',
-      graphql: 'latest',
-      'ts-loader': 'latest',
-      'html-webpack-plugin': 'latest',
+      typescript: '5.7.3',
+      webpack: '5.98.0',
+      'webpack-cli': '6.0.1',
+      '@apollo/client': '3.13.1',
+      graphql: '16.10.0',
+      'ts-loader': '9.5.2',
+      'html-webpack-plugin': '5.6.3',
     },
     files: {
       'src/types.ts': `

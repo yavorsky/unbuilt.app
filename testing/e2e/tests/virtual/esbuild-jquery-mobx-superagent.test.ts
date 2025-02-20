@@ -9,10 +9,10 @@ describe('detects esbuild with jquery, superagent and mobx', async () => {
       buildCommand:
         'mkdir -p dist && cp index.html dist/ && esbuild src/index.js src/vendors.js --bundle --outdir=dist --minify',
       dependencies: {
-        esbuild: 'latest',
-        jquery: 'latest',
-        superagent: 'latest',
-        mobx: 'latest',
+        esbuild: '0.25.0',
+        jquery: '3.7.1',
+        superagent: '10.1.1',
+        mobx: '6.13.6',
       },
       files: {
         'src/vendors.js': `

@@ -6,11 +6,11 @@ describe('detects vite bundler with react basic usage', async () => {
     outDir: 'dist',
     buildCommand: 'vite build',
     dependencies: {
-      vite: 'latest',
-      react: 'latest',
-      '@vitejs/plugin-react': 'latest',
-      'date-fns': 'latest',
-      'react-dom': 'latest',
+      vite: '6.1.1',
+      react: '19.0.0',
+      '@vitejs/plugin-react': '4.3.4',
+      'date-fns': '4.1.0',
+      'react-dom': '19.0.0',
     },
     files: {
       'src/App.tsx': `

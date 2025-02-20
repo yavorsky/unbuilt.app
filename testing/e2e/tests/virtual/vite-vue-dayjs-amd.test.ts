@@ -7,10 +7,10 @@ describe('detects vue with day.js', async () => {
     outDir: 'dist',
     buildCommand: 'vite build',
     dependencies: {
-      vue: 'latest',
-      dayjs: 'latest',
-      '@vitejs/plugin-vue': 'latest',
-      vite: 'latest',
+      vue: '3.5.13',
+      dayjs: '1.11.13',
+      '@vitejs/plugin-vue': '5.2.1',
+      vite: '6.1.1',
     },
     files: {
       'src/components/DateDisplay.vue': `
