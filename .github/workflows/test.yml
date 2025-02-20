@@ -35,11 +35,6 @@ jobs:
       - name: Install playwright
         run: yarn playwright install --with-deps
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: latest
-
       - name: Build application
         run: yarn turbo run build
 
