@@ -4,5 +4,6 @@ export interface VirtualAppConfig {
   buildCommand?: string;
   startCommand?: string;
   env?: Record<string, string>;
+  port?: number;
   outDir: string;
 }

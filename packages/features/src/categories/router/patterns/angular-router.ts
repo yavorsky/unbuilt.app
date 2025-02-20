@@ -3,19 +3,14 @@ import { Page } from 'playwright';
 export const angularRouter = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 1,
     scripts: [
-      // Angular Router specific imports (minification resistant)
-      /["']@angular[/\\]router(?:\/fesm2022\/router\.mjs|\/bundles\/router\.umd\.min\.js)?["']/,
-      /["']\@angular\/router\/package\.json["']/,
-
       // Angular Router's internal DI tokens (survive minification)
       /InjectionToken\(["'](?:ROUTER_CONFIG|ROUTER_INITIALIZER|ROUTER_FORROOT_GUARD)["']\)/,
       /\[Symbol\.for\(["'](?:NgRouter|RouterState|RouteParams)["']\)\]/,
       /__NG_ROUTER_[A-Z_]+__/,
 
       // Angular Router specific class signatures (minification resistant)
-      /class\s+\w+(?:Router|Route|Navigation|UrlTree|UrlSegment)/,
       /\w+\.ɵfac\s*=\s*function\s*\(t\)\s*\{\s*return\s*new\s*\(t\s*\|\|\s*\w+Router\)/,
       /\w+\.ɵprov\s*=\s*\/\*@__PURE__\*\/\s*[ɵ\w]+\(["']Router["']\)/,
 
@@ -23,11 +18,21 @@ export const angularRouter = [
       /ɵɵdefineInjectable\(\{factory:\s*function\s*\w+Router_Factory/,
       /ɵɵdefineNgModule\(\{.*?declarations:\s*\[RouterOutlet\]/,
       /routerNgProbeToken/,
-      /RouterInitializer/,
+      /emptyRouterOutlet/,
+      /router-outlet/,
+      /registerNonRouterCurrentEntryChangeListener/,
+      /\.generateNgRouterState/,
+      /\.nonRouterCurrentEntryChangeSubscription/,
     ],
+  },
+  {
+    name: 'browser' as const,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
+          hasRouterElement: !!document.querySelector('router-outlet'),
+
           // Check for Angular Router specific DI tokens and services
           hasAngularRouter: !!(
             // Check for router DI tokens (minification resistant)
@@ -75,7 +80,6 @@ export const angularRouter = [
       /RouterModule\.(?:forRoot|forChild)\(\s*(?:\[|routes)/,
       /provideRouter\(\s*withRouterConfig\(/,
       /withPreloading\(\s*(?:NoPreloading|PreloadAllModules)\)/,
-      /withDebugTracing\(\)/,
       /withRouterConfig\(\{malformedUriErrorHandler:/,
 
       // Angular Router internal patterns (survive minification)
@@ -86,31 +90,7 @@ export const angularRouter = [
 
       // Angular Router specific error handling (minification resistant)
       /new\s+NavigationCancelingError\(/,
-      /DefaultTitleStrategy/,
       /EmptyOutletComponent/,
-      /RouterConfigLoader/,
-    ],
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Angular Router specific build artifacts (minification resistant)
-      /@angular[\\/]router[\\/]fesm2022[\\/]router\.mjs$/,
-      /@angular[\\/]router[\\/]bundles[\\/]router\.umd\.min\.js$/,
-      /@angular[\\/]router[\\/]esm2022[\\/]router\.mjs$/,
-
-      // Angular Router specific lazy chunks (with internal markers)
-      /router\.ngfactory\.[a-f0-9]+\.js$/i,
-      /router-module\.[a-f0-9]+\.chunk\.js$/i,
-      /angular-router\.umd\.[a-f0-9]+\.js$/i,
-      /ng\.router\.[a-f0-9]+\.js$/i,
-
-      // Angular Router specific generated files
-      /router\.metadata\.json$/i,
-      /router\.d\.ts$/i,
-      /angular-route-serializer\.[a-f0-9]+\.js$/i,
-      /angular-router-preloader\.[a-f0-9]+\.js$/i,
     ],
   },
 ];

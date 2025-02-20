@@ -10,13 +10,13 @@ describe('detects next.js with react and moment.js', async () => {
       NEXT_DEBUG: 'true',
     },
     dependencies: {
-      '@types/react': 'latest',
-      '@types/node': 'latest',
-      next: 'latest',
-      react: 'latest',
-      typescript: 'latest',
-      'react-dom': 'latest',
-      moment: 'latest',
+      '@types/react': '19.0.10',
+      '@types/node': '22.13.4',
+      next: '15.1.7',
+      react: '19.0.0',
+      typescript: '5.7.3',
+      'react-dom': '19.0.0',
+      moment: '2.30.1',
     },
     files: {
       'src/app/page.tsx': `

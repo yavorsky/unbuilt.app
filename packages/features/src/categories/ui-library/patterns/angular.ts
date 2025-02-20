@@ -3,13 +3,28 @@ import { Page } from 'playwright';
 export const angular = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 1,
     scripts: [
       // Angular platform initialization (minification-resistant)
       /platformBrowser\w*\s*\(\s*\[\s*\{\s*ngZone\s*:\s*["']zone\.js["']/,
 
       // Angular internal symbols (with boundaries)
       /ɵcmp|ɵmod|ɵfac|ɵinj|ɵprov|ɵdef/,
+
+      // Zone assertions
+      /assert(Not)?InAngularZone()/,
+
+      // Angular zone check
+      /isInAngularZone()/,
+
+      // Zone.js runOutsideAngular pattern
+      /runOutsideAngular\s*\(\s*\(\)\s*=>/,
+
+      // Ng-zone event
+      /NgZoneEvent/,
+
+      // Policty indicator
+      /createPolicy\(["']angular#[^"']+["']\)/,
 
       // Zone.js specific patterns
       /Zone\.__load_patch\(['"]angular['"],\s*function/,
@@ -26,9 +41,20 @@ export const angular = [
       // Version marker (reliable across versions)
       /data-ng-version=["']\d+\.\d+\.\d+["']/,
 
+      /__ignore_ng_zone__/,
+
+      /angularZoneInstanceIdProperty/,
+
       // Production mode flags
       /ngDevMode\s*=\s*false/,
-      /enableProdMode\s*\(\s*\)/,
+    ],
+  },
+  {
+    name: 'messages' as const,
+    score: 0.9,
+    scripts: [
+      /Standard Angular field decorators are not supported in JIT mode/,
+      /Expected to be in Angular Zone, but it is not!/,
     ],
   },
   {
@@ -117,18 +143,29 @@ export const angular = [
     ],
   },
   {
+    name: 'runtimeZone' as const,
+    score: 1,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Check for Zone.js with Angular patches
+          hasZone:
+            typeof window.Zone !== 'undefined' &&
+            !!window.Zone['__symbol__']('angular'),
+        };
+
+        return !!Object.values(markers).some(Boolean);
+      });
+    },
+  },
+  {
     name: 'runtimeExecution' as const,
-    score: 0.3,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // Check for Angular global with specific properties
           hasAngular: !!(window.ng && window.ng.probe),
-
-          // Check for Zone.js with Angular patches
-          hasZone:
-            typeof window.Zone !== 'undefined' &&
-            !!window.Zone['__symbol__']('angular'),
 
           // Check for Angular version attribute
           hasVersion: !!document.querySelector('[ng-version]'),
@@ -139,21 +176,17 @@ export const angular = [
           // Check for Angular router outlet
           hasRouter: !!document.querySelector('router-outlet'),
 
-          // Check for Angular debug info
-          hasDebugInfo: !!document.querySelector('[ng-reflect-name]'),
-
           // Check for Angular bootstrap
           hasBootstrap: !!document.querySelector('[ng-app], [ng-controller]'),
         };
 
-        // Require at least two markers for more reliable detection
-        return Object.values(markers).filter(Boolean).length >= 2;
+        return Object.values(markers).some(Boolean);
       });
     },
   },
   {
     name: 'ssr' as const,
-    score: 0.3,
+    score: 0.9,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
