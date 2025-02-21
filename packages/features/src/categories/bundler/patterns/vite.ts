@@ -66,6 +66,10 @@ export const vite = [
     score: 0.4,
     name: 'imports' as const,
     scripts: [
+      // Here's a version which will ignore comments. Enable it in case we'll have matches with commented code
+      // /(?<![\/\*])\s*import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
+      // /(?<![\/\*])\s*import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
+      // /(?<![\/\*])\s*import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*)*}\s*from\s*["'][^"']+["']/,
       /import\s*{\s*[a-zA-Z]+\s+as\s+[a-zA-Z]+\s*}\s*from/,
       /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-z]\s*}/,
       /import\s*{\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*(?:,\s*[a-zA-Z$_][a-zA-Z0-9$_]*\s+as\s+[a-zA-Z$_][a-zA-Z0-9$_]*\s*)*}\s*from\s*["'][^"']+["']/,
