@@ -3,43 +3,42 @@ import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 describe('detects Ember.js in a basic app', async () => {
-  const result = await analyzeVirtualApp(
-    {
-      outDir: 'dist',
-      buildCommand: 'ember build --environment=production',
-      dependencies: {
-        'ember-source': '4.12.0',
-        'ember-cli': '4.12.0',
-        'ember-data': '4.12.0',
-        '@glimmer/component': '1.1.2',
-        '@glimmer/tracking': '1.1.2',
-        '@ember/optional-features': '2.2.0',
-        'ember-cli-babel': '7.26.11',
-        'ember-cli-htmlbars': '6.3.0',
-        'ember-resolver': '10.1.1',
-        'ember-load-initializers': '2.1.2',
-        'ember-auto-import': '2.6.3',
-        '@ember/test-helpers': '2.9.3',
-        '@ember-data/model': '4.12.0',
-        '@ember-data/store': '4.12.0',
-        'loader.js': '4.7.0',
-        'ember-cli-app-version': '5.0.0',
-        'ember-cli-dependency-checker': '3.3.2',
+  const result = await analyzeVirtualApp({
+    outDir: 'dist',
+    buildCommand: 'ember build --environment=production',
+    dependencies: {
+      'ember-source': '4.12.0',
+      'ember-cli': '4.12.0',
+      'ember-data': '4.12.0',
+      'ember-cli-terser': '^4.0.2',
+      'ember-cli-clean-css': '^3.0.0',
+      '@ember/optional-features': '2.2.0',
+      'ember-cli-babel': '7.26.11',
+      'ember-cli-htmlbars': '6.3.0',
+      'ember-resolver': '10.1.1',
+      'ember-load-initializers': '2.1.2',
+      'ember-auto-import': '2.6.3',
+      '@ember/test-helpers': '2.9.3',
+      '@ember-data/model': '4.12.0',
+      '@ember-data/store': '4.12.0',
+      'loader.js': '4.7.0',
+      'ember-cli-app-version': '5.0.0',
+      'ember-cli-dependency-checker': '3.3.2',
+    },
+    packageJson: {
+      name: 'my-app',
+      ember: {
+        edition: 'octane',
       },
-      packageJson: {
-        name: 'my-app',
-        ember: {
-          edition: 'octane',
-        },
-      },
-      files: {
-        'config/optional-features.json': `{
+    },
+    files: {
+      'config/optional-features.json': `{
         "application-template-wrapper": false,
         "default-async-observers": true,
         "jquery-integration": false,
         "template-only-glimmer-components": true
       }`,
-        'app/styles/app.css': `
+      'app/styles/app.css': `
         body {
           margin: 0;
           padding: 0;
@@ -61,7 +60,7 @@ describe('detects Ember.js in a basic app', async () => {
           background-color: #f0f0f0;
         }
         `,
-        'app/index.html': `<!DOCTYPE html>
+      'app/index.html': `<!DOCTYPE html>
         <html>
           <head>
             <meta charset="utf-8">
@@ -87,7 +86,7 @@ describe('detects Ember.js in a basic app', async () => {
             {{content-for "body-footer"}}
           </body>
         </html>`,
-        'ember-cli-build.js': `
+      'ember-cli-build.js': `
         'use strict';
 
         const EmberApp = require('ember-cli/lib/broccoli/ember-app');
@@ -96,6 +95,28 @@ describe('detects Ember.js in a basic app', async () => {
           const app = new EmberApp(defaults, {
             'ember-cli-babel': {
               includePolyfill: true
+            },
+            minifyCSS: {
+              options: { processImport: true }
+            },
+            minifyJS: {
+              options: {
+                compress: {
+                  dead_code: true,
+                  drop_debugger: true,
+                  drop_console: true,
+                  global_defs: {
+                    DEBUG: false
+                  }
+                },
+                output: {
+                  comments: false
+                }
+              }
+            },
+            sourcemaps: {
+              enabled: false,
+              extensions: ['js', 'css']
             }
           });
 
@@ -103,7 +124,7 @@ describe('detects Ember.js in a basic app', async () => {
         };
       `,
 
-        'app/app.js': `
+      'app/app.js': `
         import Application from '@ember/application';
         import Resolver from 'ember-resolver';
         import loadInitializers from 'ember-load-initializers';
@@ -118,7 +139,7 @@ describe('detects Ember.js in a basic app', async () => {
         loadInitializers(App, config.modulePrefix);
       `,
 
-        'app/router.js': `
+      'app/router.js': `
         import EmberRouter from '@ember/routing/router';
         import config from './config/environment';
 
@@ -136,7 +157,7 @@ describe('detects Ember.js in a basic app', async () => {
         });
       `,
 
-        'app/routes/index.js': `
+      'app/routes/index.js': `
         import Route from '@ember/routing/route';
 
         export default class IndexRoute extends Route {
@@ -149,16 +170,16 @@ describe('detects Ember.js in a basic app', async () => {
           }
         }
       `,
-        'app/components/.gitkeep': '',
+      'app/components/.gitkeep': '',
 
-        'app/templates/application.hbs': `
+      'app/templates/application.hbs': `
         <div class="post-list">
           <h1>Welcome to Ember</h1>
           {{outlet}}
         </div>
       `,
 
-        'app/templates/index.hbs': `
+      'app/templates/index.hbs': `
         <div class="posts">
           {{#each @model.posts as |post|}}
             <article class="post">
@@ -169,7 +190,7 @@ describe('detects Ember.js in a basic app', async () => {
         </div>
       `,
 
-        'app/models/post.js': `
+      'app/models/post.js': `
         import Model, { attr } from '@ember-data/model';
 
         export default class PostModel extends Model {
@@ -179,7 +200,7 @@ describe('detects Ember.js in a basic app', async () => {
         }
       `,
 
-        'config/environment.js': `
+      'config/environment.js': `
         'use strict';
 
         module.exports = function(environment) {
@@ -201,19 +222,21 @@ describe('detects Ember.js in a basic app', async () => {
         };
       `,
 
-        '.ember-cli': `
+      '.ember-cli': `
         {
           "disableAnalytics": false,
           "ssl": false
         }
       `,
-      },
     },
-    { preserveFiles: true }
-  );
+  });
 
   it('should detect Ember as the framework', async () => {
     expect(result.uiLibrary.name).toBe('ember');
     expect(result.uiLibrary.confidence).toBeGreaterThanOrEqual(1);
+  });
+
+  it('should detect Ember Router as the router', async () => {
+    expect(result.router.name).toBe('emberRouter');
   });
 });
