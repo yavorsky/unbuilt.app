@@ -3,11 +3,23 @@ import { Page } from 'playwright';
 export const redux = [
   {
     name: 'coreRuntime' as const,
-    score: 0.3,
+    score: 1,
     scripts: [
       /"@@redux\/INIT[^"]+"/,
       /"@@redux\/REPLACE[^"]+"/,
       /"@@redux\/PROBE_UNKNOWN_ACTION[^"]+"/,
+      /__REDUX_DEVTOOLS_EXTENSION_COMPOSE__/,
+      /__REDUX_DEVTOOLS_EXTENSION__/,
+      /redux-toolkit\.js\.org\/Errors\?code=/,
+      /visit https:\/\/redux\.js\.org\/Errors\?code=/,
+      /Symbol\.for\(["']rtk-state-proxy-original["']\)/,
+      /Symbol\.for\(["']react-redux-context["']\)/,
+    ],
+  },
+  {
+    name: 'usage' as const,
+    score: 0.3,
+    scripts: [
       // Redux's unique store implementation with currentReducer and currentState
       /function\s+createStore\s*\([^)]*\)\s*\{\s*(?:var|let|const)\s+currentReducer\s*=\s*reducer(?:\s*;)?\s*(?:var|let|const)\s+currentState\s*=\s*preloadedState/,
 
@@ -16,37 +28,7 @@ export const redux = [
 
       // Redux's specific store enhancer pattern
       /if\s*\(typeof\s+enhancer\s*!==\s*['"]undefined['"]\)\s*\{\s*if\s*\(typeof\s+enhancer\s*!==\s*['"]function['"]\)\s*\{\s*throw/,
-
-      // Redux's unique error message URLs that survive minification
-      /visit https:\/\/redux\.js\.org\/Errors\?code=/,
     ],
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to typecheck window keys
-        const hasReduxStore = (obj: any) => {
-          return (
-            obj &&
-            typeof obj.dispatch === 'function' &&
-            typeof obj.subscribe === 'function' &&
-            typeof obj.getState === 'function' &&
-            typeof obj.replaceReducer === 'function' &&
-            // Check for Redux-specific store implementation details
-            // Temp disabling this check to improve detection
-            // obj.dispatch.toString()?.includes('currentState') &&
-            // @ts-expect-error Symbol type is not recognized by TypeScript in node env
-            typeof obj[Symbol.observable] === 'function'
-          );
-        };
-
-        const hasReduxDevTools = !!(
-          window.__REDUX_DEVTOOLS_EXTENSION__?.connect &&
-          window.__REDUX_DEVTOOLS_EXTENSION__.connections &&
-          window.__REDUX_DEVTOOLS_EXTENSION__.send
-        );
-
-        return hasReduxDevTools || Object.values(window).some(hasReduxStore);
-      });
-    },
   },
   {
     name: 'dispatchValidation' as const,
@@ -90,5 +72,36 @@ export const redux = [
       // React-Redux's unique state sync patterns
       /\{reactReduxForwardedRef:.*getServerState:.*\}/,
     ],
+  },
+  {
+    name: 'runtime' as const,
+    score: 0.8,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to typecheck window keys
+        const hasReduxStore = (obj: any) => {
+          return (
+            obj &&
+            typeof obj.dispatch === 'function' &&
+            typeof obj.subscribe === 'function' &&
+            typeof obj.getState === 'function' &&
+            typeof obj.replaceReducer === 'function' &&
+            // Check for Redux-specific store implementation details
+            // Temp disabling this check to improve detection
+            // obj.dispatch.toString()?.includes('currentState') &&
+            // @ts-expect-error Symbol type is not recognized by TypeScript in node env
+            typeof obj[Symbol.observable] === 'function'
+          );
+        };
+
+        const hasReduxDevTools = !!(
+          window.__REDUX_DEVTOOLS_EXTENSION__?.connect &&
+          window.__REDUX_DEVTOOLS_EXTENSION__.connections &&
+          window.__REDUX_DEVTOOLS_EXTENSION__.send
+        );
+
+        return hasReduxDevTools || Object.values(window).some(hasReduxStore);
+      });
+    },
   },
 ];
