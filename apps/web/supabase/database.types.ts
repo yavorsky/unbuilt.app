@@ -518,6 +518,7 @@ export type Database = {
         | "vueRouter"
         | "vitepressRouter"
         | "vuepressRouter"
+        | "emberRouter"
       state_management_type:
         | "unknown"
         | "effector"
