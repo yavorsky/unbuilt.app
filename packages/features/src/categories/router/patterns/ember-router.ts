@@ -1,6 +1,6 @@
 import { AnalysisFeatures } from '../../../types/analysis.js';
 
-export const ember = [
+export const emberRouter = [
   {
     name: 'coreRuntime' as const,
     score: 0.9,

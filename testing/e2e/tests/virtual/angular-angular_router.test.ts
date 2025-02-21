@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
+import { omit } from 'lodash-es';
 
 describe('detects angular with router and ngrx in a simple app', async () => {
   const result = await analyzeVirtualApp(
@@ -223,14 +224,21 @@ describe('detects angular with router and ngrx in a simple app', async () => {
     { preserveFiles: true }
   );
 
-  it('should detect angular framework', async () => {
+  it('should detect angular library', async () => {
     expect(result.uiLibrary.name).toBe('angular');
+    // Web-components comes as secondary match, since angular is using it
+    expect(!!result.uiLibrary.secondaryMatches.webComponents).toBeTruthy();
+    // No other ui-library matches present
+    expect(omit(result.uiLibrary.secondaryMatches, ['webComponents'])).toEqual(
+      {}
+    );
     expect(result.uiLibrary.confidence).toBeGreaterThanOrEqual(1);
   });
 
   it('should detect angular router', async () => {
     expect(result.router.name).toBe('angularRouter');
     expect(result.router.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.router.secondaryMatches).toEqual({});
   });
 
   it('should detect ngrx state management', async () => {

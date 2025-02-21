@@ -20,6 +20,7 @@
     "@unbuilt/features": "^0.1.0",
     "@unbuilt/analyzer": "^0.1.0",
     "@unbuilt/helpers": "^0.1.0",
+    "lodash-es": "^4.17.21",
     "uuid": "^11.0.5",
     "dotenv": "^16.4.7",
     "vitest": "^0.34.2",
