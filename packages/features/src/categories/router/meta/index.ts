@@ -1,4 +1,5 @@
 import { angularRouter } from './angular-router.js';
+import { emberRouter } from './ember-router.js';
 import { gatsbyRouter } from './gatsby-router.js';
 import { nextRouter } from './next-router.js';
 import { qwikRouter } from './qwik-router.js';
@@ -15,6 +16,7 @@ export const meta = {
   angularRouter,
   nextRouter,
   gatsbyRouter,
+  emberRouter,
   qwikRouter,
   vitepressRouter,
   vuepressRouter,

@@ -23,3 +23,4 @@ export const EmberLogo = ({
     </svg>
   );
 };
+export default EmberLogo;
