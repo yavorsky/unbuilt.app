@@ -1,4 +1,3 @@
-import { Page } from 'playwright';
 import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const ember = [
