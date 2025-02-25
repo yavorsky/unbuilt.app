@@ -29,6 +29,11 @@ export const pinia = [
       /Symbol\(["']pinia["']\)/,
       /"🍍 Pinia \(root\)"/,
       /"🍍 "/,
+      /const\s+\w+\s*=\s*Symbol\(\s*(?:'pinia'|"pinia"|)\s*\)/,
+
+      /\w+\.config\.globalProperties\.\$pinia\s*=\s*\w+/,
+
+      /\/\*!\s*\n\s*\*\s*pinia\s+v\d+\.\d+\.\d+/, // Pinia's version
 
       // Pinia's specific error messages with unique prefix
       /"\[Pinia\]: skipping hmr because store doesn't exist yet"/,

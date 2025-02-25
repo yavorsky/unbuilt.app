@@ -79,7 +79,6 @@ export const vuepress = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasSiteData: typeof window?.__VP_SITE_DATA__ !== 'undefined',
           // VuePress SSR markers
           hasInitialState: typeof window?.__INITIAL_STATE__ !== 'undefined',
 
