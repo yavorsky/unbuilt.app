@@ -184,20 +184,24 @@ describe('detects next.js with react, redux and moment.js', async () => {
   it('detects next.js framework', async () => {
     expect(result.framework.name).toBe('next');
     expect(result.framework.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.framework.secondaryMatches).toEqual({});
   });
 
   it('detects react ui library', async () => {
     expect(result.uiLibrary.name).toBe('react');
     expect(result.uiLibrary.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.uiLibrary.secondaryMatches).toEqual({});
   });
 
   it('detects moment.js usage', async () => {
     expect(result.dates.name).toBe('moment');
     expect(result.dates.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.dates.secondaryMatches).toEqual({});
   });
 
   it('detects redux usage', async () => {
     expect(result.stateManagement.name).toBe('redux');
     expect(result.stateManagement.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.stateManagement.secondaryMatches).toEqual({});
   });
 });

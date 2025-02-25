@@ -10,6 +10,7 @@ export const vitepress = [
       /window\.__VP_/,
       /__VP_HASH_MAP/,
       /__VP_SITE_DATA/,
+      /__VP_SITE_DATA__/,
       /window\.__VITEPRESS_DEV__/,
       /window\.__VITEPRESS_SSR__/,
     ],
@@ -56,22 +57,15 @@ export const vitepress = [
     },
   },
   {
-    score: 0.3,
+    score: 0.9,
     name: 'ssr' as const,
-    scripts: [
-      // VitePress SSR-specific patterns
-      /__VITEPRESS_SSR__/,
-      /window\.__VITEPRESS_DATA__/,
-      /data-server-rendered="true"/,
-    ],
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           // VitePress SSR data
-          hasSSRData: typeof window?.__VITEPRESS_DATA__ !== 'undefined',
-
-          // Server rendered attribute
-          hasSSRAttribute: !!document.querySelector('[data-server-rendered]'),
+          hasSSRData:
+            typeof window?.__VITEPRESS_DATA__ !== 'undefined' ||
+            typeof window?.__VP_SITE_DATA__ !== 'undefined',
 
           // VitePress content with SSR
           hasSSRContent: !!document.querySelector('.VPContent')?.innerHTML,

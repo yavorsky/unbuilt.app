@@ -1,4 +1,5 @@
 import { Page } from 'playwright';
+import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const vite = [
   {
@@ -184,6 +185,13 @@ export const vite = [
         // Require multiple markers to be present to avoid false positives
         return markers.hasViteEpProperty && markers.hasViteModuleStructure;
       });
+    },
+  },
+  {
+    name: 'deps' as const,
+    score: 1,
+    dependencies: (analysis: AnalysisFeatures) => {
+      return analysis.framework.name === 'vitepress';
     },
   },
 ];

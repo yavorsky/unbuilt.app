@@ -226,7 +226,7 @@ describe('detects vue with code splitting', async () => {
   it('detects vue router usage', async () => {
     expect(result.router.name).toBe('vueRouter');
     expect(result.router.confidence).toBeGreaterThanOrEqual(1);
-    expect(Object.values(result.router.secondaryMatches ?? {}).length).toBe(0);
+    expect(result.router.secondaryMatches).toEqual({});
   });
 
   it('detects modules system usage', async () => {

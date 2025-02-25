@@ -1,7 +1,7 @@
 export const webComponents = [
   {
     name: 'define',
-    score: 1,
+    score: 1.2,
     scripts: [
       /* Matches customElements.define() calls:
        - customElements.define("my-element", class extends HTMLElement {})
@@ -12,7 +12,8 @@ export const webComponents = [
   },
   {
     name: 'shadowDOMAttachment' as const,
-    score: 1,
+    // Lower score, since it's commonly used outisde of web components approach
+    score: 0.5,
     scripts: [
       /* Matches Shadow DOM attachment
       - this.attachShadow({mode: "open"})
@@ -23,7 +24,7 @@ export const webComponents = [
   },
   {
     name: 'jsTemplateUsage' as const,
-    score: 1,
+    score: 0.7,
     scripts: [
       /* Matches JavaScript template manipulation
       - document.querySelector("template")
