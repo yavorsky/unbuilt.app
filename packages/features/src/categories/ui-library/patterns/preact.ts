@@ -11,14 +11,21 @@ export const preact = [
 
       // Preact's internal properties (minification-resistant)
       /__preactattr_[$_a-zA-Z0-9]+/,
-      /__component[$_a-zA-Z0-9]+/,
 
       // Preact's CSS property detection
       /\/(?:acit|ex(?:s|g|n|p|\\$)|rph|grid|ows|mnc|ntw|ine\[ch\]|zoo|\\^ord|itera)\/i/,
       // VNode Properties
-      /(?:\.|\[["']|\[)__(?:v|k|e|c|b|u|i|d|h|P|m|s|f)\b/,
+    ],
+  },
+  {
+    name: 'internalProps' as const,
+    score: 0.4,
+    scripts: [
+      /(?:\.|\[["']|\[)__(?:v|k|e|b|u|i|d|h|P|m|s|f)\b/,
       // Internal hooks props
-      /(?:\.|\[["']|\[)__(?:H|h|N|c|P|u|f)\b/,
+      /(?:\.|\[["']|\[)__(?:H|h|N|P|u|f)\b/,
+      // Internal component props
+      /__component[$_a-zA-Z0-9]+/,
     ],
   },
   {
