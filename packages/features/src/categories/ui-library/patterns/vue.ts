@@ -9,6 +9,12 @@ export const vue = [
       /__v_isRef=!0/,
       /__v_isReactive=!0/,
       /__v_raw/,
+      /\.__ob__\b/,
+
+      /__VUE_SSR_CONTEXT__/,
+      /\$el\.__vue__\s*=\s*\w+/,
+      /getVueComponent\s*:/,
+      /\$vnode(?:\.ssrContext)?/,
 
       // Vue 3 compiler output
       /\[\$\$\]/, // props destructure

@@ -1,42 +1,24 @@
-import { Page } from 'playwright';
 import { AnalysisFeatures } from '../../../types/analysis.js';
+import { vueRouter } from './vue-router.js';
 
 export const vuepressRouter = [
+  // vuepressRouter is based on vue-router
+  ...vueRouter,
   {
     name: 'coreRuntime' as const,
-    score: 0.8,
+    score: 1,
     scripts: [
       // VuePress-specific route data structure that survives minification
       /@vuepress\/(?:core|theme-default)/,
+      /__VUEPRESS_ROUTER_BASE__/,
+      /\[vuepress\] No matching page found for sidebar item/,
 
       // Distinctive VuePress router error messages
-      /404\s*page\s*could\s*not\s*be\s*found\./,
       /\[\s*vuepress\s*\]\s*page\s*not\s*found:/,
 
       // Common patterns in minified VuePress code
       /\.hasOwnProperty\("internal_routes"\)/,
     ],
-  },
-  {
-    score: 1,
-    name: 'browser-checks' as const,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        const markers = {
-          container:
-            document.querySelector(
-              'div.vp-theme-container, div[vp-container]'
-            ) !== null,
-          hasNavbar: document.querySelector('.vp-theme-container') !== null,
-          hasSidebar: document.querySelector('.vp-sidebar-mask') !== null,
-          hasHome: document.querySelector('.vp-home') !== null,
-          hasContent:
-            document.querySelector('div[vp-content], div.vp-content') !== null,
-        };
-
-        return Object.values(markers).filter(Boolean).length >= 2;
-      });
-    },
   },
   {
     name: 'patterns' as const,
@@ -57,7 +39,7 @@ export const vuepressRouter = [
   },
   {
     name: 'dependencies' as const,
-    score: 0.7,
+    score: 2,
     dependencies: (analysis: AnalysisFeatures) => {
       return (
         analysis.uiLibrary.name === 'vue' &&
