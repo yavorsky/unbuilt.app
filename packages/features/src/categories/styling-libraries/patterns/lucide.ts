@@ -11,9 +11,6 @@ export const lucide = [
       // Icon component patterns - focusing on unique Lucide naming conventions
       /\<(?:LucideIcon|Icon(?:Base|Props|Context)|createLucideIcon)\b/,
 
-      // Unique Lucide icon attribute combinations
-      /(?:strokeLinecap|strokeLinejoin|strokeWidth)="(?:round|2)"/,
-
       // Lucide-specific icon names with semantic boundaries
       /\b(?:ArrowRight(?:Circle|Square)|ChevronDown(?:Circle|Square)|FileText|MessageCircle|MoreVertical|Settings2|UserCircle2)\b/,
 
@@ -22,53 +19,45 @@ export const lucide = [
 
       // Lucide configuration patterns
       /\.setDefault\(\{[^}]*strokeLinecap:\s*["']round["']/,
+
+      // Concat classes pattern
+      /"lucide-"\.concat\(/,
     ],
   },
   {
-    name: 'browser' as const,
-    score: 0.8,
+    name: 'browserLucideClasses' as const,
+    score: 0.9,
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          // Check for Lucide's unique SVG structure and attributes
-          hasLucideSVGPattern: (() => {
-            const svgs = document.querySelectorAll(
-              'svg[stroke="currentColor"]'
-            );
-            return Array.from(svgs).some(
-              (svg) =>
-                svg.getAttribute('stroke-width') === '2' &&
-                svg.getAttribute('stroke-linecap') === 'round' &&
-                svg.getAttribute('stroke-linejoin') === 'round' &&
-                svg.getAttribute('fill') === 'none'
-            );
-          })(),
-
-          // Check for Lucide-specific data attributes
-          hasLucideDataAttrs:
-            document.querySelector('[data-lucide],[data-feather]') !== null,
-
-          // Check for Lucide's global namespace objects
-          hasLucideGlobals: !!(
-            window.lucide ||
-            window.LucideIcon ||
-            window.createLucideIcon
-          ),
-
-          // Check for Lucide's unique class patterns
-          hasLucideClasses:
-            document.querySelector(
-              '.lucide,.lucide-icon,[class*="lucide-"]'
-            ) !== null,
-
-          // Check for Lucide's unique element structure
-          hasLucideElements:
-            document.querySelector(
-              'svg > [stroke-linecap="round"][stroke-linejoin="round"]'
-            ) !== null,
-        };
-
-        return Object.values(markers).some(Boolean);
+        return (
+          document.querySelector('.lucide,.lucide-icon,[class*="lucide-"]') !==
+          null
+        );
+      });
+    },
+  },
+  {
+    name: 'browserLucideDataAttributes' as const,
+    score: 0.9,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        return document.querySelector('[data-lucide]') !== null;
+      });
+    },
+  },
+  {
+    name: 'similarAttributes' as const,
+    score: 0.3,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const svgs = document.querySelectorAll('svg[stroke="currentColor"]');
+        return Array.from(svgs).some(
+          (svg) =>
+            svg.getAttribute('stroke-width') === '2' &&
+            svg.getAttribute('stroke-linecap') === 'round' &&
+            svg.getAttribute('stroke-linejoin') === 'round' &&
+            svg.getAttribute('fill') === 'none'
+        );
       });
     },
   },
