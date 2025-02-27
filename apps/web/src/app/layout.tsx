@@ -4,7 +4,7 @@ import localFont from 'next/font/local';
 import './globals.css';
 import React from 'react';
 
-export const baseUrl = 'https://unbuilt.app';
+const baseUrl = 'https://unbuilt.app';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
