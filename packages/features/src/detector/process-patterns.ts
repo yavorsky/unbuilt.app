@@ -17,8 +17,8 @@ export async function processPatterns<Names extends string>(
   type: string = ''
 ): Promise<ProcessPatternsResult<Names>> {
   const scriptsContent = resources.getAllScriptsContent();
-  const stylesheetsContent = resources.getAllScriptsContent();
-  const documentsContent = resources.getAllScriptsContent();
+  const stylesheetsContent = resources.getAllStylesheetsContent();
+  const documentsContent = resources.getAllDocumentsContent();
   const totalContent = scriptsContent + stylesheetsContent + documentsContent;
   const filenames = Array.from(resources.getAllScriptsNames());
 
@@ -31,6 +31,9 @@ export async function processPatterns<Names extends string>(
   for (const pattern of patterns) {
     await processPattern(pattern, {
       totalContent,
+      scriptsContent,
+      stylesheetsContent,
+      documentsContent,
       filenames,
       page,
       browser,

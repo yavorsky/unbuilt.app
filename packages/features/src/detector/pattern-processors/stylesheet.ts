@@ -4,12 +4,14 @@ import { ProcessPatternsResult } from '../process-patterns.js';
 export async function processStylesheetPattern<Names extends string>(
   runtimePattern: RegExp,
   pattern: Pattern<Names>,
-  totalContent: string,
+  styleSheetsContent: string,
   result: ProcessPatternsResult<Names>,
   debug?: boolean
 ): Promise<void> {
   try {
-    const matched = await Promise.resolve(runtimePattern.test(totalContent));
+    const matched = await Promise.resolve(
+      runtimePattern.test(styleSheetsContent)
+    );
 
     if (matched) {
       if (debug) {
