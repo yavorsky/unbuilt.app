@@ -29,7 +29,8 @@ export const pinia = [
       /Symbol\(["']pinia["']\)/,
       /"🍍 Pinia \(root\)"/,
       /"🍍 "/,
-      /const\s+\w+\s*=\s*Symbol\(\s*(?:'pinia'|"pinia"|)\s*\)/,
+      // Pinia symbol
+      /const\s+\w+\s*=\s*Symbol\(\s*(?:'pinia'|"pinia")\s*\)/,
 
       /\w+\.config\.globalProperties\.\$pinia\s*=\s*\w+/,
 
