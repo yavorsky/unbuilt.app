@@ -67,7 +67,7 @@ export const vue = [
   },
   {
     name: 'runtimeVueMarkers' as const,
-    score: 1,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -80,7 +80,7 @@ export const vue = [
         };
 
         // Require at least two markers for more reliable detection
-        return Object.values(markers).filter(Boolean).length >= 2;
+        return Object.values(markers).some(Boolean);
       });
     },
   },
