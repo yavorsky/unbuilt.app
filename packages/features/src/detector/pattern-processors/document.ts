@@ -2,21 +2,21 @@ import { Pattern } from '../../types/pattern.js';
 import { isMatch } from 'super-regex';
 import { ProcessPatternsResult } from '../process-patterns.js';
 
-export async function processScriptPattern<Names extends string>(
+export async function processDocumentPattern<Names extends string>(
   runtimePattern: RegExp,
   pattern: Pattern<Names>,
-  scriptsContent: string,
+  documentsContent: string,
   result: ProcessPatternsResult<Names>,
   debug?: boolean
 ): Promise<void> {
   try {
     const matched = await Promise.resolve(
-      isMatch(runtimePattern, scriptsContent, { timeout: 400 })
+      isMatch(runtimePattern, documentsContent, { timeout: 400 })
     );
 
     if (matched === undefined) {
       console.log(
-        'Timeout while running runtime script pattern',
+        'Timeout while running runtime document pattern',
         pattern.name,
         runtimePattern
       );
@@ -26,13 +26,16 @@ export async function processScriptPattern<Names extends string>(
     if (matched) {
       if (debug) {
         console.log(
-          `---> Script pattern ${pattern.name} matched -- ${runtimePattern}`
+          `---> Document pattern ${pattern.name} matched -- ${runtimePattern}`
         );
       }
       result.totalScore += pattern.score;
       result.matchedPatterns.add(pattern.name);
     }
   } catch (e) {
-    console.error(`Error while running script pattern for ${pattern.name}`, e);
+    console.error(
+      `Error while running document pattern for ${pattern.name}`,
+      e
+    );
   }
 }

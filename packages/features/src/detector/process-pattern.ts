@@ -5,11 +5,15 @@ import { processScriptPattern } from './pattern-processors/script.js';
 import { processStylesheetPattern } from './pattern-processors/stylesheet.js';
 import { processBrowserPattern } from './pattern-processors/browser.js';
 import { processFilenamePattern } from './pattern-processors/filename.js';
+import { processDocumentPattern } from './pattern-processors/document.js';
 
 export async function processPattern<Names extends string>(
   pattern: Pattern<Names>,
   context: {
     totalContent: string;
+    scriptsContent: string;
+    stylesheetsContent: string;
+    documentsContent: string;
     filenames: string[];
     page: Page;
     browser: Browser;
@@ -18,8 +22,17 @@ export async function processPattern<Names extends string>(
     result: ProcessPatternsResult<Names>;
   }
 ): Promise<void> {
-  const { totalContent, filenames, page, browser, debug, type, result } =
-    context;
+  const {
+    scriptsContent,
+    stylesheetsContent,
+    documentsContent,
+    filenames,
+    page,
+    browser,
+    debug,
+    type,
+    result,
+  } = context;
 
   // 1. Process scripts
   if (pattern.scripts) {
@@ -32,7 +45,7 @@ export async function processPattern<Names extends string>(
       await processScriptPattern(
         runtimePattern,
         pattern,
-        totalContent,
+        scriptsContent,
         result,
         debug
       );
@@ -54,7 +67,7 @@ export async function processPattern<Names extends string>(
       await processStylesheetPattern(
         runtimePattern,
         pattern,
-        totalContent,
+        stylesheetsContent,
         result,
         debug
       );
@@ -65,7 +78,29 @@ export async function processPattern<Names extends string>(
     }
   }
 
-  // 3. Process filenames
+  // 3. Process documents
+  if (pattern.documents) {
+    if (debug) {
+      console.time(`documents ${type} ${pattern.name}`);
+    }
+
+    // Process each document pattern sequentially
+    for (const runtimePattern of pattern.documents) {
+      await processDocumentPattern(
+        runtimePattern,
+        pattern,
+        documentsContent,
+        result,
+        debug
+      );
+    }
+
+    if (debug) {
+      console.timeEnd(`documents ${type} ${pattern.name}`);
+    }
+  }
+
+  // 4. Process filenames
   if (pattern.filenames) {
     if (debug) {
       console.time(`filenames ${type} ${pattern.name}`);
@@ -87,7 +122,7 @@ export async function processPattern<Names extends string>(
     }
   }
 
-  // 4. Process browser check
+  // 5. Process browser check
   if (pattern.browser) {
     if (debug) {
       console.time(`browser ${type} ${pattern.name}`);
