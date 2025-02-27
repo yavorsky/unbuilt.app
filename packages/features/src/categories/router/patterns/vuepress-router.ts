@@ -1,9 +1,7 @@
 import { AnalysisFeatures } from '../../../types/analysis.js';
-import { vueRouter } from './vue-router.js';
 
 export const vuepressRouter = [
   // vuepressRouter is based on vue-router
-  ...vueRouter,
   {
     name: 'coreRuntime' as const,
     score: 1,
