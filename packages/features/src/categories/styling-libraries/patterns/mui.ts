@@ -2,6 +2,43 @@ import { Page } from 'playwright';
 
 export const mui = [
   {
+    name: 'core' as const,
+    score: 1.0, // Highest confidence - unique to MUI
+    scripts: [
+      // MUI error URL pattern
+      /https:\/\/mui\.com\/production-error\/\?code=/,
+
+      // MUI specific symbol
+      /Symbol\.for\(["']mui\.nested["']\)/,
+
+      // MUI component name assignments
+      /\.muiName\s*=\s*["'](Button|Slider|TextField|Checkbox|Radio|Switch|Select|Autocomplete|Tooltip|Modal|Dialog|Drawer|AppBar|IconButton)["']/,
+
+      // MUI component name declarations
+      /name:\s*["'](Mui[A-Z][a-zA-Z0-9]*)["']/,
+
+      // MUI internal process styles
+      /\.\s*__mui_systemSx\b/,
+
+      // MUI theme provider specific import
+      /from\s+["']@mui\/material(?:\/styles)?["']\s*;/,
+    ],
+  },
+  {
+    name: 'importsExports' as const,
+    score: 0.7,
+    scripts: [
+      // MUI component style overrides specific pattern
+      /import\s+\{\s*(?:[^{}]*,\s*)?(?:styled|alpha|createTheme|ThemeProvider)(?:\s*,\s*[^{}]*)?\s*\}\s+from\s+["']@mui\/material(?:\/styles)?["']/,
+
+      // MUI component exports
+      /import\s+\{\s*(?:[^{}]*,\s*)?(?:Button|TextField|Checkbox|Radio|Select|Switch|Slider|Dialog|Drawer|AppBar|Toolbar|IconButton|Typography|Box|Grid|Paper|Card|Divider|List|Avatar)(?:\s*,\s*[^{}]*)?\s*\}\s+from\s+["']@mui\/material(?:\/[a-zA-Z0-9]+)?["']/,
+
+      // MUI component icons imports
+      /from\s+["']@mui\/icons-material(?:\/[a-zA-Z0-9]+)?["']/,
+    ],
+  },
+  {
     name: 'compilation' as const,
     score: 0.2,
     scripts: [
@@ -23,7 +60,6 @@ export const mui = [
 
       // Optimized style overrides - added length limits
       /components:\s*\{\s*MuiButton:\s*\{[^}]{1,500}\}\s*\}/,
-      /styleOverrides:\s*\{\s*root:\s*\{[^}]{1,500}\}\s*\}/,
 
       // Optimized system props - combined patterns
       /data-mui-base-(?:button|select|slider|switch|tabs|input)\b/,
@@ -57,6 +93,45 @@ export const mui = [
                 '.MuiInputBase-input'
             ) !== null,
 
+          hasMuiClasses: (() => {
+            const muiClassPatterns = [
+              /^MuiButton/,
+              /^MuiTextField/,
+              /^MuiPaper/,
+              /^MuiAppBar/,
+              /^MuiToolbar/,
+              /^MuiTypography/,
+              /^MuiBox/,
+              /^MuiCard/,
+            ];
+
+            const allClassNames = Array.from(
+              document.querySelectorAll('*')
+            ).flatMap((el) => Array.from(el.classList));
+
+            return muiClassPatterns.some((pattern) =>
+              allClassNames.some((className) => pattern.test(className))
+            );
+          })(),
+
+          // Check for MUI data attributes
+          hasMuiDataAttributes: (() => {
+            return !!document.querySelector(
+              '[data-mui-color-scheme], [data-mui-internal-clone-element], [data-mui-internal-clone-element]'
+            );
+          })(),
+
+          // Check for hidden MUI style elements
+          hasMuiStyleElements: (() => {
+            const styleElements = document.querySelectorAll('style');
+            for (const style of styleElements) {
+              if (style.textContent && style.textContent.includes('.Mui')) {
+                return true;
+              }
+            }
+            return false;
+          })(),
+
           // Optimized emotion check - single query
           hasEmotionStructure:
             document.querySelector(
@@ -81,30 +156,5 @@ export const mui = [
         return Object.values(markers).some(Boolean);
       });
     },
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Optimized core files - added boundaries
-      /@mui\/(?:material|system|base|joy-ui)\/(?:esm|umd|cjs)\/\b/,
-      /@mui\/material(?:@[\d.]{1,10})?\/(?:Button|Modal|Menu|Tabs|TextField)\b/,
-
-      // Optimized build artifacts - added hash length limit
-      /mui-(?:production|development)-bundle\.[a-f0-9]{8}\.js$/,
-      /mui-base-(?:auto|manual)\.(?:esm|umd)\.js$/,
-
-      // Optimized icon files - added boundary
-      /@mui\/icons-material\/[A-Z][a-zA-Z]{1,30}Icon$/,
-
-      // Optimized theme files - combined pattern
-      /(?:mui-theme|theme\.mui)\.(?:js|ts)$/,
-
-      // Optimized style injection - added hash length limit
-      /(?:emotion-(?:cache|element)|StyledEngine)-mui\.[a-f0-9]{8}\.js$/,
-
-      // Optimized chunks - consolidated with length limits
-      /(?:chunk|vendors)-mui-[a-z-]{1,30}\.[a-f0-9]{8}\.js$/,
-    ],
   },
 ];

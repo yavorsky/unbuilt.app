@@ -18,9 +18,6 @@ export const inferno = [
       // Internal render markers (minified)
       /__render\(\w+,\w+,(?:!0|!1)\)/,
       /__patch\(\w+,\w+,\w+,(?:!0|!1)\)/,
-
-      // Component initialization (production)
-      /\$LI=new WeakMap,\$CI=new WeakMap/,
     ],
   },
   {
@@ -32,15 +29,6 @@ export const inferno = [
 
       // Function component compilation (minified)
       /function\s+[$_a-zA-Z][\w$]*\(\{[^}]*\}\)\{return createVNode\(/,
-
-      // Lifecycle methods (production)
-      /componentDidMount\(\)\{(?:[^{}]|{[^{}]*})*\}/,
-      /componentWillUnmount\(\)\{(?:[^{}]|{[^{}]*})*\}/,
-
-      // Component utilities (minified)
-      /createPortal\(\w+,\w+\)/,
-      /createRef\(\)/,
-      /forwardRef\(\w+\)/,
     ],
   },
   {
@@ -60,26 +48,6 @@ export const inferno = [
 
       // Effect cleanup (minified)
       /\$HC\(\d+,function\(\)\{/,
-    ],
-  },
-  {
-    name: 'routing' as const,
-    score: 0.2,
-    scripts: [
-      // Router initialization (production)
-      /createRouter\(\{(?:[^{}]|{[^{}]*})*history:/,
-
-      // Route definitions (minified)
-      /\{path:["'][^"']+["'],component:/,
-
-      // Navigation components (production)
-      /Link,\{to:["'][^"']+["']/,
-      /Route,\{path:["'][^"']+["'],exact:/,
-
-      // Router hooks (minified)
-      /useLocation\(\)/,
-      /useHistory\(\)/,
-      /useParams\(\)/,
     ],
   },
   {
