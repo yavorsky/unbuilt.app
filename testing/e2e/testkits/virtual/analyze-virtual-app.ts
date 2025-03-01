@@ -103,6 +103,9 @@ export async function analyzeVirtualApp(
         },
       });
 
+      // Wait for server to be ready. Improve in the future to read stdout.
+      await new Promise((r) => setTimeout(r, 1000));
+
       // Log output from the start command
       startProcess?.stdout?.on('data', (data: string) =>
         console.log('Start command output:', data)

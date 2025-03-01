@@ -1,32 +1,37 @@
+import { Page } from 'playwright';
 import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const emotion = [
   {
-    name: 'uniqueMarkers' as const,
-    score: 0.3,
+    name: 'core' as const,
+    score: 1,
     scripts: [
       // Emotion's unique cache setup (survives minification)
+      /\.getAttribute\(["']data-emotion["']\)/,
+
+      // Emotion's unique cache setup (survives minification)
+      /\w+\.setAttribute\(["']data-emotion["']\s*,\s*\w+(?:\.\w+)?(?:\s*\+\s*[^\)]+)?\)/,
+
+      // Emotion's unique cache setup (survives minification)
+      /\.querySelectorAll\(["']style\[data-emotion\]:not\(\[data-s\]\)["']\)/,
+
+      // Emotion's unique cache setup (survives minification)
       /\{"key":"[\w-]+","nonce":"[\w-]*","insertionPoint":[\w\s\."]+\}/,
+
+      // Emotion's styles prop
+      /\w+\.__emotion_styles\b/,
+
+      // Emotion's styles prop
+      /\w+\.__emotion_real\b/,
+
+      // Emotion's specific prop forwarding
+      /\w+\.__emotion_forwardProp\b/,
 
       // Emotion's specific component wrapping
       /\.withComponent=function\([\w$]+\)\{return[\w$]+\([\w$]+,\{target:[\w$]+\.target\}\)\}/,
 
       // Emotion's unique symbol registration
       /Symbol\.for\(["']emotion-[\w-]+["']\)/,
-    ],
-  },
-  {
-    name: 'componentPatterns' as const,
-    score: 0.3,
-    scripts: [
-      // Emotion's specific component creation (with minification)
-      /\.withComponent\(["'][\w-]+["']\)\.withConfig\(\{["']label["']:/,
-
-      // Emotion's unique prop handling
-      /\.defaultProps=\{className:["']css-[\w-]+["']\}/,
-
-      // Emotion's specific theme consumer
-      /ThemeContext\._currentValue2?\.[\w$]+/,
     ],
   },
   {
@@ -45,7 +50,7 @@ export const emotion = [
   },
   {
     name: 'dependencies' as const,
-    score: 0.5,
+    score: 0.4,
     // Higher confidence when MUI is present as it uses Emotion by default
     dependencies: (analysis: AnalysisFeatures) => {
       // TODO: Imrpove this check to be more accurate based on MUI version (5+). Add 4 to jss.
@@ -67,5 +72,17 @@ export const emotion = [
       // Emotion's unique import pattern
       /import\s*\{\s*css\s*\}\s*from\s*["']@emotion\/react["']/,
     ],
+  },
+  {
+    name: 'runtime' as const,
+    score: 1,
+    browser: (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          emotion: document.querySelector('style[data-emotion]'),
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
   },
 ];
