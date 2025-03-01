@@ -588,9 +588,16 @@ describe('detects next.js with react, mui and postcss', async () => {
     expect(result.uiLibrary.secondaryMatches).toEqual({});
   });
 
-  it('detects postcss', async () => {
-    expect(result.stylingProcessor.name).toBe('postCSS');
+  it('detects emotion', async () => {
+    expect(result.stylingProcessor.name).toBe('emotion');
     expect(result.stylingProcessor.confidence).toBeGreaterThanOrEqual(0.9);
+  });
+
+  it('detects postcss', async () => {
+    expect(result.stylingProcessor.secondaryMatches?.postCSS).toBeTruthy();
+    expect(
+      result.stylingProcessor.secondaryMatches?.postCSS?.confidence
+    ).toBeGreaterThanOrEqual(0.9);
   });
 
   it('detects mui component library', async () => {
