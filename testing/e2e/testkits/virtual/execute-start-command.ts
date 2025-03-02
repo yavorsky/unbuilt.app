@@ -12,7 +12,7 @@ export const executeStartCommand = async ({
   env?: Record<string, string>;
 }) => {
   // Wait for server to be ready
-  console.log(`Running start command: ${startCommand}`);
+  console.log(`Running start command: ${startCommand} on port: ${port}`);
   // Wait for server to be ready
   const startProcess = await exec(startCommand, {
     cwd: dir,
@@ -25,7 +25,6 @@ export const executeStartCommand = async ({
   });
 
   // Wait for server to be ready. Improve in the future to read stdout.
-  await new Promise((r) => setTimeout(r, 1000));
 
   // Log output from the start command
   startProcess?.stdout?.on('data', (data: string) =>
@@ -34,6 +33,8 @@ export const executeStartCommand = async ({
   startProcess?.stderr?.on('data', (data: string) =>
     console.error('Start command error:', data)
   );
+
+  await new Promise((r) => setTimeout(r, 30000));
 
   return {
     port,
