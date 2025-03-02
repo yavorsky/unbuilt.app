@@ -1,15 +1,18 @@
 export const zustand = [
   {
     name: 'coreImplementation' as const,
-    score: 0.9,
+    score: 1,
     scripts: [
       // Zustand's unique package identifiers in UMD builds
       /zustandVanilla/,
       /zustandShallow/,
       /zustandContext/,
 
-      // Zustand's specific error messages
-      /"Seems like you have not used zustand provider as an ancestor\."/,
+      // Vanila store shape output
+      /\{\s*(?=[\s\S]*\bsetState\s*:)(?=[\s\S]*\bgetState\s*:)(?=[\s\S]*\bgetInitialState\s*:)(?=[\s\S]*\bsubscribe\s*:)[\s\S]*?\}/gm,
+
+      // useSyncExternalStore wrapper usage
+      /\w+\.useSyncExternalStore\s*\(\s*\w+\.subscribe\s*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^,]*\w+\.getState\s*\(\)[^,]*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^)]*\w+\.getInitialState\s*\(\)[^)]*\)/g,
 
       // Zustand's specific console messages with exact prefixes
       /\[zustand devtools middleware\] Unsupported action format/,
@@ -18,6 +21,21 @@ export const zustand = [
       // Zustand's unique devtools error message
       /\[zustand devtools middleware\] Unsupported __setState action format/,
       /When using 'store' option in devtools\(\), the 'state' should have only one key/,
+    ],
+  },
+  {
+    name: 'messages' as const,
+    score: 1,
+    scripts: [
+      /\[DEPRECATED\].*['"]zustand\/traditional['"]/,
+
+      /github\.com\/pmndrs\/zustand\/discussions\/1937/,
+
+      // Zustand's specific error messages
+      /"Seems like you have not used zustand provider as an ancestor\."/,
+
+      // Zustand createWithEqualityFn warn
+      /createWithEqualityFn.*instead of.*create.*useStoreWithEqualityFn.*instead of.*useStore/,
     ],
   },
   {
