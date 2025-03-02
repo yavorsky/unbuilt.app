@@ -2,16 +2,15 @@ import path from 'node:path';
 import { promisify } from 'node:util';
 import os from 'os';
 import { v4 as uuidv4 } from 'uuid';
-import { exec } from 'child_process';
+import { ChildProcess, exec } from 'child_process';
 import fs from 'fs/promises';
+import * as getPortModule from 'get-port';
 import type { VirtualAppConfig } from './types.js';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { afterAll } from 'vitest';
 import { AppServerInstance, createAppServer } from './create-app-server.js';
 import { closeBrowser } from '../helpers/browser-context.js';
 import { analyzeApp } from '../helpers/analyze.js';
-import { getPort } from './get-port.js';
-import { executeStartCommand } from './execute-start-command.js';
 
 const execPromise = promisify(exec);
 
@@ -23,6 +22,7 @@ export async function analyzeVirtualApp(
   const id = uuidv4();
   const testDir = path.join(os.tmpdir(), 'unbuilt-test', id);
   let server: AppServerInstance | null = null;
+  let startProcess: ChildProcess | null = null;
 
   try {
     // Create and build test project
@@ -61,7 +61,11 @@ export async function analyzeVirtualApp(
     console.log('Running `npm install`...');
     await execPromise('npm install', { cwd: testDir });
     console.log('Running `npm run build`...');
-    const port = config.port ?? (await getPort());
+    const port =
+      config.port ??
+      (await getPortModule.default({
+        port: getPortModule.portNumbers(4000, 5000),
+      }));
 
     let stdout = '';
     let stderr = '';
@@ -86,13 +90,49 @@ export async function analyzeVirtualApp(
     }
 
     if (config.startCommand) {
-      server = await executeStartCommand({
-        startCommand: config.startCommand,
-        dir: testDir,
-        env: config.env,
-        port,
+      // Wait for server to be ready
+      console.log(`Running start command: ${config.startCommand}`);
+      // Wait for server to be ready
+      startProcess = await exec('npm run start', {
+        cwd: testDir,
+        env: {
+          ...process.env,
+          ...config.env,
+          PORT: port.toString(),
+          NODE_ENV: 'production',
+        },
       });
+
+      // Wait for server to be ready. Improve in the future to read stdout.
+      await new Promise((r) => setTimeout(r, 1000));
+
+      // Log output from the start command
+      startProcess?.stdout?.on('data', (data: string) =>
+        console.log('Start command output:', data)
+      );
+      startProcess?.stderr?.on('data', (data: string) =>
+        console.error('Start command error:', data)
+      );
+
+      server = {
+        port,
+        close: async () => {
+          return new Promise<void>((resolve) => {
+            if (startProcess) {
+              startProcess.kill('SIGTERM');
+              setTimeout(resolve, 1000); // Give process time to shut down
+            } else {
+              resolve();
+            }
+          });
+        },
+      };
     } else {
+      // Start server
+      console.log(
+        `Serving files for ${path.join(testDir, config.outDir)}`,
+        port
+      );
       server = await createAppServer(path.join(testDir, config.outDir), port);
     }
 
