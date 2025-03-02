@@ -1,13 +1,16 @@
 import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
+import { getPort } from '../../testkits/virtual/get-port.js';
 
 describe('detects sveltekit with svelte and routing', async () => {
+  const port = await getPort();
+
   const result = await analyzeVirtualApp(
     {
       outDir: '.svelte-kit',
       buildCommand: 'vite build',
       startCommand: 'vite preview',
-      port: 4000,
+      port,
       env: {
         SVELTEKIT_DEBUG: 'true',
       },
@@ -49,10 +52,10 @@ describe('detects sveltekit with svelte and routing', async () => {
 
           export default defineConfig({
             preview: {
-              port: 4000,
+              port: ${port},
             },
             server: {
-              port: 4000,
+              port: ${port},
             },
             plugins: [sveltekit()]
           });

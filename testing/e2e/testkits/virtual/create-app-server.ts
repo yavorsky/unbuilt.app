@@ -38,7 +38,9 @@ export async function createAppServer(
 
       const onListening = () => {
         server.off('error', onError);
-        console.log(`Test server running at http://localhost:${port}`);
+        console.log(
+          `Test server is running at http://localhost:${port} and serves files from ${projectDir}`
+        );
         resolve();
       };
 
