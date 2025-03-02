@@ -9,7 +9,7 @@ export const zustand = [
       /zustandContext/,
 
       // Vanila store shape output
-      /\{\s*(?=[\s\S]*\bsetState\s*:)(?=[\s\S]*\bgetState\s*:)(?=[\s\S]*\bgetInitialState\s*:)(?=[\s\S]*\bsubscribe\s*:)[\s\S]*?\}/gm,
+      /\{\s*getInitialState\s*:[^,}]*,\s*getState\s*:[^,}]*,\s*setState\s*:[^,}]*,\s*subscribe\s*:[^,}]*\s*\}/gm,
 
       // useSyncExternalStore wrapper usage
       /\w+\.useSyncExternalStore\s*\(\s*\w+\.subscribe\s*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^,]*\w+\.getState\s*\(\)[^,]*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^)]*\w+\.getInitialState\s*\(\)[^)]*\)/g,
