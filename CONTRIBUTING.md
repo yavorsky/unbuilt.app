@@ -68,7 +68,7 @@ The Feature Pattern API is the core of unbuilt.app's detection capabilities. Thi
 Each feature target is defined as an array with groups of patterns. The system evaluates all pattern groups, accumulates scores, and identifies the highest-scoring technology in each category.
 
 ```typescript
-// Example of a feature detection pattern for Next.js
+// Example of a feature detection pattern
 export const next = [
   {
     name: 'core' as const,
@@ -82,9 +82,9 @@ export const next = [
   {
     name: 'dom-markers' as const,
     score: 0.3,
-    scripts: [
-      // Next.js-specific DOM attributes and classes
-      /data-nextjs-page/,
+    stylesheets: [
+      // Generated Tailwind classes using color opacity syntax
+      /\.(?:bg|text|border)-(?:[\w-]+)(?:-\d+)?\/\d+/,
     ],
   },
   // Additional pattern groups...

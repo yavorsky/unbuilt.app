@@ -23,7 +23,7 @@ export const ErrorState: FC<{ error?: string | null; className?: string }> = ({
           <div className="flex text-foreground/60 text-base space-x-2">
             <a
               className="hover:text-foreground underline"
-              href="https://github.com/yavorsky/unbuilt.app/issues/new?template=Blank+issue"
+              href="https://github.com/yavorsky/unbuilt.app/issues/new?template=bug_report.md"
               target="_blank"
               rel="noreferrer"
             >
