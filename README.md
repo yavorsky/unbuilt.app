@@ -1,6 +1,6 @@
 # unbuilt.app
 
-An open-source web tool that "unbuilds" websites to reveal their tech stacks in real-time. Takes seconds to analyze bundled and minfied codebase and to detect modern and legacy technologies by url.
+An open-source web tool that displays "unbuilt" websites to reveal their tech stack in real-time. Takes seconds to analyze bundled and minfied codebase and to detect modern and legacy technologies by url.
 
 **🚀 Live at: [https://unbuilt.app](https://unbuilt.app)**
 
@@ -83,24 +83,27 @@ unbuild.app/
 
 ## Contributing
 
-We welcome contributions from the community! Help us unbuild the web together by checking out our [CONTRIBUTING.md](CONTRIBUTING.md) guide for detailed information on:
+We welcome contributions from the community! Help us see the web unbuilt together by checking out our [CONTRIBUTING.md](CONTRIBUTING.md) guide for detailed information on:
 
 - Creating Issues (RFCs)
 - Pull Request process
 - Feature Pattern API
 - Testing your contributions
 
-Your help makes unbuild.app better for everyone!
-
-## License
-
-This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
-
-## Contact
-- [Artem Yavorskyi](https://yavorsky.org)
+Your help makes unbuilt.app better for everyone!
 
 ## Coming Soon
 
 - Browser Extension - Unbuild any site as you browse
 - CLI Application - Unbuild from your terminal
 - Additional Detection Categories - Expand our unbuilding capabilities
+
+
+## Contact
+- [Artem Yavorskyi](https://yavorsky.org)
+
+We'll add more contact information as the project evolves.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE) - see the LICENSE file for details.
