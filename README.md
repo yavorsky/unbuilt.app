@@ -36,19 +36,20 @@ It's like having your own personal "How It's Made" show, but for websites - exce
 On the current stage, unbuilt.app deconstructs websites to reveal technologies across these categories:
 
 - **Bundlers** - Webpack, Vite, Rollup, Parcel, etc.
-- **Frameworks** - React, Vue, Angular, Svelte, etc.
+- **UI Libraries** - React, Vue, Angular, Svelte, etc.
+- **Frameworks** - Next.js, Vitepress, Nuxt.js, Storybook, Remix, etc.
 - **Minifiers** - Terser, UglifyJS, etc.
 - **Styling Processors** - Sass, Less, PostCSS, etc.
 - **Module Systems** - CommonJS, ES Modules, AMD, etc.
 - **UI Libraries** - Material UI, Chakra UI, Tailwind, etc.
 - **State Management** - Redux, MobX, Zustand, etc.
 - **HTTP Clients** - Axios, Fetch, SuperAgent, etc.
-- **Routers** - React Router, Vue Router, etc.
+- **Routers** - React Router, Vue Router, Next.js internal router, etc.
 - **Translation Libraries** - i18next, react-intl, etc.
 - **Date Libraries** - Moment.js, date-fns, Luxon, etc.
-- **Styling Libraries** - Styled Components, Emotion, etc.
+- **Styling Libraries** - TailwindCSS, MUI, Lucide, shadcn/ui, etc.
 - **Transpilers** - Babel, SWC, TypeScript, etc.
-- **Platforms** - Next.js, Gatsby, Remix, etc.
+- **Platforms** - Wix, Weebly, Webflow, Squarespace, Shopify, etc.
 - **Unbuilt Resources** - Js/CSS/HTML files, DOM elements, etc.
 
 > The list of supported technologies within each category is continuously expanding.
