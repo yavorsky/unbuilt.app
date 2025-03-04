@@ -1,9 +1,11 @@
 import { AnalysisFeatures } from '../../../types/analysis.js';
+import { i18next } from './i18next.js';
 
 export const reactI18next = [
+  ...i18next,
   {
     name: 'coreRuntime' as const,
-    score: 0.5,
+    score: 1,
     scripts: [
       // react-i18next's unique error handling pattern
       /react-i18next::/,
