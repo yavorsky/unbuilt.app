@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
-import { omit } from 'lodash-es';
 
 describe('detects next.js with react, mui, postcss and i18next', async () => {
   const result = await analyzeVirtualApp(
