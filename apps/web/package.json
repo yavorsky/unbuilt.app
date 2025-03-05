@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "sh ./scripts/setup-dev.sh",
+    "env-setup": "tsx scripts/setup-env.ts",
+    "env-setup:prod": "tsx scripts/setup-env.ts --prod",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
