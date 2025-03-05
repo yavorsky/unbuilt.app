@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
+import { omit } from 'lodash-es';
 
-describe('detects next.js with react, mui and postcss', async () => {
+describe('detects next.js with react, mui, postcss and i18next', async () => {
   const result = await analyzeVirtualApp(
     {
       outDir: '.next',
@@ -27,6 +28,9 @@ describe('detects next.js with react, mui and postcss', async () => {
         'postcss-nested': '^6.0.1',
         'postcss-mixins': '^9.0.4',
         'postcss-import': '^15.1.0',
+        i18next: '^23.7.11',
+        'react-i18next': '^13.5.0',
+        'i18next-browser-languagedetector': '^7.2.0',
       },
       files: {
         'postcss.config.js': `
@@ -279,6 +283,78 @@ describe('detects next.js with react, mui and postcss', async () => {
 
           export default theme;
         `,
+        'public/locales/en/common.json': `{
+          "welcome": "Welcome",
+          "dashboard": "Dashboard",
+          "profile": "Profile",
+          "settings": "Settings",
+          "language": "Language"
+        }`,
+        'public/locales/uk/common.json': `{
+          "welcome": "Ласкаво просимо",
+          "dashboard": "Панель керування",
+          "profile": "Профіль",
+          "settings": "Налаштування",
+          "language": "Мова"
+        }`,
+        'src/i18n/i18n.js': `
+          'use client';
+
+          import i18n from 'i18next';
+          import { initReactI18next } from 'react-i18next';
+          import LanguageDetector from 'i18next-browser-languagedetector';
+
+          i18n
+            .use(LanguageDetector) // Detect user language
+            .use(initReactI18next) // Pass i18n instance to react-i18next
+            .init({
+              resources: {
+                en: {
+                  common: require('../../public/locales/en/common.json')
+                },
+                uk: {
+                  common: require('../../public/locales/uk/common.json')
+                }
+              },
+              fallbackLng: 'en',
+              debug: false,
+              ns: ['common'],
+              defaultNS: 'common',
+              interpolation: {
+                escapeValue: false
+              }
+            });
+
+          export default i18n;
+        `,
+        'src/components/LanguageSwitcher.jsx': `
+          import React from 'react';
+          import { useTranslation } from 'react-i18next';
+          import { Button, ButtonGroup } from '@mui/material';
+
+          const LanguageSwitcher = () => {
+            const { t, i18n } = useTranslation();
+
+            return (
+              <ButtonGroup variant="text" color="inherit">
+                <Button
+                  onClick={() => i18n.changeLanguage('en')}
+                  disabled={i18n.language === 'en'}
+                >
+                  EN
+                </Button>
+                <Button
+                  onClick={() => i18n.changeLanguage('uk')}
+                  disabled={i18n.language === 'uk'}
+                >
+                  UK
+                </Button>
+              </ButtonGroup>
+            );
+          };
+
+          export default LanguageSwitcher;
+        `,
         'src/components/CustomCard.jsx': `
           import React from 'react';
           import { Card, CardContent, CardActions, Typography, Button } from '@mui/material';
@@ -355,11 +431,14 @@ describe('detects next.js with react, mui and postcss', async () => {
             Settings as SettingsIcon,
             Notifications as NotificationsIcon
           } from '@mui/icons-material';
+          import { useTranslation } from 'react-i18next';
           import CustomCard from './CustomCard';
+          import LanguageSwitcher from './LanguageSwitcher';
           import '../styles/global.css';
 
           const Dashboard = () => {
             const theme = useTheme();
+            const { t } = useTranslation();
             const [drawerOpen, setDrawerOpen] = useState(false);
 
             const toggleDrawer = () => {
@@ -380,11 +459,14 @@ describe('detects next.js with react, mui and postcss', async () => {
                       <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-                      MUI with PostCSS Demo
+                      {t('welcome')}
                     </Typography>
-                    <IconButton color="inherit">
-                      <NotificationsIcon />
-                    </IconButton>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography variant="body2" sx={{ mr: 1 }}>
+                        {t('language')}:
+                      </Typography>
+                      <LanguageSwitcher />
+                    </Box>
                   </Toolbar>
                 </AppBar>
 
@@ -406,15 +488,15 @@ describe('detects next.js with react, mui and postcss', async () => {
                     <List>
                       <ListItem button>
                         <ListItemIcon><DashboardIcon /></ListItemIcon>
-                        <ListItemText primary="Dashboard" />
+                        <ListItemText primary={t('dashboard')} />
                       </ListItem>
                       <ListItem button>
                         <ListItemIcon><PersonIcon /></ListItemIcon>
-                        <ListItemText primary="Profile" />
+                        <ListItemText primary={t('profile')} />
                       </ListItem>
                       <ListItem button>
                         <ListItemIcon><SettingsIcon /></ListItemIcon>
-                        <ListItemText primary="Settings" />
+                        <ListItemText primary={t('settings')} />
                       </ListItem>
                     </List>
                     <Divider />
@@ -424,9 +506,10 @@ describe('detects next.js with react, mui and postcss', async () => {
                 <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
                   <Container maxWidth="lg">
                     <Typography variant="h4" gutterBottom>
-                      Dashboard
+                      {t('dashboard')}
                     </Typography>
 
+                    {/* Rest of the dashboard content remains unchanged */}
                     <Grid container spacing={3}>
                       <Grid item xs={12} md={8}>
                         <Paper sx={{ p: 2 }}>
@@ -484,8 +567,8 @@ describe('detects next.js with react, mui and postcss', async () => {
           import '../styles/global.css';
 
           export const metadata = {
-            title: 'Next.js with MUI and PostCSS',
-            description: 'A sample app for testing style detection',
+            title: 'Next.js with MUI, PostCSS and i18next',
+            description: 'A sample app for testing style and i18n detection',
           };
 
           export default function RootLayout({ children }) {
@@ -523,6 +606,7 @@ describe('detects next.js with react, mui and postcss', async () => {
 
           import Dashboard from '../components/Dashboard';
           import ThemeRegistry from './ThemeRegistry';
+          import '../i18n/i18n'; // Import i18n configuration
 
           export default function Home() {
             return (
@@ -537,6 +621,33 @@ describe('detects next.js with react, mui and postcss', async () => {
           const nextConfig = {
             reactStrictMode: true,
             transpilePackages: ['@mui/material', '@mui/icons-material', '@mui/system'],
+            i18n: {
+              locales: ['en', 'uk'],
+              defaultLocale: 'en',
+            },
+            webpack: (config, { isServer, webpack }) => {
+              // Add i18next-related modules to a specific chunk
+              config.optimization.splitChunks = {
+                ...config.optimization.splitChunks,
+                cacheGroups: {
+                  ...config.optimization.splitChunks.cacheGroups,
+                  i18n: {
+                    test: /[\\/]node_modules[\\/](i18next|i18next-browser-languagedetector)[\\/]/,
+                    name: 'i18n',
+                    priority: 10,
+                    chunks: 'all',
+                  },
+                  'react-i18next': {
+                    test: /[\\/]node_modules[\\/]react-i18next[\\/]/,
+                    name: 'react-i18next',
+                    priority: 10,
+                    chunks: 'all',
+                  },
+                },
+              };
+
+              return config;
+            },
           }
 
           module.exports = nextConfig
@@ -605,5 +716,13 @@ describe('detects next.js with react, mui and postcss', async () => {
     expect(result.stylingLibraries.items.mui.confidence).toBeGreaterThanOrEqual(
       0.9
     );
+  });
+
+  it('detects react-i18next', async () => {
+    expect(result.translations.name).toBe('reactI18next');
+    expect(result.translations.confidence).toBeGreaterThanOrEqual(0.9);
+    expect(
+      result.translations.secondaryMatches.i18next?.confidence
+    ).toBeGreaterThanOrEqual(0.9);
   });
 });
