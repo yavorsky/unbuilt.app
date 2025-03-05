@@ -1,14 +1,16 @@
 import { AnalysisFeatures } from '../../../types/analysis.js';
-import { i18next } from './i18next.js';
 
 export const reactI18next = [
-  ...i18next,
   {
     name: 'coreRuntime' as const,
     score: 1,
     scripts: [
       // react-i18next's unique error handling pattern
       /react-i18next::/,
+
+      /pass in an i18next instance by using initReactI18next/,
+
+      /It seems you are still using the old wait option, you may migrate to the new useSuspense behaviour/,
 
       // react-i18next's specific component patterns with unique prop combinations
       /displayName=`withI18nextTranslation\(/,

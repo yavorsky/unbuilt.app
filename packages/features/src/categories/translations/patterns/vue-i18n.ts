@@ -1,9 +1,7 @@
 import { Page } from 'playwright';
 import { AnalysisFeatures } from '../../../types/analysis.js';
-import { i18next } from './i18next.js';
 
 export const vueI18n = [
-  ...i18next,
   {
     name: 'coreRuntime' as const,
     score: 0.5,
