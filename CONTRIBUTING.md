@@ -3,12 +3,82 @@
 Thank you for your interest in contributing to unbuilt.app! Together, we can unbuild the web and make technology stacks more transparent. This document provides guidelines and information to help you contribute effectively.
 
 ## Table of Contents
+- [Development Setup](#development-setup)
+  - [Prerequisites](#prerequisites)
+  - [Local Development](#local-development)
+  - [Environment Setup Scripts](#environment-setup-scripts)
 - [Creating an Issue (RFC)](#creating-an-issue-rfc)
 - [Pull Request Process](#pull-request-process)
 - [Repository Structure](#repository-structure)
 - [Feature Pattern API](#feature-pattern-api)
 - [Testing Your Contributions](#testing-your-contributions)
 - [Code Style Guidelines](#code-style-guidelines)
+
+## Development Setup
+
+### Prerequisites
+
+Before you start contributing, ensure you have the following installed:
+
+- **Node.js**: Version 22 or higher
+- **Yarn**: Version 1.x
+- **Redis**: Required for the application's caching functionality
+- **Docker**: Required for running Supabase locally
+
+### Local Development
+
+Setting up your local development environment is straightforward with our setup scripts:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/unbuild/unbuilt.app.git
+   cd unbuilt.app
+   ```
+
+2. **Set up the local environment**
+   ```bash
+   yarn env-setup
+   ```
+   This command will:
+   - Install project dependencies
+   - Check for and start Redis if needed
+   - Set up Playwright
+   - Start a local Supabase instance
+   - Configure your `.env.local` file with the appropriate credentials
+   - Apply any database migrations to your local Supabase instance
+
+3. **Start the development server**
+   ```bash
+   yarn dev
+   ```
+
+   Alternatively, you can run both steps in one command:
+   ```bash
+   yarn env-setup --dev
+   ```
+
+### Environment Setup Scripts
+
+The project includes several environment setup scripts to streamline development:
+
+#### `yarn env-setup`
+Sets up everything for local development using a local Supabase instance. This is the recommended approach for most contributors, as it doesn't require access to production credentials.
+
+#### `yarn env-setup:prod`
+For project administrators only. This uses production database credentials to connect to the live database.
+
+**Prerequisites for production mode:**
+- You must have admin access to the project
+- The following variables must be set in your `.env.local` file:
+  ```
+  SUPABASE_PROD_URL=https://your-project-id.supabase.co
+  SUPABASE_PROD_ID=your-project-id
+  SUPABASE_PROD_KEY=your-project-anon-key
+  ```
+
+#### Database Schema
+
+The local Supabase instance will automatically apply all migrations from the `supabase/migrations` directory. This ensures your local database has the correct schema structure without needing access to production credentials.
 
 ## Creating an Issue (RFC)
 
@@ -22,7 +92,6 @@ Before submitting a PR, we strongly recommend creating an issue (RFC) first. Thi
 Even a simple RFC with a few lines of code or a concept description is valuable. This approach ensures your contribution has the best chance of being accepted and fits well with the project's direction.
 
 ## Pull Request Process
-
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
 3. Implement your changes
@@ -228,7 +297,7 @@ Example:
 // Adding a pattern for a new UI library
 export const myNewUiLibrary = {
   name: "MyNewUI",
-  pattern: /myNewUI\.(?:min\.)?js/i,
+  scripts: /myNewUI\.(?:min\.)?js/i,
   confidence: 0.8,
 };
 ```
@@ -249,12 +318,12 @@ export const performanceMonitoring = {
   detect: [
     {
       name: "New Relic",
-      pattern: /newrelic\.(?:min\.)?js/i,
+      scripts: /newrelic\.(?:min\.)?js/i,
       confidence: 0.9,
     },
     {
       name: "Datadog",
-      pattern: /datadog-rum\.(?:min\.)?js/i,
+      scripts: /datadog-rum\.(?:min\.)?js/i,
       confidence: 0.85,
     }
   ]

@@ -71,7 +71,7 @@ unbuild.app/
 │   └── testing/       # Testing utilities
 ```
 
-## Contributing
+## Contributing / Running Locally
 
 We welcome contributions from the community! Help us see the web unbuilt together by checking out our [CONTRIBUTING.md](CONTRIBUTING.md) guide for detailed information on:
 
