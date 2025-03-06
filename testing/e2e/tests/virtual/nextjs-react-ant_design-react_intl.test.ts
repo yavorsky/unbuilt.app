@@ -521,9 +521,15 @@ describe('detects next.js with react, ant design, postcss and react-intl', async
                 ...config.optimization.splitChunks,
                 cacheGroups: {
                   ...config.optimization.splitChunks.cacheGroups,
-                  i18n: {
+                  reactIntl: {
                     test: /[\\/]node_modules[\\/]react-intl[\\/]/,
-                    name: 'i18n',
+                    name: 'react-intl',
+                    priority: 10,
+                    chunks: 'all',
+                  },
+                  antDesign: {
+                    test: /[\\/]node_modules[\\/]@ant-design[\\/]/,
+                    name: 'ant-design',
                     priority: 10,
                     chunks: 'all',
                   },
