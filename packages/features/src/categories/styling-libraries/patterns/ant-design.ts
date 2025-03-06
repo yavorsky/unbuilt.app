@@ -2,8 +2,43 @@ import { Page } from 'playwright';
 
 export const antDesign = [
   {
+    name: 'core' as const,
+    score: 0.9,
+    scripts: [
+      // Ant Design CSS-in-JS theme error message
+      /\[Ant Design CSS-in-JS\] Theme should have at least one derivative function/,
+
+      // Ant Design cache path data attribute
+      /["']data-ant-cssinjs-cache-path["']/,
+
+      // Ant Design fast-color error
+      /@ant-design\/fast-color: unsupported input/,
+
+      // Ant Design Icons package reference
+      /@ant-design-icons/,
+
+      // Ant Design icon class name
+      /["']anticon["']/,
+
+      // Ant Design icon display name
+      /\.displayName\s*=\s*["']AntdIcon["']/,
+
+      // Ant Design package name declaration
+      /name:\s*["']antd["']/,
+
+      // Ant Design class name concatenation pattern
+      /antCls:\s*["']\.["']\.concat\(/,
+
+      // RC component order data attribute (specific to Ant Design ecosystem)
+      /["']data-rc-order["']:\s*["']prependQueue["']/,
+
+      // Ant Design icon definition error
+      /icon should be icon definiton, but got/,
+    ],
+  },
+  {
     name: 'compilation' as const,
-    score: 0.6,
+    score: 0.9,
     scripts: [
       // Optimized message/notification system - combined patterns with non-capturing groups
       /ant-message-(?:notice|loading|success|error|warning|info)(?:-content)?/,
@@ -42,42 +77,65 @@ export const antDesign = [
     ],
   },
   {
+    name: 'imports' as const,
+    score: 0.5,
+    scripts: [
+      /import\s+(?:\{[^}]*\}|[^{}\s]+)\s+from\s+['"]antd(?:\/[^'"]*)?['"]/,
+    ],
+  },
+  {
+    name: 'cssVars' as const,
+    score: 0.9,
+    stylesheets: [
+      /--ant-primary-color:\s*[^;]*/,
+      /--ant-font-size-base:\s*[^;]*/,
+    ],
+  },
+  {
     name: 'browser' as const,
-    score: 0.7,
+    score: 0.9,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // Optimized selectors - using more specific classes
-          hasMessageSystem:
-            document.querySelector(
-              '.ant-message-notice-content, .ant-notification-notice-message, .ant-notification-notice-description'
-            ) !== null,
+          hasAntClasses: (() => {
+            const antClasses = [
+              'ant-btn',
+              'ant-input',
+              'ant-select',
+              'ant-form',
+              'ant-table',
+              'ant-modal',
+              'ant-menu',
+              'ant-layout',
+            ];
 
-          // Combined modal structure checks
-          hasModalStructure:
-            document.querySelector(
-              '.ant-modal-confirm-body-wrapper, .ant-modal-confirm-paragraph, .ant-modal-wrap-rtl'
-            ) !== null,
+            for (const cls of antClasses) {
+              if (document.querySelector(`.${cls}`)) {
+                return true;
+              }
+            }
+            return false;
+          })(),
 
-          // Combined table feature checks
-          hasTableFeatures:
-            document.querySelector(
-              '.ant-table-filter-trigger-container-open, .ant-table-column-sorter-inner, .ant-table-selection-extra'
-            ) !== null,
+          // Check for Ant Design data attributes
+          hasAntDataAttributes: (() => {
+            return (
+              !!document.querySelector('[data-ant-cssinjs-cache-path]') ||
+              !!document.querySelector('[data-rc-order="prependQueue"]') ||
+              !!document.querySelector('[data-rc-priority]')
+            );
+          })(),
 
-          // Combined select feature checks
-          hasSelectFeatures:
-            document.querySelector(
-              '.ant-select-selection-overflow-item-suffix, .ant-select-selection-search-mirror, .ant-select-item-option-grouped'
-            ) !== null,
+          // Check for anticon classes
+          hasAntIcons: (() => {
+            return (
+              !!document.querySelector('.anticon') ||
+              !!document.querySelector('[role="img"].anticon')
+            );
+          })(),
         };
 
-        try {
-          return Object.values(markers).some(Boolean);
-        } catch (error) {
-          console.warn(error);
-          return false;
-        }
+        return Object.values(markers).some(Boolean);
       });
     },
   },
