@@ -1,11 +1,6 @@
 import { LogoProps } from '../../../../types/meta.js';
 
-const MomentLogo = ({
-  width = 24,
-  height = 24,
-  color = '#529990',
-  className = '',
-}: LogoProps) => {
+const MomentLogo = ({ width = 24, height = 24, className = '' }: LogoProps) => {
   const calculatedHeight = height || width;
 
   return (
@@ -13,21 +8,25 @@ const MomentLogo = ({
       xmlns="http://www.w3.org/2000/svg"
       width={width}
       height={calculatedHeight}
-      viewBox="0 0 256 256"
+      viewBox="0 0 40 40"
       className={className}
       role="img"
     >
       <title>Moment.js</title>
       {/* Outer ring */}
+      <ellipse
+        stroke-width="3"
+        cx="20"
+        cy="20"
+        rx="18.5"
+        ry="18.5"
+        stroke="#fff"
+      ></ellipse>
       <path
-        fill={color === '#529990' ? '#376660' : color}
-        d="M128 256c70.69 0 128-57.31 128-128S198.69 0 128 0 0 57.31 0 128s57.31 128 128 128zm0-19.2c-60.09 0-108.8-48.71-108.8-108.8C19.2 67.91 67.91 19.2 128 19.2c60.09 0 108.8 48.71 108.8 108.8 0 60.09-48.71 108.8-108.8 108.8z"
-      />
-      {/* Inner circle and clock hands */}
-      <path
-        fill={color}
-        d="M128 230.4c56.55 0 102.4-45.85 102.4-102.4 0-56.55-45.85-102.4-102.4-102.4-56.55 0-102.4 45.85-102.4 102.4 0 56.55 45.85 102.4 102.4 102.4zM128 32c-3.53 0-6.4 2.88-6.4 6.44v83.16H76.78c-3.52 0-6.38 2.84-6.38 6.4 0 3.53 2.92 6.4 6.37 6.4h57.63v-96c0-3.54-2.84-6.4-6.4-6.4z"
-      />
+        fill-rule="evenodd"
+        fill="#fff"
+        d="M20,36 C28.836556,36 36,28.836556 36,20 C36,11.163444 28.836556,4 20,4 C11.163444,4 4,11.163444 4,20 C4,28.836556 11.163444,36 20,36 Z M20,5 C19.4477153,5 19,5.44994876 19,6.00684547 L19,19 L11.9970301,19 C11.4463856,19 11,19.4438648 11,20 C11,20.5522847 11.4556644,21 11.9953976,21 L21,21 L21,6.00087166 C21,5.4481055 20.5561352,5 20,5 Z"
+      ></path>
     </svg>
   );
 };
