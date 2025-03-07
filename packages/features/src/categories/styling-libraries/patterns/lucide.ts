@@ -22,6 +22,9 @@ export const lucide = [
 
       // Concat classes pattern
       /"lucide-"\.concat\(/,
+
+      // Lucie unique prop
+      /absoluteStrokeWidth:\s*([a-zA-Z_$][a-zA-Z0-9_$]*)/,
     ],
   },
   {
@@ -61,26 +64,7 @@ export const lucide = [
       });
     },
   },
-  {
-    name: 'files' as const,
-    score: 0.3,
-    filenames: [
-      // Package files with hash patterns
-      /lucide(?:-react|-vue|-svelte|-angular)?(?:\.[a-f0-9]{8,12})?\.(?:js|mjs|cjs)$/,
 
-      // Chunk files with Lucide-specific naming
-      /chunk-lucide-[a-zA-Z0-9-]{1,40}\.js$/,
-
-      // Icon-specific chunk patterns
-      /icons-lucide\.[a-f0-9]{8,12}\.js$/,
-
-      // Vendor bundles containing Lucide
-      /vendor\.(?:lucide|icons)\.[a-f0-9]{8,12}\.js$/,
-
-      // ESM module patterns
-      /lucide\.esm\.[a-f0-9]{8,12}\.js$/,
-    ],
-  },
   {
     name: 'styles' as const,
     score: 0.2,

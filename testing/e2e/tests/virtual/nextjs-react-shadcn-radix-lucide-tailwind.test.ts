@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
-describe('detects next.js with react, tailwind and shadcn/ui', async () => {
+describe('detects next.js with react, tailwind, shadcn/ui and direct radix usage', async () => {
   const result = await analyzeVirtualApp(
     {
       outDir: '.next',
@@ -28,6 +28,9 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
         '@radix-ui/react-dialog': '1.1.6',
         '@radix-ui/react-slot': '1.1.2',
         '@radix-ui/react-dropdown-menu': '2.1.6',
+        '@radix-ui/react-toggle': '1.1.2',
+        '@radix-ui/react-tooltip': '1.1.8',
+        '@radix-ui/react-avatar': '1.1.3',
       },
       files: {
         'tailwind.config.js': `
@@ -304,6 +307,86 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
             DialogDescription,
           }
         `,
+        'src/components/DirectRadixToggle.tsx': `
+          import React from 'react'
+          import * as Toggle from '@radix-ui/react-toggle'
+          import { Star } from 'lucide-react'
+          import { cn } from '@/lib/utils'
+
+          const DirectRadixToggle = () => {
+            return (
+              <Toggle.Root
+                className={cn(
+                  "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors",
+                  "data-[state=on]:bg-amber-500 data-[state=on]:text-white",
+                  "hover:bg-amber-100 hover:text-amber-900",
+                  "focus:outline-none focus:ring-2 focus:ring-amber-400 focus:ring-offset-2",
+                  "disabled:pointer-events-none disabled:opacity-50",
+                  "h-10 px-3 py-2 bg-transparent border border-amber-300"
+                )}
+                aria-label="Toggle favorite"
+              >
+                <Star className="h-5 w-5" />
+                <span className="ml-2">Favorite</span>
+              </Toggle.Root>
+            )
+          }
+
+          export default DirectRadixToggle
+        `,
+        'src/components/DirectRadixTooltip.tsx': `
+          import React from 'react'
+          import * as Tooltip from '@radix-ui/react-tooltip'
+          import { Info } from 'lucide-react'
+
+          const DirectRadixTooltip = () => {
+            return (
+              <Tooltip.Provider>
+                <Tooltip.Root>
+                  <Tooltip.Trigger asChild>
+                    <button className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-blue-100 text-blue-500 hover:bg-blue-200">
+                      <Info className="h-4 w-4" />
+                    </button>
+                  </Tooltip.Trigger>
+                  <Tooltip.Portal>
+                    <Tooltip.Content
+                      className="data-[state=delayed-open]:data-[side=top]:animate-slideDownAndFade data-[state=delayed-open]:data-[side=right]:animate-slideLeftAndFade data-[state=delayed-open]:data-[side=left]:animate-slideRightAndFade data-[state=delayed-open]:data-[side=bottom]:animate-slideUpAndFade text-violet11 select-none rounded-md bg-white px-4 py-2.5 text-sm leading-none shadow-md will-change-[transform,opacity] border border-gray-200"
+                      sideOffset={5}
+                    >
+                      Direct Radix UI Tooltip Component
+                      <Tooltip.Arrow className="fill-white" />
+                    </Tooltip.Content>
+                  </Tooltip.Portal>
+                </Tooltip.Root>
+              </Tooltip.Provider>
+            )
+          }
+
+          export default DirectRadixTooltip
+        `,
+        'src/components/DirectRadixAvatar.tsx': `
+          import React from 'react'
+          import * as Avatar from '@radix-ui/react-avatar'
+
+          const DirectRadixAvatar = () => {
+            return (
+              <div className="flex gap-5">
+                <Avatar.Root className="inline-flex items-center justify-center align-middle overflow-hidden select-none w-10 h-10 rounded-full bg-gray-100">
+                  <Avatar.Image
+                    className="h-full w-full object-cover"
+                    src="https://github.com/radix-ui.png"
+                    alt="Radix UI"
+                  />
+                  <Avatar.Fallback className="w-full h-full flex items-center justify-center bg-white text-gray-600 text-sm font-medium">
+                    RX
+                  </Avatar.Fallback>
+                </Avatar.Root>
+              </div>
+            )
+          }
+
+          export default DirectRadixAvatar
+        `,
         'src/app/globals.css': `
           @tailwind base;
           @tailwind components;
@@ -385,9 +468,10 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
         'src/app/layout.tsx': `
           import "./globals.css"
           import type { Metadata } from "next"
+          import * as TooltipPrimitive from '@radix-ui/react-tooltip'
 
           export const metadata: Metadata = {
-            title: "Next.js with Tailwind CSS and shadcn/ui",
+            title: "Next.js with Tailwind CSS, shadcn/ui and Radix UI",
             description: "A sample app for testing style detection",
           }
 
@@ -399,7 +483,9 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
             return (
               <html lang="en">
                 <body>
-                  {children}
+                  <TooltipPrimitive.Provider>
+                    {children}
+                  </TooltipPrimitive.Provider>
                 </body>
               </html>
             )
@@ -421,6 +507,9 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
             DialogTitle,
             DialogTrigger,
           } from "@/components/ui/dialog"
+          import DirectRadixToggle from "@/components/DirectRadixToggle"
+          import DirectRadixTooltip from "@/components/DirectRadixTooltip"
+          import DirectRadixAvatar from "@/components/DirectRadixAvatar"
 
           export default function Home() {
             const [open, setOpen] = useState(false)
@@ -429,20 +518,31 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
               <main className="flex min-h-screen flex-col items-center justify-center p-24">
                 <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm">
                   <h1 className="text-4xl font-bold mb-6 text-center">
-                    Next.js with Tailwind CSS and shadcn/ui
+                    Next.js with Tailwind CSS, shadcn/ui and Radix UI
                   </h1>
 
                   <div className="bg-white/30 p-8 rounded-lg shadow-md backdrop-blur-sm">
                     <h2 className="text-2xl font-semibold mb-4">Style Detection Test</h2>
                     <p className="mb-6 text-gray-700">
-                      This is a sample application to test the detection of Tailwind CSS and shadcn/ui components.
+                      This is a sample application to test the detection of Tailwind CSS, shadcn/ui components, and direct Radix UI usage.
                     </p>
 
-                    <Landmark size={32} />
-                    <Moon size={32} />
-                    <Sun size={32} />
+                    <div className="flex space-x-4 mb-6">
+                      <Landmark size={32} />
+                      <Moon size={32} />
+                      <Sun size={32} />
+                    </div>
 
-                    <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
+                    <div className="mb-8">
+                      <h3 className="text-lg font-medium mb-3">Direct Radix UI Components</h3>
+                      <div className="flex flex-wrap items-center gap-4">
+                        <DirectRadixToggle />
+                        <DirectRadixTooltip />
+                        <DirectRadixAvatar />
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0 mb-8">
                       <Button variant="default">Primary Button</Button>
                       <Button variant="secondary">Secondary Button</Button>
                       <Button variant="outline">Outline Button</Button>
@@ -472,7 +572,7 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
                       </Dialog>
                     </div>
 
-                    <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 border rounded-md bg-gray-50">
                         <h3 className="font-medium mb-2">Tailwind Features</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
@@ -483,12 +583,12 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
                         </ul>
                       </div>
                       <div className="p-4 border rounded-md bg-gray-50">
-                        <h3 className="font-medium mb-2">shadcn/ui Features</h3>
+                        <h3 className="font-medium mb-2">Component Features</h3>
                         <ul className="list-disc pl-5 space-y-1 text-sm">
-                          <li>Radix UI primitives</li>
+                          <li>shadcn/ui components</li>
+                          <li>Direct Radix UI primitives</li>
                           <li>Accessible components</li>
                           <li>Variant support with cva</li>
-                          <li>Tailwind integration</li>
                         </ul>
                       </div>
                     </div>
@@ -500,7 +600,39 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
         `,
         'next.config.js': `
           /** @type {import('next').NextConfig} */
-          const nextConfig = {}
+          const nextConfig = {
+            webpack: (config, { isServer, webpack }) => {
+              // Configure explicit bundle splitting
+              config.optimization.splitChunks = {
+                chunks: 'all',
+                cacheGroups: {
+                  // Radix UI components in their own bundle
+                  radix: {
+                    test: /[\\/]node_modules[\\/]@radix-ui[\\/]/,
+                    name: 'radix',
+                    priority: 20,
+                    enforce: true,
+                  },
+                  // Lucide icons in their own bundle
+                  lucide: {
+                    test: /[\\/]node_modules[\\/]lucide-react[\\/]/,
+                    name: 'lucide',
+                    priority: 20,
+                    enforce: true,
+                  },
+                  // All other third-party dependencies in a vendor bundle
+                  vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendor',
+                    priority: 10,
+                    enforce: true,
+                  },
+                },
+              };
+
+              return config;
+            },
+          }
           module.exports = nextConfig
         `,
         'tsconfig.json': `
@@ -561,6 +693,20 @@ describe('detects next.js with react, tailwind and shadcn/ui', async () => {
     expect(result.stylingLibraries.items.shadcn).toBeTruthy();
     expect(
       result.stylingLibraries.items.shadcn.confidence
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it('detects shadcn/ui component library', async () => {
+    expect(result.stylingLibraries.items.shadcn).toBeTruthy();
+    expect(
+      result.stylingLibraries.items.shadcn.confidence
+    ).toBeGreaterThanOrEqual(1);
+  });
+
+  it('detects radix ui library', async () => {
+    expect(result.stylingLibraries.items.radix).toBeTruthy();
+    expect(
+      result.stylingLibraries.items.radix.confidence
     ).toBeGreaterThanOrEqual(1);
   });
 
