@@ -11,7 +11,21 @@ export const bootstrap = [
     ],
     stylesheets: [
       // data-bs attr
-      /(?:\[data-bs-[a-zA-Z0-9-]+\]|data-bs-[a-zA-Z0-9-]+)/,
+      /data-bs-[a-zA-Z0-9-]+(?:="[^"]*")?/,
+    ],
+  },
+  {
+    name: 'classes' as const,
+    score: 0.7,
+    stylesheets: [
+      // For tooltip classes
+      /\.bs-tooltip-(top|bottom|left|right|auto)/,
+
+      // For popover classes
+      /\.bs-popover-(top|bottom|left|right|auto)/,
+
+      // BS sticky positioned
+      /\.sticky-(sm|md|lg|xl|xxl)-(top|bottom)/,
     ],
   },
   {
