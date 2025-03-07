@@ -51,7 +51,7 @@ export const svelte = [
             document.querySelector('[data-svelte]') !== null ||
             document.querySelector('[data-svelte-h]') !== null,
         };
-        return !!Object.values(markers).filter(Boolean).length;
+        return Object.values(markers).some(Boolean);
       });
     },
   },
