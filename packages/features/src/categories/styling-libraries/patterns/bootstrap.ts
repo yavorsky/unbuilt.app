@@ -2,46 +2,59 @@ import { Page } from 'playwright';
 
 export const bootstrap = [
   {
-    name: 'compilation' as const,
+    name: 'dataAttributes' as const,
     score: 0.6,
     scripts: [
       // Optimized component attributes - consolidated patterns with length limits
       /data-bs-(?:toggle|target|parent|container|placement|trigger|content|template|theme|dismiss|ride|slide-to)="[^"]{1,50}"/,
       /data-bs-backdrop="(?:true|false|static)"/,
-
-      // Optimized JavaScript API - combined patterns with better boundaries
-      /bootstrap\.(?:Modal|Tooltip|Popover|Dropdown|Collapse|Tab|Toast|Carousel|Scrollspy)\.(?:getInstance|getOrCreateInstance|VERSION)\b\(/,
-      /new\s+bootstrap\.(?:Modal|Tooltip|Popover|Dropdown|Collapse|Tab|Toast|Carousel|Scrollspy)\b\(/,
-
-      // Optimized CSS properties - bounded search
-      /--bs-(?:breakpoint|(?:[a-z]+-)?zindex)\b/,
-
-      // Optimized modal structure - combined patterns
-      /modal-(?:dialog-(?:scrollable|centered)|fullscreen-[a-z]{2}-down|static)\b/,
-      /offcanvas-(?:top|bottom|start|end)(?:\s|modal-backdrop)\b/,
-
-      // Optimized component classes - consolidated with boundaries
-      /navbar-expand-(?:sm|md|lg|xl|xxl)\b/,
-      /nav-(?:tabs|pills|underline)-(?:bordered|justified|fill)\b/,
-      /form-(?:floating|control-(?:plaintext|sm|lg)|select-(?:sm|lg)|check-inline|switch-(?:sm|lg))\b/,
-
-      // Optimized button variants - combined pattern
-      /btn-(?:close-white|outline-(?:primary|secondary|success|danger|warning|info|light|dark))\b/,
-
-      // Optimized icon classes - added length limit and boundary
-      /bi-(?:[a-z0-9]+-){0,3}[a-z0-9]+\b/,
-
-      // Optimized toast structure - combined pattern
-      /toast-(?:container|header|body|placement)\b/,
-
-      // Optimized grid patterns - combined with boundaries
-      /g[xy]-(?:sm|md|lg|xl|xxl)-[0-5]\b/,
-      /offset-(?:sm|md|lg|xl|xxl)-(?:1[0-2]|[1-9])\b/,
+    ],
+    stylesheets: [
+      // data-bs attr
+      /(?:\[data-bs-[a-zA-Z0-9-]+\]|data-bs-[a-zA-Z0-9-]+)/,
+    ],
+  },
+  {
+    name: 'copyright' as const,
+    score: 0.8,
+    stylesheets: [
+      /\* Bootstrap\s+v\d+\.\d+\.\d+\s+\(https:\/\/getbootstrap\.com\/\)/,
+    ],
+  },
+  {
+    name: 'theme' as const,
+    score: 0.9,
+    stylesheets: [
+      // Theme attribute
+      /\[data-bs-theme=(["'])?[a-zA-Z0-9-]+(["'])?\]/,
+    ],
+  },
+  {
+    name: 'messages' as const,
+    score: 1,
+    scripts: [
+      /Bootstrap doesn't allow more than one instance per element\. Bound instance:/,
+      /throw new TypeError\("Bootstrap's dropdowns require Popper \(https:\/\/popper\.js\.org\)"\)/,
+    ],
+  },
+  {
+    name: 'vars' as const,
+    score: 0.9,
+    scripts: [
+      // Check for bs-position prop access
+      // Ex. someProp.getPropertyValue("--bs-position") call
+      /\.getPropertyValue\(["']--bs-position["']\)/g,
+    ],
+    stylesheets: [
+      // Declaration
+      /--bs-[a-zA-Z0-9-]+:\s*[^;]+;/,
+      // Usage
+      /var\(--bs-[a-zA-Z0-9-]+\)/,
     ],
   },
   {
     name: 'browser' as const,
-    score: 0.7,
+    score: 1.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -66,24 +79,5 @@ export const bootstrap = [
         return Object.values(markers).some(Boolean);
       });
     },
-  },
-  {
-    name: 'chunks' as const,
-    score: 0.2,
-    filenames: [
-      // Optimized core files - added length limits and better boundaries
-      /(?:^|\/)bootstrap@[0-9.]{1,10}\/dist\/(?:css|js)\/bootstrap(?:\.bundle)?(?:\.min)?\.(?:js|css)$/,
-      /(?:^|\/)bootstrap-[0-9.]{1,10}(?:\.min)?\.(?:js|css)$/,
-
-      // Optimized icons files - added length limits
-      /bootstrap-icons@[0-9.]{1,10}\/font\/bootstrap-icons\.(?:css|woff2?)$/,
-      /bootstrap-icons\/font\/fonts\/bootstrap-icons\.[a-f0-9]{8}\.(?:woff2?)$/,
-
-      // Optimized build outputs - combined patterns
-      /bootstrap\.(?:bundle\.(?:min\.)?js|grid\.(?:min\.)?css|reboot\.(?:min\.)?css|utilities\.(?:min\.)?css)(?:\.map)?$/,
-
-      // Optimized theme files - combined pattern
-      /bootstrap\.(?:dark|rtl)\.(?:min\.)?css$/,
-    ],
   },
 ];

@@ -29,7 +29,7 @@ export const mobx = [
   },
   {
     name: 'browser' as const,
-    score: 0.9,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- No need to typecheck window keys
@@ -45,14 +45,21 @@ export const mobx = [
         };
 
         return !!(
-          // Check for MobX's specific global markers
-          (
-            window['$mobx'] ||
-            window['__mobxGlobal'] ||
-            typeof window['__mobxInstanceCount'] !== 'undefined' ||
-            // Check for MobX stores
-            Object.values(window).some(isMobXStore)
-          )
+          // Check for MobX stores
+          Object.values(window).some(isMobXStore)
+        );
+      });
+    },
+  },
+  {
+    name: 'browser' as const,
+    score: 1.2,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        return !!(
+          window['$mobx'] ||
+          window['__mobxGlobals'] ||
+          typeof window['__mobxInstanceCount'] !== 'undefined'
         );
       });
     },

@@ -15,7 +15,7 @@ export const tailwindCSS = [
       // Tailwind's unique CSS variable prefix
       /--tw-(?:ring-inset|ring-offset-width|ring-offset-color|ring-color|ring-offset-shadow|ring-shadow|shadow|shadow-colored)/,
 
-      // Tailwind's space utilities implementation - very unique
+      // Tailwind's space utilities implementation
       /\.space-[xy]-\d+\s*>\s*:not\(\[hidden\]\)\s*~\s*:not\(\[hidden\]\)/,
 
       // Generated utility class pattern with Tailwind's namespace
@@ -24,8 +24,8 @@ export const tailwindCSS = [
       // Base css vars
       /--tw-[a-z-]+:\s*[^;]*;/,
 
-      // Multiple vars in block
-      /(?:\*|:before|:after|::before|::after|::backdrop)\s*\{[^}]*(?:--tw-[a-z-]+:[^;]*;.*){5,}/s,
+      // Multiple tw vars in block
+      /(?:\*|:before|:after|:first|:last|:only|:even:before|::after|::backdrop)\s*\{[^}]*(?:--tw-[a-z-]+:[^;]*;.*){5,}/s,
 
       // Reset structure
       /\*\s*,\s*:after\s*,\s*:before\s*\{[^}]*--tw-[a-z-]+:/,
@@ -75,62 +75,6 @@ export const tailwindCSS = [
       /<[^>]+class="(?:[^"]*\s)?(?:flex|grid)\s+(?:items|justify)-(?:center|start|end|between)[^"]*"/i,
     ],
   },
-
-  {
-    name: 'mediaAndStates' as const,
-    score: 0.6,
-    scripts: [
-      // Color patterns with opacity modifiers in JS
-      /(?:^|\s)(?:bg|text|border|ring)-(?:primary|secondary|accent|neutral)\/(?:[1-9]|[1-9][0-9]|100)\b/,
-
-      // Container queries mentions in JS
-      /(?:@container\/(?:sidebar|main|modal)|container-type:(?:inline-size|normal|size))\b/,
-    ],
-    stylesheets: [
-      // Tailwind's mobile-first media queries
-      /@media\s+\(min-width:\s+(?:640px|768px|1024px|1280px|1536px)\)/,
-
-      // Generated variant classes
-      /\.(?:hover|focus|active|group-hover|peer-hover|dark)\\:/,
-    ],
-    documents: [
-      // Animation patterns in HTML
-      /<[^>]+class="[^"]*animate-(?:spin|ping|pulse|bounce|none)[^"]*"/i,
-
-      // Data attribute selectors in HTML
-      /<[^>]+class="[^"]*data-\[(?:state|orientation|side|motion|highlighted)[^\]]+\][^"]*"/i,
-
-      // Tailwind-like width/height patterns
-      /<[^>]+class="[^"]*(?:w|h)-(?:full|screen|auto|\d+\/\d+|\d+)[^"]*"/i,
-    ],
-  },
-  {
-    name: 'props' as const,
-    score: 0.3, // Could be Tailwind or other libraries/frameworks
-    scripts: [
-      // Utility patterns in JS that could exist in other libraries
-      /(?:^|\s)(?:p|m)[trblxy]?-(?:0|0\.5|1\.5|2\.5|3\.5|px|auto)\b/,
-
-      // Aspect and object mentions in JS
-      /(?:^|\s)(?:aspect-(?:auto|square|video)|object-(?:contain|cover|fill|none|scale-down))\b/,
-    ],
-    stylesheets: [
-      // Basic utility classes that could be in other frameworks
-      /\.(?:flex|grid|block|inline|hidden)\b/,
-      /\.(?:w|h)-(?:\d+\/\d+|auto|full)\b/,
-    ],
-    documents: [
-      // Basic flex/grid patterns in HTML
-      /<[^>]+class="[^"]*(?:flex|grid)[^"]*"/i,
-
-      // Simple spacing utilities in HTML
-      /<[^>]+class="[^"]*(?:p|m)[trblxy]?-\d+[^"]*"/i,
-
-      // Overflow utilities
-      /<[^>]+class="[^"]*overflow-(?:hidden|auto|scroll|visible)[^"]*"/i,
-    ],
-  },
-
   {
     name: 'browser' as const,
     score: 0.5, // Browser-based detection with better confidence

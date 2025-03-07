@@ -9,16 +9,10 @@ export const lucide = [
       /(?:from\s+["']lucide|import\s*\{[^}]{1,200}\}\s*from\s*["']lucide)(?:-react|-vue|-svelte|-angular)?\b/,
 
       // Icon component patterns - focusing on unique Lucide naming conventions
-      /\<(?:LucideIcon|Icon(?:Base|Props|Context)|createLucideIcon)\b/,
-
-      // Lucide-specific icon names with semantic boundaries
-      /\b(?:ArrowRight(?:Circle|Square)|ChevronDown(?:Circle|Square)|FileText|MessageCircle|MoreVertical|Settings2|UserCircle2)\b/,
+      /\<(?:LucideIcon|createLucideIcon)\b/,
 
       // Lucide-specific class naming patterns
       /lucide-icon-[a-zA-Z0-9-]{1,40}\b/,
-
-      // Lucide configuration patterns
-      /\.setDefault\(\{[^}]*strokeLinecap:\s*["']round["']/,
 
       // Concat classes pattern
       /"lucide-"\.concat\(/,

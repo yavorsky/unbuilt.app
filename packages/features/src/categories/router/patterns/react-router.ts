@@ -30,6 +30,26 @@ export const reactRouter = [
     ],
   },
   {
+    name: 'olderVersions' as const,
+    score: 0.7,
+    scripts: [
+      // Check for pendingLocation prop
+      /([a-zA-Z0-9_$]+)\._pendingLocation\s*&&\s*\1\.setState\(\s*\{\s*location:\s*\1\._pendingLocation/,
+
+      // staticContextUpdate
+      // Example:
+      //   e.props.staticContext || (e.unlisten = e.props.history.listen(function(t) {
+      //     n._isMounted && n.setState({
+      //         location: t
+      //     })
+      // }))
+      /([a-zA-Z0-9_$]+)\.props\.(?:staticContext|[a-zA-Z0-9_$]+)\s*\|\|\s*\(\1\.(?:unlisten|[a-zA-Z0-9_$]+)\s*=\s*\1\.props\.history\.listen\(function\(([a-zA-Z0-9_$]+)\)\s*\{\s*([a-zA-Z0-9_$]+)\._isMounted\s*&&\s*\3\.setState\(\s*\{\s*location:\s*\2/,
+
+      // computed rood match
+      /match:\s*([a-zA-Z0-9_$]+)\.computeRootMatch\(([a-zA-Z0-9_$]+)\.state\.location\.pathname\)/g,
+    ],
+  },
+  {
     name: 'browser-cheks' as const,
     score: 1,
     browser: async (page: Page) => {
