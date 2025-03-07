@@ -17,5 +17,7 @@ export const detect = async (
     browser,
     patterns,
     analysis,
+    minConfidence: 0.8,
+    debug: true,
   });
 };
