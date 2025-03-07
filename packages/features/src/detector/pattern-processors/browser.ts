@@ -1,6 +1,7 @@
 import { Browser, Page } from 'playwright';
 import { Pattern } from '../../types/pattern.js';
 import { ProcessPatternsResult } from '../process-patterns.js';
+import { normalizeScore } from './utils.js';
 
 export async function processBrowserPattern<Names extends string>(
   pattern: Pattern<Names>,
@@ -16,7 +17,7 @@ export async function processBrowserPattern<Names extends string>(
       if (debug) {
         console.log(`---> Browser pattern ${pattern.name} matched`);
       }
-      result.totalScore += pattern.score;
+      result.totalScore = normalizeScore(pattern.score + result.totalScore);
       result.matchedPatterns.add(pattern.name);
     }
   } catch (e) {

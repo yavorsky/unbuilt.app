@@ -1,5 +1,6 @@
 import { Pattern } from '../../types/pattern.js';
 import { ProcessPatternsResult } from '../process-patterns.js';
+import { normalizeScore } from './utils.js';
 
 export async function processStylesheetPattern<Names extends string>(
   runtimePattern: RegExp,
@@ -19,7 +20,7 @@ export async function processStylesheetPattern<Names extends string>(
           `---> Stylesheet pattern ${pattern.name} matched -- ${runtimePattern}`
         );
       }
-      result.totalScore += pattern.score;
+      result.totalScore = normalizeScore(pattern.score + result.totalScore);
       result.matchedPatterns.add(pattern.name);
     }
   } catch (e) {
