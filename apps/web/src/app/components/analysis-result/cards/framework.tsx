@@ -11,6 +11,7 @@ export const FrameworkCard: FC<{
       name="framework"
       analysis={framework}
       Icon={Boxes}
+      withSecondaryMatches={false}
     />
   );
 };

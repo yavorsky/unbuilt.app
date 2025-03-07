@@ -11,6 +11,7 @@ export const TranslationsCard: FC<{
       name="translations"
       analysis={translations}
       Icon={LanguagesIcon}
+      withSecondaryMatches={false}
     />
   );
 };

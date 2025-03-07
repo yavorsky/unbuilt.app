@@ -11,6 +11,7 @@ export const PlatformCard: FC<{
       name="platform"
       analysis={platform}
       Icon={OrbitIcon}
+      withSecondaryMatches={false}
     />
   );
 };

@@ -30,10 +30,12 @@ export function SingleResultAnalysisCard<
   name,
   analysis,
   Icon,
+  withSecondaryMatches = true,
 }: {
   name: N;
   analysis: A | undefined;
   Icon: FC<LucideProps>;
+  withSecondaryMatches?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const isLoading = !analysis;
@@ -144,6 +146,7 @@ export function SingleResultAnalysisCard<
               </Badge>
             ))}
             {!isUnknown &&
+              withSecondaryMatches &&
               'secondaryMatches' in analysis &&
               Object.keys(analysis.secondaryMatches).length > 0 && (
                 <Collapsible open={isOpen} onOpenChange={setIsOpen}>
