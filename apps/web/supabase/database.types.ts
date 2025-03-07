@@ -541,6 +541,7 @@ export type Database = {
         | "mui"
         | "shadcn"
         | "tailwindCSS"
+        | "radix"
       styling_processor_type:
         | "unknown"
         | "postCSS"
