@@ -7,6 +7,11 @@ export const BundlerCard: FC<{
   bundler: AnalyzeResult['analysis']['bundler'] | undefined;
 }> = ({ bundler }) => {
   return (
-    <SingleResultAnalysisCard name="bundler" analysis={bundler} Icon={Box} />
+    <SingleResultAnalysisCard
+      name="bundler"
+      analysis={bundler}
+      Icon={Box}
+      withSecondaryMatches={false}
+    />
   );
 };

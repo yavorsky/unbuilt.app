@@ -11,6 +11,7 @@ export const StylingProcessorCard: FC<{
       name="stylingProcessor"
       analysis={stylingProcessor}
       Icon={Paintbrush2}
+      withSecondaryMatches={false}
     />
   );
 };

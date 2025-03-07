@@ -11,6 +11,7 @@ export const ModulesCard: FC<{
       name="modules"
       analysis={modules}
       Icon={Combine}
+      withSecondaryMatches={false}
     />
   );
 };

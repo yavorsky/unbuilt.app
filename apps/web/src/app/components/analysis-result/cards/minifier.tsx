@@ -11,6 +11,7 @@ export const MinifierCard: FC<{
       name="minifier"
       analysis={minifier}
       Icon={Minimize2}
+      withSecondaryMatches={false}
     />
   );
 };

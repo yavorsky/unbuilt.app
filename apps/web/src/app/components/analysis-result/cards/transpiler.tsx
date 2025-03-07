@@ -11,6 +11,7 @@ export const TranspilerCard: FC<{
       name="transpiler"
       analysis={transpiler}
       Icon={FileCode2}
+      withSecondaryMatches={false}
     />
   );
 };
