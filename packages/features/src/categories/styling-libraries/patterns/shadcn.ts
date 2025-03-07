@@ -40,9 +40,6 @@ export const shadcn = [
       // accordion
       /\(\s*0\s*,\s*\w+\.jsxs?\s*\)\(\s*\w+\s*\.\s*\w+\s*,\s*\{\s*(?:[^}]*,)?\s*children:\s*\[\s*[^,]*,\s*\(\s*0\s*,\s*\w+\.jsx\s*\)\(\s*\w+\s*,\s*\{\s*className:\s*["']h-4\s+w-4\s+(?:shrink|transition)-0[^"']*data-\[state=open\]:rotate-180[^"']*["']/,
 
-      // shadcn/ui's variant configuration
-      /\{[^}]{0,500}variant:\s*['"](?:destructive|outline|secondary|ghost|link)["']/,
-
       // shadcn/ui specific component configuration
       /cn\(\s*buttonVariants\(\{[^}]*variant:/,
       /cn\(\s*alertVariants\(\{[^}]*variant:/,
@@ -104,6 +101,16 @@ export const shadcn = [
 
         return Object.values(markers).some(Boolean);
       });
+    },
+  },
+  {
+    // Radix is much easier to detect. So the strategy is to increase shadcn/ui score based on low confidence patterns
+    // and decrease the score based in case radix is not detected.
+    name: 'radix' as const,
+    score: -3,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- Solve circular category access
+    dependencies: (analysis: any) => {
+      return analysis.stylingLibraries.items.radix?.confidence < 1;
     },
   },
 ];
