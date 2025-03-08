@@ -32,9 +32,16 @@ export const analyze = async (
 ): Promise<AnalyzeResult> => {
   const startedAt = new Date();
 
-  const isAvailable = await checkUrlAvailability(page, url);
+  const { isAvailable, finalUrl, wasRedirected } = await checkUrlAvailability(
+    page,
+    url
+  );
   if (!isAvailable) {
     throw new Error(errors.RESOURCE_NOT_AVAILABLE, { cause: url });
+  }
+
+  if (wasRedirected) {
+    url = finalUrl;
   }
 
   const resources = new Resources(page);
