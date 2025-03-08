@@ -19,6 +19,9 @@ describe('detects rollup with modern libraries stack', async () => {
         typescript: '5.7.3',
         tslib: '2.8.1',
       },
+      packageJson: {
+        type: 'module',
+      },
       files: {
         'src/App.tsx': `
         import { h } from 'preact';
