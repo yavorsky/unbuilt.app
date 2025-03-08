@@ -15,6 +15,12 @@ export const preact = [
       // Preact's CSS property detection
       /\/(?:acit|ex(?:s|g|n|p|\\$)|rph|grid|ows|mnc|ntw|ine\[ch\]|zoo|\\^ord|itera)\/i/,
       // VNode Properties
+
+      // Internal component props
+      /[a-zA-Z0-9_$]+\.replace\(\/xlink\(H\|:h\)\/,\s*["']h["']\)\.replace\(\/sName\$\/,\s*["']s["']\)/,
+
+      // Pointer capture
+      /['"]\/\(PointerCapture\)\$\|Capture\$\/i['"]/,
     ],
   },
   {
