@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const astro = [
   {
     name: 'core' as const,
-    score: 1.0,
+    score: 1,
     scripts: [
       // Astro-specific globals and identifiers that survive minification
       /Astro\.self/,
@@ -16,8 +16,8 @@ export const astro = [
   },
   {
     name: 'dom-markers' as const,
-    score: 0.9,
-    scripts: [
+    score: 1,
+    documents: [
       // Astro-specific attributes and islands
       /astro-island/,
       /data-astro-cid-/,
@@ -40,11 +40,21 @@ export const astro = [
   },
   {
     name: 'browser-check' as const,
-    score: 0.9,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
+        const allElements = document.querySelectorAll('*');
+
+        // Filter for elements with data-astro-cid- attributes
+        const astroElements = Array.from(allElements).filter((el) => {
+          return Array.from(el.attributes).some((attr) =>
+            attr.name.startsWith('data-astro-cid-')
+          );
+        });
+
         const markers = {
           // Check for Astro-specific attributes that survive minification
+          withElements: !!astroElements.length,
           hasAstroIsland: !!document.querySelector('astro-island'),
           hasAstroCid: !!document.querySelector('[data-astro-cid]'),
           hasAstroTransition: !!document.querySelector(
