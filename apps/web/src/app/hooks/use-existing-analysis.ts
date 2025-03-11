@@ -2,6 +2,7 @@ import { getAnalysisMetaByUrl } from '@/actions';
 import { debounce } from 'lodash-es';
 import { useEffect, useState, useCallback } from 'react';
 import { validateUrl } from '../utils/validate-url';
+import * as Sentry from '@sentry/nextjs';
 
 type URL = string;
 export const statuses = {
@@ -31,7 +32,22 @@ export const useExistingAnalysisMeta = (url: URL) => {
           [urlToFetch]: { id: result?.id, analyzedAt: result?.analyzedAt },
         }));
       } catch (e) {
-        console.error('Error checking URL:', e, urlToFetch);
+        // Capture with Sentry with additional context
+        Sentry.withScope((scope) => {
+          // Add relevant context
+          scope.setExtra('url', urlToFetch);
+          scope.setTag('operation', 'url_fetch');
+
+          // You can add breadcrumbs for more context about what led to the error
+          Sentry.addBreadcrumb({
+            category: 'fetch',
+            message: `Attempting to fetch URL: ${urlToFetch}`,
+            level: 'info',
+          });
+
+          // Capture the exception with the enhanced scope
+          Sentry.captureException(e);
+        });
       }
     }, 300),
     [] // Empty dependencies since we don't want to recreate the debounced function

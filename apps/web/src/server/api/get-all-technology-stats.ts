@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { columnMapping } from '../utils/column-mapping';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
@@ -28,7 +29,7 @@ export async function getTechnologyStatsQuery<T extends AnalysisTechnologies>(
   });
 
   if (error) {
-    console.error('Error fetching technology stats:', error);
+    captureException(error);
     throw error;
   }
 

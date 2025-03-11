@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { AnalysisKeys } from '@unbuilt/analyzer';
 
@@ -18,7 +19,7 @@ export async function searchByTechStackQuery(
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    console.error('Error searching by tech stack:', error);
+    captureException(error);
     return { data: null, error };
   }
 }

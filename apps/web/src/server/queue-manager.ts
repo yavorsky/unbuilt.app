@@ -9,6 +9,7 @@ import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
 import { BrowserManager } from '@unbuilt/helpers';
 import { setUserHeaders } from './utils/set-user-headers';
+import { captureException } from '@sentry/nextjs';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.
 const CONCURRENT_JOBS = 1; //Math.max(1, Math.floor(os.cpus().length * 0.75));
@@ -75,7 +76,7 @@ export class QueueManager {
 
       // Initialize browser manager
       this.browserManager = new BrowserManager();
-      await this.browserManager.initialize(CONCURRENT_JOBS);
+      await this.browserManager.initialize(CONCURRENT_JOBS, captureException);
 
       // Process jobs
       this.queue.process(CONCURRENT_JOBS, async (job) => {
@@ -104,12 +105,17 @@ export class QueueManager {
             await job.progress(progress);
           };
 
+          const onError = (error: Error) => {
+            captureException(error);
+          };
+
           const result = await analyze(
             job.data.url,
             job.id as string,
             page,
             browser,
-            onProgress
+            onProgress,
+            onError
           );
           console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
           if (await job.isDelayed()) {
@@ -117,37 +123,28 @@ export class QueueManager {
               await job.update(result);
               await job.progress(100);
             } catch (updateError) {
-              console.error(
-                `[Job ${job.id}] Error finishing job:`,
-                updateError
-              );
+              captureException(updateError);
             }
           }
           try {
             await context.close();
           } catch (closeError) {
-            console.error(`[Job ${job.id}] Error closing context:`, closeError);
+            captureException(closeError);
           }
           return result;
         } catch (error) {
-          console.log(`[Job ${job.id}] Failed:`, error);
-
           const e = error as Error;
           if (e.message === errors.RESOURCE_NOT_AVAILABLE) {
             // Expected error, so no need to retry
             job.discard();
             console.log('resource is not available');
           } else {
-            console.error(`[Job ${job.id}] Failed:`, error);
+            captureException(error);
           }
           throw error;
         } finally {
           if (context) {
-            await context
-              .close()
-              .catch((err) =>
-                console.error(`[Job ${job.id}] Error closing context:`, err)
-              );
+            await context.close().catch((err) => captureException(err));
           }
         }
       });

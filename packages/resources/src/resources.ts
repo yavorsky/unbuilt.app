@@ -8,11 +8,13 @@ export class Resources {
   private scriptsMap: ScriptsMap = new Map();
   private stylesheetsMap: ScriptsMap = new Map();
   private documentsMap: ScriptsMap = new Map();
+  private onError?: (error: Error) => void;
   constructor(page: Page) {
     this.page = page;
   }
 
-  async initialize() {
+  async initialize(onError?: (error: Error) => void) {
+    this.onError = onError;
     await this.page.route('**/*', async (route) => {
       let resourceType: string;
       let request: Request;
@@ -21,7 +23,7 @@ export class Resources {
         request = route.request();
         resourceType = request.resourceType();
       } catch (error) {
-        console.error('[Page request **/*]', error);
+        onError?.(error as Error);
         await route.continue();
         return;
       }
@@ -37,7 +39,7 @@ export class Resources {
           const response = await route.fetch();
           content = await response.text();
         } catch (error) {
-          console.error('[Page route **/*]', error);
+          onError?.(error as Error);
           await route.abort();
           return;
         }
@@ -65,7 +67,7 @@ export class Resources {
       const request = response.request();
       url = request.url();
     } catch (error) {
-      console.error('[Page response]', error);
+      this.onError?.(error as Error);
       return;
     }
 
@@ -213,7 +215,7 @@ export class Resources {
         global.gc();
       }
     } catch (error) {
-      console.error('[Resources] Error during cleanup:', error);
+      this.onError?.(error as Error);
       // Even if there's an error, try to clear maps to prevent memory leaks
       this.clearAllMaps();
     }

@@ -6,6 +6,7 @@ import {
 } from '../utils/extract-secondary-matches';
 import { Json, TablesInsert } from '../../../supabase/database.types';
 import { toSnakeCase } from '../utils/convert-keys';
+import { captureException } from '@sentry/nextjs';
 
 export interface TechnologyInfo {
   type?: string;
@@ -113,7 +114,7 @@ export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
 
     return { data, error: null };
   } catch (error) {
-    console.error('Error saving analysis:', error);
+    captureException(error);
     return { data: null, error };
   }
 }

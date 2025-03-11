@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { formatAnalyzisResponse } from '../utils/format-analyzis-response';
 
@@ -27,7 +28,7 @@ export async function getAnalysisByIdQuery(id: string) {
 
     return { data: formattedData, error: null };
   } catch (error) {
-    console.error('Error fetching analysis:', error);
+    captureException(error);
     return { data: null, error };
   }
 }
