@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 
 export async function getAnalyzysMetaByUrlQuery(url: string) {
@@ -14,7 +15,7 @@ export async function getAnalyzysMetaByUrlQuery(url: string) {
 
     return { data, error: null };
   } catch (error) {
-    console.error('Error fetching analysis ID:', error);
+    captureException(error);
     return { data: null, error };
   }
 }

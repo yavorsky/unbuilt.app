@@ -7,6 +7,7 @@ import {
 } from './api';
 import { v4 as uuidv4 } from 'uuid';
 import Bull from 'bull';
+import { captureException } from '@sentry/nextjs';
 
 export interface AnalysisStatus {
   id: string;
@@ -124,7 +125,7 @@ export class AnalysisManager {
       const { data } = await getAnalyzysMetaByUrlQuery(url);
       return { id: data?.id, analyzedAt: data?.analyzed_at };
     } catch (e) {
-      console.error(e);
+      captureException(e);
       return null;
     }
   }

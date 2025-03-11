@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import { LogoIcon } from '../components/icons/logo';
+import { captureException } from '@sentry/nextjs';
 
 export const runtime = 'edge';
 
@@ -169,7 +170,7 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    console.error('Error generating OG image:', error);
+    captureException(error);
     return new Response(
       `Failed to generate image: ${(error as Error).message}`,
       {

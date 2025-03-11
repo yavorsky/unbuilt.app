@@ -1,3 +1,4 @@
+import { captureException } from '@sentry/nextjs';
 import { QueueManager } from '../server/queue-manager';
 import { AnalysisManager } from '../server/analysis-manager';
 import { AnalysisResults } from '.';
@@ -30,7 +31,7 @@ export async function startAnalysis(
 
     return { error: null, analysisId };
   } catch (error) {
-    console.error('Analysis failed:', error);
+    captureException(error);
     return { error: 'Failed to analyze website' };
   }
 }
@@ -60,7 +61,7 @@ export async function getStatus(analysisId: string) {
       error: null,
     };
   } catch (error) {
-    console.error('Status check failed:', error);
+    captureException(error);
     return {
       id: analysisId,
       status: 'failed',

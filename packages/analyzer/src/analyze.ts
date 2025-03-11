@@ -28,7 +28,8 @@ export const analyze = async (
   id: string,
   page: Page,
   browser: Browser,
-  handleProgress?: OnProgress
+  handleProgress?: OnProgress,
+  onError?: (error: Error) => void
 ): Promise<AnalyzeResult> => {
   const startedAt = new Date();
 
@@ -37,6 +38,7 @@ export const analyze = async (
     url
   );
   if (!isAvailable) {
+    // No need to track via sentry since exception is expected. No resource found is a valid use-case.
     throw new Error(errors.RESOURCE_NOT_AVAILABLE, { cause: url });
   }
 
@@ -56,7 +58,7 @@ export const analyze = async (
       timeout: 15000,
     });
   } catch (error) {
-    console.error('[Resources loading error]', error, url);
+    onError?.(error as Error);
     throw new Error('Error loading resources');
   }
 

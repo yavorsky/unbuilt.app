@@ -19,8 +19,10 @@ export const contextOptions = {
 
 export class BrowserManager {
   private instances: BrowserInstance[] = [];
+  private onError?: (error: Error) => void;
 
-  async initialize(maxInstances: number) {
+  async initialize(maxInstances: number, onError: (error: Error) => void) {
+    this.onError = onError;
     for (let i = 0; i < maxInstances; i++) {
       const browser = await chromium.launch({
         headless: true,
@@ -87,11 +89,10 @@ export class BrowserManager {
           await context.close();
           await browser.close();
         } catch (error) {
-          console.error('[BrowserManager] Error during cleanup:', error);
+          this.onError?.(error as Error);
         }
       })
     );
     this.instances = [];
-    console.log('[BrowserManager] Cleanup completed');
   }
 }

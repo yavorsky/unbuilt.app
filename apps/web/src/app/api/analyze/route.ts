@@ -1,4 +1,5 @@
 import { startAnalysis } from '@/actions/analyzer';
+import { captureException } from '@sentry/nextjs';
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
     const result = await startAnalysis(url, lookupForExisting);
     return Response.json(result);
   } catch (error) {
-    console.error('Analysis failed:', error);
+    captureException(error);
     return Response.json(
       { error: 'Failed to analyze website', message: (error as Error).message },
       { status: 500 }

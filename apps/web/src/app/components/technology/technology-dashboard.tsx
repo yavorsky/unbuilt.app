@@ -18,6 +18,7 @@ import {
   getTechnologyMetaForType,
   TechnologyMetaResults,
 } from '@/app/utils/get-technology-meta';
+import { captureException } from '@sentry/nextjs';
 
 interface TechnologyWebsitesProps<T extends AnalysisTechnologies> {
   initialData: TechnologyWebsites;
@@ -77,7 +78,7 @@ export function TechnologyDashboard<
           };
         });
       } catch (e) {
-        console.error(e);
+        captureException(e);
       } finally {
         setIsLoading(false);
       }

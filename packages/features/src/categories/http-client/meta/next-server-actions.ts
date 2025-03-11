@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import { Meta } from '../../../types/meta.js';
 
 export const nextServerActions: Meta = {
-  name: 'Next.js Server Actions',
+  name: 'Server Actions',
   website:
     'https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations',
   description:
