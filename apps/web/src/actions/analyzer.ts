@@ -31,7 +31,7 @@ export async function startAnalysis(
 
     return { error: null, analysisId };
   } catch (error) {
-    captureException(error);
+    captureException(error, { extra: { url } });
     return { error: 'Failed to analyze website' };
   }
 }
@@ -61,7 +61,11 @@ export async function getStatus(analysisId: string) {
       error: null,
     };
   } catch (error) {
-    captureException(error);
+    captureException(error, {
+      extra: {
+        analysisId,
+      },
+    });
     return {
       id: analysisId,
       status: 'failed',
