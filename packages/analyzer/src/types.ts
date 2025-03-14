@@ -1,4 +1,4 @@
-import { AnalyzeResult } from './analyze.js';
+import { AnalysisFeatures, Stats } from '@unbuilt/features';
 
 export type Pattern = {
   runtime?: RegExp[];
@@ -23,3 +23,17 @@ export type AnalysisMultiTechnologies = Extract<
   AnalysisKeys,
   'stylingLibraries'
 >;
+
+export type OnProgress = (
+  partialResult: OnProgressResult,
+  progress: number
+) => void;
+
+export type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
+export type AnalyzeResult = {
+  url: string;
+  id: string;
+  timestamp: string;
+  duration: number;
+  analysis: AnalysisFeaturesWithStats;
+};

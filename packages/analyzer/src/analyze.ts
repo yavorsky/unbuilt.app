@@ -1,27 +1,19 @@
 import { Browser, Page } from 'playwright';
-import { createProgressTracker, OnProgress } from './progress.js';
-import {
-  bundler,
-  framework,
-  httpClient,
-  platform,
-  translations,
-  minifier,
-  modules,
-  stylingLibraries,
-  stylingProcessor,
-  transpiler,
-  uiLibrary,
-  stateManagement,
-  dates,
-  router,
-  getStats,
-  AnalysisFeatures,
-  Stats,
-} from '@unbuilt/features';
+import { createProgressTracker } from './utils/progress.js';
 import { Resources } from '@unbuilt/resources';
 import { checkUrlAvailability } from './utils/check-for-availability.js';
 import { errors } from './utils/errors.js';
+import { navigateToPage } from './utils/navigate-to-page.js';
+import {
+  AnalysisFeaturesWithStats,
+  AnalyzeResult,
+  OnProgress,
+} from './types.js';
+import {
+  analyzeFeature,
+  detectionCategories,
+} from './utils/analyze-feature.js';
+import { AnalysisFeatures } from '@unbuilt/features';
 
 export const analyze = async (
   url: string,
@@ -37,171 +29,62 @@ export const analyze = async (
     page,
     url
   );
+
+  // Track no resource found on early stage
   if (!isAvailable) {
     // No need to track via sentry since exception is expected. No resource found is a valid use-case.
     throw new Error(errors.RESOURCE_NOT_AVAILABLE, { cause: url });
   }
 
+  // Override url if it was redirected by server
   if (wasRedirected) {
     url = finalUrl;
   }
 
+  // Initialize resources tracking
   const resources = new Resources(page);
-
   await resources.initialize();
 
-  try {
-    // Initial domcontentloaded event. The main indicator page is ready to be analyzed.
-    // We'll still need to ensure all scripts are loaded later.
-    await page.goto(url, {
-      waitUntil: 'domcontentloaded', // First wait for DOM
-      timeout: 15000,
-    });
-  } catch (error) {
-    onError?.(error as Error);
-    throw new Error('Error loading resources');
-  }
+  // Navigate to the page and wait for loading events with specific timeouts
+  await navigateToPage(url, page, onError);
 
-  try {
-    // Here we are loading for page load event and network idle. Sometimes, some requests are stuck.
-    // In this case, we assume that we wait for 10 seconds and start analysis ignoring stucked requests.
-    await Promise.all([
-      page.waitForLoadState('load', { timeout: 10000 }),
-      page.waitForLoadState('networkidle', { timeout: 10000 }),
-    ]);
-  } catch (e: unknown) {
-    // Skipping network idle
-    console.log('Skipping network idle', e);
-  }
-
+  // Create progress tracker
   const onProgress = createProgressTracker({
     url,
     id,
     onProgress: handleProgress,
     startedAt,
-    totalResults: 15,
+    totalResults: detectionCategories.length,
   });
   const analysis = {} as AnalysisFeaturesWithStats;
 
-  console.time('framework');
-  analysis.framework = await framework.detect(page, browser, resources);
-  onProgress({ framework: analysis.framework });
-  console.timeEnd('framework');
+  // Run analysis in sequence. We can't use parallel because of the opened browsers limitation.
+  for (const featureName of detectionCategories) {
+    await analyzeFeature({
+      featureName,
+      analysis,
+      page,
+      browser,
+      resources,
+      onProgress,
+    });
+  }
 
-  console.time('uiLibrary');
-  analysis.uiLibrary = await uiLibrary.detect(page, browser, resources);
-  onProgress({ uiLibrary: analysis.uiLibrary });
-  console.timeEnd('uiLibrary');
-
-  console.time('router');
-  analysis.router = await router.detect(page, browser, resources);
-  onProgress({ router: analysis.router });
-  console.timeEnd('router');
-
-  console.time('bundler');
-  analysis.bundler = await bundler.detect(page, browser, resources);
-  onProgress({ bundler: analysis.bundler });
-  console.timeEnd('bundler');
-
-  console.time('transpiler');
-  analysis.transpiler = await transpiler.detect(page, browser, resources);
-  onProgress({ transpiler: analysis.transpiler });
-  console.timeEnd('transpiler');
-
-  console.time('minifier');
-  analysis.minifier = await minifier.detect(page, browser, resources);
-  onProgress({ minifier: analysis.minifier });
-  console.timeEnd('minifier');
-
-  console.time('stylingProcessor');
-  analysis.stylingProcessor = await stylingProcessor.detect(
-    page,
-    browser,
-    resources
+  // Re-run analysis again, but only calling 'dependencies' checks. It will help us to update scores based on all categories.
+  await Promise.all(
+    detectionCategories
+      .filter((key) => key !== 'stats')
+      .map((key) =>
+        analyzeFeature({
+          featureName: key as keyof AnalysisFeatures,
+          analysis,
+          page,
+          browser,
+          resources,
+          initialAnalysis: analysis,
+        })
+      )
   );
-  onProgress({ stylingProcessor: analysis.stylingProcessor });
-  console.timeEnd('stylingProcessor');
-
-  console.time('modules');
-  analysis.modules = await modules.detect(page, browser, resources);
-  onProgress({ modules: analysis.modules });
-  console.timeEnd('modules');
-
-  console.time('httpClient');
-  analysis.httpClient = await httpClient.detect(page, browser, resources);
-  onProgress({ httpClient: analysis.httpClient });
-  console.timeEnd('httpClient');
-
-  console.time('platform');
-  analysis.platform = await platform.detect(page, browser, resources);
-  onProgress({ platform: analysis.platform });
-  console.timeEnd('platform');
-
-  console.time('stateManagement');
-  analysis.stateManagement = await stateManagement.detect(
-    page,
-    browser,
-    resources
-  );
-  onProgress({ stateManagement: analysis.stateManagement });
-  console.timeEnd('stateManagement');
-
-  console.time('dates');
-  analysis.dates = await dates.detect(page, browser, resources);
-  onProgress({ dates: analysis.dates });
-  console.timeEnd('dates');
-
-  console.time('stylingLibraries');
-  analysis.stylingLibraries = await stylingLibraries.detect(
-    page,
-    browser,
-    resources
-  );
-  onProgress({ stylingLibraries: analysis.stylingLibraries });
-  console.timeEnd('stylingLibraries');
-
-  console.time('translations');
-  analysis.translations = await translations.detect(page, browser, resources);
-  onProgress({ translations: analysis.translations });
-  console.timeEnd('translations');
-
-  console.time('stats');
-  analysis.stats = await getStats(page);
-  onProgress({ stats: analysis.stats });
-  console.timeEnd('stats');
-
-  // Run checks again to get more accurate results having context from all features
-  [
-    analysis.bundler,
-    analysis.transpiler,
-    analysis.framework,
-    analysis.minifier,
-    analysis.stylingProcessor,
-    analysis.modules,
-    analysis.uiLibrary,
-    analysis.httpClient,
-    analysis.stateManagement,
-    analysis.dates,
-    analysis.router,
-    analysis.stylingLibraries,
-    analysis.translations,
-    analysis.platform,
-  ] = await Promise.all([
-    bundler.detect(page, browser, resources, analysis),
-    transpiler.detect(page, browser, resources, analysis),
-    framework.detect(page, browser, resources, analysis),
-    minifier.detect(page, browser, resources, analysis),
-    stylingProcessor.detect(page, browser, resources, analysis),
-    modules.detect(page, browser, resources, analysis),
-    uiLibrary.detect(page, browser, resources, analysis),
-    httpClient.detect(page, browser, resources, analysis),
-    stateManagement.detect(page, browser, resources, analysis),
-    dates.detect(page, browser, resources, analysis),
-    router.detect(page, browser, resources, analysis),
-    stylingLibraries.detect(page, browser, resources, analysis),
-    translations.detect(page, browser, resources, analysis),
-    platform.detect(page, browser, resources, analysis),
-  ]);
 
   const finishedAt = new Date();
   const duration = finishedAt.getTime() - startedAt.getTime();
@@ -216,16 +99,8 @@ export const analyze = async (
 
   handleProgress?.(result, 100);
 
+  // Remove listeners and cancel ongoing requests
   await resources.cleanup();
 
   return result;
-};
-
-export type AnalysisFeaturesWithStats = AnalysisFeatures & { stats: Stats };
-export type AnalyzeResult = {
-  url: string;
-  id: string;
-  timestamp: string;
-  duration: number;
-  analysis: AnalysisFeaturesWithStats;
 };
