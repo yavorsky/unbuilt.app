@@ -12,7 +12,7 @@ export const zustand = [
       /\{\s*getInitialState\s*:[^,}]*,\s*getState\s*:[^,}]*,\s*setState\s*:[^,}]*,\s*subscribe\s*:[^,}]*\s*\}/gm,
 
       // useSyncExternalStore wrapper usage
-      /\w+\.useSyncExternalStore\s*\(\s*\w+\.subscribe\s*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^,]*\w+\.getState\s*\(\)[^,]*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^)]*\w+\.getInitialState\s*\(\)[^)]*\)/g,
+      // /\w+\.useSyncExternalStore\s*\(\s*\w+\.subscribe\s*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^,]*\w+\.getState\s*\(\)[^,]*,\s*(?:function\s*\(\s*\)\s*\{[^}]*\}|\(\s*\)\s*=>)[^)]*\w+\.getInitialState\s*\(\)[^)]*\)/g,
 
       // Zustand's specific console messages with exact prefixes
       /\[zustand devtools middleware\] Unsupported action format/,
