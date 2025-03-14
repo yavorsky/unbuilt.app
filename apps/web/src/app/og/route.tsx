@@ -170,7 +170,8 @@ export async function GET(request: NextRequest) {
       }
     );
   } catch (error) {
-    captureException(error);
+    const url = request.url;
+    captureException(error, { extra: { url } });
     return new Response(
       `Failed to generate image: ${(error as Error).message}`,
       {
