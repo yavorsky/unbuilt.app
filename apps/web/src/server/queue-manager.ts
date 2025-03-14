@@ -1,11 +1,11 @@
 import QueueService, { Queue, Job, QueueOptions } from 'bull';
 import {
   AnalyzeResult,
+  OnProgress,
   OnProgressResult,
   analyze,
   errors,
 } from '@unbuilt/analyzer';
-import { OnProgress } from '../../../../packages/analyzer/build/progress';
 import { BrowserContext } from 'playwright';
 import { BrowserManager } from '@unbuilt/helpers';
 import { setUserHeaders } from './utils/set-user-headers';

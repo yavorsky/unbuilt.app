@@ -1,10 +1,8 @@
-import { AnalyzeResult } from './analyze.js';
-import { OnProgressResult } from './types.js';
-
-export type OnProgress = (
-  partialResult: OnProgressResult,
-  progress: number
-) => void;
+import {
+  AnalysisFeaturesWithStats,
+  AnalyzeResult,
+  OnProgress,
+} from '../types.js';
 
 export const createProgressTracker = ({
   url,
@@ -20,9 +18,9 @@ export const createProgressTracker = ({
   totalResults: number;
 }) => {
   let results = 0;
-  let calculatedResults: Partial<AnalyzeResult['analysis']> = {};
+  let calculatedResults: Partial<AnalysisFeaturesWithStats> = {};
 
-  return (partialResult: Partial<AnalyzeResult['analysis']>) => {
+  return (partialResult: Partial<AnalysisFeaturesWithStats>) => {
     results += 1;
     calculatedResults = {
       ...calculatedResults,
@@ -41,5 +39,15 @@ export const createProgressTracker = ({
     onProgress?.(stageResult, (results / totalResults) * 100);
     return stageResult;
   };
+};
+
+export type OnProgressHandler = (
+  partialResult: Partial<AnalyzeResult['analysis']>
+) => {
+  url: string;
+  id: string;
+  timestamp: string;
+  duration: number;
+  analysis: Partial<AnalyzeResult['analysis']>;
 };
 export type OnProgressTracked = ReturnType<typeof createProgressTracker>;

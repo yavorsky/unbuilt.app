@@ -1,5 +1,7 @@
-import { Page } from 'playwright';
+import { Browser, Page } from 'playwright';
 import { Stats } from './types/stats.js';
+import { Resources } from '@unbuilt/resources';
+import { AnalysisFeatures } from './types/analysis.js';
 
 // Types for the enhanced stats
 interface ResourceTypeMetrics {
@@ -7,7 +9,12 @@ interface ResourceTypeMetrics {
   totalSize: number;
 }
 
-export const getStats = async (page: Page): Promise<Stats> => {
+export const getStats = async (
+  page: Page,
+  _browser?: Browser,
+  _resources?: Resources,
+  _analysis?: AnalysisFeatures
+): Promise<Stats> => {
   const resourceMetrics = await page!.evaluate(() => {
     const getResourceTypeMetrics = (
       resources: PerformanceResourceTiming[],
