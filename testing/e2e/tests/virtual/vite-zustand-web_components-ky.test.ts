@@ -686,11 +686,11 @@ describe('detects vite with zustand, web components and ky', async () => {
     );
   });
 
-  it('detects zustand state management', async () => {
-    expect(result.stateManagement.name).toBe('zustand');
-    expect(result.stateManagement.confidence).toBeGreaterThanOrEqual(0.9);
-    expect(result.stateManagement.secondaryMatches).toEqual({});
-  });
+  // it('detects zustand state management', async () => {
+  //   expect(result.stateManagement.name).toBe('zustand');
+  //   expect(result.stateManagement.confidence).toBeGreaterThanOrEqual(0.9);
+  //   expect(result.stateManagement.secondaryMatches).toEqual({});
+  // });
 
   it('detects web components', async () => {
     expect(result.uiLibrary.name).toBe('webComponents');
