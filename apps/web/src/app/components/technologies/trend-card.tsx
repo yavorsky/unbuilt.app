@@ -1,6 +1,7 @@
 import { Card, CardContent } from '@/components/ui';
 import { ChartConfig } from '@/components/ui/chart';
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
+import { DisplayType } from './technology-trends';
 
 interface TrendInfo {
   name: string;
@@ -11,10 +12,12 @@ interface TrendInfo {
 export function TrendCard({
   trend,
   chartConfig,
+  displayType,
   className,
 }: {
   trend: TrendInfo;
   chartConfig: ChartConfig;
+  displayType?: DisplayType;
   className?: string;
 }) {
   const Icon = trend.direction === 'up' ? ArrowUpIcon : ArrowDownIcon;
@@ -33,7 +36,8 @@ export function TrendCard({
           <div className={`flex items-center gap-1 ${colorClass}`}>
             <Icon className="w-4 h-4" />
             <span className="text-base font-medium text-inherit">
-              {Math.abs(trend.change).toFixed(1)}%
+              {Math.abs(trend.change).toFixed(1)}
+              {displayType === 'percentage' ? '%' : ''}
             </span>
           </div>
         </div>

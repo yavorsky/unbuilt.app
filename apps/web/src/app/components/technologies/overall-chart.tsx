@@ -45,9 +45,9 @@ export const OverallChart = ({
         accessibilityLayer
         data={dataWithColors}
         layout="vertical"
-        margin={{
-          left: 10,
-        }}
+        // margin={{
+        //   left: 20,
+        // }}
       >
         <YAxis
           dataKey="name"
@@ -55,13 +55,14 @@ export const OverallChart = ({
           tickLine={false}
           tickMargin={0}
           axisLine={false}
+          width={80}
           tickFormatter={(value) => {
             const val = chartConfig[value]?.label as string;
             return val;
           }}
         />
         <XAxis dataKey="count" type="number" hide />
-        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
+        <ChartTooltip content={<ChartTooltipContent />} />
         <Bar
           className="hover:cursor-pointer"
           onClick={handleBarClick}
