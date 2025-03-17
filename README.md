@@ -87,6 +87,7 @@ Your help makes unbuilt.app better for everyone!
 - Browser Extension - Unbuild any site as you browse
 - CLI Application - Unbuild from your terminal
 - Additional Detection Categories - Expand our unbuilding capabilities
+- Technology Versions - Detect major or even minor/patch versions of specific technologies.
 
 
 ## Contact
