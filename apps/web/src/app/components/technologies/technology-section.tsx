@@ -33,7 +33,7 @@ export async function TechnologyTypeSection<T extends AnalysisTechnologies>({
             </div>
           </div>
 
-          {trendsData && <TechnologyTrends data={trendsData} type={type} />}
+          <TechnologyTrends data={trendsData} type={type} />
         </div>
       </CardContent>
     </Card>

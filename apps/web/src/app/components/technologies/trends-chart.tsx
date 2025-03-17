@@ -8,21 +8,29 @@ import { useHandleDateFormat } from '@/hooks/use-date-format';
 import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { useMemo } from 'react';
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from 'recharts';
+import { DisplayType } from './technology-trends';
 
 export const TrendsChart = ({
   data,
   chartConfig,
+  displayType,
 }: {
   chartConfig: ChartConfig;
   data: TechnologyTrend[];
+  displayType: DisplayType;
 }) => {
   const chartData = useMemo(
     () =>
       data.map((point) => ({
         date: point.date,
-        ...point.technologies,
+        ...Object.fromEntries(
+          Object.entries(point.technologies).map(([key, value]) => [
+            key,
+            value?.[displayType],
+          ])
+        ),
       })),
-    [data]
+    [data, displayType]
   );
 
   const usedTechnologies = useMemo(() => {
@@ -57,6 +65,8 @@ export const TrendsChart = ({
           tickFormatter={handleTickFormat}
           ticks={[chartData[0]?.date]}
           interval={0}
+          width={80}
+          style={{ transform: 'translateX(34px)' }}
           padding={{ left: 0, right: 0 }}
         />
         <YAxis
@@ -68,7 +78,7 @@ export const TrendsChart = ({
           domain={[0, 100]}
           hide={true}
         />
-        <ChartTooltip content={<ChartTooltipContent />} />
+        <ChartTooltip content={<ChartTooltipContent className="w-40" />} />
         {usedTechnologies.map((tech) => (
           <Line
             key={tech}
