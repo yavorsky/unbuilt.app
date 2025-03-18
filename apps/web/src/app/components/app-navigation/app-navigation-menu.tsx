@@ -15,6 +15,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu';
+import { trackNavigation } from '@/app/utils/analytics';
 
 export const AppNavigationMenu = () => {
   const activeRoute = useActiveRoute();
@@ -61,6 +62,7 @@ export const AppNavigationMenu = () => {
             className="inline-flex h-9 px-4 py-2 text-sm"
             href="https://github.com/yavorsky/unbuilt.app"
             target="_blank"
+            onClick={() => trackNavigation('github', true)}
           >
             <GithubIcon
               size={20}
