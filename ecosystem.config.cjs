@@ -13,7 +13,9 @@ module.exports = {
       // eslint-disable-next-line no-undef
       SUPABASE_URL: process.env.SUPABASE_URL,
       // eslint-disable-next-line no-undef
-      SUPABASE_KEY: process.env.SUPABASE_KEY
+      SUPABASE_KEY: process.env.SUPABASE_KEY,
+      // eslint-disable-next-line no-undef
+      GA_ID: process.env.GA_ID
     },
     instances: 1,
     autorestart: true,

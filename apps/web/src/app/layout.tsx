@@ -2,7 +2,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { GoogleAnalytics } from '@next/third-parties/google';
-import React from 'react';
+import React, { Suspense } from 'react';
 import { PageViewTracker } from './components/page-view-tracker';
 import './globals.css';
 
@@ -76,7 +76,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {gaId && <GoogleAnalytics gaId={gaId} />}
-        <PageViewTracker />
+        <Suspense fallback={null}>
+          <PageViewTracker />
+        </Suspense>
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>

@@ -15,6 +15,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      GA_ID: ${{ secrets.GA_ID }}
 
     steps:
       - name: Checkout code
@@ -54,6 +55,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      GA_ID: ${{ secrets.GA_ID }}
 
     steps:
       - name: Checkout code
@@ -71,13 +73,14 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,GA_ID
           script: |
             cd /home/server/unbuilt-app && \
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
             echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
+            echo "GA_ID=${GA_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
             NODE_ENV=production yarn turbo run build && \
