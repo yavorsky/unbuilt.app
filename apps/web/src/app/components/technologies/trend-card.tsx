@@ -36,7 +36,9 @@ export function TrendCard({
           <div className={`flex items-center gap-1 ${colorClass}`}>
             <Icon className="w-4 h-4" />
             <span className="text-base font-medium text-inherit">
-              {Math.abs(trend.change).toFixed(1)}
+              {displayType === 'percentage'
+                ? Math.abs(trend.change).toFixed(1)
+                : Math.round(trend.change)}
               {displayType === 'percentage' ? '%' : ''}
             </span>
           </div>

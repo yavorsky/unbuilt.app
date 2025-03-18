@@ -30,12 +30,12 @@ export function TechnologyTrends({ data, type }: TechnologyTrendsProps) {
     if (risingTrend) {
       const chartLabel = chartConfig[risingTrend.name]?.label;
       const status = risingTrend.direction === 'up' ? 'rising' : 'declining';
-      const changePercent = Math.round(risingTrend.change);
+      const changeLabel = Math.round(risingTrend.change);
       return (
         <div>
           <div className="text-foreground/80 text-lg flex gap-2 font-medium leading-none justify-center">
             <b>{chartLabel}</b>
-            {` is ${status} by ${changePercent}${displayType === 'percentage' ? '%' : ' web apps'} over ${risingTrend.dataPoints} days`}
+            {` is ${status} by ${changeLabel}${displayType === 'percentage' ? '%' : ` web app${changeLabel === 1 ? '' : 's'}`} over ${risingTrend.dataPoints} day${risingTrend.dataPoints === 1 ? '' : 's'}`}
             <TrendingUp className="h-4 w-4" />
           </div>
         </div>
