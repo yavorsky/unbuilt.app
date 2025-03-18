@@ -5,11 +5,10 @@ import { TechnologyTrend } from '@/server/api/get-technology-trends';
 import { TrendCard } from './trend-card';
 import { TrendsChart } from './trends-chart';
 import { useTrends } from '@/app/hooks/technologies/use-trends';
-import { TrendingUp } from 'lucide-react';
+import { HashIcon, TrendingUp } from 'lucide-react';
 import { useChartConfigForTechnology } from '@/app/hooks/use-chart-config';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 interface TechnologyTrendsProps {
   data: TechnologyTrend[];
@@ -48,16 +47,26 @@ export function TechnologyTrends({ data, type }: TechnologyTrendsProps) {
   return (
     <div className="space-y-4 flex flex-col">
       <div className="flex items-center justify-end">
-        <Label htmlFor="airplane-mode">Percent</Label>
-        <Switch
-          className="ml-2"
-          checked={displayType === 'percentage'}
-          onCheckedChange={() =>
-            setDisplayType((prev) =>
-              prev === 'count' ? 'percentage' : 'count'
-            )
+        <ToggleGroup
+          type="single"
+          value={displayType}
+          onValueChange={(value) =>
+            value && setDisplayType(value as DisplayType)
           }
-        />
+        >
+          <ToggleGroupItem
+            value="count"
+            className="data-[state=on]:bg-secondary"
+          >
+            <HashIcon />
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="percentage"
+            className="data-[state=on]:bg-secondary"
+          >
+            %
+          </ToggleGroupItem>
+        </ToggleGroup>
       </div>
       <TrendsChart
         data={data}
