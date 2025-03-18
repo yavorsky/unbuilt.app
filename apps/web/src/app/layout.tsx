@@ -1,8 +1,10 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import './globals.css';
+import { GoogleAnalytics } from '@next/third-parties/google';
 import React from 'react';
+import { PageViewTracker } from './components/page-view-tracker';
+import './globals.css';
 
 const baseUrl = 'https://unbuilt.app';
 
@@ -63,6 +65,8 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
+const gaId = process.env.NODE_ENV === 'production' && process.env.GA_ID;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -71,6 +75,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {gaId && <GoogleAnalytics gaId={gaId} />}
+        <PageViewTracker />
         <ThemeProvider attribute="class" defaultTheme="dark">
           {children}
         </ThemeProvider>

@@ -2,6 +2,7 @@ import { analyzeWebsite } from '@/actions';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo, useState } from 'react';
+import { trackAnalysisStart } from '../utils/analytics';
 
 export const useStartNewAnalysis = () => {
   const [isNewAnalysisPending, setIsNewAnalysisPending] = useState(false);
@@ -18,6 +19,7 @@ export const useStartNewAnalysis = () => {
         description: 'Usually takes up to 10 seconds.',
       });
       const result = await analyzeWebsite(form);
+      trackAnalysisStart(url, false);
 
       if (result.analysisId) {
         return router.push(`/analysis/${result.analysisId}`);
