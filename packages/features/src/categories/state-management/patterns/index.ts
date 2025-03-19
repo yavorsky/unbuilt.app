@@ -5,6 +5,7 @@ import { ngrx } from './ngrx.js';
 import { pinia } from './pinia.js';
 import { recoil } from './recoil.js';
 import { redux } from './redux.js';
+import { tanstackQuery } from './tanstack-query.js';
 import { valtio } from './valtio.js';
 import { xState } from './x-state.js';
 import { zustand } from './zustand.js';
@@ -17,6 +18,7 @@ export const patterns = {
   pinia,
   recoil,
   xState,
+  tanstackQuery,
   redux,
   valtio,
   zustand,
