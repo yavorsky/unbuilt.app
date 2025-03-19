@@ -15,7 +15,11 @@ module.exports = {
       // eslint-disable-next-line no-undef
       SUPABASE_KEY: process.env.SUPABASE_KEY,
       // eslint-disable-next-line no-undef
-      GA_ID: process.env.GA_ID
+      GA_ID: process.env.GA_ID,
+      // eslint-disable-next-line no-undef
+      LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
+      // eslint-disable-next-line no-undef
+      LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY
     },
     instances: 1,
     autorestart: true,

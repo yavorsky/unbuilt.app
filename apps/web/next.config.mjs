@@ -1,6 +1,24 @@
 import {withSentryConfig} from '@sentry/nextjs';
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Don't resolve these modules on the client
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        stream: false,
+        'pino-pretty': false,
+        'pino-logflare': false,
+        child_process: false,
+      };
+    }
+
+    return config;
+  },
+};
 
 export default withSentryConfig(nextConfig, {
   // For all available options, see:

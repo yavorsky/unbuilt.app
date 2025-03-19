@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 import { LogoIcon } from '../components/icons/logo';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '../utils/error-monitoring';
 
 export const runtime = 'edge';
 
@@ -171,7 +171,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     const url = request.url;
-    captureException(error, { extra: { url } });
+    trackError(error as Error, { url });
     return new Response(
       `Failed to generate image: ${(error as Error).message}`,
       {

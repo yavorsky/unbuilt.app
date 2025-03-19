@@ -6,7 +6,8 @@ import {
 } from '../utils/extract-secondary-matches';
 import { Json, TablesInsert } from '../../../supabase/database.types';
 import { toSnakeCase } from '../utils/convert-keys';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
+import logger from '@/app/utils/logger/logger';
 
 export interface TechnologyInfo {
   type?: string;
@@ -24,7 +25,7 @@ type StylingLibraryInsert = TablesInsert<'styling_libraries'>;
  * Save a new tech stack analysis
  */
 export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
-  console.log('Result is saved', { id, url: analysisData.url });
+  logger.info('Result is saved', { id, url: analysisData.url });
   try {
     const insertData: TechStackAnalysisInsert = {
       id,
@@ -114,7 +115,7 @@ export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
 
     return { data, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, { id });
     return { data: null, error };
   }
 }

@@ -15,6 +15,8 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
+      LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       GA_ID: ${{ secrets.GA_ID }}
 
     steps:
@@ -56,6 +58,8 @@ jobs:
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
       GA_ID: ${{ secrets.GA_ID }}
+      LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
+      LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
 
     steps:
       - name: Checkout code
@@ -73,13 +77,15 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,GA_ID
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,GA_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY
           script: |
             cd /home/server/unbuilt-app && \
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
             echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
+            echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
+            echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
             echo "GA_ID=${GA_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \

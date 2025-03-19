@@ -1,5 +1,6 @@
 import { sendGAEvent } from '@next/third-parties/google';
 import { captureException } from '@sentry/nextjs';
+import logger from './logger/logger';
 
 // Define types for the event parameters
 type EventParams = {
@@ -32,6 +33,12 @@ export const trackEvent = (
     // Fail silently in production, but log to console
     captureException(error);
   }
+
+  // Log to Logflare (will use console in development)
+  logger.info(`Event tracked: ${eventName}`, {
+    event: eventName,
+    params: eventParams,
+  });
 };
 
 /**
@@ -65,6 +72,12 @@ export const trackNavigation = (destination: string, isExternal = false) => {
   });
 };
 
+/**
+ * Tracks a start of a new analysis in Google Analytics
+ *
+ * @param url The URL of the page being analyzed
+ * @param isRefreshingExisting Whether the analysis was started on top of an existing one
+ */
 export const trackAnalysisStart = (
   url: string,
   isRefreshingExisting: boolean

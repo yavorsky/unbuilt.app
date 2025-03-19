@@ -7,7 +7,8 @@ import {
 } from './api';
 import { v4 as uuidv4 } from 'uuid';
 import Bull from 'bull';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
+import logger from '@/app/utils/logger/logger';
 
 export interface AnalysisStatus {
   id: string;
@@ -33,7 +34,7 @@ export class AnalysisManager {
   }
 
   private async onJobCompleted(jobId: string, result: AnalyzeResult) {
-    console.log('Job is completed', jobId);
+    logger.info('Job is completed', { id: jobId });
     await this.storeResult(jobId, result);
     await this.queueManager.removeJob(jobId);
   }
@@ -125,7 +126,7 @@ export class AnalysisManager {
       const { data } = await getAnalyzysMetaByUrlQuery(url);
       return { id: data?.id, analyzedAt: data?.analyzed_at };
     } catch (e) {
-      captureException(e);
+      trackError(e as Error, { url });
       return null;
     }
   }

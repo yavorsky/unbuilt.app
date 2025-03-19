@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/nextjs';
 import { Pattern } from '../../types/pattern.js';
 import { isMatch } from 'super-regex';
 import { ProcessPatternsResult } from '../process-patterns.js';
@@ -35,6 +34,6 @@ export async function processScriptPattern<Names extends string>(
       result.matchedPatterns.add(pattern.name);
     }
   } catch (e) {
-    captureException(e);
+    console.log(e as Error, { patternName: pattern.name });
   }
 }

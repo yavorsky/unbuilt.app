@@ -1,5 +1,5 @@
 import { getAnalysisResults } from '@/actions';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export async function GET(
   _request: Request,
@@ -9,7 +9,9 @@ export async function GET(
     const result = await getAnalysisResults(params.id);
     return Response.json(result);
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, {
+      analysisId: params.id,
+    });
     return Response.json(
       { error: 'Failed to get analysis results' },
       { status: 500 }

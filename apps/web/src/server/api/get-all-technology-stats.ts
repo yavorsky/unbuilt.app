@@ -1,11 +1,10 @@
-import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { columnMapping } from '../utils/column-mapping';
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
+import { trackError } from '@/app/utils/error-monitoring';
 
 // Usage example:
 // const { data } = await getTechnologyStats();
-// console.log('Transpiler usage:', data.transpilers);
 // Result:
 // Transpiler usage: [
 //   { name: 'typescript', count: 74 },
@@ -29,7 +28,7 @@ export async function getTechnologyStatsQuery<T extends AnalysisTechnologies>(
   });
 
   if (error) {
-    captureException(error);
+    trackError(error);
     throw error;
   }
 

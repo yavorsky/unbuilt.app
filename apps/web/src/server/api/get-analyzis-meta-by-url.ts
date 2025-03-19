@@ -1,5 +1,5 @@
-import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export async function getAnalyzysMetaByUrlQuery(url: string) {
   try {
@@ -15,7 +15,9 @@ export async function getAnalyzysMetaByUrlQuery(url: string) {
 
     return { data, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, {
+      url,
+    });
     return { data: null, error };
   }
 }

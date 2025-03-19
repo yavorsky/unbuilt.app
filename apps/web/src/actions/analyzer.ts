@@ -1,8 +1,8 @@
-import { captureException } from '@sentry/nextjs';
 import { QueueManager } from '../server/queue-manager';
 import { AnalysisManager } from '../server/analysis-manager';
 import { AnalysisResults } from '.';
 import { normalizeUrl } from '@unbuilt/helpers';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -31,7 +31,7 @@ export async function startAnalysis(
 
     return { error: null, analysisId };
   } catch (error) {
-    captureException(error, { extra: { url } });
+    trackError(error as Error, { extra: { url } });
     return { error: 'Failed to analyze website' };
   }
 }
@@ -61,7 +61,7 @@ export async function getStatus(analysisId: string) {
       error: null,
     };
   } catch (error) {
-    captureException(error, {
+    trackError(error as Error, {
       extra: {
         analysisId,
       },
