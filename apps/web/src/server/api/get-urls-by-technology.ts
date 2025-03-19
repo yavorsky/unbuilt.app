@@ -1,6 +1,6 @@
 import { AnalysisKeys } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export async function getUrlsByTechnologyQuery(
   techType: AnalysisKeys,
@@ -17,7 +17,7 @@ export async function getUrlsByTechnologyQuery(
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, { techType, techName, minConfidence });
     return { data: null, error };
   }
 }

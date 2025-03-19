@@ -1,6 +1,6 @@
-import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { formatAnalyzisResponse } from '../utils/format-analyzis-response';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export async function getAnalysesByUrlQuery(url: string) {
   try {
@@ -29,7 +29,9 @@ export async function getAnalysesByUrlQuery(url: string) {
 
     return { data: formattedData, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, {
+      url,
+    });
     return { data: null, error };
   }
 }

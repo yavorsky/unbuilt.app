@@ -9,7 +9,8 @@ import {
 import { BrowserContext } from 'playwright';
 import { BrowserManager } from '@unbuilt/helpers';
 import { setUserHeaders } from './utils/set-user-headers';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
+import logger from '@/app/utils/logger/logger';
 
 // Using 75% since ~25% is used for system tasks. We can adjust this in the future. Value should be not higher than 6, to not overload network.
 const CONCURRENT_JOBS = 1; //Math.max(1, Math.floor(os.cpus().length * 0.75));
@@ -76,14 +77,12 @@ export class QueueManager {
 
       // Initialize browser manager
       this.browserManager = new BrowserManager();
-      await this.browserManager.initialize(CONCURRENT_JOBS, captureException);
+      await this.browserManager.initialize(CONCURRENT_JOBS, trackError);
 
       // Process jobs
       this.queue.process(CONCURRENT_JOBS, async (job) => {
         let context: BrowserContext | undefined;
-        console.log(
-          `[Job ${job.id}] Starting processing for ${job.data.url} - ${job.progress()} --- ${job.returnvalue} --- ${JSON.stringify(job.data)}`
-        );
+        logger.info(`Starting analysis`, { id: job.id, url: job.data.url });
 
         // Here we are covering case, when job was timed out and moved to stalled.
         // After that, when queue is ready it becomes available. But in this case, we have some chance of the job
@@ -106,7 +105,7 @@ export class QueueManager {
           };
 
           const onError = (error: Error) => {
-            captureException(error);
+            trackError(error, { url: job.data.url, id: job.id });
           };
 
           const result = await analyze(
@@ -117,19 +116,26 @@ export class QueueManager {
             onProgress,
             onError
           );
-          console.log(`[Job ${job.id}] Completed analysis for ${job.data.url}`);
+          logger.info(`Completed analysis`, {
+            id: job.id,
+            url: job.data.url,
+            result,
+          });
           if (await job.isDelayed()) {
             try {
               await job.update(result);
               await job.progress(100);
             } catch (updateError) {
-              captureException(updateError);
+              trackError(updateError as Error, {
+                url: job.data.url,
+                id: job.id,
+              });
             }
           }
           try {
             await context.close();
           } catch (closeError) {
-            captureException(closeError);
+            trackError(closeError as Error, { url: job.data.url, id: job.id });
           }
           return result;
         } catch (error) {
@@ -137,21 +143,27 @@ export class QueueManager {
           if (e.message === errors.RESOURCE_NOT_AVAILABLE) {
             // Expected error, so no need to retry
             job.discard();
-            console.log('resource is not available');
+            logger.info('Resource is not available', {
+              url: job.data.url,
+              id: job.id,
+            });
           } else {
-            captureException(error);
+            trackError(error as Error, { url: job.data.url, id: job.id });
           }
           throw error;
         } finally {
           if (context) {
-            await context.close().catch((err) => captureException(err));
+            await context
+              .close()
+              .catch((err) =>
+                trackError(err as Error, { url: job.data.url, id: job.id })
+              );
           }
         }
       });
 
       // // Set up event handlers
-      this.queue.on('completed', async (job) => {
-        console.log(job.id, 'COMPLETED');
+      this.queue.on('completed', async () => {
         await this.checkAndLogActiveJobs();
       });
 
@@ -241,8 +253,9 @@ export class QueueManager {
 
     const currentActiveCount = await this.queue.getActiveCount();
     if (currentActiveCount !== this.lastActiveCount) {
-      console.log(
-        `[QueueManager] Active jobs count changed: ${this.lastActiveCount} → ${currentActiveCount}`
+      logger.info(
+        `Active jobs count changed: ${this.lastActiveCount} → ${currentActiveCount}`,
+        { count: currentActiveCount }
       );
       this.lastActiveCount = currentActiveCount;
     }

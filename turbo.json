@@ -1,12 +1,12 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "globalDependencies": [".env", ".env.local"],
-  "globalEnv": ["NODE_ENV", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID", "GA_ID"],
+  "globalEnv": ["NODE_ENV", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID", "GA_ID", "LOGFLARE_SOURCE_TOKEN", "LOGFLARE_API_KEY"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "build/**"],
-      "env": ["NEXT_PUBLIC_*", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID", "REDIS_HOST", "REDIS_PORT", "GA_ID"]
+      "env": ["NEXT_PUBLIC_*", "SUPABASE_URL", "SUPABASE_KEY", "SUPABASE_ID", "REDIS_HOST", "REDIS_PORT", "GA_ID", "LOGFLARE_SOURCE_TOKEN", "LOGFLARE_API_KEY"]
     },
     "lint": {
       "outputs": []

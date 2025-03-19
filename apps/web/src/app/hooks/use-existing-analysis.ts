@@ -3,6 +3,7 @@ import { debounce } from 'lodash-es';
 import { useEffect, useState, useCallback } from 'react';
 import { validateUrl } from '../utils/validate-url';
 import * as Sentry from '@sentry/nextjs';
+import { trackError } from '../utils/error-monitoring';
 
 type URL = string;
 export const statuses = {
@@ -46,7 +47,7 @@ export const useExistingAnalysisMeta = (url: URL) => {
           });
 
           // Capture the exception with the enhanced scope
-          Sentry.captureException(e);
+          trackError(e as Error, { url: urlToFetch });
         });
       }
     }, 300),

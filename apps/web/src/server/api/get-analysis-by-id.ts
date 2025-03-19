@@ -1,4 +1,4 @@
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
 import { supabase } from '../supabase';
 import { formatAnalyzisResponse } from '../utils/format-analyzis-response';
 
@@ -28,7 +28,9 @@ export async function getAnalysisByIdQuery(id: string) {
 
     return { data: formattedData, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, {
+      analysisId: id,
+    });
     return { data: null, error };
   }
 }

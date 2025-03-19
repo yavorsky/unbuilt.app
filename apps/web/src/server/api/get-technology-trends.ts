@@ -1,7 +1,7 @@
 import { AnalysisTechnologies } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
 import { columnMapping } from '../utils/column-mapping';
-import { captureException } from '@sentry/nextjs';
+import { trackError } from '@/app/utils/error-monitoring';
 
 export type TimeRange = 'week' | 'month' | '3months' | 'year';
 
@@ -45,7 +45,7 @@ export async function getTechnologyTrendsQuery(
   );
 
   if (error || !trendData) {
-    captureException(error);
+    trackError(error as Error, { type, timeRange });
     return [];
   }
 

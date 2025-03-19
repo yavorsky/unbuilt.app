@@ -1,6 +1,6 @@
-import { captureException } from '@sentry/nextjs';
 import { supabase } from '../supabase';
 import { AnalysisKeys } from '@unbuilt/analyzer';
+import { trackError } from '@/app/utils/error-monitoring';
 
 /**
  * Search for sites using multiple technologies
@@ -19,7 +19,7 @@ export async function searchByTechStackQuery(
     if (error) throw error;
     return { data, error: null };
   } catch (error) {
-    captureException(error);
+    trackError(error as Error, { technologies, minConfidence });
     return { data: null, error };
   }
 }
