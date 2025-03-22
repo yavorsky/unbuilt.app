@@ -25,6 +25,8 @@ import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
 
+const isUnknown = (name: string | undefined) => name === 'unknown';
+
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
   status: string | null;
@@ -57,6 +59,106 @@ export const CardsGrid: FC<{
   const formattedDate = useDateFormat(result?.timestamp);
   const { theme } = useTheme();
 
+  // Determine the order of cards to render
+  const cardOrder = useMemo(() => {
+    if (!result?.analysis) return [];
+
+    // Define the cards and their values
+    const cards = [
+      {
+        id: 'framework',
+        isUnknown: isUnknown(result.analysis.framework?.name),
+        el: <FrameworkCard framework={result?.analysis.framework} />,
+      },
+      {
+        id: 'uiLibrary',
+        isUnknown: isUnknown(result.analysis.uiLibrary?.name),
+        el: <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />,
+      },
+      {
+        id: 'platform',
+        isUnknown: isUnknown(result.analysis.platform?.name),
+        el: <PlatformCard platform={result?.analysis.platform} />,
+      },
+      {
+        id: 'bundler',
+        isUnknown: isUnknown(result.analysis.bundler?.name),
+        el: <BundlerCard bundler={result?.analysis.bundler} />,
+      },
+      {
+        id: 'transpiler',
+        isUnknown: isUnknown(result.analysis.transpiler?.name),
+        el: <TranspilerCard transpiler={result?.analysis.transpiler} />,
+      },
+      {
+        id: 'router',
+        isUnknown: isUnknown(result.analysis.router?.name),
+        el: <RouterCard router={result?.analysis.router} />,
+      },
+      {
+        id: 'httpClient',
+        isUnknown: isUnknown(result.analysis.httpClient?.name),
+        el: <HTTPClientCard httpClient={result?.analysis.httpClient} />,
+      },
+      {
+        id: 'stateManagement',
+        isUnknown: isUnknown(result.analysis.stateManagement?.name),
+        el: (
+          <StateManagementCard
+            stateManagement={result?.analysis.stateManagement}
+          />
+        ),
+      },
+      {
+        id: 'dates',
+        isUnknown: isUnknown(result.analysis.dates?.name),
+        el: <DatesCard dates={result?.analysis.dates} />,
+      },
+      {
+        id: 'translations',
+        isUnknown: isUnknown(result.analysis.translations?.name),
+        el: <TranslationsCard translations={result?.analysis.translations} />,
+      },
+      {
+        id: 'analytics',
+        isUnknown: isUnknown(result.analysis.analytics?.name),
+        el: <AnalyticsCard analytics={result?.analysis.analytics} />,
+      },
+      {
+        id: 'stylingLibraries',
+        isUnknown:
+          Object.values(result?.analysis.stylingLibraries ?? {}).length === 0,
+        el: (
+          <StylingLibrariesCard
+            stylingLibraries={result?.analysis.stylingLibraries}
+          />
+        ),
+      },
+      {
+        id: 'stylingProcessor',
+        isUnknown: isUnknown(result.analysis.stylingProcessor?.name),
+        el: (
+          <StylingProcessorCard
+            stylingProcessor={result?.analysis.stylingProcessor}
+          />
+        ),
+      },
+      {
+        id: 'modules',
+        isUnknown: isUnknown(result.analysis.modules?.name),
+        el: <ModulesCard modules={result?.analysis.modules} />,
+      },
+    ];
+
+    // Sort the cards - move only "unknown" values to the end
+    return cards.sort((a, b) => {
+      // Only sort if one is "unknown" and one is not
+      if (a.isUnknown && !b.isUnknown) return 1;
+      if (!a.isUnknown && b.isUnknown) return -1;
+      return 0;
+    });
+  }, [result?.analysis]);
+
   return (
     <div className="max-w-7xl mx-auto pb-6">
       <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
@@ -88,59 +190,19 @@ export const CardsGrid: FC<{
       {status !== 'failed' ? (
         <Suspense>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 pt-10">
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <FrameworkCard framework={result?.analysis.framework} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />
-            </div>
+            {/* Render cards in the determined order */}
+            {cardOrder.map((card) => {
+              return (
+                <div
+                  key={card.id}
+                  className="col-span-1 sm:col-span-1 lg:col-span-2"
+                >
+                  {card.el}
+                </div>
+              );
+            })}
 
-            {/* All subsequent items */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <PlatformCard platform={result?.analysis.platform} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <BundlerCard bundler={result?.analysis.bundler} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <TranspilerCard transpiler={result?.analysis.transpiler} />
-            </div>
-            {/* <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <MinifierCard minifier={result?.analysis.minifier} />
-            </div> */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <RouterCard router={result?.analysis.router} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <HTTPClientCard httpClient={result?.analysis.httpClient} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <StateManagementCard
-                stateManagement={result?.analysis.stateManagement}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <DatesCard dates={result?.analysis.dates} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <TranslationsCard translations={result?.analysis.translations} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <AnalyticsCard analytics={result?.analysis.analytics} />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <StylingLibrariesCard
-                stylingLibraries={result?.analysis.stylingLibraries}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <StylingProcessorCard
-                stylingProcessor={result?.analysis.stylingProcessor}
-              />
-            </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
-              <ModulesCard modules={result?.analysis.modules} />
-            </div>
+            {/* Fixed position cards */}
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
             </div>
