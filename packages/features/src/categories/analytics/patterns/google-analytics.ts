@@ -8,7 +8,6 @@ export const googleAnalytics = [
       return page.evaluate(() => {
         const markers = {
           hasGaGlobal: window.gaGlobal && window.gaGlobal.vid,
-          gtagGlobal: typeof window.gtag === 'function',
         };
         return Object.values(markers).some(Boolean);
       });
