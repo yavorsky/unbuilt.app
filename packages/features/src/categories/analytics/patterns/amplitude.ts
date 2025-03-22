@@ -3,11 +3,12 @@ import { Page } from 'playwright';
 export const amplitude = [
   {
     name: 'globals' as const,
-    score: 1.5,
+    score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasAmplitude: !!window.amplitudeClient,
+          hasAmplitude: !!window.amplitude,
+          hasAmplitudeClient: !!window.amplitudeClient,
           hasAmplitudeInstance: !!window.amplitudeInstance,
         };
         return Object.values(markers).some(Boolean);
@@ -20,6 +21,9 @@ export const amplitude = [
     scripts: [
       /this\.amplitudeInstance/,
       /automaticFetchOnAmplitudeIdentityChange/,
+      /["']amplitude_unsent_identify["']/,
+      /["']amplitude_lastEventId["']/,
+      /["']amplitude_sessionId["']/,
     ],
   },
   {

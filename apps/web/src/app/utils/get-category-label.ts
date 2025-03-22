@@ -8,7 +8,7 @@ const categoryLabelsMap: Record<keyof AnalysisFeaturesWithStats, string> = {
   dates: 'Dates Library',
   framework: 'Framework',
   httpClient: 'HTTP Client',
-  platform: 'Platform',
+  platform: 'Site Builder',
   uiLibrary: 'UI Library',
   minifier: 'Minifier',
   modules: 'Modules',
