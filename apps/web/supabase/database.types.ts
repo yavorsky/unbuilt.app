@@ -478,7 +478,9 @@ export type Database = {
         | 'mixpanel'
         | 'plausible'
         | 'umami'
-        | 'vercelAnalytics';
+        | 'vercelAnalytics'
+        | 'clarity'
+        | 'hotjar';
       bundler_type:
         | 'unknown'
         | 'brunch'

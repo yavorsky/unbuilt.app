@@ -76,6 +76,17 @@ For project administrators only. This uses production database credentials to co
   SUPABASE_PROD_KEY=your-project-anon-key
   ```
 
+#### (Admin only) Pulling migrations
+
+**Prerequisites for production mode:**
+- You must have admin access to the project and add SUPABASE_PROD_DB_PASSWORD to your `.env.local` file
+
+If you need to pull migrations from production, you can use the `yarn pull-production-schema` command. This will:
+
+1. Connect to the production database
+2. Pull the latest schema
+3. Apply the schema to your local database
+
 #### Database Schema
 
 The local Supabase instance will automatically apply all migrations from the `supabase/migrations` directory. This ensures your local database has the correct schema structure without needing access to production credentials.
