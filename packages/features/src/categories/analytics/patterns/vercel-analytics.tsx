@@ -39,7 +39,7 @@ export const vercelAnalytics = [
     },
   },
   {
-    name: 'paths' as const,
+    name: 'sources' as const,
     score: 0.9,
     filenames: [/\/_?vercel\/insights\//],
   },

@@ -6,7 +6,6 @@ import { FrameworkCard } from './cards/framework';
 import { BundlerCard } from './cards/bundler';
 import { TranspilerCard } from './cards/transpiler';
 import { UILibraryCard } from './cards/ui-library';
-import { MinifierCard } from './cards/minifier';
 import { ModulesCard } from './cards/modules';
 import { StylingLibrariesCard } from './cards/styling-libraries';
 import { StylingProcessorCard } from './cards/styling-processor';
@@ -24,6 +23,7 @@ import { TranslationsCard } from './cards/translations';
 import { NewAnalysisDialog } from '../new-analysis-dialog';
 import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
+import { AnalyticsCard } from './cards/analytics';
 
 export const CardsGrid: FC<{
   result: OnProgressResult | null;
@@ -105,9 +105,9 @@ export const CardsGrid: FC<{
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <TranspilerCard transpiler={result?.analysis.transpiler} />
             </div>
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            {/* <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <MinifierCard minifier={result?.analysis.minifier} />
-            </div>
+            </div> */}
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <RouterCard router={result?.analysis.router} />
             </div>
@@ -124,6 +124,9 @@ export const CardsGrid: FC<{
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <TranslationsCard translations={result?.analysis.translations} />
+            </div>
+            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+              <AnalyticsCard analytics={result?.analysis.analytics} />
             </div>
             <div className="col-span-1 sm:col-span-1 lg:col-span-2">
               <StylingLibrariesCard

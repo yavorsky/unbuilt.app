@@ -41,6 +41,9 @@ export * as transpilerMeta from './categories/transpiler/meta/index.js';
 export * as platform from './categories/platform/index.js';
 export * as platformMeta from './categories/platform/meta/index.js';
 
+export * as analytics from './categories/analytics/index.js';
+export * as analyticsMeta from './categories/analytics/meta/index.js';
+
 // Utils to calculate results
 export * from './detector/index.js';
 

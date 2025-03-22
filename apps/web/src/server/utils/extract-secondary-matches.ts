@@ -19,6 +19,7 @@ export function extractSecondaryMatches(analysis: AnalyzeResult['analysis']) {
     stateManagement: analysis.stateManagement?.secondaryMatches || {},
     uiLibrary: analysis.uiLibrary?.secondaryMatches || {},
     httpClient: analysis.httpClient?.secondaryMatches || {},
+    analytics: analysis.analytics?.secondaryMatches || {},
     platform: analysis.platform?.secondaryMatches || {},
   };
 
@@ -37,6 +38,7 @@ export function extractDetectedFeatures(analysis: AnalyzeResult['analysis']) {
     dates: Array.from(analysis.dates?.detectedFeatures),
     translations: Array.from(analysis.translations?.detectedFeatures),
     stateManagement: Array.from(analysis.stateManagement?.detectedFeatures),
+    analytics: Array.from(analysis.analytics?.detectedFeatures),
     uiLibrary: Array.from(analysis.uiLibrary?.detectedFeatures),
     httpClient: Array.from(analysis.httpClient?.detectedFeatures),
     platform: Array.from(analysis.platform?.detectedFeatures),

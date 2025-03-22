@@ -1,6 +1,13 @@
 import { useState, FC, Suspense, useMemo } from 'react';
-import { Card, CardContent, CardHeader } from '@/components/ui';
-import { ChevronDown, ChevronUp, LucideProps } from 'lucide-react';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui';
+import { ChevronDown, ChevronUp, InfoIcon, LucideProps } from 'lucide-react';
 import { ConfidenceIndicator } from '../../../confidence-indicator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
@@ -21,6 +28,28 @@ import {
 } from '@/app/utils/get-technology-meta';
 import { getResultsName } from '@/app/utils';
 import { Badge } from '@/components/ui/badge';
+import { useStartNewAnalysis } from '@/app/hooks/use-start-new-analysis';
+import { TooltipProvider } from '@radix-ui/react-tooltip';
+
+const NotDetectedLabel = () => {
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <div className="flex items-center gap-2">
+            Not Detected <InfoIcon className="w-4 h-4" />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent className="w-60">
+          <p>
+            The app doesn&apos;t use this technology type or it uses one that
+            unbuilt doesn&apos;t yet recognize
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+};
 
 export function SingleResultAnalysisCard<
   N extends AnalysisTechnologies,
@@ -38,9 +67,12 @@ export function SingleResultAnalysisCard<
   withSecondaryMatches?: boolean;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const isLoading = !analysis;
   const label = getCategoryLabel(name);
   const { activeAnalysis } = useActiveAnalysis();
+
+  const isCompleted = activeAnalysis?.status === 'completed';
+  const isLoading = !analysis;
+  const { startNewAnalysis } = useStartNewAnalysis();
 
   const { updateActiveCategory, activeCategory } = useActiveCategory();
   const supportedOptions = useMemo(
@@ -51,7 +83,49 @@ export function SingleResultAnalysisCard<
   const className =
     'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
 
-  if (isLoading || !('name' in analysis)) {
+  const categoryAddedAfterAnalysis = isCompleted && analysis?.name === null;
+
+  if (categoryAddedAfterAnalysis) {
+    return (
+      <Card className={className}>
+        <CardHeader className="py-4 pb-4">
+          <p className="text-sm text-slate-400">{label}</p>
+          <div className="flex items-center gap-3 mt-1">
+            <div className="w-5 flex justify-center items-center">
+              <Icon width={18} height={18} className="h-6 w-6" />
+            </div>
+            <div className="flex items-center gap-2">
+              <h3 className="font-normal text-2xl tracking-tight text-foreground">
+                Not Processed
+              </h3>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="px-6 space-y-4">
+            <div className="space-y-3">
+              <p className="text-sm text-foreground/50">
+                This category was added after the current analysis. <br />
+                <a
+                  className="bold underline cursor-pointer hover:text-foreground transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    startNewAnalysis(activeAnalysis?.url);
+                  }}
+                >
+                  Start new analysis
+                </a>{' '}
+                to get fresh results.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const isLoadingOrUnknown = isLoading || !('name' in analysis);
+  if (isLoadingOrUnknown) {
     return (
       <Card
         className={className}
@@ -116,16 +190,12 @@ export function SingleResultAnalysisCard<
                   <h3
                     className={`${isUnknown ? 'font-normal' : 'font-bold'} text-2xl tracking-tight text-foreground`}
                   >
-                    {isUnknown
-                      ? 'Unknown'
-                      : (resultMeta?.name ?? capitalize(analysis.name))}
+                    {isUnknown ? (
+                      <NotDetectedLabel />
+                    ) : (
+                      (resultMeta?.name ?? capitalize(analysis.name))
+                    )}
                   </h3>
-                  {/* <Badge
-                  variant="outline"
-                  className="text-xs bg-slate-700 text-slate-200 border-0"
-                >
-                  v{version}
-                </Badge> */}
                 </div>
               </div>
             </div>
@@ -134,8 +204,22 @@ export function SingleResultAnalysisCard<
         </div>
       </CardHeader>
       <CardContent className="p-0">
-        <div className="p-6 space-y-4">
-          <div className="space-y-3">
+        <div className="px-6 py-0 space-y-4">
+          {Array.from(analysis.detectedFeatures).map((feature) => {
+            if (!resultMeta?.featuresToDisplay?.[feature]) {
+              return null;
+            }
+            const label =
+              typeof resultMeta?.featuresToDisplay[feature] === 'string'
+                ? resultMeta?.featuresToDisplay[feature]
+                : feature;
+            return (
+              <Badge key={feature} variant="outline" className="text-xs">
+                <div className="flex items-center gap-2">{label}</div>
+              </Badge>
+            );
+          })}
+          <div className="space-y-3 pb-4">
             {resultMeta?.tags?.map((tag) => (
               <Badge
                 key={tag}
