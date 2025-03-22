@@ -53,6 +53,15 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.platform || {},
       },
+      analytics: {
+        type: 'analytics',
+        name: data.analytics,
+        confidence: data.analytics_confidence,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.analytics || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.analytics || {},
+      },
       minifier: {
         type: 'minifier',
         name: data.minifier,

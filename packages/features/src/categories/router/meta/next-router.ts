@@ -8,4 +8,7 @@ export const nextRouter: Meta = {
     'Next.js has a file-system based router built on the concept of pages.',
   tags: ['Next.js essentials'],
   Icon: NextLogo,
+  featuresToDisplay: {
+    appRouter: 'App Router',
+  },
 };

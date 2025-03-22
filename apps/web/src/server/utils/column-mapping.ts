@@ -12,5 +12,6 @@ export const columnMapping = {
   dates: 'dates',
   platform: 'platform',
   stylingLibraries: 'styling_libraries',
+  analytics: 'analytics',
   translations: 'translations',
 } as const;

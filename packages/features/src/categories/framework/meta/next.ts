@@ -8,4 +8,7 @@ export const next: Meta = {
   description:
     'Free and open-source React front-end web development framework that enables functionality such as server-side rendering and generating static websites for React based web applications.',
   Icon: NextLogo,
+  featuresToDisplay: {
+    ssr: 'SSR',
+  },
 };

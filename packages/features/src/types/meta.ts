@@ -13,6 +13,7 @@ export interface Meta<T extends string[] | undefined = string[] | undefined> {
   website: string;
   description: string;
   tags?: T;
+  featuresToDisplay?: Record<string, string | boolean>;
   // Consider moving to react-agnostic approach if we'll have issues in node environment.
   Icon: React.FC<LogoProps> | null;
 }
