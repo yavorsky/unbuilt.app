@@ -276,7 +276,7 @@ function applyMigrations(): boolean {
     }
 
     // Apply migrations
-    execCommand('supabase db push', {
+    execCommand('supabase db push --local', {
       cwd: PROJECT_ROOT,
     });
 
