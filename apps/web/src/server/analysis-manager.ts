@@ -60,11 +60,11 @@ export class AnalysisManager {
 
   async getAnalysisResults(id: string) {
     // Check Redis first
-    // const ongoingAnalysis = await this.getOngoingAnalysis(id);
+    const ongoingAnalysis = await this.getOngoingAnalysis(id);
 
-    // if (ongoingAnalysis) {
-    //   return ongoingAnalysis;
-    // }
+    if (ongoingAnalysis) {
+      return ongoingAnalysis;
+    }
 
     const completedAnalysis = await this.getCompletedAnalysis(id);
 
