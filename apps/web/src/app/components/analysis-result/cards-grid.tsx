@@ -61,48 +61,46 @@ export const CardsGrid: FC<{
 
   // Determine the order of cards to render
   const cardOrder = useMemo(() => {
-    if (!result?.analysis) return [];
-
     // Define the cards and their values
     const cards = [
       {
         id: 'framework',
-        isUnknown: isUnknown(result.analysis.framework?.name),
+        isUnknown: isUnknown(result?.analysis.framework?.name),
         el: <FrameworkCard framework={result?.analysis.framework} />,
       },
       {
         id: 'uiLibrary',
-        isUnknown: isUnknown(result.analysis.uiLibrary?.name),
+        isUnknown: isUnknown(result?.analysis.uiLibrary?.name),
         el: <UILibraryCard uiLibrary={result?.analysis.uiLibrary} />,
       },
       {
         id: 'platform',
-        isUnknown: isUnknown(result.analysis.platform?.name),
+        isUnknown: isUnknown(result?.analysis.platform?.name),
         el: <PlatformCard platform={result?.analysis.platform} />,
       },
       {
         id: 'bundler',
-        isUnknown: isUnknown(result.analysis.bundler?.name),
+        isUnknown: isUnknown(result?.analysis.bundler?.name),
         el: <BundlerCard bundler={result?.analysis.bundler} />,
       },
       {
         id: 'transpiler',
-        isUnknown: isUnknown(result.analysis.transpiler?.name),
+        isUnknown: isUnknown(result?.analysis.transpiler?.name),
         el: <TranspilerCard transpiler={result?.analysis.transpiler} />,
       },
       {
         id: 'router',
-        isUnknown: isUnknown(result.analysis.router?.name),
+        isUnknown: isUnknown(result?.analysis.router?.name),
         el: <RouterCard router={result?.analysis.router} />,
       },
       {
         id: 'httpClient',
-        isUnknown: isUnknown(result.analysis.httpClient?.name),
+        isUnknown: isUnknown(result?.analysis.httpClient?.name),
         el: <HTTPClientCard httpClient={result?.analysis.httpClient} />,
       },
       {
         id: 'stateManagement',
-        isUnknown: isUnknown(result.analysis.stateManagement?.name),
+        isUnknown: isUnknown(result?.analysis.stateManagement?.name),
         el: (
           <StateManagementCard
             stateManagement={result?.analysis.stateManagement}
@@ -111,17 +109,17 @@ export const CardsGrid: FC<{
       },
       {
         id: 'dates',
-        isUnknown: isUnknown(result.analysis.dates?.name),
+        isUnknown: isUnknown(result?.analysis.dates?.name),
         el: <DatesCard dates={result?.analysis.dates} />,
       },
       {
         id: 'translations',
-        isUnknown: isUnknown(result.analysis.translations?.name),
+        isUnknown: isUnknown(result?.analysis.translations?.name),
         el: <TranslationsCard translations={result?.analysis.translations} />,
       },
       {
         id: 'analytics',
-        isUnknown: isUnknown(result.analysis.analytics?.name),
+        isUnknown: isUnknown(result?.analysis.analytics?.name),
         el: <AnalyticsCard analytics={result?.analysis.analytics} />,
       },
       {
@@ -136,7 +134,7 @@ export const CardsGrid: FC<{
       },
       {
         id: 'stylingProcessor',
-        isUnknown: isUnknown(result.analysis.stylingProcessor?.name),
+        isUnknown: isUnknown(result?.analysis.stylingProcessor?.name),
         el: (
           <StylingProcessorCard
             stylingProcessor={result?.analysis.stylingProcessor}
@@ -145,7 +143,7 @@ export const CardsGrid: FC<{
       },
       {
         id: 'modules',
-        isUnknown: isUnknown(result.analysis.modules?.name),
+        isUnknown: isUnknown(result?.analysis.modules?.name),
         el: <ModulesCard modules={result?.analysis.modules} />,
       },
     ];
