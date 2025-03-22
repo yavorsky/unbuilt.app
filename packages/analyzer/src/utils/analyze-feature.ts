@@ -14,6 +14,7 @@ import {
   dates,
   router,
   getStats,
+  analytics,
 } from '@unbuilt/features';
 
 import { OnProgressHandler } from './progress.js';
@@ -36,6 +37,7 @@ export const detectionMap = {
   dates: dates.detect,
   stateManagement: stateManagement.detect,
   stylingLibraries: stylingLibraries.detect,
+  analytics: analytics.detect,
   stats: getStats,
 };
 

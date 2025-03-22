@@ -12,3 +12,4 @@ export * as translations from './translations/index.js';
 export * as dates from './dates/index.js';
 export * as stylingLibraries from './styling-libraries/index.js';
 export * as transpiler from './transpiler/index.js';
+export * as analytics from './analytics/index.js';
