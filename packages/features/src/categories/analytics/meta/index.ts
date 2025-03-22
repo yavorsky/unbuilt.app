@@ -1,4 +1,5 @@
 import { amplitude } from './amplitude.js';
+import { clarity } from './clarity.js';
 import { fathom } from './fathom.js';
 import { googleAnalytics } from './google-analytics.js';
 import { matomo } from './matomo.js';
@@ -13,6 +14,7 @@ export const meta = {
   googleAnalytics,
   umami,
   vercelAnalytics,
+  clarity,
   matomo,
   mixpanel,
   plausible,
