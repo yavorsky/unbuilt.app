@@ -16,8 +16,10 @@ export async function TechnologyTypeSection<T extends AnalysisTechnologies>({
   type,
 }: TechnologyTypeSectionProps<T>) {
   // Fetch data server-side
-  const trendsData = await getTechnologyTrends(type);
-  const statsData = await getTechnologyStats(type);
+  const [trendsData, statsData] = await Promise.all([
+    getTechnologyTrends(type),
+    getTechnologyStats(type),
+  ]);
 
   return (
     <Card className="bg-muted backdrop-blur-sm border transition-all min-h-[620px]">

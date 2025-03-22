@@ -13,6 +13,7 @@ import {
   stylingLibrariesMeta,
   transpilerMeta,
   platformMeta,
+  analyticsMeta,
 } from '@unbuilt/features';
 import type { AnalysisFeatures, Meta } from '@unbuilt/features';
 
@@ -34,6 +35,7 @@ const technologyMetaMap: Record<
   dates: datesMeta,
   stylingLibraries: stylingLibrariesMeta,
   transpiler: transpilerMeta,
+  analytics: analyticsMeta,
 };
 
 export type TechnologyMetaMap = typeof technologyMetaMap;
