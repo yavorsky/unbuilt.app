@@ -1,12 +1,13 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { GoogleAnalytics } from '@next/third-parties/google';
 import React, { Suspense } from 'react';
 import { PageViewTracker } from './components/page-view-tracker';
 import './globals.css';
+import MicrosoftClarity from './components/clarity';
 
 const baseUrl = 'https://unbuilt.app';
+const clarityProjectId = process.env.CLARITY_PROJECT_ID;
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -65,8 +66,6 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest',
 };
 
-const gaId = process.env.NODE_ENV === 'production' && process.env.GA_ID;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -75,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {gaId && <GoogleAnalytics gaId={gaId} />}
+        <MicrosoftClarity projectId={clarityProjectId} />
         <Suspense fallback={null}>
           <PageViewTracker />
         </Suspense>
