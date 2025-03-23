@@ -19,7 +19,9 @@ module.exports = {
       // eslint-disable-next-line no-undef
       LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
       // eslint-disable-next-line no-undef
-      LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY
+      LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,
+      // eslint-disable-next-line no-undef
+      CLARITY_PROJECT_ID: process.env.CLARITY_PROJECT_ID
     },
     instances: 1,
     autorestart: true,
