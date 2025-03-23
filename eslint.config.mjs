@@ -20,19 +20,43 @@ export const baseConfig = [
         ...globals.browser,
         ...globals.node,
         FormData: 'readonly',
-      }
+      },
     },
     plugins: {
       '@typescript-eslint': tseslint,
-      'prettier': prettierPlugin,
+      prettier: prettierPlugin,
     },
     rules: {
       ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/explicit-function-return-type': 'off',
-      'prettier/prettier': 'error',  // Enable prettier rules
-      ...prettierConfig.rules,  // Disable rules that conflict with prettier
+      'prettier/prettier': 'error', // Enable prettier rules
+      ...prettierConfig.rules, // Disable rules that conflict with prettier
+    },
+  },
+  {
+    // Config files
+    files: ['*.cjs', '*.mjs', '*.json'],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+      },
+      globals: {
+        ...globals.node,
+      },
+    },
+    plugins: {
+      prettier: prettierPlugin,
+    },
+    rules: {
+      'prettier/prettier': 'error', // Enable prettier rules
+      ...prettierConfig.rules, // Disable rules that conflict with prettier
     },
   },
 ];
