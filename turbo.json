@@ -9,7 +9,6 @@
     "SUPABASE_URL",
     "SUPABASE_KEY",
     "SUPABASE_ID",
-    "GA_ID",
     "LOGFLARE_SOURCE_TOKEN",
     "LOGFLARE_API_KEY",
     "CLARITY_PROJECT_ID"
@@ -31,7 +30,6 @@
         "SUPABASE_ID",
         "REDIS_HOST",
         "REDIS_PORT",
-        "GA_ID",
         "LOGFLARE_SOURCE_TOKEN",
         "LOGFLARE_API_KEY",
         "CLARITY_PROJECT_ID"
