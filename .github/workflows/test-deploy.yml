@@ -18,6 +18,7 @@ jobs:
       LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       GA_ID: ${{ secrets.GA_ID }}
+      CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
 
     steps:
       - name: Checkout code
@@ -60,6 +61,7 @@ jobs:
       GA_ID: ${{ secrets.GA_ID }}
       LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
+      CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
 
     steps:
       - name: Checkout code
@@ -77,7 +79,7 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,GA_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,GA_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID
           script: |
             cd /home/server/unbuilt-app && \
             rm -f apps/web/.env && \
@@ -87,6 +89,7 @@ jobs:
             echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
             echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
             echo "GA_ID=${GA_ID}" >> apps/web/.env && \
+            echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
             NODE_ENV=production yarn turbo run build && \
