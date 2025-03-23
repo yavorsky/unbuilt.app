@@ -1,5 +1,4 @@
-// components/MicrosoftClarity.js
-'use client'; // Required for Next.js App Router
+'use client';
 
 import { useEffect } from 'react';
 import clarity from '@microsoft/clarity';
