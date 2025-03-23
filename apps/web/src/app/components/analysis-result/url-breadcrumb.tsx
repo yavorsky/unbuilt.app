@@ -13,7 +13,7 @@ import FocusedInput from '../focused-input';
 import { analyzeWebsite } from '@/actions';
 import { toast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
-import { trackAnalysisStart } from '@/app/utils/analytics';
+import { trackAnalysisStart, trackAnalysisEnd } from '@/app/utils/analytics';
 
 interface URLBreadcrumbProps {
   url: string;
@@ -47,8 +47,9 @@ export const URLBreadcrumb = forwardRef<HTMLInputElement, URLBreadcrumbProps>(
       });
       // If url was changed - look for existing analysis, if no - user wants to restart the analysis.
       // So we are not looking for existing analysis.
+      trackAnalysisStart(newUrl);
       const result = await analyzeWebsite(form, urlIsChanged);
-      trackAnalysisStart(newUrl, !urlIsChanged);
+      trackAnalysisEnd(newUrl);
 
       if (result.analysisId) {
         return router.push(`/analysis/${result.analysisId}`);

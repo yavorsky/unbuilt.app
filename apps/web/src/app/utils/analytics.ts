@@ -1,34 +1,32 @@
-import { sendGAEvent } from '@next/third-parties/google';
 import { captureException } from '@sentry/nextjs';
+import clarity from '@microsoft/clarity';
 import logger from './logger/logger';
 
 // Define types for the event parameters
-type EventParams = {
-  [key: string]: string | number | boolean | null | undefined;
-};
+type TagParams = Record<string, string>;
 
 /**
- * Tracks an event in Google Analytics, but only in production environments.
+ * Tracks an event in Analytics, but only in production environments.
  * In development, it logs the event to the console instead.
  *
  * @param eventName The name of the event to track
- * @param eventParams Additional parameters for the event
+ * @param tagParams Additional parameters for the event
  */
-export const trackEvent = (
-  eventName: string,
-  eventParams: EventParams = {}
-): void => {
+export const trackEvent = (eventName: string, tagParams?: TagParams): void => {
   // In development, just log the event to the console
   if (process.env.NODE_ENV !== 'production') {
     return;
   }
 
-  // In production, send the actual event to Google Analytics
+  // In production, send the actual event to Analytics
   try {
-    sendGAEvent({
-      event: eventName,
-      ...eventParams,
-    });
+    clarity.event(eventName);
+    if (tagParams) {
+      Object.entries(tagParams).forEach(([key, value]) => {
+        clarity.setTag(key, value);
+      });
+    }
+    clarity.upgrade(eventName);
   } catch (error) {
     // Fail silently in production, but log to console
     captureException(error);
@@ -37,53 +35,53 @@ export const trackEvent = (
   // Log to Logflare (will use console in development)
   logger.info(`Event tracked: ${eventName}`, {
     event: eventName,
-    params: eventParams,
+    params: tagParams,
   });
 };
 
 /**
- * Tracks a page view in Google Analytics
+ * Tracks a page view in Analytics
  *
  * @param url The URL of the page being viewed
  * @param additionalParams Any additional parameters to include
  */
-export const trackPageView = (
-  url: string,
-  additionalParams: EventParams = {}
-): void => {
-  trackEvent('page_view', {
-    page_path: url,
-    page_url: typeof window !== 'undefined' ? window.location.href : url,
-    ...additionalParams,
-  });
+export const trackPageView = (url: string): void => {
+  trackEvent('page_view', { current_page: url });
 };
 
 /**
- * Tracks a navigation click in Google Analytics
+ * Tracks a navigation click in Analytics
  *
  * @param destination The URL of the page being navigated to
- * @param isExternal Whether the navigation was external or internal
  */
-export const trackNavigation = (destination: string, isExternal = false) => {
-  trackEvent('navigation_click', {
-    destination: destination,
-    navigation_type: isExternal ? 'external' : 'internal',
-    link_location: 'navigation_menu',
-  });
+export const trackNavigation = (destination: string) => {
+  trackEvent('navigation_click', { destination });
 };
 
 /**
- * Tracks a start of a new analysis in Google Analytics
+ * Tracks a start of a new analysis in Analytics
  *
  * @param url The URL of the page being analyzed
- * @param isRefreshingExisting Whether the analysis was started on top of an existing one
  */
-export const trackAnalysisStart = (
-  url: string,
-  isRefreshingExisting: boolean
-) => {
-  trackEvent('analysis_started', {
-    url,
-    refreshing_existing: isRefreshingExisting,
-  });
+export const trackAnalysisStart = (url: string) => {
+  trackEvent('analysis_started', { analysis_url: url });
+};
+
+/**
+ * Tracks a start of a new analysis in Analytics
+ *
+ * @param url The URL of the page being analyzed
+ */
+export const trackAnalysisEnd = (url: string) => {
+  trackEvent('analysis_ended', { analysis_url: url });
+};
+
+/**
+ * Tracks a navigation to an existing analysis in Analytics
+ *
+ * @param id The ID of the existing analysis
+ * @param url The URL of the page being analyzed
+ */
+export const trackNavigateToExisting = (id: string, url: string) => {
+  trackEvent('navigate_to_existing', { id, url });
 };
