@@ -81,6 +81,7 @@ export function TechnologyTrends({ data, type }: TechnologyTrendsProps) {
               trend={risingTrend}
               chartConfig={chartConfig}
               displayType={displayType}
+              type={type}
               className="border-l-4"
             />
           )}
@@ -89,6 +90,7 @@ export function TechnologyTrends({ data, type }: TechnologyTrendsProps) {
               displayType={displayType}
               trend={decliningTrend}
               chartConfig={chartConfig}
+              type={type}
               className="border-l-4"
             />
           )}
