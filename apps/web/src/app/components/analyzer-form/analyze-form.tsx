@@ -8,6 +8,7 @@ import { useDateFormat } from '@/hooks/use-date-format';
 import { validateUrl } from '@/app/utils/validate-url';
 import { InputWithSubmit } from '../input-with-submit';
 import { useStartNewAnalysis } from '@/app/hooks/use-start-new-analysis';
+import { trackNavigateToExisting } from '@/app/utils/analytics';
 import { URLSuggestions } from '../url-suggestions';
 
 export const AnalyzeForm = ({
@@ -53,6 +54,7 @@ export const AnalyzeForm = ({
     try {
       isPendingRef.current = true;
       if (shouldNavigateToExistingAnalysis) {
+        trackNavigateToExisting(existingAnalysis.id, url);
         handleNavigateToExistingAnalysis();
       } else {
         startNewAnalysis(url);

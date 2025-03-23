@@ -62,7 +62,7 @@ export const AppNavigationMenu = () => {
             className="inline-flex h-9 px-4 py-2 text-sm"
             href="https://github.com/yavorsky/unbuilt.app"
             target="_blank"
-            onClick={() => trackNavigation('github', true)}
+            onClick={() => trackNavigation('github')}
           >
             <GithubIcon
               size={20}

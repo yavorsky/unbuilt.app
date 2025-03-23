@@ -14,11 +14,10 @@ export const trackError = (
     context,
   });
 
-  // Track in Google Analytics
+  // Track in Analytics
   trackEvent('error', {
     error_message: error.message,
     error_type: error.name,
-    ...context,
   });
 
   // Track in Sentry if it's production
