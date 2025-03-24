@@ -1,13 +1,6 @@
 import { useState, FC, Suspense, useMemo } from 'react';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui';
-import { ChevronDown, ChevronUp, InfoIcon, LucideProps } from 'lucide-react';
+import { Card, CardContent, CardHeader } from '@/components/ui';
+import { ChevronDown, ChevronUp, LucideProps } from 'lucide-react';
 import { ConfidenceIndicator } from '../../../confidence-indicator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
@@ -29,27 +22,8 @@ import {
 import { getResultsName } from '@/app/utils';
 import { Badge } from '@/components/ui/badge';
 import { useStartNewAnalysis } from '@/app/hooks/use-start-new-analysis';
-import { TooltipProvider } from '@radix-ui/react-tooltip';
-
-const NotDetectedLabel = () => {
-  return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger>
-          <div className="flex items-center gap-2">
-            Not Detected <InfoIcon className="w-4 h-4" />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent className="w-60">
-          <p>
-            The app doesn&apos;t use this technology type or it uses one that
-            unbuilt doesn&apos;t yet recognize
-          </p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
-  );
-};
+import { DetectedLabel } from './detected-label';
+import { NotDetectedLabel } from './not-detected-label';
 
 export function SingleResultAnalysisCard<
   N extends AnalysisTechnologies,
@@ -193,7 +167,11 @@ export function SingleResultAnalysisCard<
                     {isUnknown ? (
                       <NotDetectedLabel />
                     ) : (
-                      (resultMeta?.name ?? capitalize(analysis.name))
+                      <DetectedLabel
+                        label={resultMeta?.name ?? capitalize(analysis.name)}
+                        resultName={analysis.name}
+                        category={name}
+                      />
                     )}
                   </h3>
                 </div>

@@ -66,7 +66,7 @@ export const TrendsChart = ({
           ticks={[chartData[0]?.date]}
           interval={0}
           width={80}
-          style={{ transform: 'translateX(34px)' }}
+          style={{ transform: 'translateX(38px)' }}
           padding={{ left: 0, right: 0 }}
         />
         <YAxis

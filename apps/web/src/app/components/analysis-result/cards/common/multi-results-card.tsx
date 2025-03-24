@@ -14,6 +14,7 @@ import {
   TechnologyMetaResults,
 } from '@/app/utils/get-technology-meta';
 import { getCategoryLabel, getResultsName } from '@/app/utils';
+import { DetectedLabel } from './detected-label';
 
 export function MultiResultAnalysisCard<
   N extends AnalysisMultiTechnologies,
@@ -135,9 +136,12 @@ export function MultiResultAnalysisCard<
                           <ResultIcon className="mr-2" />
                         </Suspense>
                       </div>
-                      <span className="text-foreground text-xl">
-                        {resultMeta?.name ?? capitalize(library.name)}
-                      </span>
+                      <DetectedLabel
+                        label={resultMeta?.name ?? capitalize(library.name)}
+                        resultName={library.name}
+                        category={name}
+                        className="text-xl"
+                      />
                     </Badge>
                     <div className="flex items-center gap-2">
                       <ConfidenceIndicator confidence={library.confidence} />

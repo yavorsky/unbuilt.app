@@ -108,9 +108,9 @@ export function TechnologyDashboard<
   const formatDate = useHandleDateFormat();
 
   const meta = getTechnologyMetaForType(type, technology as V);
-  const Icon = meta.Icon;
-  const description = meta.description;
-  const website = meta.website;
+  const Icon = meta?.Icon;
+  const description = meta?.description;
+  const website = meta?.website;
 
   return (
     <div className="container mx-auto px-4">
@@ -121,7 +121,7 @@ export function TechnologyDashboard<
               <Icon width={40} height={40} />
             </Suspense>
           )}
-          {meta.name} <span className="font-normal">usage stats</span>
+          {meta?.name} <span className="font-normal">usage stats</span>
         </div>
         <div className="gap-4 flex flex-col">
           <div className="text-foreground/70">

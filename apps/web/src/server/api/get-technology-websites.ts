@@ -1,23 +1,17 @@
-// app/actions/getTechnologyWebsites.ts
 'use server';
 
-import { AnalysisTechnologies, AnalyzeResult } from '@unbuilt/analyzer';
+import { AnalyzeResult } from '@unbuilt/analyzer';
 import { supabase } from '../supabase';
 import { columnMapping } from '../utils/column-mapping';
+import { getStylingLibraryWebsitesQuery } from './get-styling-library-websites';
+import { AnalysisKeys } from '@unbuilt/features';
+import { formatGetTechnologyWebsitesResponse } from '../utils/format-get-technology-websites-response';
 
 export interface WebsiteData {
   id: string;
   url: string;
   analyzed_at: string;
   confidence: number;
-}
-
-interface RPCResponse {
-  id: string;
-  url: string;
-  analyzed_at: string;
-  confidence: number;
-  total_count: number;
 }
 
 export interface TechnologyWebsites {
@@ -28,7 +22,7 @@ export interface TechnologyWebsites {
 }
 
 export async function getTechnologyWebsitesQuery<
-  T extends AnalysisTechnologies,
+  T extends Exclude<AnalysisKeys, 'stats'>,
 >({
   type,
   technology,
@@ -42,6 +36,17 @@ export async function getTechnologyWebsitesQuery<
   search?: string;
   pageSize?: number;
 }) {
+  // Handle styling libraries differently as they're in a separate table
+  if (type === 'stylingLibraries') {
+    return getStylingLibraryWebsitesQuery({
+      technology: technology as string,
+      page,
+      search,
+      pageSize,
+    });
+  }
+
+  // For all other technology types
   const dbColumn = columnMapping[type];
 
   const { data, error } = await supabase.rpc('get_unique_technology_websites', {
@@ -57,22 +62,5 @@ export async function getTechnologyWebsitesQuery<
     throw error;
   }
 
-  // First row will have the total count (all rows will have the same count)
-  const totalCount = data?.[0]?.total_count ?? 0;
-
-  const websites: WebsiteData[] = (data || []).map((item: RPCResponse) => ({
-    id: item.id,
-    url: item.url,
-    analyzed_at: item.analyzed_at,
-    confidence: item.confidence,
-  }));
-
-  const totalPages = Math.ceil(totalCount / pageSize);
-
-  return {
-    data: websites,
-    totalPages,
-    totalCount,
-    currentPage: page,
-  };
+  return formatGetTechnologyWebsitesResponse(data, page, pageSize);
 }
