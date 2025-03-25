@@ -35,6 +35,7 @@ On the current stage, unbuilt.app deconstructs websites to reveal technologies a
 - **Routers** - React Router, Vue Router, Next.js internal router, etc.
 - **Translation Libraries** - i18next, react-intl, etc.
 - **Date Libraries** - Moment.js, date-fns, Luxon, etc.
+- **Analytics** - Google Analytics, Mixpanel, Umami, Microsoft Clarity, etc.
 - **Styling Libraries** - TailwindCSS, MUI, Lucide, shadcn/ui, etc.
 - **Transpilers** - Babel, SWC, TypeScript, etc.
 - **Platforms** - Wix, Weebly, Webflow, Squarespace, Shopify, etc.
