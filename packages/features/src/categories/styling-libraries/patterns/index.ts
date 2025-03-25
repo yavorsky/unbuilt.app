@@ -1,5 +1,5 @@
 import { antDesign } from './ant-design.js';
-import { bootstrap } from './bootstrap.js';
+// import { bootstrap } from './bootstrap.js';
 import { chakra } from './chakra.js';
 import { foundation } from './foundation.js';
 import { lucide } from './lucide.js';
@@ -10,7 +10,7 @@ import { tailwindCSS } from './tailwind-css.js';
 
 export const patterns = {
   antDesign,
-  bootstrap,
+  // bootstrap,
   chakra,
   foundation,
   lucide,

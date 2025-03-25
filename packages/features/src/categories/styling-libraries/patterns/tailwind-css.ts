@@ -34,9 +34,6 @@ export const tailwindCSS = [
       /::backdrop\s*\{[^}]*--tw-[a-z-]+:/,
     ],
     documents: [
-      // Tailwind-specific class combinations in HTML
-      /<[^>]+class="[^"]*(?:p|m)[trblxy]?-(?:\d+(?:\.\d+)?|auto|px)[^"]*(?:text|bg)-(?:[\w-]+(?:-\d+)?(?:\/\d+)?)[^"]*"/i,
-
       // Tailwind's arbitrary value syntax in HTML
       /<[^>]+class="[^"]*\[[^\]]+\][^"]*"/i,
     ],

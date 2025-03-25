@@ -26,6 +26,15 @@ export const angularRouter = [
     ],
   },
   {
+    name: 'angularRouter1' as const,
+    score: 1.3,
+    scripts: [
+      /\b[a-zA-Z_$][\w$]*\.\$broadcast\(\s*["']\$routeChangeStart["']\s*,\s*[a-zA-Z_$][\w$]*\s*,\s*[a-zA-Z_$][\w$]*\s*\)/,
+      /\b[a-zA-Z_$][\w$]*\.\$broadcast\(\s*["']\$routeChangeSuccess["']\s*,\s*[a-zA-Z_$][\w$]*\s*,\s*[a-zA-Z_$][\w$]*\s*\)/,
+      /\b[a-zA-Z_$][\w$]*\.\$broadcast\(\s*["']\$routeChangeError["']\s*,\s*[a-zA-Z_$][\w$]*\s*,\s*[a-zA-Z_$][\w$]*\s*,\s*[a-zA-Z_$][\w$]*\s*\)/,
+    ],
+  },
+  {
     name: 'browser' as const,
     score: 1,
     browser: async (page: Page) => {

@@ -47,6 +47,9 @@ export const angular = [
 
       // Production mode flags
       /ngDevMode\s*=\s*false/,
+
+      // someVar.angular.callbacks
+      /\b[a-zA-Z_$][\w$]*\.angular\.callbacks\b/,
     ],
   },
   {
@@ -55,6 +58,8 @@ export const angular = [
     scripts: [
       /Standard Angular field decorators are not supported in JIT mode/,
       /Expected to be in Angular Zone, but it is not!/,
+      /Tried to load angular more than once/,
+      /http:\/\/errors\.angularjs\.org/,
     ],
   },
   {
@@ -141,6 +146,21 @@ export const angular = [
       /ControlContainer\.prototype\.registerOnChange/,
       /AbstractControl\.prototype\.statusChanges/,
     ],
+  },
+  {
+    name: 'angularGlobals' as const,
+    score: 1.5,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          // Check for Zone.js with Angular patches
+          hasElement: window.angular && window.angular.element,
+          hasModule: window.angular && window.angular.module,
+        };
+
+        return !!Object.values(markers).some(Boolean);
+      });
+    },
   },
   {
     name: 'runtimeZone' as const,
