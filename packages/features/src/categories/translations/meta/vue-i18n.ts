@@ -7,5 +7,5 @@ export const vueI18n: Meta = {
   tags: ['Translations'],
   description:
     "Vue I18n is an internationalization-framework written in and for JavaScript. But it's much more than that.",
-  Icon: lazy(() => import('./icons/vuei18n.jsx')),
+  Icon: lazy(() => import('./icons/vue_I18n.jsx')),
 };

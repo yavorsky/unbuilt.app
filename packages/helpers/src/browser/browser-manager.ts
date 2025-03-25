@@ -21,7 +21,11 @@ export class BrowserManager {
   private instances: BrowserInstance[] = [];
   private onError?: (error: Error) => void;
 
-  async initialize(maxInstances: number, onError: (error: Error) => void) {
+  async initialize(
+    maxInstances: number,
+    onError: (error: Error) => void,
+    debug: boolean = false
+  ) {
     this.onError = onError;
     for (let i = 0; i < maxInstances; i++) {
       const browser = await chromium.launch({
@@ -59,9 +63,11 @@ export class BrowserManager {
       this.instances.push({ browser, context });
     }
 
-    console.log(
-      `[BrowserManager] Initialized ${maxInstances} browser instances`
-    );
+    if (debug) {
+      console.log(
+        `[BrowserManager] Initialized ${maxInstances} browser instances`
+      );
+    }
   }
 
   async getBrowserContext(): Promise<BrowserContext> {

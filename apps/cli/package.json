@@ -1,0 +1,60 @@
+{
+  "name": "@unbuilt/cli",
+  "version": "0.1.0",
+  "description": "CLI tool to analyze technologies used on websites via unbuilt.app",
+  "main": "./build/index.js",
+  "bin": {
+    "unbuilt": "./bin/cli.js"
+  },
+  "exports": {
+    ".": "./build/index.js"
+  },
+  "type": "commonjs",
+  "keywords": [
+    "cli",
+    "website",
+    "analysis",
+    "technology",
+    "detection"
+  ],
+  "files": [
+    "build",
+    "bin",
+    "package.json",
+    "tsconfig.json"
+  ],
+  "author": {
+    "name": "Artem Yavorskyi",
+    "email": "aqson@me.com"
+  },
+  "scripts": {
+    "build": "tsc && tsx scripts/build.ts",
+    "dev": "tsx scripts/build.ts --watch",
+    "lint": "eslint src"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.2",
+    "@unbuilt/analyzer": "^0.1.0",
+    "chalk": "^4.1.2",
+    "p-queue": "^8.1.0",
+    "csv-parse": "^5.6.0",
+    "uuidv4": "^6.2.13",
+    "commander": "^11.1.0",
+    "playwright": "^1.48.1",
+    "console-table-printer": "^2.11.2",
+    "ora": "^5.4.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.7",
+    "@typescript-eslint/eslint-plugin": "^6.5.0",
+    "@typescript-eslint/parser": "^6.5.0",
+    "esbuild": "^0.19.5",
+    "esbuild-node-externals": "^1.8.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
