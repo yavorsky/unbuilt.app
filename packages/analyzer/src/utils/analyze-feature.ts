@@ -51,6 +51,7 @@ export const analyzeFeature = async function <
   resources,
   onProgress,
   initialAnalysis,
+  debug,
 }: {
   featureName: T;
   analysis: AnalysisFeaturesWithStats;
@@ -59,9 +60,10 @@ export const analyzeFeature = async function <
   resources: Resources;
   onProgress?: OnProgressHandler;
   initialAnalysis?: AnalysisFeaturesWithStats;
+  debug?: boolean;
 }) {
   const isInitialRun = !initialAnalysis;
-  if (isInitialRun) {
+  if (isInitialRun && debug) {
     console.time(featureName);
   }
   const detect = detectionMap[featureName];
@@ -69,7 +71,9 @@ export const analyzeFeature = async function <
   analysis[featureName] = result as AnalysisFeaturesWithStats[T];
   if (isInitialRun) {
     onProgress?.({ [featureName]: result });
-    console.timeEnd(featureName);
+    if (debug) {
+      console.timeEnd(featureName);
+    }
   }
 };
 
