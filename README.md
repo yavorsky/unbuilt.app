@@ -44,6 +44,24 @@ On the current stage, unbuilt.app deconstructs websites to reveal technologies a
 
 > The list of supported technologies within each category is continuously expanding.
 
+## CLI Tool
+
+unbuilt.app also provides a CLI tool to analyze technologies used on websites via unbuilt.app.
+
+### Installation
+
+```bash
+npm install -g @unbuilt/cli
+```
+
+### Usage
+
+```bash
+unbuilt <url>
+```
+
+Check more details in the [CLI documentation](./apps/cli/README.md).
+
 ## Tech Stack
 
 unbuilt.app itself is built with:
@@ -54,6 +72,7 @@ unbuilt.app itself is built with:
 - 🥱 Ok, why to list everything here, when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/a9abcd3b-aac0-4c96-a835-7d7756594916)!
 
 > Yes, we've unbuilt ourselves too! We practice what we preach.
+
 
 ## Repository Structure
 
@@ -86,7 +105,6 @@ Your help makes unbuilt.app better for everyone!
 ## Coming Soon
 
 - Browser Extension - Unbuild any site as you browse
-- CLI Application - Unbuild from your terminal
 - Additional Detection Categories - Expand our unbuilding capabilities
 - Technology Versions - Detect major or even minor/patch versions of specific technologies.
 
