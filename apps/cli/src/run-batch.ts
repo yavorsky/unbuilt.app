@@ -227,9 +227,9 @@ function formatResultsAsCSV(results: AnalysisResult[]): string {
 
   // Find all categories from successful analyses
   const categories = new Set<string>();
-  results.forEach((result) => {
-    if (result.success && result.result && result.result.analysis) {
-      Object.keys(result.result.analysis).forEach((category) => {
+  results.forEach((data) => {
+    if (data.success && data.result && data.result.analysis) {
+      Object.keys(data.result.analysis).forEach((category) => {
         categories.add(category);
       });
     }
@@ -241,14 +241,14 @@ function formatResultsAsCSV(results: AnalysisResult[]): string {
   }
 
   // Create rows
-  const rows = results.map((result) => {
-    let row = `"${result.url}",${result.success},${result.duration || ''},"${result.error || ''}"`;
+  const rows = results.map((data) => {
+    let row = `"${data.url}",${data.success},${data.duration || ''},"${data.error || ''}"`;
 
-    if (result.success && result.result && result.result.analysis) {
+    if (data.success && data.result && data.result.analysis) {
       // Add each category's detected technology
       Array.from(categories).forEach((category) => {
         const categoryData =
-          result.result?.analysis[category as keyof AnalysisFeaturesWithStats];
+          data.result?.analysis[category as keyof AnalysisFeaturesWithStats];
         const value =
           categoryData && 'name' in categoryData && categoryData.name
             ? `"${categoryData.name} (${categoryData.confidence})"`

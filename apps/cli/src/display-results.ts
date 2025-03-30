@@ -23,33 +23,33 @@ export function displayResults(
   );
 
   // Display each category that has data
-  Object.entries(result.analysis).forEach(([category, result]) => {
-    if (result && Object.keys(result).length > 0 && 'name' in result) {
+  for (const [category, data] of Object.entries(result.analysis)) {
+    if (data && Object.keys(data).length > 0 && 'name' in data) {
       console.log(
         chalk.green.bold(
-          `${capitalize(category)}: ${chalk.bold(result.name) ?? 'Not Detected'} ${result.name ? `(${result.confidence})` : ''}`
+          `${capitalize(category)}: ${chalk.bold(data.name) ?? 'Not Detected'} ${data.name ? `(${data.confidence})` : ''}`
         )
       );
       if (
-        result.secondaryMatches &&
-        Object.keys(result.secondaryMatches).length > 0
+        data.secondaryMatches &&
+        Object.keys(data.secondaryMatches).length > 0
       ) {
         const table = new Table();
 
-        Object.entries(result.secondaryMatches ?? {}).forEach(
-          ([name, detected]) => {
-            table.addRow({
-              Secondary: name,
-              Confidence: detected.confidence,
-            });
-          }
-        );
+        for (const [name, detected] of Object.entries(
+          data.secondaryMatches ?? {}
+        )) {
+          table.addRow({
+            Secondary: name,
+            Confidence: detected.confidence,
+          });
+        }
 
         table.printTable();
         console.log(); // Add space between categories
       }
     }
-  });
+  }
 
   console.log(chalk.blue('Analysis complete!'));
   process.exit(0);
