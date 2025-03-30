@@ -41,10 +41,10 @@ This will analyze the website locally using a headless browser and display the d
 
 | Option | Description |
 |--------|-------------|
-| `-r, --remote` | Run analysis remotely via unbuilt server (default is local) |
-| `-s, --save` | Save the analysis results to the database. Using this option will allow using unbuilt app web page for current analysis. |
-| `-n, --async` | Async mode - return job ID instead of result (use with remote) |
-| `-r, --refresh` | Force a fresh analysis (don't use previously saved result) |
+| `-r, --remote` | Run analysis remotely via unbuilt server (runs locally by default) |
+| `-s, --save` | Saves the analysis results to the database, which serves as a cache for future runs. By default, CLI analyses are executed without caching results. |
+| `-n, --async` | Enable asynchronous execution - returns a job ID immediately instead of waiting for the result. This ID can be used to check status or retrieve results later with the `unbuilt status` command. Only available when using `--remote`. |
+| `-r, --refresh` | Force a fresh analysis by bypassing the cache. Ignores any previously saved results and rebuilds the cache with new data. |
 | `-t, --timeout <seconds>` | Max time to wait for analysis to complete (default: 120) |
 | `-j, --json` | Output results in JSON format |
 
