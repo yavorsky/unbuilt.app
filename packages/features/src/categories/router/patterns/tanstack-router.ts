@@ -22,7 +22,7 @@ export const tanstackRouter = [
   },
   {
     name: 'browser-check' as const,
-    score: 1,
+    score: 1.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -42,7 +42,7 @@ export const tanstackRouter = [
   },
   {
     name: 'ssr' as const,
-    score: 0.8,
+    score: 1,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         return !!window.__TSR_SSR__ || !!window.__TANSTACK_ROUTER_SSR__;

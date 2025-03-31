@@ -6,6 +6,7 @@ import { nuxt } from './nuxt.js';
 import { remix } from './remix.js';
 import { storybook } from './storybook.js';
 import { sveltekit } from './sveltekit.js';
+import { tanstackStart } from './tanstack-start.js';
 import { vitepress } from './vitepress.js';
 import { vuepress } from './vuepress.js';
 
@@ -15,6 +16,7 @@ export const meta = {
   storybook,
   sveltekit,
   vitepress,
+  tanstackStart,
   vuepress,
   nuxt,
   next,

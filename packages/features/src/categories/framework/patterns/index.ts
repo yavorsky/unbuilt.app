@@ -8,6 +8,7 @@ import { vuepress } from './vuepress.js';
 import { storybook } from './storybook.js';
 import { sveltekit } from './sveltekit.js';
 import { astro } from './astro.js';
+import { tanstackStart } from './tanstack-start.js';
 
 export const patterns = {
   astro,
@@ -16,6 +17,7 @@ export const patterns = {
   remix,
   gatsby,
   docusaurus,
+  tanstackStart,
   vitepress,
   vuepress,
   storybook,

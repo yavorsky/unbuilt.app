@@ -522,6 +522,7 @@ export type Database = {
         | "next"
         | "remix"
         | "gatsby"
+        | "tanstackStart"
       http_client_type:
         | "unknown"
         | "apollo"
