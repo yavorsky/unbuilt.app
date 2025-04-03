@@ -6,7 +6,7 @@ import { hotjar } from './hotjar.js';
 import { matomo } from './matomo.js';
 import { mixpanel } from './mixpanel.js';
 import { plausible } from './plausible.js';
-import { posthog } from './postHog.js';
+import { posthog } from './posthog.js';
 import { umami } from './umami.js';
 import { vercelAnalytics } from './vercel-analytics.jsx';
 
