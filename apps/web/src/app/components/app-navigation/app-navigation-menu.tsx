@@ -52,7 +52,14 @@ export const AppNavigationMenu = () => {
                 <b>Browser Extension</b> - <span>Coming Soon</span>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
-                <b>CLI</b> - <span>Coming Soon</span>
+                <a
+                  href="https://github.com/yavorsky/unbuilt.app/blob/main/apps/cli/README.md"
+                  target="_blank"
+                  onClick={() => trackNavigation('cli')}
+                  rel="noreferrer"
+                >
+                  <b>CLI</b>
+                </a>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
