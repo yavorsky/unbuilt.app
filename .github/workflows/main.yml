@@ -77,11 +77,23 @@ jobs:
       - name: Check version change
         id: check-version
         run: |
-          # Get current version
-          CURRENT_VERSION=$(node -p "require('./apps/cli/package.json').version")
-          echo "Current version: $CURRENT_VERSION"
+          # Ensure we're at the repository root
+          REPO_ROOT="${GITHUB_WORKSPACE}"
+          CLI_PACKAGE_PATH="${REPO_ROOT}/apps/cli/package.json"
 
-          # Get the previous version from git history
+          echo "Using package.json at: ${CLI_PACKAGE_PATH}"
+
+          # Check if file exists
+          if [ ! -f "${CLI_PACKAGE_PATH}" ]; then
+            echo "Error: CLI package.json not found at ${CLI_PACKAGE_PATH}"
+            ls -la "${REPO_ROOT}/apps"
+            ls -la "${REPO_ROOT}/apps/cli" || echo "cli directory not found"
+            exit 1
+          fi
+
+          # Get current version using cat and node - more reliable than require()
+          CURRENT_VERSION=$(cat "${CLI_PACKAGE_PATH}" | node -p "JSON.parse(process.stdin.read()).version")
+          echo "Current version: $CURRENT_VERSION"y
           git fetch --tags
 
           # Check if this is the first commit or if the file didn't exist before
