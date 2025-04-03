@@ -1,4 +1,4 @@
-name: Test and Deploy
+name: Test, Deploy and Publish
 
 on:
   push:
@@ -201,3 +201,78 @@ jobs:
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
             pm2 save --force || \
             { echo "Deployment failed at one of the steps"; exit 1; }
+
+  publish-cli:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'yarn'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build CLI package
+        run: yarn turbo run build --filter=@unbuilt/cli
+
+      - name: Check version change
+        id: check-version
+        run: |
+          # Get current version
+          CURRENT_VERSION=$(node -p "require('./apps/cli/package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+
+          # Get the previous version from git history
+          git fetch --tags
+
+          # Check if this is the first commit or if the file didn't exist before
+          if git rev-parse HEAD~1 > /dev/null 2>&1 && git ls-tree -r HEAD~1 --name-only | grep -q "apps/cli/package.json"; then
+            PREV_PACKAGE=$(git show HEAD~1:apps/cli/package.json 2>/dev/null)
+            PREV_VERSION=$(echo "$PREV_PACKAGE" | node -p "JSON.parse(process.stdin.read()).version")
+          else
+            PREV_VERSION="0.0.0"
+          fi
+          echo "Previous version: $PREV_VERSION"
+
+          if [ "$CURRENT_VERSION" != "$PREV_VERSION" ]; then
+            echo "Version changed from $PREV_VERSION to $CURRENT_VERSION"
+            echo "version_changed=true" >> $GITHUB_OUTPUT
+            echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+          else
+            echo "Version unchanged"
+            echo "version_changed=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Publish to npm
+        if: steps.check-version.outputs.version_changed == 'true'
+        working-directory: apps/cli
+        run: npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create GitHub Release
+        if: steps.check-version.outputs.version_changed == 'true'
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: cli-v${{ steps.check-version.outputs.new_version }}
+          release_name: CLI v${{ steps.check-version.outputs.new_version }}
+          draft: false
+          prerelease: false
+          body: |
+            Release of @unbuilt/cli version ${{ steps.check-version.outputs.new_version }}
+
+            ## What's Changed
+            * Published CLI package to npm
