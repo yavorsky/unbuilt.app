@@ -15,6 +15,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
       LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
@@ -66,6 +67,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
       LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
@@ -160,6 +162,7 @@ jobs:
       SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
       SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
       SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
       LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
       LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
       CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
@@ -180,7 +183,7 @@ jobs:
           host: ${{ secrets.DROPLET_IP }}
           username: ${{ secrets.DROPLET_USERNAME }}
           key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID,UNBUILT_API_KEY
           script: |
             cd /home/server/unbuilt-app && \
             rm -f apps/web/.env && \
@@ -190,6 +193,7 @@ jobs:
             echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
             echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
             echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
+            echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
             git pull origin main && \
             yarn install && \
             NODE_ENV=production yarn turbo run build && \

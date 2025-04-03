@@ -42,7 +42,7 @@ This will analyze the website locally using a headless browser and display the d
 | Option | Description |
 |--------|-------------|
 | `-r, --remote` | Run analysis remotely via unbuilt server (runs locally by default) |
-| `-s, --save` | Saves the analysis results to the database, which serves as a cache for future runs. By default, CLI analyses are executed without caching results. |
+| `-s, --save` | Saves the analysis results to the database, which serves as a cache for future runs. By default, CLI analyses are executed without caching results. Available only for admins (you need to set UNBUILT_API_KEY env variable when running). |
 | `-n, --async` | Enable asynchronous execution - returns a job ID immediately instead of waiting for the result. This ID can be used to check status or retrieve results later with the `unbuilt status` command. Only available when using `--remote`. |
 | `-r, --refresh` | Force a fresh analysis by bypassing the cache. Ignores any previously saved results and rebuilds the cache with new data. |
 | `-t, --timeout <seconds>` | Max time to wait for analysis to complete (default: 120) |
@@ -170,6 +170,8 @@ When using the `--save` option, analysis results are stored in a database for fu
 - Building historical data about technology usage
 - Sharing analysis results with team members
 
+Available only for admins (you need to set `UNBUILT_API_KEY` env variable when running. Contact aqson@me.com in order to get access).
+
 ## Examples of Common Workflows
 
 ### Quick Technology Check
@@ -193,7 +195,7 @@ unbuilt batch websites.csv --concurrent 4 --output tech-analysis
 ### Batch Analysis with Database Storage
 
 ```bash
-unbuilt batch websites.csv --concurrent 4 --save
+UNBUILT_API_KEY="hash" unbuilt batch websites.csv --concurrent 4 --save
 ```
 
 ## Troubleshooting

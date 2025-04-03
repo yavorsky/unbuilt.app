@@ -4,7 +4,10 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const result = await saveAnalysis(body?.id, body);
+    // In the future, we will introduce sessions, but for now we only want to limit cache updates to web app or CLI for admins.
+    const adminPass = req.headers.get('X-Analysis-Passcode');
+
+    const result = await saveAnalysis(body?.id, body, adminPass);
 
     return new Response(JSON.stringify(result), {
       status: 200,

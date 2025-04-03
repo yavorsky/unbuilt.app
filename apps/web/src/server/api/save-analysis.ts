@@ -24,8 +24,19 @@ type StylingLibraryInsert = TablesInsert<'styling_libraries'>;
 /**
  * Save a new tech stack analysis
  */
-export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
-  logger.info('Result is saved', { id, url: analysisData.url });
+export async function saveAnalysis(
+  id: string,
+  analysisData: AnalyzeResult,
+  adminPass?: string | null
+) {
+  if (adminPass !== process.env.UNBUILT_API_KEY) {
+    logger.warn('Unauthorized analysis save attempt', { id });
+    return {
+      data: null,
+      error: new Error('Unauthorized: Invalid passcode'),
+    };
+  }
+
   try {
     const insertData: TechStackAnalysisInsert = {
       id,
@@ -91,6 +102,8 @@ export async function saveAnalysis(id: string, analysisData: AnalyzeResult) {
       .single();
 
     if (error) throw error;
+
+    logger.info('Result is saved', { id, url: analysisData.url });
 
     // Insert styling libraries if present
     if (analysisData.analysis.stylingLibraries?.items) {

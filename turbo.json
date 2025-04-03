@@ -1,9 +1,6 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [
-    ".env",
-    ".env.local"
-  ],
+  "globalDependencies": [".env", ".env.local"],
   "globalEnv": [
     "NODE_ENV",
     "SUPABASE_URL",
@@ -11,18 +8,13 @@
     "SUPABASE_ID",
     "LOGFLARE_SOURCE_TOKEN",
     "LOGFLARE_API_KEY",
-    "CLARITY_PROJECT_ID"
+    "CLARITY_PROJECT_ID",
+    "UNBUILT_API_KEY"
   ],
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**",
-        "build/**"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "build/**"],
       "env": [
         "NEXT_PUBLIC_*",
         "SUPABASE_URL",
@@ -32,7 +24,8 @@
         "REDIS_PORT",
         "LOGFLARE_SOURCE_TOKEN",
         "LOGFLARE_API_KEY",
-        "CLARITY_PROJECT_ID"
+        "CLARITY_PROJECT_ID",
+        "UNBUILT_API_KEY"
       ]
     },
     "lint": {
@@ -44,12 +37,8 @@
     },
     "update-types": {
       "cache": false,
-      "env": [
-        "SUPABASE_ID"
-      ],
-      "outputs": [
-        "supabase/database.types.ts"
-      ]
+      "env": ["SUPABASE_ID"],
+      "outputs": ["supabase/database.types.ts"]
     },
     "dev": {
       "cache": false,

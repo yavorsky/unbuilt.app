@@ -12,8 +12,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 import { displayResults } from './display-results';
 import PQueue from 'p-queue';
-import axios from 'axios';
-import { API_BASE_URL } from './constants';
+import api from './api';
 
 interface BatchAnalysisOptions {
   json?: boolean;
@@ -118,7 +117,12 @@ export async function runBatchAnalysis(
           );
 
           if (options.save) {
-            await axios.post(`${API_BASE_URL}/analysis`, result);
+            if (process.env.UNBUILT_API_KEY) {
+              await api.post('/analysis', result);
+            } else {
+              console.warn('Skipping save: UNBUILT_API_KEY not set');
+              return;
+            }
           }
 
           const duration = Date.now() - startTime;
