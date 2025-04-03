@@ -36,6 +36,7 @@
   "dependencies": {
     "axios": "^1.6.2",
     "@unbuilt/analyzer": "^0.1.0",
+    "@unbuilt/helpers": "^0.1.0",
     "chalk": "^4.1.2",
     "p-queue": "^8.1.0",
     "csv-parse": "^5.6.0",
