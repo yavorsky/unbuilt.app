@@ -40,16 +40,30 @@ export const docusaurus = [
   },
   {
     name: 'browser-check' as const,
-    score: 0.9,
+    score: 1.4,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           hasDocusaurus: typeof window?.__docusaurus !== 'undefined',
           hasDocusaurusContext:
             typeof window?.__DOCUSAURUS_CONTEXT__ !== 'undefined',
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
+  },
+  {
+    name: 'elements-check' as const,
+    score: 1.2,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
           hasThemeDoc: !!document.querySelector('.theme-doc-markdown'),
           hasNavbar: !!document.querySelector('.navbar--fixed-top'),
-          hasMainWrapper: !!document.querySelector('.main-wrapper'),
+          hasDocosaurusId: !!document.getElementById('__docusaurus'),
+          hasSkipToContent: !!document.getElementById(
+            '__docusaurus_skipToContent_fallback'
+          ),
         };
         return Object.values(markers).some(Boolean);
       });
