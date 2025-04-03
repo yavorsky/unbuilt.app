@@ -3,7 +3,7 @@ import { parse } from 'csv-parse/sync';
 import ora from 'ora';
 import chalk from 'chalk';
 import { Page } from 'playwright';
-import { BrowserManager } from '@unbuilt/helpers';
+import { BrowserManager, normalizeUrl } from '@unbuilt/helpers';
 import {
   AnalysisFeaturesWithStats,
   analyze,
@@ -68,6 +68,7 @@ export async function runBatchAnalysis(
           (Array.isArray(record) ? record[0] : Object.values(record)[0])
         );
       })
+      .map((url: string) => normalizeUrl(url))
       .filter(Boolean);
 
     spinner.text = `Found ${urls.length} URLs to analyze`;
