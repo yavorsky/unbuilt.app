@@ -5,6 +5,7 @@ import { runRemoteAnalysis } from './run-remote';
 import { runLocalAnalysis } from './run-local';
 import { getResults } from './get-results';
 import { runBatchAnalysis } from './run-batch';
+import { normalizeUrl } from '@unbuilt/helpers';
 
 // Read package.json for version info
 const packageJsonPath = path.resolve(__dirname, '../package.json');
@@ -50,15 +51,16 @@ program
         json?: boolean;
       }
     ) => {
+      const normalizedUrl = normalizeUrl(url);
       if (options.remote) {
-        await runRemoteAnalysis(url, {
+        await runRemoteAnalysis(normalizedUrl, {
           lookupForExisting: !options.refresh,
           async: options.async ?? false,
           timeout: options.timeout,
           json: options.json ?? false,
         });
       } else {
-        await runLocalAnalysis(url, {
+        await runLocalAnalysis(normalizedUrl, {
           json: options.json ?? false,
           save: options.save ?? true,
         });
