@@ -40,7 +40,7 @@ export const docusaurus = [
   },
   {
     name: 'browser-check' as const,
-    score: 1.4,
+    score: 1.5,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
@@ -54,16 +54,27 @@ export const docusaurus = [
   },
   {
     name: 'elements-check' as const,
-    score: 1.2,
+    score: 1.5,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        const markers = {
+          hasDocosaurusId: !!document.getElementById('__docusaurus'),
+          hasSkipToContent: !!document.getElementById(
+            '__docusaurus_skipToContent_fallback'
+          ),
+        };
+        return Object.values(markers).some(Boolean);
+      });
+    },
+  },
+  {
+    name: 'secondary-elements-check' as const,
+    score: 0.8,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           hasThemeDoc: !!document.querySelector('.theme-doc-markdown'),
           hasNavbar: !!document.querySelector('.navbar--fixed-top'),
-          hasDocosaurusId: !!document.getElementById('__docusaurus'),
-          hasSkipToContent: !!document.getElementById(
-            '__docusaurus_skipToContent_fallback'
-          ),
         };
         return Object.values(markers).some(Boolean);
       });
