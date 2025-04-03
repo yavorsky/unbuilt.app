@@ -64,6 +64,9 @@ The project includes several environment setup scripts to streamline development
 #### `yarn env-setup`
 Sets up everything for local development using a local Supabase instance. This is the recommended approach for most contributors, as it doesn't require access to production credentials.
 
+**Prerequisites for local mode:**
+- You must have Docker installed
+
 #### `yarn env-setup:prod`
 For project administrators only. This uses production database credentials to connect to the live database.
 
@@ -118,8 +121,8 @@ The project is organized as a monorepo using Turborepo with the following struct
 ```
 unbuild.app/
 ├── apps/
-│   └── web/           # Next.js application + unbuilding service
-│                      # Contains the web app and queue-based service
+│   ├── cli/           # CLI tool which supports unbuilding app locally and via unbuilt.app API.
+│   └── web/           # Next.js application + unbuilding service. Contains the web app and queue-based service
 │
 ├── packages/
 │   ├── analyzer/      # Core analysis engine
@@ -345,7 +348,7 @@ In both cases, ensure your patterns are specific enough to avoid false positives
 
 ## Testing Your Contributions
 
-The `testing` package contains tools to verify your contributions:
+The `testing/e2e` package contains tools to verify your contributions:
 
 - **Detection Verification**: Ensures new patterns correctly detect technologies
 - **False Positive Prevention**: Confirms patterns don't incorrectly identify technologies
@@ -356,10 +359,10 @@ We strongly recommend running the test suite before submitting your PR:
 
 ```bash
 # Run all tests
-npm run test
+yarn test
 
 # Test a specific pattern
-npm run test:pattern -- --pattern=react
+yarn test:pattern -- --pattern=react
 ```
 
 ## Code Style Guidelines
