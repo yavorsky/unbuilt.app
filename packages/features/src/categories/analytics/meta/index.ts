@@ -5,6 +5,7 @@ import { googleAnalytics } from './google-analytics.js';
 import { matomo } from './matomo.js';
 import { mixpanel } from './mixpanel.js';
 import { plausible } from './plausible.js';
+import { posthog } from './posthog.js';
 import { umami } from './umami.js';
 import { vercelAnalytics } from './vercel-analytics.js';
 
@@ -14,6 +15,7 @@ export const meta = {
   googleAnalytics,
   umami,
   vercelAnalytics,
+  posthog,
   clarity,
   matomo,
   mixpanel,

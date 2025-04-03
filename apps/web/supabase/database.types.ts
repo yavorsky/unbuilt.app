@@ -493,6 +493,7 @@ export type Database = {
         | "vercelAnalytics"
         | "clarity"
         | "hotjar"
+        | "posthog"
       bundler_type:
         | "unknown"
         | "brunch"

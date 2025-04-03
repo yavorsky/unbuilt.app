@@ -6,6 +6,7 @@ import { hotjar } from './hotjar.js';
 import { matomo } from './matomo.js';
 import { mixpanel } from './mixpanel.js';
 import { plausible } from './plausible.js';
+import { posthog } from './postHog.js';
 import { umami } from './umami.js';
 import { vercelAnalytics } from './vercel-analytics.jsx';
 
@@ -13,6 +14,7 @@ export const patterns = {
   amplitude,
   fathom,
   googleAnalytics,
+  posthog,
   matomo,
   mixpanel,
   hotjar,
