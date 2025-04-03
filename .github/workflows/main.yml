@@ -91,15 +91,21 @@ jobs:
             exit 1
           fi
 
-          # Get current version using cat and node - more reliable than require()
+          # Get current version using cat and node
           CURRENT_VERSION=$(cat "${CLI_PACKAGE_PATH}" | node -p "JSON.parse(process.stdin.read()).version")
-          echo "Current version: $CURRENT_VERSION"y
+          echo "Current version: $CURRENT_VERSION"
           git fetch --tags
 
           # Check if this is the first commit or if the file didn't exist before
           if git rev-parse HEAD~1 > /dev/null 2>&1 && git ls-tree -r HEAD~1 --name-only | grep -q "apps/cli/package.json"; then
-            PREV_PACKAGE=$(git show HEAD~1:apps/cli/package.json 2>/dev/null)
-            PREV_VERSION=$(echo "$PREV_PACKAGE" | node -p "JSON.parse(process.stdin.read()).version")
+            # Store the content in a file first to ensure we have valid input
+            git show HEAD~1:apps/cli/package.json > prev_package.json 2>/dev/null
+            if [ -s prev_package.json ]; then
+              PREV_VERSION=$(cat prev_package.json | node -p "JSON.parse(process.stdin.read()).version")
+            else
+              PREV_VERSION="0.0.0"
+            fi
+            rm -f prev_package.json
           else
             PREV_VERSION="0.0.0"
           fi
