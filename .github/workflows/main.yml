@@ -8,6 +8,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -77,41 +81,22 @@ jobs:
       - name: Check version change
         id: check-version
         run: |
-          # Ensure we're at the repository root
-          REPO_ROOT="${GITHUB_WORKSPACE}"
-          CLI_PACKAGE_DIR="${REPO_ROOT}/apps/cli"
-          CLI_PACKAGE_PATH="${CLI_PACKAGE_DIR}/package.json"
-          CLI_PACKAGE_REL_PATH="apps/cli/package.json"
+          # Get the package name and current version from package.json
+          CLI_PACKAGE_PATH="apps/cli/package.json"
+          PACKAGE_NAME=$(node -p "require('./${CLI_PACKAGE_PATH}').name")
+          CURRENT_VERSION=$(node -p "require('./${CLI_PACKAGE_PATH}').version")
 
-          echo "Using package.json at: ${CLI_PACKAGE_PATH}"
-
-          # Check if file exists
-          if [ ! -f "${CLI_PACKAGE_PATH}" ]; then
-            echo "Error: CLI package.json not found at ${CLI_PACKAGE_PATH}"
-            exit 1
-          fi
-
-          # Get current version
-          CURRENT_VERSION=$(node -p "require('${CLI_PACKAGE_PATH}').version")
+          echo "Package: $PACKAGE_NAME"
           echo "Current version: $CURRENT_VERSION"
 
-          # Check if this is the first commit or if the file didn't exist before
-          if git rev-parse HEAD~1 > /dev/null 2>&1 && git ls-tree -r HEAD~1 --name-only | grep -q "${CLI_PACKAGE_REL_PATH}"; then
-            # Create a temporary file for the previous version
-            TEMP_FILE=$(mktemp)
-            git show HEAD~1:${CLI_PACKAGE_REL_PATH} > "$TEMP_FILE" 2>/dev/null
+          # Check if the package exists on npm
+          # Get the latest version from npm
+          NPM_VERSION=$(npm view $PACKAGE_NAME version --silent)
+          echo "Latest npm version: $NPM_VERSION"
 
-            # Try to get the previous version
-            PREV_VERSION=$(node -p "try { require('$TEMP_FILE').version } catch(e) { '0.0.0' }")
-            rm -f "$TEMP_FILE"
-          else
-            PREV_VERSION="0.0.0"
-          fi
-
-          echo "Previous version: $PREV_VERSION"
-
-          if [ "$CURRENT_VERSION" != "$PREV_VERSION" ]; then
-            echo "Version changed from $PREV_VERSION to $CURRENT_VERSION"
+          # Compare versions
+          if [ "$CURRENT_VERSION" != "$NPM_VERSION" ]; then
+            echo "Version changed from $NPM_VERSION to $CURRENT_VERSION"
             echo "version_changed=true" >> $GITHUB_OUTPUT
             echo "new_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
           else
