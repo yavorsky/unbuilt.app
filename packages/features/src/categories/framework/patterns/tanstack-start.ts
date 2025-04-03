@@ -13,10 +13,10 @@ export const tanstackStart = [
   },
   {
     name: 'ssr' as const,
-    score: 0.8,
+    score: 1,
     scripts: [
       // SSR prop
-      /Ce.parse(window.__TSR_SSR__.dehydrated)/,
+      /(\w+)\.parse\(window\.__TSR_SSR__\.dehydrated\)/,
       // Hydration
       /[a-zA-Z_$][\w$]*\.clientSsr\s*=\s*\{\s*getStreamedValue\s*:\s*(?:function\s*\([^)]*\)|[a-zA-Z_$][\w$]*\s*=>)\s*\{\s*.*?window\.__TSR_SSR__.*?streamedValues.*?serializer\.parse\(.*?\).*?\}\s*\}/s,
     ],
