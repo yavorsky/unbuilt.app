@@ -1,10 +1,10 @@
 import ora from 'ora';
 import axios from 'axios';
+import api from './api';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import chalk from 'chalk';
 import { displayResults } from './display-results';
 import { AnalysisStatusResponse } from './types';
-import { API_BASE_URL } from './constants';
 
 interface AnalysisResponse {
   analysisId?: string;
@@ -24,13 +24,10 @@ export async function runRemoteAnalysis(
 
   try {
     // Start the analysis
-    const response = await axios.post<AnalysisResponse>(
-      `${API_BASE_URL}/analyze`,
-      {
-        url,
-        lookupForExisting: options.lookupForExisting,
-      }
-    );
+    const response = await api.post<AnalysisResponse>(`/analyze`, {
+      url,
+      lookupForExisting: options.lookupForExisting,
+    });
 
     const { analysisId, error } = response.data;
 
@@ -57,8 +54,8 @@ export async function runRemoteAnalysis(
 
       while (!completed && Date.now() - startTime < timeoutMs) {
         try {
-          const statusResponse = await axios.get<AnalysisStatusResponse>(
-            `${API_BASE_URL}/analysis/${analysisId}`
+          const statusResponse = await api.get<AnalysisStatusResponse>(
+            `/analysis/${analysisId}`
           );
           const { status, result, progress, error } = statusResponse.data;
 

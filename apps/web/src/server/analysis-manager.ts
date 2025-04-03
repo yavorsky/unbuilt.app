@@ -132,6 +132,6 @@ export class AnalysisManager {
   }
 
   private async storeResult(id: string, result: AnalyzeResult) {
-    await saveAnalysis(id, result);
+    await saveAnalysis(id, result, process.env.UNBUILT_API_KEY);
   }
 }

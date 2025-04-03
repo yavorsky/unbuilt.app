@@ -1,9 +1,9 @@
-import axios from 'axios';
+import api from './api';
 import { AnalysisStatusResponse } from './types';
 import ora from 'ora';
-import { API_BASE_URL } from './constants';
 import { displayResults } from './display-results';
 import chalk from 'chalk';
+import { isAxiosError } from 'axios';
 
 export async function getResults(
   analysisId: string,
@@ -12,8 +12,8 @@ export async function getResults(
   const spinner = ora('Checking analysis status...').start();
 
   try {
-    const response = await axios.get<AnalysisStatusResponse>(
-      `${API_BASE_URL}/analysis/${analysisId}`
+    const response = await api.get<AnalysisStatusResponse>(
+      `/analysis/${analysisId}`
     );
     const { status, result, progress, error } = response.data;
 
@@ -40,7 +40,7 @@ export async function getResults(
       );
     }
   } catch (err) {
-    if (axios.isAxiosError(err)) {
+    if (isAxiosError(err)) {
       spinner.fail(`Request failed: ${err.message}`);
     } else {
       spinner.fail(`Unexpected error: ${String(err)}`);

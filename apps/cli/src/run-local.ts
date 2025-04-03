@@ -5,15 +5,14 @@ import { analyze } from '@unbuilt/analyzer';
 import { v4 as uuidv4 } from 'uuid';
 import { displayResults } from './display-results';
 import chalk from 'chalk';
-import axios from 'axios';
-import { API_BASE_URL } from './constants';
+import api from './api';
 
 // Run analysis locally using Playwright
 export async function runLocalAnalysis(
   url: string,
   options: { json?: boolean; save?: boolean }
 ): Promise<void> {
-  const spinner = ora('Running local analysis using Playwright...').start();
+  const spinner = ora('Running local analysis...').start();
 
   try {
     spinner.text = 'Launching browser...';
@@ -28,31 +27,36 @@ export async function runLocalAnalysis(
         throw new Error('Page is not defined');
       }
 
+      const analysisId = uuidv4();
+
       const result = await analyze(
         url,
-        uuidv4(),
+        analysisId,
         page,
         browser,
         (_res, progress) => {
           spinner.text = `Analysis in progress: ${Math.round(progress)}% `;
         }
       );
-      spinner.succeed('Analysis completed!');
-      displayResults(result, { json: options.json });
+
       if (options.save) {
-        await axios.post(`${API_BASE_URL}/analysis`, result);
-        console.log(
-          chalk.green(
-            `Analysis results: https://unbuilt.app/analyze/${result.id}.`
-          )
-        );
+        if (process.env.UNBUILT_API_KEY) {
+          await api.post('/analysis', result);
+        } else {
+          console.warn(
+            chalk.red('\n ⚠️ Skipping save: UNBUILT_API_KEY not set')
+          );
+        }
       }
+      displayResults(result, { json: options.json });
+      spinner.succeed('Analysis completed!');
     } catch (error: unknown) {
       if (page) await page?.close();
       throw error;
     } finally {
       await page?.close();
     }
+
     process.exit(0);
   } catch (err) {
     spinner.fail(`Local analysis failed: ${(err as Error).message}`);

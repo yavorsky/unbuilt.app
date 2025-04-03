@@ -38,6 +38,12 @@ async function createBuildOptions(): Promise<esbuild.BuildOptions> {
     jsx: 'transform',
     jsxFactory: 'React.createElement',
     jsxFragment: 'React.Fragment',
+    define: {
+      // This ensures process.env.UNBUILT_API_KEY stays as a runtime lookup
+      // and isn't replaced with any value during build time
+      'process.env.UNBUILT_API_KEY': 'process.env.UNBUILT_API_KEY',
+      'process.env.API_BASE_URL': 'process.env.API_BASE_URL',
+    },
     // Exclude Node.js built-ins and Playwright-related packages
     external: [
       // Native Node.js modules - keep all built-ins external

@@ -16,6 +16,9 @@ module.exports = {
         SUPABASE_URL: process.env.SUPABASE_URL,
         SUPABASE_KEY: process.env.SUPABASE_KEY,
 
+        // Auth
+        UNBUILT_API_KEY: process.env.UNBUILT_API_KEY,
+
         // Logs
         LOGFLARE_SOURCE_TOKEN: process.env.LOGFLARE_SOURCE_TOKEN,
         LOGFLARE_API_KEY: process.env.LOGFLARE_API_KEY,

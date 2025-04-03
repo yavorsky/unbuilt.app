@@ -15,7 +15,6 @@ program
   .name('unbuilt')
   .description('CLI to analyze technologies used on web apps')
   .version(packageJson.version);
-
 // Start Analysis Command
 program
   .command('analyze <url>')
