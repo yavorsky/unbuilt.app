@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 export const redux = [
   {
     name: 'coreRuntime' as const,
-    score: 1,
+    score: 1.4,
     scripts: [
       /"@@redux\/INIT[^"]+"/,
       /"@@redux\/REPLACE[^"]+"/,
@@ -11,9 +11,21 @@ export const redux = [
       /__REDUX_DEVTOOLS_EXTENSION_COMPOSE__/,
       /__REDUX_DEVTOOLS_EXTENSION__/,
       /redux-toolkit\.js\.org\/Errors\?code=/,
-      /visit https:\/\/redux\.js\.org\/Errors\?code=/,
       /Symbol\.for\(["']rtk-state-proxy-original["']\)/,
       /Symbol\.for\(["']react-redux-context["']\)/,
+    ],
+  },
+  {
+    name: 'messages' as const,
+    score: 1.4,
+    scripts: [
+      /throw Error\(['"]You may not call store\.getState\(\) while the reducer is executing\. The reducer has already received the state as an argument\. Pass it down from the top reducer instead of reading it from the store\.['"][\)];/,
+      /See https:\/\/redux\.js\.org\/api\/store#subscribelistener/,
+      /throw Error\(['"]It looks like you are passing several store enhancers to createStore\(\)\. This is not supported\. Instead, compose them together to a single function\. See https:\/\/redux\.js\.org\/tutorials\/fundamentals\/part-4-store#creating-a-store-with-enhancers for an example\.['"][\)];/,
+      /throw Error\(['"]Actions may not have an undefined "type" property\. You may have misspelled an action type string constant\.['"][\)];/,
+      /throw Error\(['"]Reducers may not dispatch actions\.['"][\)];/,
+      /visit https:\/\/redux\.js\.org\/Errors\?code=/,
+      /You may need to add middleware to your store setup to handle dispatching other values, such as ['"]redux-thunk['"] to handle dispatching functions/,
     ],
   },
   {
