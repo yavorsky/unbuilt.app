@@ -22,10 +22,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Setup Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: '22'
           cache: 'yarn'
@@ -49,158 +49,6 @@ jobs:
         run: yarn test
         env:
           NODE_ENV: test
-
-  name: Test and Deploy
-
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
-      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
-      LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
-      LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
-      CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
-          cache: 'yarn'
-
-      - name: Install Yarn
-        run: npm install -g yarn@1.22.19
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Install playwright
-        run: yarn playwright install --with-deps
-
-      - name: Build application
-        run: yarn turbo run build
-
-      - name: Run lint
-        run: yarn lint
-
-      - name: Run tests
-        run: yarn test
-        env:
-          NODE_ENV: test
-
-  publish-cli:
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
-          cache: 'yarn'
-          registry-url: 'https://registry.npmjs.org'
-
-      - name: Install dependencies
-        run: yarn install
-
-      - name: Build CLI package
-        run: yarn turbo run build --filter=@unbuilt/cli
-
-      - name: Check version change
-        id: check-version
-        working-directory: apps/cli
-        run: |
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: $CURRENT_VERSION"
-
-          # Get the previous version from git history
-          git fetch --tags
-          PREV_PACKAGE=$(git show HEAD~1:apps/cli/package.json 2>/dev/null || echo '{"version": "0.0.0"}')
-          PREV_VERSION=$(echo "$PREV_PACKAGE" | node -p "JSON.parse(process.stdin.read()).version")
-          echo "Previous version: $PREV_VERSION"
-
-          if [ "$CURRENT_VERSION" != "$PREV_VERSION" ]; then
-            echo "Version changed from $PREV_VERSION to $CURRENT_VERSION"
-            echo "version_changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "Version unchanged"
-            echo "version_changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Publish to npm
-        if: steps.check-version.outputs.version_changed == 'true'
-        working-directory: apps/cli
-        run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-  deploy:
-    needs: test
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    env:
-      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
-      SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
-      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
-      LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
-      LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
-      CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '22'
-          cache: 'yarn'
-
-      - name: Deploy to DigitalOcean
-        uses: appleboy/ssh-action@v0.1.4
-        with:
-          host: ${{ secrets.DROPLET_IP }}
-          username: ${{ secrets.DROPLET_USERNAME }}
-          key: ${{ secrets.DROPLET_SSH_KEY }}
-          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID,UNBUILT_API_KEY
-          script: |
-            cd /home/server/unbuilt-app && \
-            rm -f apps/web/.env && \
-            echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
-            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
-            echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
-            echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
-            echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
-            echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
-            echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
-            git pull origin main && \
-            yarn install && \
-            NODE_ENV=production yarn turbo run build && \
-            pm2 delete web || true && \
-            NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
-            pm2 save --force || \
-            { echo "Deployment failed at one of the steps"; exit 1; }
 
   publish-cli:
     needs: test
@@ -276,3 +124,51 @@ jobs:
 
             ## What's Changed
             * Published CLI package to npm
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+      SUPABASE_ID: ${{ secrets.SUPABASE_ID }}
+      UNBUILT_API_KEY: ${{ secrets.UNBUILT_API_KEY }}
+      LOGFLARE_SOURCE_TOKEN: ${{ secrets.LOGFLARE_SOURCE_TOKEN }}
+      LOGFLARE_API_KEY: ${{ secrets.LOGFLARE_API_KEY }}
+      CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Deploy to DigitalOcean
+        uses: appleboy/ssh-action@v0.1.4
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID,UNBUILT_API_KEY
+          script: |
+            cd /home/server/unbuilt-app && \
+            rm -f apps/web/.env && \
+            echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
+            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
+            echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
+            echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
+            echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
+            echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
+            echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
+            git pull origin main && \
+            yarn install && \
+            NODE_ENV=production yarn turbo run build && \
+            pm2 delete web || true && \
+            NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
+            pm2 save --force || \
+            { echo "Deployment failed at one of the steps"; exit 1; }
