@@ -48,18 +48,20 @@ export const AppNavigationMenu = () => {
               Apps
             </DropdownMenuTrigger>
             <DropdownMenuContent className="text-sm">
-              <DropdownMenuItem disabled>
-                <b>Browser Extension</b> - <span>Coming Soon</span>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => {
+                  trackNavigation('cli');
+                  window.open(
+                    'https://github.com/yavorsky/unbuilt.app/blob/main/apps/cli/README.md',
+                    '_blank'
+                  );
+                }}
+              >
+                <b>CLI</b>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
-                <a
-                  href="https://github.com/yavorsky/unbuilt.app/blob/main/apps/cli/README.md"
-                  target="_blank"
-                  onClick={() => trackNavigation('cli')}
-                  rel="noreferrer"
-                >
-                  <b>CLI</b>
-                </a>
+                <b>Browser Extension</b> - <span>Coming Soon</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
