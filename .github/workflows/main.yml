@@ -167,7 +167,7 @@ jobs:
             echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
             echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
             echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
-            git pull origin main && \
+            git fetch origin main && git reset --hard origin/main && \
             yarn install && \
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
