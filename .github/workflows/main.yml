@@ -159,6 +159,7 @@ jobs:
           envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID,UNBUILT_API_KEY
           script: |
             cd /home/server/unbuilt-app && \
+            git fetch origin main && git reset --hard origin/main && \
             rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
@@ -167,7 +168,6 @@ jobs:
             echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
             echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
             echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
-            git fetch origin main && git reset --hard origin/main && \
             yarn install && \
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
