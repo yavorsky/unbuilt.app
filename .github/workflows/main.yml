@@ -160,7 +160,6 @@ jobs:
           script: |
             cd /home/server/unbuilt-app && \
             git fetch origin main && git reset --hard origin/main && \
-            rm -f apps/web/.env && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
             echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
             echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \

@@ -29,6 +29,9 @@ Before you start contributing, ensure you have the following installed:
 
 Setting up your local development environment is straightforward with our setup scripts:
 
+**Prerequisites for local mode:**
+- You must have Docker and Node.js 22+ installed.
+
 1. **Clone the repository**
    ```bash
    git clone https://github.com/unbuild/unbuilt.app.git
@@ -44,7 +47,7 @@ Setting up your local development environment is straightforward with our setup 
    - Check for and start Redis if needed
    - Set up Playwright
    - Start a local Supabase instance
-   - Configure your `.env.local` file with the appropriate credentials
+   - Init and configure your `.env.local` file with the appropriate credentials
    - Apply any database migrations to your local Supabase instance
 
 3. **Start the development server**
@@ -63,9 +66,6 @@ The project includes several environment setup scripts to streamline development
 
 #### `yarn env-setup`
 Sets up everything for local development using a local Supabase instance. This is the recommended approach for most contributors, as it doesn't require access to production credentials.
-
-**Prerequisites for local mode:**
-- You must have Docker installed
 
 #### `yarn env-setup:prod`
 For project administrators only. This uses production database credentials to connect to the live database.
@@ -311,7 +311,7 @@ Example:
 // Adding a pattern for a new UI library
 export const myNewUiLibrary = {
   name: "MyNewUI",
-  scripts: /myNewUI\.(?:min\.)?js/i,
+  scripts: [/myNewUIExists=true/],
   confidence: 0.8,
 };
 ```
@@ -331,15 +331,10 @@ Example of adding a new category:
 export const performanceMonitoring = {
   detect: [
     {
-      name: "New Relic",
-      scripts: /newrelic\.(?:min\.)?js/i,
+      name: "newRelicSpecificCall",
+      scripts: [/newrelic\.someCall\(\w+\)/],
       confidence: 0.9,
     },
-    {
-      name: "Datadog",
-      scripts: /datadog-rum\.(?:min\.)?js/i,
-      confidence: 0.85,
-    }
   ]
 };
 ```
@@ -364,6 +359,8 @@ yarn test
 # Test a specific pattern
 yarn test:pattern -- --pattern=react
 ```
+
+For more info about testing approach, check [testing docs](./testing/e2e/README.md)
 
 ## Code Style Guidelines
 

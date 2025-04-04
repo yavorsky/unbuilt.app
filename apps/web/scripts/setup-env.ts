@@ -27,6 +27,7 @@ const PROJECT_ROOT = path.resolve(__dirname, '..');
 
 // Configure paths relative to project root
 const ENV_FILE = path.join(PROJECT_ROOT, '.env.local');
+const EXAMPLE_ENV_FILE = path.join(PROJECT_ROOT, '.env.local.example');
 const MIGRATIONS_DIR = path.join(PROJECT_ROOT, 'supabase/migrations');
 
 const LOG_PREFIX = {
@@ -563,27 +564,32 @@ async function main() {
   // Ensure we're working from the project root
   console.log(`${LOG_PREFIX.setup} Running from ${PROJECT_ROOT}`);
 
-  // Setup Redis (needed in both modes)
+  if (!fs.existsSync(ENV_FILE)) {
+    fs.copyFileSync(EXAMPLE_ENV_FILE, ENV_FILE);
+    console.log(`${LOG_PREFIX.setup} .env.local created successfully`);
+  }
+
+  // Setup Redis
   if (!setupRedis()) {
     console.warn(
       `${LOG_PREFIX.setup} Redis setup had issues, but continuing with other steps...`
     );
   }
 
-  // Install dependencies (needed in both modes)
+  // Install dependencies
   if (!installDependencies()) {
     console.error(`${LOG_PREFIX.setup} Failed to install dependencies`);
     process.exit(1);
   }
 
-  // Setup Playwright (needed in both modes)
+  // Setup Playwright
   if (!setupPlaywright()) {
     console.warn(
       `${LOG_PREFIX.setup} Playwright setup had issues, but continuing with other steps...`
     );
   }
 
-  // Check Supabase CLI (needed in both modes for schema operations)
+  // Check Supabase CLI
   if (!checkSupabaseCLI()) {
     process.exit(1);
   }
