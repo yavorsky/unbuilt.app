@@ -120,7 +120,7 @@ program
         outputFile: options.output,
         timeout: parseInt(options.timeout, 10),
         concurrent: parseInt(options.concurrent, 10),
-        save: options.save ?? false,
+        save: options.save ?? process.env.UNBUILT_API_KEY !== undefined,
       });
     }
   );

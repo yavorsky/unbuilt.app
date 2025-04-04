@@ -120,6 +120,7 @@ export async function runBatchAnalysis(
           if (options.save) {
             if (process.env.UNBUILT_API_KEY) {
               await api.post('/analysis', result);
+              console.log(chalk.yellow(`\n📥 ${url} - Analysis saved`));
             } else {
               console.warn('Skipping save: UNBUILT_API_KEY not set');
               return;
