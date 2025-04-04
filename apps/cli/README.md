@@ -5,7 +5,7 @@
 ## Installation
 
 ```bash
-npm install -g unbuilt
+npm install -g @unbuilt/cli
 ```
 
 ### Prerequisites
@@ -23,7 +23,7 @@ This is necessary because Unbuilt uses a headless browser to visit websites and 
 
 Unbuilt CLI provides three main commands:
 
-- `analyze`: Analyze a single website. (the analyze keyword can be omitted - `unbuilt mysite.com`)
+- `analyze`: Analyze a single website. (the analyze keyword can be omitted - ex. `unbuilt mysite.com`)
 - `batch`: Analyze multiple websites from a CSV file
 - `status`: Check the status of an ongoing remote analysis
 
@@ -33,10 +33,6 @@ Unbuilt CLI provides three main commands:
 
 ```bash
 unbuilt https://example.com
-```
-or
-```bash
-unbuilt analyze https://example.com
 ```
 
 This will analyze the website locally using a headless browser and display the detected technologies.

@@ -57,7 +57,7 @@ npm install -g @unbuilt/cli
 ### Usage
 
 ```bash
-unbuilt analyze <url>
+unbuilt <url>
 ```
 
 Check more details in the [CLI documentation](./apps/cli/README.md).
