@@ -38,6 +38,7 @@
     "@unbuilt/analyzer": "^0.1.0",
     "@unbuilt/helpers": "^0.1.0",
     "chalk": "^4.1.2",
+    "boxen": "^8.0.1",
     "p-queue": "^8.1.0",
     "csv-parse": "^5.6.0",
     "uuidv4": "^6.2.13",

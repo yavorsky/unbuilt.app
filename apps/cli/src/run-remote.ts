@@ -3,7 +3,7 @@ import axios from 'axios';
 import api from './api';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import chalk from 'chalk';
-import { displayResults } from './display-results';
+import { renderResults } from './render-results';
 import { AnalysisStatusResponse } from './types';
 
 interface AnalysisResponse {
@@ -95,7 +95,7 @@ export async function runRemoteAnalysis(
 
       waitSpinner.succeed('Analysis completed!');
       if (results) {
-        displayResults(results, { json: options.json });
+        renderResults(results, { json: options.json });
       } else {
         console.log(chalk.red('No analysis results available'));
       }

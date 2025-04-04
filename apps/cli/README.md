@@ -23,7 +23,7 @@ This is necessary because Unbuilt uses a headless browser to visit websites and 
 
 Unbuilt CLI provides three main commands:
 
-- `analyze`: Analyze a single website
+- `analyze`: Analyze a single website. (the analyze keyword can be omitted - `unbuilt mysite.com`)
 - `batch`: Analyze multiple websites from a CSV file
 - `status`: Check the status of an ongoing remote analysis
 
@@ -31,6 +31,10 @@ Unbuilt CLI provides three main commands:
 
 ### Basic Usage
 
+```bash
+unbuilt https://example.com
+```
+or
 ```bash
 unbuilt analyze https://example.com
 ```
@@ -52,22 +56,22 @@ This will analyze the website locally using a headless browser and display the d
 
 ```bash
 # Run a local analysis
-unbuilt analyze https://example.com
+unbuilt https://example.com
 
 # Run a remote analysis
-unbuilt analyze https://example.com --remote
+unbuilt https://example.com --remote
 
 # Run a local analysis and save the results to DB (cache).
-unbuilt analyze https://example.com --save
+unbuilt https://example.com --save
 
 # Run a local analysis with longer timeout
-unbuilt analyze https://example.com --timeout 30000
+unbuilt https://example.com --timeout 30000
 
 # Get JSON output
-unbuilt analyze https://example.com --json
+unbuilt https://example.com --json
 
 # Run a remote analysis asynchronously. Will return <analysisId>.
-unbuilt analyze https://example.com --remote --async
+unbuilt https://example.com --remote --async
 
 # Use <analysisId> to get results.
 unbuilt status <analysisId>

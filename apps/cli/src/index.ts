@@ -1,4 +1,4 @@
-import { program } from 'commander';
+import { Command, program } from 'commander';
 import * as fs from 'fs';
 import * as path from 'path';
 import { runRemoteAnalysis } from './run-remote';
@@ -16,57 +16,76 @@ program
   .name('unbuilt')
   .description('CLI to analyze technologies used on web apps')
   .version(packageJson.version);
-// Start Analysis Command
-program
+
+// Create analyze command configuration
+const configureAnalyzeCommand = (cmd: Command) => {
+  return cmd
+    .option(
+      '-r, --remote',
+      'Run analysis remotely via unbuilt server (by default it will be started locally)'
+    )
+    .option('-s, --save', 'Save the result to the database')
+    .option(
+      '-n, --async',
+      'Async mode - return job id instead of result and use status command to check it later'
+    )
+    .option(
+      '-r, --refresh',
+      'Force a fresh analysis (not use previously saved result)'
+    )
+    .option(
+      '-t, --timeout <seconds>',
+      'Max time to wait for analysis to complete',
+      '120'
+    )
+    .option('-j, --json', 'Output results in JSON format');
+};
+
+// Function to handle the analyze action
+const handleAnalyzeAction = async (
+  url: string,
+  options: {
+    remote?: boolean;
+    async?: boolean;
+    refresh?: boolean;
+    timeout: string;
+    save?: boolean;
+    json?: boolean;
+  }
+) => {
+  const normalizedUrl = normalizeUrl(url);
+  if (options.remote) {
+    await runRemoteAnalysis(normalizedUrl, {
+      lookupForExisting: !options.refresh,
+      async: options.async ?? false,
+      timeout: options.timeout,
+      json: options.json ?? false,
+    });
+  } else {
+    await runLocalAnalysis(normalizedUrl, {
+      json: options.json ?? false,
+      save: options.save ?? process.env.UNBUILT_API_KEY !== undefined,
+    });
+  }
+};
+
+// Explicit 'analyze' command
+const analyzeCommand = program
   .command('analyze <url>')
-  .description('Analyze the technologies used on a website')
-  .option(
-    '-r, --remote',
-    'Run analysis remotely via unbuilt server (by default it will be started locally)'
-  )
-  .option('-s, --save', 'Save the result to the database')
-  .option(
-    '-n, --async',
-    'Async mode - return job id instead of result and use status command to check it later'
-  )
-  .option(
-    '-r, --refresh',
-    'Force a fresh analysis (not use previously saved result)'
-  )
-  .option(
-    '-t, --timeout <seconds>',
-    'Max time to wait for analysis to complete',
-    '120'
-  )
-  .option('-j, --json', 'Output results in JSON format')
-  .action(
-    async (
-      url: string,
-      options: {
-        remote?: boolean;
-        async?: boolean;
-        refresh?: boolean;
-        timeout: string;
-        save?: boolean;
-        json?: boolean;
-      }
-    ) => {
-      const normalizedUrl = normalizeUrl(url);
-      if (options.remote) {
-        await runRemoteAnalysis(normalizedUrl, {
-          lookupForExisting: !options.refresh,
-          async: options.async ?? false,
-          timeout: options.timeout,
-          json: options.json ?? false,
-        });
-      } else {
-        await runLocalAnalysis(normalizedUrl, {
-          json: options.json ?? false,
-          save: options.save ?? true,
-        });
-      }
-    }
-  );
+  .description('Analyze the technologies used on a website');
+
+configureAnalyzeCommand(analyzeCommand).action(handleAnalyzeAction);
+
+// Default command (when no command is specified)
+program
+  .arguments('<url>')
+  .description('Analyze the technologies used on a website (default command)')
+  .action((url, options) => {
+    handleAnalyzeAction(url, options);
+  });
+
+// Apply the same options to the default command
+configureAnalyzeCommand(program);
 
 // New Batch Analysis Command
 program
@@ -118,7 +137,7 @@ program
 // Parse command line arguments
 program.parse(process.argv);
 
-// Show help if no commands were provided
-if (!process.argv.slice(2).length) {
+// Only show help if no arguments were provided at all
+if (process.argv.length <= 2) {
   program.outputHelp();
 }

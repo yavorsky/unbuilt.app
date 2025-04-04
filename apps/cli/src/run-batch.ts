@@ -10,7 +10,7 @@ import {
   AnalyzeResult,
 } from '@unbuilt/analyzer';
 import { v4 as uuidv4 } from 'uuid';
-import { displayResults } from './display-results';
+import { renderResults } from './render-results';
 import PQueue from 'p-queue';
 import api from './api';
 
@@ -188,7 +188,7 @@ export async function runBatchAnalysis(
         console.log(
           `\n${chalk.cyan.bold(`Result ${index + 1}/${successful.length}: ${result.url}`)}`
         );
-        displayResults(result.result!, { json: false });
+        renderResults(result.result!, { json: false });
       });
     }
 
@@ -213,7 +213,7 @@ export async function runBatchAnalysis(
       successful.forEach((result) => {
         if (result.result) {
           console.log(`\n--- Result for ${result.url} ---`);
-          displayResults(result.result, { json: true });
+          renderResults(result.result, { json: true });
         }
       });
     }

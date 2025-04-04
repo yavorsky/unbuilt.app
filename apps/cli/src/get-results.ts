@@ -1,7 +1,7 @@
 import api from './api';
 import { AnalysisStatusResponse } from './types';
 import ora from 'ora';
-import { displayResults } from './display-results';
+import { renderResults } from './render-results';
 import chalk from 'chalk';
 import { isAxiosError } from 'axios';
 
@@ -25,7 +25,7 @@ export async function getResults(
     if (status === 'completed') {
       spinner.succeed('Analysis completed!');
       if (result) {
-        displayResults(result, { json: options.json });
+        renderResults(result, { json: options.json });
       } else {
         console.log(chalk.yellow('No analysis results available'));
       }

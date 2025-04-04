@@ -3,7 +3,7 @@ import { Page } from 'playwright';
 import { getBrowserContext } from './helpers/get-browser-context';
 import { analyze } from '@unbuilt/analyzer';
 import { v4 as uuidv4 } from 'uuid';
-import { displayResults } from './display-results';
+import { renderResults } from './render-results';
 import chalk from 'chalk';
 import api from './api';
 
@@ -21,7 +21,7 @@ export async function runLocalAnalysis(
     try {
       const context = await getBrowserContext();
       const browser = await context.browser();
-      page = (await context?.newPage()) ?? null;
+      page = await context?.newPage();
 
       if (!page || !browser) {
         throw new Error('Page is not defined');
@@ -39,17 +39,20 @@ export async function runLocalAnalysis(
         }
       );
 
+      let isSaved = false;
       if (options.save) {
         if (process.env.UNBUILT_API_KEY) {
           await api.post('/analysis', result);
+          isSaved = true;
         } else {
           console.warn(
             chalk.red('\n ⚠️ Skipping save: UNBUILT_API_KEY not set')
           );
         }
       }
-      displayResults(result, { json: options.json });
       spinner.succeed('Analysis completed!');
+      spinner.clear();
+      renderResults(result, { json: options.json, isSaved });
     } catch (error: unknown) {
       if (page) await page?.close();
       throw error;

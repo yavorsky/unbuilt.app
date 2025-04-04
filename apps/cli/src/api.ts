@@ -1,9 +1,9 @@
 // Create an axios instance (typically in a separate file like api.js)
 import axios from 'axios';
-import { getBaseUrl } from './constants';
+import { getBaseAPIUrl } from './constants';
 
 const api = axios.create({
-  baseURL: getBaseUrl(), // Your base URL function
+  baseURL: getBaseAPIUrl(), // Your base URL function
   headers: {
     'Content-Type': 'application/json',
     // Common headers for all requests
