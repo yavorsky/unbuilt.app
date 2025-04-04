@@ -1,6 +1,6 @@
 {
   "name": "@unbuilt/cli",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "CLI tool to analyze technologies used on websites via unbuilt.app",
   "main": "./build/index.js",
   "bin": {
@@ -18,8 +18,9 @@
     "detection"
   ],
   "files": [
-    "build",
-    "bin",
+    "build/index.js",
+    "build/index.map.js",
+    "bin/cli.js",
     "package.json",
     "tsconfig.json"
   ],
