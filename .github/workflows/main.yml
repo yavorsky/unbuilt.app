@@ -158,6 +158,7 @@ jobs:
           key: ${{ secrets.DROPLET_SSH_KEY }}
           envs: SUPABASE_URL,SUPABASE_KEY,SUPABASE_ID,LOGFLARE_SOURCE_TOKEN,LOGFLARE_API_KEY,CLARITY_PROJECT_ID,UNBUILT_API_KEY
           script: |
+            set -e # Exit if fail
             cd /home/server/unbuilt-app && \
             git fetch origin main && git reset --hard origin/main && \
             echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
@@ -171,5 +172,4 @@ jobs:
             NODE_ENV=production yarn turbo run build && \
             pm2 delete web || true && \
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
-            pm2 save --force || \
-            { echo "Deployment failed at one of the steps"; exit 1; }
+            pm2 save --force
