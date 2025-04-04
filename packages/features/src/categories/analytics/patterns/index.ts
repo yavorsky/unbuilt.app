@@ -7,6 +7,7 @@ import { matomo } from './matomo.js';
 import { mixpanel } from './mixpanel.js';
 import { plausible } from './plausible.js';
 import { posthog } from './posthog.js';
+import { splitbee } from './splitbee.js';
 import { umami } from './umami.js';
 import { vercelAnalytics } from './vercel-analytics.jsx';
 
@@ -15,6 +16,7 @@ export const patterns = {
   fathom,
   googleAnalytics,
   posthog,
+  splitbee,
   matomo,
   mixpanel,
   hotjar,
