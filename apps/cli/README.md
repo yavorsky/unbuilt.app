@@ -177,13 +177,13 @@ Available only for admins (you need to set `UNBUILT_API_KEY` env variable when r
 ### Quick Technology Check
 
 ```bash
-unbuilt analyze https://example.com
+unbuilt https://example.com
 ```
 
 ### In-depth Analysis with JSON Output for Further Processing
 
 ```bash
-unbuilt analyze https://example.com --json > analysis.json
+unbuilt https://example.com --json > analysis.json
 ```
 
 ### Batch Analysis of Many Sites with Results Saved to CSV
@@ -195,7 +195,7 @@ unbuilt batch websites.csv --concurrent 4 --output tech-analysis
 ### Batch Analysis with Database Storage
 
 ```bash
-UNBUILT_API_KEY="hash" unbuilt batch websites.csv --concurrent 4 --save
+UNBUILT_API_KEY="xxxxx" unbuilt batch websites.csv --concurrent 4 --save
 ```
 
 ## Troubleshooting
