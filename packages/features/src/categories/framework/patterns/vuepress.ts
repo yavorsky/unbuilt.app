@@ -79,9 +79,6 @@ export const vuepress = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          // VuePress SSR markers
-          hasInitialState: typeof window?.__INITIAL_STATE__ !== 'undefined',
-
           // Check for VuePress router in SSR mode
           hasSSRRouter:
             typeof window?.__VUEPRESS_ROUTER__?.options?.ssr !== 'undefined',

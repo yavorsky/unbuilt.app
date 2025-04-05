@@ -23,7 +23,7 @@ interface PiniaStore extends PiniaStoreMethods, PiniaInternals {}
 export const pinia = [
   {
     name: 'coreImplementation' as const,
-    score: 0.9,
+    score: 1.2,
     scripts: [
       // Pinia's unique Symbol and emoji prefix that survive minification
       /Symbol\(["']pinia["']\)/,
@@ -86,6 +86,21 @@ export const pinia = [
           globalObj.__PINIA_DEVTOOLS_GLOBAL_HOOK__ ||
           Object.values(globalObj).some(isPiniaStore)
         );
+      });
+    },
+  },
+  {
+    name: 'initialState' as const,
+    score: 1,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        if (typeof window.__INITIAL_STATE__ === 'string') {
+          return window.__INITIAL_STATE__.includes('pinia');
+        }
+        if (typeof window.__INITIAL_STATE__ === 'object') {
+          return window.__INITIAL_STATE__.pinia;
+        }
+        return false;
       });
     },
   },
