@@ -495,6 +495,7 @@ export type Database = {
         | "hotjar"
         | "posthog"
         | "splitbee"
+        | "countly"
       bundler_type:
         | "unknown"
         | "brunch"
