@@ -11,7 +11,9 @@ export const AnalyticsCard: FC<{
       name="analytics"
       analysis={analytics}
       Icon={ChartColumn}
-      withSecondaryMatches={false}
+      withSecondaryMatches={true}
+      secondaryMatchesLabel="Additional Analytics"
+      isSecondaryMatchesExpanded={true}
     />
   );
 };

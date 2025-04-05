@@ -34,13 +34,17 @@ export function SingleResultAnalysisCard<
   analysis,
   Icon,
   withSecondaryMatches = true,
+  isSecondaryMatchesExpanded = false,
+  secondaryMatchesLabel = 'Secondary Matches',
 }: {
   name: N;
   analysis: A | undefined;
   Icon: FC<LucideProps>;
   withSecondaryMatches?: boolean;
+  isSecondaryMatchesExpanded?: boolean;
+  secondaryMatchesLabel?: string;
 }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(isSecondaryMatchesExpanded);
   const label = getCategoryLabel(name);
   const { activeAnalysis } = useActiveAnalysis();
 
@@ -211,11 +215,11 @@ export function SingleResultAnalysisCard<
               withSecondaryMatches &&
               'secondaryMatches' in analysis &&
               Object.keys(analysis.secondaryMatches).length > 0 && (
-                <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+                <Collapsible open={isExpanded} onOpenChange={setIsExpanded}>
                   <CollapsibleTrigger className="flex items-center gap-2 text-sm text-gray-400 hover:text-gray-300 transition-colors">
-                    {Object.keys(analysis.secondaryMatches).length} secondary
-                    matches{' '}
-                    {isOpen ? (
+                    {Object.keys(analysis.secondaryMatches).length}{' '}
+                    {secondaryMatchesLabel}{' '}
+                    {isExpanded ? (
                       <ChevronUp className="h-4 w-4" />
                     ) : (
                       <ChevronDown className="h-4 w-4" />
