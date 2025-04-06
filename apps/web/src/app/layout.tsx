@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   applicationName: 'Unbuilt',
   description:
     'Website analyzer - See the exact technologies powering any web app',
-  authors: [{ url: 'https://github.com/yavorsky', name: 'Artem Yavorskyi' }],
+  authors: [{ url: 'https://yavorsky.org', name: 'Artem Yavorskyi' }],
   creator: 'Artem Yavorskyi',
   openGraph: {
     title: 'Unbuilt.app',
@@ -36,6 +36,13 @@ export const metadata: Metadata = {
     siteName: 'Unbuilt.app',
     locale: 'en_US',
     type: 'website',
+    images: [
+      {
+        url: `${baseUrl}/api/og`,
+        width: 1200,
+        height: 630,
+      },
+    ],
   },
   icons: {
     // Favicon
