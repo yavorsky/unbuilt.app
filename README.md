@@ -69,27 +69,10 @@ unbuilt.app itself is built with:
 - Next.js for web application and analyzer backend service
 - React for web interface
 - Turbopack as a build tool...
-- 🥱 Ok, why to list everything here, when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/a9abcd3b-aac0-4c96-a835-7d7756594916)!
+- 🥱 Ok, why to list everything here, when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/f280c84c-3168-46c3-ae2d-becfd002e7fd)!
 
 > Yes, we've unbuilt ourselves too! We practice what we preach.
 
-
-## Repository Structure
-
-The project is organized as a monorepo using Turborepo with the following structure:
-
-```
-unbuild.app/
-├── apps/
-│   └── web/           # Next.js application + unbuilding service
-│
-├── packages/
-│   ├── analyzer/      # Core analysis engine
-│   ├── features/      # Technology detection patterns
-│   ├── helpers/       # Browser and CLI interaction utilities
-│   ├── resources/     # Resource collection entities
-│   └── testing/       # Testing utilities
-```
 
 ## Contributing / Running Locally
 

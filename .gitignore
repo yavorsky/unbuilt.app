@@ -2,19 +2,9 @@
 
 # dependencies
 /node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
-
-# testing
-/coverage
 
 # next.js
 /.next/
-/out/
-
-# production
-/build
 
 # misc
 .DS_Store
@@ -26,7 +16,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env.local
 
 # vercel
 .vercel
@@ -39,7 +29,7 @@ next-env.d.ts
 .turbo
 node_modules
 !yarn.lock
-build
 packages/analyzer/build
 .next
+/build
 **/build
