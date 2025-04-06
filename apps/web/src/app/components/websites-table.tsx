@@ -10,6 +10,7 @@ import {
 import type { WebsiteData } from '@/server/api/get-technology-websites';
 import { TooltipProvider } from '@radix-ui/react-tooltip';
 import { ExternalLinkIcon } from 'lucide-react';
+import { getConfidenceBarInfo } from './confidence-indicator';
 
 interface WebsiteTableProps {
   data: WebsiteData[];
@@ -43,7 +44,9 @@ export function WebsitesTable({ data, formatDate }: WebsiteTableProps) {
                 </a>
               </TableCell>
               <TableCell>{formatDate(website?.analyzed_at)}</TableCell>
-              <TableCell>{website.confidence}</TableCell>
+              <TableCell>
+                {getConfidenceBarInfo(website.confidence).percentage}%
+              </TableCell>
               <TableCell>
                 <Tooltip>
                   <TooltipTrigger asChild>

@@ -17,6 +17,7 @@ import {
   stylingProcessorMeta,
   AnalysisKeys,
 } from '@unbuilt/features';
+import { Fragment } from 'react';
 
 const supportedCategories = {
   frameworkMeta,
@@ -136,22 +137,41 @@ export default function AboutPage() {
         for new technologies.
       </p>
       <div className="grid grid-cols-2 md:grid-cols-2 gap-x-8 gap-y-6">
-        {Object.entries(supportedCategories).map(([key, value]) => {
-          const category = value.meta;
+        {Object.entries(supportedCategories).map(
+          ([categoryMetaName, value]) => {
+            const category = value.meta;
+            const cateogryName = categoryMetaName.replace(
+              'Meta',
+              ''
+            ) as AnalysisKeys;
 
-          return (
-            <div key={key} className="pb-6 pr-2">
-              <h3 className="pb-4 font-bold">
-                {getCategoryLabel(key.replace('Meta', '') as AnalysisKeys)}
-              </h3>
-              {Object.values(category)
-                .map((meta) => {
-                  return meta.name;
-                })
-                .join(', ')}
-            </div>
-          );
-        })}
+            return (
+              <div key={categoryMetaName} className="pb-6 pr-2">
+                <h3 className="pb-4 font-bold">
+                  {getCategoryLabel(cateogryName)}
+                </h3>
+                {Object.entries(category).map(
+                  ([name, meta], i, allCategories) => {
+                    const isLast = i === allCategories.length - 1;
+                    return (
+                      <Fragment key={name}>
+                        <a
+                          href={`/technologies/${cateogryName}/${name}`}
+                          target="_blank"
+                          className="hover:underline"
+                          rel="noopener noreferrer"
+                        >
+                          {meta.name}
+                        </a>
+                        {isLast ? null : <span>{', '}</span>}
+                      </Fragment>
+                    );
+                  }
+                )}
+              </div>
+            );
+          }
+        )}
       </div>
     </div>
   );
