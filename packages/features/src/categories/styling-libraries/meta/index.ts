@@ -18,4 +18,4 @@ export const meta = {
   shadcn,
   radix,
   tailwindCSS,
-};
+} as const;

@@ -106,6 +106,16 @@ export function NavigationBreadcrumb<
         </>
       );
     }
+    if (activeRoute === 'ABOUT') {
+      return (
+        <>
+          <BreadcrumbSeparator className="hidden md:inline" />
+          <BreadcrumbItem className="text-foreground text-lg hidden md:inline">
+            <BreadcrumbLink href="/about">About</BreadcrumbLink>
+          </BreadcrumbItem>
+        </>
+      );
+    }
   }, [activeRoute, activeCategoryLabel, truncatedUrl, handleCopyUrl, params]);
 
   return (

@@ -10,4 +10,4 @@ export const meta = {
   jsJoda,
   luxon,
   moment,
-};
+} as const;

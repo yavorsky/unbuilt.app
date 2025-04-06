@@ -11,5 +11,11 @@ export const useActiveRoute = () => {
     if (pathname.startsWith('/technologies')) {
       return 'TECHNOLOGIES';
     }
+
+    if (pathname.startsWith('/about')) {
+      return 'ABOUT';
+    }
+
+    return 'NOT_FOUND';
   }, [pathname]);
 };

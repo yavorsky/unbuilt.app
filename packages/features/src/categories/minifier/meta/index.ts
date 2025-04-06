@@ -14,4 +14,4 @@ export const meta = {
   terser,
   swc,
   uglify,
-};
+} as const;
