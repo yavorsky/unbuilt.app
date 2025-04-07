@@ -1,6 +1,6 @@
 # unbuilt.app
 
-An open-source web tool that displays "unbuilt" websites to reveal their tech stack in real-time. Takes seconds to analyze bundled and minfied codebase and to detect modern and legacy technologies by url.
+An open-source web tool that displays "unbuilt" websites to reveal their tech stack in real-time. Takes seconds to analyze bundled and minified code to detect modern and legacy technologies by URL.
 
 **🚀 Live at: [https://unbuilt.app](https://unbuilt.app)**
 
@@ -8,20 +8,38 @@ An open-source web tool that displays "unbuilt" websites to reveal their tech st
 
 ## What is unbuilt.app?
 
-unbuilt.app is a reverse engineering tool for the modern web. While developers build applications with various frameworks and libraries, we help to see it  **unbuilt** and reveal what's under the hood in real-time.
+unbuilt.app is a reverse engineering tool for the modern web. While developers build applications with various frameworks and libraries, we help to see it **unbuilt** and reveal what's under the hood in real-time.
 
-- **100% Open Source** - Anyone can contribute new detection patterns to identify additional frameworks, libraries, and tools
-- **Completely Free** - No premium plans or usage limits. I'm making it for fun, not for profit
-- **Modern Real-time Detection** - Identifies cutting-edge technologies like Vite, Turbopack, Next.js, SWC, React Compiler, Server Actions, and more
-- **Lightning Fast** - Analysis takes just seconds to complete
+## Why Choose Unbuilt?
+
+- **Real-Time Code Analysis** - Unlike alternative tools that use static signatures, we deconstruct websites in real-time. It allows to have analysis for any web application and latest available technologies.
+- **100% Open Source** - Every pattern is transparent and community-driven, unlike closed-source alternatives
+- **Completely Free** - No premium plans, usage limits, or restricted features that plague other tools
+- **Lightning Fast** - Analysis takes just seconds instead of minutes with competing solutions
+- **Modern Tech Focus** - Specialized in detecting cutting-edge frameworks and tools that other analyzers miss
+- **Evidence-Based Results** - We only report technologies with verifiable code evidence, not guesswork
 - **Queue-Based Architecture** - Ensures stability even under heavy load
-- **Extensible by Design** - Built with clear pattern APIs for easy contributions
-- **Tested** - We are testing most of technologies (every soon) to ensure accuracy, false positive patterns absence and detection performance.
-- **Fast and Cachable** - Uses cache to get unfinished analysis results or recent ones.
+- **Intelligent Caching** - Immediate results for previously analyzed sites with ability to get fresh analysis any time
+- **Community-Driven** - Patterns are continuously improved by developers like you
+- **Can Run Local Analysis** - Run complete website analysis via CLI tool without sending data to external servers (and browser extension coming soon)
+
+## How We Compare
+
+| Feature                | Unbuilt                                          | Other Alternatives |
+|------------------------|--------------------------------------------------|--------------------|
+| Detection Method       | Real-time code execution with pattern-based detection | Primarily pattern-based detection |
+| Data Relevance         | Fresh analysis can be triggered any time         | Often rely on pre-saved data or hardcoded values from user reports |
+| Source Code            | 100% open-source                                 | Mix of open and closed source solutions |
+| Price                  | Completely free, no usage limits                 | Often freemium with paid tiers for advanced features |
+| Community Contribution | Direct pattern contributions encouraged          | Typically limited to issue reporting |
+| Modern Tech Focus      | Specialized in detecting cutting-edge frameworks | Varies, often slower to detect newest technologies |
+| Detection Transparency | Clear evidence for each detected technology      | Often limited visibility into detection reasoning |
+| Analysis Speed         | Results typically in under 10 seconds            | Varies by tool and website complexity |
+| Local Analysis         | Comprehensive CLI tool with full capabilities    | Available in some tools with varying capabilities |
 
 ## Detection Categories
 
-On the current stage, unbuilt.app deconstructs websites to reveal technologies across these categories:
+unbuilt.app deconstructs websites to reveal technologies across these categories:
 
 - **Bundlers** - Webpack, Vite, Rollup, Parcel, etc.
 - **UI Libraries** - React, Vue, Angular, Svelte, etc.
@@ -40,21 +58,24 @@ On the current stage, unbuilt.app deconstructs websites to reveal technologies a
 - **Transpilers** - Babel, SWC, TypeScript, etc.
 - **Platforms** - Wix, Weebly, Webflow, Squarespace, Shopify, etc.
 - **Unbuilt Resources** - Js/CSS/HTML files, DOM elements, etc.
-- Much more categories in the future. With open-source approach, I hope to have more patterns to cover.
 
 > The list of supported technologies within each category is continuously expanding.
 
-## CLI Tool
+## Unbuilt Ecosystem
 
-unbuilt.app also provides a CLI tool to analyze technologies used on websites via unbuilt.app.
+Analyze web technologies across multiple platforms:
 
-### Installation
+- **Web Application** - Quick analysis via browser at [unbuilt.app](https://unbuilt.app)
+- **CLI Tool** - Analyze sites directly from your terminal
+- **Coming Soon: Browser Extension** - Analyze sites as you browse, even behind authentication
+
+### CLI Tool Installation
 
 ```bash
 npm install -g @unbuilt/cli
 ```
 
-### Usage
+### CLI Usage
 
 ```bash
 unbuilt <url>
@@ -64,15 +85,9 @@ Check more details in the [CLI documentation](./apps/cli/README.md).
 
 ## Tech Stack
 
-unbuilt.app itself is built with:
-
-- Next.js for web application and analyzer backend service
-- React for web interface
-- Turbopack as a build tool...
-- 🥱 Ok, why to list everything here, when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/f280c84c-3168-46c3-ae2d-becfd002e7fd)!
+Why list everything here when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/f280c84c-3168-46c3-ae2d-becfd002e7fd)!
 
 > Yes, we've unbuilt ourselves too! We practice what we preach.
-
 
 ## Contributing / Running Locally
 
@@ -89,8 +104,7 @@ Your help makes unbuilt.app better for everyone!
 
 - Browser Extension - Unbuild any site as you browse
 - Additional Detection Categories - Expand our unbuilding capabilities
-- Technology Versions - Detect major or even minor/patch versions of specific technologies.
-
+- Technology Versions - Detect major or even minor/patch versions of specific technologies
 
 ## Contact
 - [Artem Yavorskyi](https://yavorsky.org)

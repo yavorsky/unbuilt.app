@@ -55,14 +55,71 @@ export default function AboutPage() {
       <h2 className="text-2xl font-bold mb-4">Mission</h2>
       <p className="mb-10">
         Born as a side project in 2024, Unbuilt began as a fast way to identify
-        specific technologies on web applications. It was decided to
-        open-sourced it to provide developers with an easy way to discover tech
-        stacks, contribute patterns, and track technology adoption trends across
-        the web.
+        specific technologies on web applications. It was decided to open-source
+        it to provide developers with an easy way to discover tech stacks,
+        contribute patterns, and track technology adoption trends across the
+        web.
       </p>
 
-      <h2 className="text-2xl font-bold mb-4">Key Features</h2>
+      <h2 className="text-2xl font-bold mb-4">Why Choose Unbuilt?</h2>
+      <div className="grid gap-8 mb-12">
+        <div>
+          <h3 className="text-xl font-bold mb-2">Real-Time Code Analysis</h3>
+          <p>
+            Unlike traditional tech stack detectors that rely on static
+            signatures, Unbuilt actually deconstructs websites in real-time.
+            This means we can detect cutting-edge technologies like React
+            Compiler, Server Actions, and Turbopack that other tools often miss
+            until their databases are manually updated.
+          </p>
+        </div>
 
+        <div>
+          <h3 className="text-xl font-bold mb-2">
+            100% Open-Source Transparency
+          </h3>
+          <p>
+            Many tech analyzers operate as black boxes. Unbuilt is completely
+            open-source, which means every detection pattern is visible and
+            community-verified. False positives are quickly identified and
+            eliminated, and new technology detection can be added by anyone, not
+            just the maintainers.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold mb-2">Modern Technology Focus</h3>
+          <p>
+            While other tools might recognize basic frameworks, Unbuilt goes
+            deeper to detect specific implementation details like bundler
+            configurations, transpiler choices, state management libraries,
+            modern module systems, and framework-specific features.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold mb-2">No Pricing Tiers or Limits</h3>
+          <p>
+            Typical tech stack analyzers offer limited functionality in their
+            free tiers, reserving deeper insights for paid plans. Unbuilt is
+            completely free with no usage limitations, API restrictions, or
+            premium features behind paywalls.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-xl font-bold mb-2">Evidence-Based Detection</h3>
+          <p>
+            Many tech analyzers rely on superficial indicators or outdated
+            heuristics. Unbuilt only reports technologies with verifiable
+            evidence in the code, with no guesswork or probability-based
+            detection. We provide a detailed breakdown of exactly where and how
+            technologies are implemented.
+          </p>
+        </div>
+      </div>
+
+      <h2 className="text-2xl font-bold mb-4">Key Features</h2>
       <div className="grid gap-8 mb-12">
         <div>
           <h3 className="text-xl font-bold mb-2">Lightning-Fast Analysis</h3>
