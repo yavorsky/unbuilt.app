@@ -17,7 +17,6 @@ import {
   stylingProcessorMeta,
   AnalysisKeys,
 } from '@unbuilt/features';
-import { Fragment } from 'react';
 
 const supportedCategories = {
   frameworkMeta,
@@ -60,11 +59,11 @@ export default function AboutPage() {
       <div className="mb-16">
         <h2 className="text-3xl font-bold mb-6 border-b pb-2">Mission</h2>
         <p className="text-lg leading-relaxed">
-          Born as a side project in 2024, Unbuilt began as a fast way to
-          identify specific technologies on web applications. It was decided to
-          open-source it to provide developers with an easy way to discover tech
-          stacks, contribute patterns, and track technology adoption trends
-          across the web.
+          Born as a <a href="https://yavorsky.org">personal</a> side project in
+          2024, Unbuilt began as a fast way to identify specific technologies on
+          web applications. It was decided to open-source it to provide
+          developers with an easy way to discover tech stacks, contribute
+          patterns, and track technology adoption trends across the web.
         </p>
       </div>
 
@@ -251,7 +250,7 @@ export default function AboutPage() {
                   Results typically in under 10 seconds
                 </td>
                 <td className="border border-gray-300 dark:border-gray-700 p-4">
-                  Varies by tool and website complexity
+                  Fresh analysis takes minutes
                 </td>
               </tr>
             </tbody>
@@ -297,7 +296,7 @@ export default function AboutPage() {
                       ([name, meta], i, allCategories) => {
                         const isLast = i === allCategories.length - 1;
                         return (
-                          <Fragment key={name}>
+                          <span key={name}>
                             <a
                               href={`/technologies/${cateogryName}/${name}`}
                               target="_blank"
@@ -309,7 +308,7 @@ export default function AboutPage() {
                             {isLast ? null : (
                               <span className="text-gray-400 mr-1">,</span>
                             )}
-                          </Fragment>
+                          </span>
                         );
                       }
                     )}
@@ -318,6 +317,29 @@ export default function AboutPage() {
               );
             }
           )}
+        </div>
+        {/* Growing Ecosystem Section */}
+        <div className="mb-16 mt-12">
+          <h3 className="text-xl font-bold mb-4 text-primary">
+            More categories and patterns are coming!
+          </h3>
+          <p className="text-lg leading-relaxed mb-8">
+            This project is new and we actively working on adding new
+            categories:{' '}
+            <b>
+              Error Monitoring, Auth, Data Visualization, Forms, Tables,
+              Virtualization, Logging and General Utility libraries and more
+            </b>
+            .{' '}
+            <a
+              href="https://x.com/yavorsky_"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline"
+            >
+              Stay tuned!
+            </a>
+          </p>
         </div>
       </div>
     </div>
