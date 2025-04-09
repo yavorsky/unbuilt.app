@@ -1,5 +1,6 @@
 import { Page, Request, Response } from 'playwright';
 import { Resource, ResourcesMap, ResourceType, ScriptsMap } from './types.js';
+import { initZstd } from './decoders/zstd.js';
 
 export class Resources {
   private page: Page;
@@ -37,7 +38,20 @@ export class Resources {
       ) {
         try {
           const response = await route.fetch();
-          content = await response.text();
+          const headers = response.headers();
+
+          const contentEncoding = headers['content-encoding'] || '';
+          // Playwright doesn't decode zstd encoding, so we need to manually decode it.
+          if (contentEncoding.includes('zstd')) {
+            const zstdDecoder = await initZstd();
+            const buffer = await response.body();
+            const uint8Array = new Uint8Array(buffer);
+            const decompressedArray = zstdDecoder.decompress(uint8Array);
+            const decoder = new TextDecoder('utf-8');
+            content = decoder.decode(decompressedArray);
+          } else {
+            content = await response.text();
+          }
         } catch (error) {
           onError?.(error as Error);
           await route.abort();
@@ -98,6 +112,7 @@ export class Resources {
 
     if (content) {
       if (resource.type === 'script') {
+        console.log(resource.url, content);
         this.scriptsMap.set(resource.url, content);
         return;
       }
