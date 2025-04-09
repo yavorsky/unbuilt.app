@@ -20,6 +20,9 @@
   "peerDependencies": {
     "playwright": "^1.48.1"
   },
+  "dependencies": {
+    "zstd-codec": "^0.1.5"
+  },
   "license": "MIT",
   "author": {
     "name": "Artem Yavorskyi",
