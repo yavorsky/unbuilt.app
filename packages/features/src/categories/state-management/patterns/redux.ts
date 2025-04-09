@@ -8,8 +8,6 @@ export const redux = [
       /"@@redux\/INIT[^"]+"/,
       /"@@redux\/REPLACE[^"]+"/,
       /"@@redux\/PROBE_UNKNOWN_ACTION[^"]+"/,
-      /__REDUX_DEVTOOLS_EXTENSION_COMPOSE__/,
-      /__REDUX_DEVTOOLS_EXTENSION__/,
       /redux-toolkit\.js\.org\/Errors\?code=/,
       /Symbol\.for\(["']rtk-state-proxy-original["']\)/,
       /Symbol\.for\(["']react-redux-context["']\)/,
