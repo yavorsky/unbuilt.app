@@ -38,7 +38,11 @@ const configureAnalyzeCommand = (cmd: Command) => {
       'Max time to wait for analysis to complete',
       '120'
     )
-    .option('-j, --json', 'Output results in JSON format');
+    .option('-j, --json', 'Output results in JSON format')
+    .option(
+      '-S, --session',
+      'Use local chrome session to get more accurate results'
+    );
 };
 
 // Function to handle the analyze action
@@ -51,6 +55,7 @@ const handleAnalyzeAction = async (
     timeout: string;
     save?: boolean;
     json?: boolean;
+    session?: boolean;
   }
 ) => {
   const normalizedUrl = normalizeUrl(url);
@@ -65,6 +70,7 @@ const handleAnalyzeAction = async (
     await runLocalAnalysis(normalizedUrl, {
       json: options.json ?? false,
       save: options.save ?? process.env.UNBUILT_API_KEY !== undefined,
+      useSession: options.session ?? false,
     });
   }
 };

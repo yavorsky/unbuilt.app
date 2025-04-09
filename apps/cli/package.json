@@ -1,6 +1,6 @@
 {
   "name": "@unbuilt/cli",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "CLI tool to analyze technologies used on websites via unbuilt.app",
   "main": "./build/index.js",
   "bin": {

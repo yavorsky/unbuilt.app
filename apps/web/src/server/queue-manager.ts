@@ -91,7 +91,8 @@ export class QueueManager {
         if (job.progress() === 100) return job.data;
 
         try {
-          context = await this.browserManager?.getBrowserContext();
+          const contextInfo = await this.browserManager?.getBrowserContext();
+          context = contextInfo?.context;
           if (!context) throw new Error('Browser context not available');
           const browser = context.browser();
           if (!browser) throw new Error('Browser not available');

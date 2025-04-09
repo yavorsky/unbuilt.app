@@ -101,7 +101,8 @@ export async function runBatchAnalysis(
 
         try {
           // Get a fresh browser context for each URL
-          context = await browserManager.getBrowserContext();
+          const contextInfo = await browserManager.getBrowserContext();
+          context = contextInfo.context;
           page = await context.newPage();
           const browser = context.browser();
           if (!browser || !page) {

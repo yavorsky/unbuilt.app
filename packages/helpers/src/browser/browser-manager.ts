@@ -1,21 +1,24 @@
 import { Browser, BrowserContext, chromium } from 'playwright';
+import { contextOptions } from './context-options.js';
+import { runWithProfileCopy } from './run-with-profile.js';
 
 interface BrowserInstance {
   browser: Browser;
   context: BrowserContext;
 }
 
-export const contextOptions = {
-  userAgent:
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
-  viewport: { width: 1920, height: 1080 },
-  screen: { width: 1920, height: 1080 },
-  isMobile: false,
-  hasTouch: false,
-  javaScriptEnabled: true,
-  bypassCSP: true,
-  ignoreHTTPSErrors: true,
-} as const;
+const launchOptions = {
+  headless: true,
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-dev-shm-usage',
+    // No need to preserve web security in headless mode without any session
+    '--disable-web-security',
+    '--disable-features=IsolateOrigins,site-per-process',
+    '--disable-gpu',
+  ],
+};
 
 export class BrowserManager {
   private instances: BrowserInstance[] = [];
@@ -24,41 +27,41 @@ export class BrowserManager {
   async initialize(
     maxInstances: number,
     onError: (error: Error) => void,
-    debug: boolean = false
+    debug: boolean = false,
+    withSession: boolean = false
   ) {
     this.onError = onError;
+
     for (let i = 0; i < maxInstances; i++) {
-      const browser = await chromium.launch({
-        headless: true,
-        args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          // No need to preserve web security in headless mode without any session
-          '--disable-web-security',
-          '--disable-features=IsolateOrigins,site-per-process',
-          '--disable-gpu',
-        ],
-      });
+      let browser: Browser;
+      let context: BrowserContext;
 
-      const context = await browser.newContext(contextOptions);
+      if (withSession) {
+        const contextInfoWithProfile = await runWithProfileCopy();
+        browser = contextInfoWithProfile.browser!;
+        context = contextInfoWithProfile.context;
+      } else {
+        browser = await chromium.launch(launchOptions);
 
-      await context.addInitScript(`
-        // Overwrite navigator properties
-        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
-        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
+        context = await browser.newContext(contextOptions);
 
-        // Add language preferences
-        Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+        await context.addInitScript(`
+          // Overwrite navigator properties
+          Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+          Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3, 4, 5] });
 
-        // Modify Chrome properties
-        window.chrome = {
-          runtime: {},
-          loadTimes: function() {},
-          csi: function() {},
-          app: {},
-        };
-      `);
+          // Add language preferences
+          Object.defineProperty(navigator, 'languages', { get: () => ['en-US', 'en'] });
+
+          // Modify Chrome properties
+          window.chrome = {
+            runtime: {},
+            loadTimes: function() {},
+            csi: function() {},
+            app: {},
+          };
+        `);
+      }
 
       this.instances.push({ browser, context });
     }
@@ -70,7 +73,9 @@ export class BrowserManager {
     }
   }
 
-  async getBrowserContext(): Promise<BrowserContext> {
+  async getBrowserContext(
+    withSession: boolean = false
+  ): Promise<{ context: BrowserContext; browser: Browser }> {
     // Get instance by round-robin
     const instanceIndex =
       this.instances.length > 0
@@ -82,10 +87,14 @@ export class BrowserManager {
       throw new Error('No browser instances available');
     }
 
+    if (withSession) {
+      return { context: instance.context, browser: instance.browser };
+    }
+
     // Create fresh context for this job
     const context = await instance.browser.newContext(contextOptions);
 
-    return context;
+    return { context, browser: instance.browser };
   }
 
   async cleanup() {

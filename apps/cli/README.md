@@ -47,12 +47,16 @@ This will analyze the website locally using a headless browser and display the d
 | `-r, --refresh` | Force a fresh analysis by bypassing the cache. Ignores any previously saved results and rebuilds the cache with new data. |
 | `-t, --timeout <seconds>` | Max time to wait for analysis to complete (default: 120) |
 | `-j, --json` | Output results in JSON format |
+| `--session` | Use a copy of the current user's Chrome profile data for authentication and session preservation. This allows the analysis to be performed with the user's existing login sessions and cookies without modifying the original profile. The temporary profile copy is automatically cleaned up when the browser context is closed. |
 
 ### Examples
 
 ```bash
 # Run a local analysis
 unbuilt https://example.com
+
+# Run a local analysis with user's session data (logged-in state)
+unbuilt https://example.com --session
 
 # Run a remote analysis
 unbuilt https://example.com --remote
@@ -149,6 +153,26 @@ unbuilt status <analysisId>
 unbuilt status abc123-def456-ghi789
 ```
 
+## User Session Workflow
+
+When using the `--session` option, the CLI implements the following workflow:
+
+1. Creates a temporary copy of the user's Chrome profile data directory
+2. Removes any lock files from the temporary copy
+3. Launches a browser context using this temporary profile copy
+4. Performs the website analysis with all the user's existing cookies, login sessions, and authentication tokens
+5. Automatically cleans up the temporary profile directory when the browser context closes
+
+This approach allows for secure and efficient analysis of authenticated websites **without**:
+- Modifying the user's original Chrome profile
+- Requiring users to manually log in during analysis
+- Storing sensitive credentials in the CLI tool
+
+The session option is particularly useful for analyzing:
+- Authenticated web applications
+- Sites with login-only content
+- Applications that behave differently for logged-in users
+
 ## Output Format
 
 By default, Unbuilt displays the analysis results in a human-readable format, showing the detected technologies grouped by category.
@@ -180,6 +204,12 @@ Available only for admins (you need to set `UNBUILT_API_KEY` env variable when r
 unbuilt https://example.com
 ```
 
+### Analysis of Authentication-Required Website
+
+```bash
+unbuilt https://app.example.com --session
+```
+
 ### In-depth Analysis with JSON Output for Further Processing
 
 ```bash
@@ -198,6 +228,8 @@ unbuilt batch websites.csv --concurrent 4 --output tech-analysis
 UNBUILT_API_KEY="xxxxx" unbuilt batch websites.csv --concurrent 4 --save
 ```
 
+
+
 ## Troubleshooting
 
 If you encounter issues with the tool, try the following:
@@ -207,5 +239,5 @@ If you encounter issues with the tool, try the following:
 - Check that the URL format in your CSV file is correct (should include http:// or https://)
 - For local (default) mode, ensure Playwright is properly installed (`npx playwright install chromium`)
 - For websites with complex security measures, try using remote analysis mode instead
-- No sessions supported. Think of each navigation as Incognito mode.
+- When using `--session` with the analyze command, ensure Chrome is not currently running to avoid profile lock issues
 - In case of loading resources error, check redirects following the resource and try final URL.

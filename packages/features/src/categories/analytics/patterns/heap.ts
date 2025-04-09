@@ -7,7 +7,7 @@ export const heap = [
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
-          hasFathom: Array.isArray(window.heap),
+          hasHeapGlobal: Array.isArray(window.heap),
         };
         return Object.values(markers).some(Boolean);
       });
@@ -18,8 +18,6 @@ export const heap = [
     score: 1.2,
     scripts: [
       /sendRewriteAndHeapIgnoreTelemetry:/,
-      /isHeapHandledWebview:/,
-      /['sendHeapContext'\s*,\s*[a-zA-Z_$][a-zA-Z0-9_$]*]/,
       /[a-zA-Z_$][a-zA-Z0-9_$]*\.CsSideloadsHeap\s*=\s*["']cs_sideloads_heap["']/,
       /[a-zA-Z_$][a-zA-Z0-9_$]*\.makeHeapIgnoreSelector/,
     ],
