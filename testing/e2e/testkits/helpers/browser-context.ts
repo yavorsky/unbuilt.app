@@ -9,7 +9,8 @@ export async function getBrowserContext() {
     const browserManager = new BrowserManager();
     // We want to have 1 instance per process. In the future, we'll run parrallel tests and can have more instances.
     await browserManager.initialize(1, console.error);
-    context = await browserManager.getBrowserContext();
+    const contextInfo = await browserManager.getBrowserContext();
+    context = contextInfo.context;
     browser = context.browser();
   }
   return context;
