@@ -43,12 +43,16 @@ export class Resources {
           const contentEncoding = headers['content-encoding'] || '';
           // Playwright doesn't decode zstd encoding, so we need to manually decode it.
           if (contentEncoding.includes('zstd')) {
-            const zstdDecoder = await initZstd();
-            const buffer = await response.body();
-            const uint8Array = new Uint8Array(buffer);
-            const decompressedArray = zstdDecoder.decompress(uint8Array);
-            const decoder = new TextDecoder('utf-8');
-            content = decoder.decode(decompressedArray);
+            try {
+              const zstdDecoder = await initZstd();
+              const buffer = await response.body();
+              const uint8Array = new Uint8Array(buffer);
+              const decompressedArray = zstdDecoder.decompress(uint8Array);
+              const decoder = new TextDecoder('utf-8');
+              content = decoder.decode(decompressedArray);
+            } catch (error) {
+              onError?.(error as Error);
+            }
           } else {
             content = await response.text();
           }
