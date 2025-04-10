@@ -116,7 +116,6 @@ export class Resources {
 
     if (content) {
       if (resource.type === 'script') {
-        console.log(resource.url, content);
         this.scriptsMap.set(resource.url, content);
         return;
       }
@@ -128,7 +127,6 @@ export class Resources {
         this.documentsMap.set(resource.url, content);
         return;
       }
-      console.warn('Unknown resource type', resource.type);
     }
   }
 
