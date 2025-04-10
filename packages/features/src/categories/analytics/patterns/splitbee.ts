@@ -27,7 +27,7 @@ export const splitbee = [
   },
   {
     name: 'cookie' as const,
-    score: 1.2,
+    score: 0.3,
     browser: async (page: Page) => {
       const cookies = await page.context().cookies();
       return cookies.some((cookie) => cookie.name.startsWith('sb_'));
@@ -35,7 +35,7 @@ export const splitbee = [
   },
   {
     name: 'storage' as const,
-    score: 1.2,
+    score: 0.3,
     browser: async (page: Page) => {
       const hasSplitBee = await page.evaluate(() => {
         for (let i = 0; i < localStorage.length; i++) {
