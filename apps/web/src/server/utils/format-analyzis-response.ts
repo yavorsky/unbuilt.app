@@ -112,6 +112,15 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.transpiler || {},
       },
+      errorTracking: {
+        type: 'errorTracking',
+        name: data.error_tracking,
+        confidence: data.error_tracking_confidence,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.errorTracking || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.errorTracking || {},
+      },
       uiLibrary: {
         type: 'uiLibrary',
         name: data.ui_library,

@@ -44,6 +44,9 @@ export * as platformMeta from './categories/platform/meta/index.js';
 export * as analytics from './categories/analytics/index.js';
 export * as analyticsMeta from './categories/analytics/meta/index.js';
 
+export * as errorTracking from './categories/error-tracking/index.js';
+export * as errorTrackingMeta from './categories/error-tracking/meta/index.js';
+
 // Utils to calculate results
 export * from './detector/index.js';
 

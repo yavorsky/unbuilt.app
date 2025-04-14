@@ -6,11 +6,13 @@
     "env-setup": "tsx scripts/setup-env.ts",
     "env-setup:prod": "tsx scripts/setup-env.ts --prod",
     "dev": "next dev",
-    "build": "next build",
+    "dev:debug": "set NODE_OPTIONS=--inspect && next dev",
+    "start:debug": "NODE_OPTIONS='--inspect' next start",
+    "build": "NODE_OPTIONS='--inspect' next build",
     "start": "next start",
     "lint": "eslint .",
     "pull-production-schema": "yarn env-setup --sync-schema",
-    "update-types": "./scripts/update-supabase-types.sh"
+    "update-types": "yarn env-setup:prod && ./scripts/update-supabase-types.sh"
   },
   "dependencies": {
     "@geist-ui/core": "^2.3.8",

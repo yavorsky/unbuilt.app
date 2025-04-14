@@ -24,6 +24,7 @@ import { NewAnalysisDialog } from '../new-analysis-dialog';
 import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
+import { ErrorTrackingCard } from './cards/error-tracking';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -121,6 +122,13 @@ export const CardsGrid: FC<{
         id: 'analytics',
         isUnknown: isUnknown(result?.analysis.analytics?.name),
         el: <AnalyticsCard analytics={result?.analysis.analytics} />,
+      },
+      {
+        id: 'errorTracking',
+        isUnknown: isUnknown(result?.analysis.errorTracking?.name),
+        el: (
+          <ErrorTrackingCard errorTracking={result?.analysis.errorTracking} />
+        ),
       },
       {
         id: 'stylingLibraries',

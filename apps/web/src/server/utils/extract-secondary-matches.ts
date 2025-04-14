@@ -9,6 +9,7 @@ export function extractSecondaryMatches(analysis: AnalyzeResult['analysis']) {
   const result: Record<TechnologyKeys, Record<string, unknown>> = {
     bundler: analysis.bundler?.secondaryMatches || {},
     transpiler: analysis.transpiler?.secondaryMatches || {},
+    errorTracking: analysis.errorTracking?.secondaryMatches || {},
     framework: analysis.framework?.secondaryMatches || {},
     minifier: analysis.minifier?.secondaryMatches || {},
     stylingProcessor: analysis.stylingProcessor?.secondaryMatches || {},
@@ -30,6 +31,7 @@ export function extractDetectedFeatures(analysis: AnalyzeResult['analysis']) {
   const result: Partial<Record<TechnologyKeys, string[]>> = {
     bundler: Array.from(analysis.bundler?.detectedFeatures),
     transpiler: Array.from(analysis.transpiler?.detectedFeatures),
+    errorTracking: Array.from(analysis.errorTracking?.detectedFeatures),
     framework: Array.from(analysis.framework?.detectedFeatures),
     minifier: Array.from(analysis.minifier?.detectedFeatures),
     stylingProcessor: Array.from(analysis.stylingProcessor?.detectedFeatures),
