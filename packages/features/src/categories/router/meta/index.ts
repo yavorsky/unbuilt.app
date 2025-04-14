@@ -6,6 +6,7 @@ import { qwikRouter } from './qwik-router.js';
 import { reactRouter } from './react-router.js';
 import { remixRouter } from './remix-router.js';
 import { solidRouter } from './solid-router.js';
+import { svelteRouter } from './svelte-router.js';
 import { tanstackRouter } from './tanstack-router.js';
 import { vitepressRouter } from './vitepress-router.js';
 import { vueRouter } from './vue-router.js';
@@ -18,6 +19,7 @@ export const meta = {
   gatsbyRouter,
   emberRouter,
   qwikRouter,
+  svelteRouter,
   vitepressRouter,
   vuepressRouter,
   vueRouter,
