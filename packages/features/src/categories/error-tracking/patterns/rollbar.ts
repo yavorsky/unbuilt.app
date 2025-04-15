@@ -90,7 +90,6 @@ export const rollbar = [
       /rollbarJsUrl/,
       /r\._rollbarWrappedError/,
       /r\._rollbarOldOnError/,
-      /\["log","debug","info","warn","warning","error","critical","global","configure"/,
     ],
   },
   {
