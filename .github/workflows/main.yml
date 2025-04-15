@@ -43,6 +43,18 @@ jobs:
       - name: Install playwright
         run: yarn playwright install --with-deps
 
+      - name: Create dummy .env file for PR from forks to complete build
+        if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository
+        run: |
+          echo "SUPABASE_URL=dummy_value" > apps/web/.env
+          echo "SUPABASE_KEY=dummy_value" >> apps/web/.env
+          echo "SUPABASE_ID=dummy_value" >> apps/web/.env
+          echo "LOGFLARE_SOURCE_TOKEN=dummy_value" >> apps/web/.env
+          echo "LOGFLARE_API_KEY=dummy_value" >> apps/web/.env
+          echo "CLARITY_PROJECT_ID=dummy_value" >> apps/web/.env
+          echo "UNBUILT_API_KEY=dummy_value" >> apps/web/.env
+
+      # Only for push to main, run full build
       - name: Build application
         run: yarn turbo run build
 
