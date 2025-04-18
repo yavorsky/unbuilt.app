@@ -21,11 +21,11 @@ export const CJSLogo = ({
       <text
         x="50%"
         y="50%"
-        text-anchor="middle"
+        textAnchor="middle"
         dominantBaseline="middle"
-        font-family="Monospace"
-        font-size="11"
-        font-weight="bold"
+        fontFamily="Monospace"
+        fontSize="11"
+        fontWeight="bold"
         fill="black"
       >
         CJS
