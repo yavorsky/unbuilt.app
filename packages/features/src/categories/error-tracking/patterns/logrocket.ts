@@ -1,5 +1,4 @@
 import { Page } from 'playwright';
-import { AnalysisFeatures } from '../../../types/analysis.js';
 
 export const logrocket = [
   {
@@ -42,10 +41,21 @@ export const logrocket = [
     score: 1.2,
     scripts: [
       /\bLogrocket\b|\blogRocket\b|\bLR\b/i,
-      /\._lr/,
-      /\blr(_|\.)(?:send|init|identify|track)/i,
+      /LogRocket truncating to first 1000 characters/,
+      /LogRocket skipped consuming an event-stream body/,
+      /LogRocket error reading body/,
+      /LogRocket: Error accessing response/,
+      /Keep data under 4MB to prevent truncation/,
+      /https:\/\/docs\.logrocket\.com\/reference\/network/,
+      /LogRocket\.init\(/,
+      /LogRocket\.identify\(/,
+      /_LRLogger/,
+      /\[['"]LogRocket['"]\]/,
+      /registerLogger\(['"]logrocket['"]/i,
+      /LogRocket\.min\.js/i,
     ],
   },
+
   {
     name: 'sources' as const,
     score: 1.2,
@@ -53,15 +63,5 @@ export const logrocket = [
       /cdn\.logrocket\.(?:com|io)/,
       /cdn\.lr\-(?:ingest|intake|in|kt\-in)\.com/,
     ],
-  },
-  {
-    name: 'persistence' as const,
-    score: 2.5,
-    dependencies: (analysis: AnalysisFeatures) => {
-      if (analysis?.errorTracking?.confidence > 0) {
-        return true;
-      }
-      return false;
-    },
   },
 ];
