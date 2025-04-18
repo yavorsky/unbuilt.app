@@ -437,7 +437,16 @@ export type Database = {
         | "jsJoda"
         | "luxon"
         | "moment"
-      error_tracking_type: "sentry" | "datadog" | "rollbar" | "raygun"
+      error_tracking_type:
+        | "sentry"
+        | "datadog"
+        | "rollbar"
+        | "raygun"
+        | "newrelic"
+        | "airbrake"
+        | "tackjs"
+        | "logrocket"
+        | "bugsnag"
       framework_type:
         | "unknown"
         | "astro"
@@ -728,7 +737,17 @@ export const Constants = {
         "deno",
       ],
       dates_type: ["unknown", "dateFns", "dayJs", "jsJoda", "luxon", "moment"],
-      error_tracking_type: ["sentry", "datadog", "rollbar", "raygun"],
+      error_tracking_type: [
+        "sentry",
+        "datadog",
+        "rollbar",
+        "raygun",
+        "newrelic",
+        "airbrake",
+        "tackjs",
+        "logrocket",
+        "bugsnag",
+      ],
       framework_type: [
         "unknown",
         "astro",
