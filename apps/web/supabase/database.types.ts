@@ -59,10 +59,6 @@ export type Database = {
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
           duration: number
-          error_tracking:
-            | Database["public"]["Enums"]["error_tracking_type"]
-            | null
-          error_tracking_confidence: number | null
           framework: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence: number | null
           http_client: Database["public"]["Enums"]["http_client_type"] | null
@@ -119,10 +115,6 @@ export type Database = {
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
           duration: number
-          error_tracking?:
-            | Database["public"]["Enums"]["error_tracking_type"]
-            | null
-          error_tracking_confidence?: number | null
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
           http_client?: Database["public"]["Enums"]["http_client_type"] | null
@@ -179,10 +171,6 @@ export type Database = {
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
           duration?: number
-          error_tracking?:
-            | Database["public"]["Enums"]["error_tracking_type"]
-            | null
-          error_tracking_confidence?: number | null
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
           http_client?: Database["public"]["Enums"]["http_client_type"] | null
@@ -507,6 +495,7 @@ export type Database = {
         | "glitchtip"
         | "instana"
         | "stackdriver"
+        | "unknown"
       platform_type:
         | "unknown"
         | "shopify"
@@ -830,6 +819,7 @@ export const Constants = {
         "glitchtip",
         "instana",
         "stackdriver",
+        "unknown",
       ],
       platform_type: [
         "unknown",
