@@ -3,6 +3,7 @@ import { rollbar } from './rollbar.js';
 import { newrelic } from './newrelic.js';
 import { raygun } from './raygun.js';
 import { trackjs } from './trackjs.js';
+import { datadog } from './datadog.js';
 
 export const patterns = {
   sentry,
@@ -10,4 +11,5 @@ export const patterns = {
   newrelic,
   trackjs,
   raygun,
+  datadog,
 } as const;
