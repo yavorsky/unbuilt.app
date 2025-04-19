@@ -13,4 +13,4 @@ export * as dates from './dates/index.js';
 export * as stylingLibraries from './styling-libraries/index.js';
 export * as transpiler from './transpiler/index.js';
 export * as analytics from './analytics/index.js';
-export * as errorTracking from './error-tracking/index.js';
+export * as monitoring from './monitoring/index.js';

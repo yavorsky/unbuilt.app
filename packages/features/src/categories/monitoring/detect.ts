@@ -11,7 +11,7 @@ export const detect = async (
   analysis?: AnalysisFeatures
 ) => {
   return detectFeature({
-    type: 'errorTracking',
+    type: 'monitoring',
     resources,
     page,
     browser,
