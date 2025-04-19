@@ -11,6 +11,7 @@ import {
   uiLibraryMeta,
   httpClientMeta,
   transpilerMeta,
+  monitoringMeta,
   translationsMeta,
   stateManagementMeta,
   stylingLibrariesMeta,
@@ -34,6 +35,7 @@ const supportedCategories = {
   stylingLibrariesMeta,
   stylingProcessorMeta,
   analyticsMeta,
+  monitoringMeta,
 };
 
 // This is a Server Component

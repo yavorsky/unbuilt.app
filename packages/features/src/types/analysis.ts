@@ -25,6 +25,7 @@ export type AnalysisFeatures = {
   dates: AnalysisResult<typeof allFeatures.dates.detect>;
   stylingLibraries: AnalysisResult<typeof allFeatures.stylingLibraries.detect>;
   transpiler: AnalysisResult<typeof allFeatures.transpiler.detect>;
+  monitoring: AnalysisResult<typeof allFeatures.monitoring.detect>;
   platform: AnalysisResult<typeof allFeatures.platform.detect>;
   analytics: AnalysisResult<typeof allFeatures.analytics.detect>;
 };

@@ -66,6 +66,9 @@ export async function saveAnalysis(
       transpiler: analysisData.analysis.transpiler?.name ?? null,
       transpiler_confidence:
         analysisData.analysis.transpiler?.confidence ?? null,
+      monitoring: analysisData.analysis.monitoring?.name ?? null,
+      monitoring_confidence:
+        analysisData.analysis.monitoring?.confidence ?? null,
       ui_library: analysisData.analysis.uiLibrary?.name ?? null,
       ui_library_confidence:
         analysisData.analysis.uiLibrary?.confidence ?? null,
