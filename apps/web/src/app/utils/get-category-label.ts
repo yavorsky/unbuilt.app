@@ -17,7 +17,7 @@ const categoryLabelsMap: Record<keyof AnalysisFeaturesWithStats, string> = {
   stylingLibraries: 'Styling Libraries',
   stylingProcessor: 'Styling Processor',
   transpiler: 'Transpiler',
-  errorTracking: 'Error Tracking',
+  monitoring: 'Monitoring',
   translations: 'Translations Library',
   analytics: 'Analytics',
   stats: 'General Stats',

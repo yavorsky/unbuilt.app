@@ -7,7 +7,7 @@ export const columnMapping = {
   minifier: 'minifier',
   router: 'router',
   transpiler: 'transpiler',
-  errorTracking: 'error_tracking',
+  monitoring: 'monitoring',
   modules: 'modules',
   stylingProcessor: 'styling_processor',
   dates: 'dates',

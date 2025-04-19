@@ -13,7 +13,7 @@ const sections = [
   { title: 'Bundlers', type: 'bundler', key: 'bundler' },
   { title: 'Routers', type: 'router', key: 'router' },
   { title: 'Transpilers', type: 'transpiler', key: 'transpiler' },
-  { title: 'Error Tracking', type: 'errorTracking', key: 'errorTracking' },
+  { title: 'Monitoring', type: 'monitoring', key: 'monitoring' },
   { title: 'Platforms', type: 'platform', key: 'platform' },
   { title: 'Analytics', type: 'analytics', key: 'analytics' },
   { title: 'Minifiers', type: 'minifier', key: 'minifier' },

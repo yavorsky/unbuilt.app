@@ -112,14 +112,14 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.transpiler || {},
       },
-      errorTracking: {
-        type: 'errorTracking',
-        name: data.error_tracking,
-        confidence: data.error_tracking_confidence,
+      monitoring: {
+        type: 'monitoring',
+        name: data.monitoring,
+        confidence: data.monitoring_confidence,
         detectedFeatures:
-          data.additional_data?.detectedFeatures?.errorTracking || {},
+          data.additional_data?.detectedFeatures?.monitoring || {},
         secondaryMatches:
-          data.additional_data?.secondaryMatches?.errorTracking || {},
+          data.additional_data?.secondaryMatches?.monitoring || {},
       },
       uiLibrary: {
         type: 'uiLibrary',

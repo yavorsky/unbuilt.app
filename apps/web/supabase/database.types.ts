@@ -75,6 +75,8 @@ export type Database = {
           minifier_confidence: number | null
           modules: Database["public"]["Enums"]["modules_type"] | null
           modules_confidence: number | null
+          monitoring: Database["public"]["Enums"]["monitoring_type"] | null
+          monitoring_confidence: number | null
           platform: Database["public"]["Enums"]["platform_type"] | null
           platform_confidence: number | null
           resource_count: number | null
@@ -133,6 +135,8 @@ export type Database = {
           minifier_confidence?: number | null
           modules?: Database["public"]["Enums"]["modules_type"] | null
           modules_confidence?: number | null
+          monitoring?: Database["public"]["Enums"]["monitoring_type"] | null
+          monitoring_confidence?: number | null
           platform?: Database["public"]["Enums"]["platform_type"] | null
           platform_confidence?: number | null
           resource_count?: number | null
@@ -191,6 +195,8 @@ export type Database = {
           minifier_confidence?: number | null
           modules?: Database["public"]["Enums"]["modules_type"] | null
           modules_confidence?: number | null
+          monitoring?: Database["public"]["Enums"]["monitoring_type"] | null
+          monitoring_confidence?: number | null
           platform?: Database["public"]["Enums"]["platform_type"] | null
           platform_confidence?: number | null
           resource_count?: number | null
@@ -482,6 +488,25 @@ export type Database = {
         | "uglify"
         | "swc"
       modules_type: "unknown" | "amd" | "commonjs" | "esm" | "umd"
+      monitoring_type:
+        | "sentry"
+        | "datadog"
+        | "rollbar"
+        | "raygun"
+        | "newrelic"
+        | "trackjs"
+        | "bugsnag"
+        | "logentries"
+        | "airbrake"
+        | "honeybadger"
+        | "loggly"
+        | "dynatrace"
+        | "appoptics"
+        | "atatus"
+        | "elasticapm"
+        | "glitchtip"
+        | "instana"
+        | "stackdriver"
       platform_type:
         | "unknown"
         | "shopify"
@@ -786,6 +811,26 @@ export const Constants = {
         "swc",
       ],
       modules_type: ["unknown", "amd", "commonjs", "esm", "umd"],
+      monitoring_type: [
+        "sentry",
+        "datadog",
+        "rollbar",
+        "raygun",
+        "newrelic",
+        "trackjs",
+        "bugsnag",
+        "logentries",
+        "airbrake",
+        "honeybadger",
+        "loggly",
+        "dynatrace",
+        "appoptics",
+        "atatus",
+        "elasticapm",
+        "glitchtip",
+        "instana",
+        "stackdriver",
+      ],
       platform_type: [
         "unknown",
         "shopify",

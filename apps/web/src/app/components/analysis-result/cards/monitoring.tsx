@@ -3,13 +3,13 @@ import { AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
 import { CloudAlert } from 'lucide-react';
 
-export const ErrorTrackingCard: FC<{
-  errorTracking: AnalyzeResult['analysis']['errorTracking'] | undefined;
-}> = ({ errorTracking }) => {
+export const MonitoringCard: FC<{
+  monitoring: AnalyzeResult['analysis']['monitoring'] | undefined;
+}> = ({ monitoring }) => {
   return (
     <SingleResultAnalysisCard
-      name="errorTracking"
-      analysis={errorTracking}
+      name="monitoring"
+      analysis={monitoring}
       Icon={CloudAlert}
     />
   );
