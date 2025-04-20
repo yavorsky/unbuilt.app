@@ -5,6 +5,7 @@ import { raygun } from './raygun.js';
 import { trackjs } from './trackjs.js';
 import { datadog } from './datadog.js';
 import { airbrake } from './airbrake.js';
+import { honeybadger } from './honeybadger.js';
 
 export const patterns = {
   sentry,
@@ -12,6 +13,7 @@ export const patterns = {
   newrelic,
   trackjs,
   airbrake,
+  honeybadger,
   raygun,
   datadog,
 } as const;

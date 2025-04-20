@@ -4,12 +4,14 @@ import { newrelic } from './newrelic.js';
 import { trackjs } from './trackjs.js';
 import { datadog } from './datadog.js';
 import { airbrake } from './airbrake.js';
+import { honeybadger } from './honeybadger.js';
 
 export const meta = {
   sentry,
   rollbar,
   newrelic,
   airbrake,
+  honeybadger,
   trackjs,
   datadog,
 } as const;
