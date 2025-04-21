@@ -46,6 +46,7 @@ export const appdynamics = [
       /[a-zA-Z_$][a-zA-Z0-9_$]*\[[a-zA-Z_$][a-zA-Z0-9_$]*\]\.adrumArgs/,
       /[a-zA-Z_$][a-zA-Z0-9_$]*\.userConf\.adrumExtUrl(?:Http|Https)/,
       /[a-zA-Z_$][a-zA-Z0-9_$]*\.adrumExtUrl/,
+      /[a-zA-Z_$][a-zA-Z0-9_$]*\.userConf\.disableAdrumHeader/,
     ],
   },
   {
