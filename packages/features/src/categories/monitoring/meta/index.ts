@@ -5,6 +5,7 @@ import { trackjs } from './trackjs.js';
 import { datadog } from './datadog.js';
 import { airbrake } from './airbrake.js';
 import { honeybadger } from './honeybadger.js';
+import { appdynamics } from './appdynamics.js';
 
 export const meta = {
   sentry,
@@ -12,6 +13,7 @@ export const meta = {
   newrelic,
   airbrake,
   honeybadger,
+  appdynamics,
   trackjs,
   datadog,
 } as const;
