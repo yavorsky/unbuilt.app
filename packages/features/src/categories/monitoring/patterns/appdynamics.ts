@@ -1,6 +1,6 @@
 import { Page } from 'playwright';
 
-export const sentry = [
+export const appdynamics = [
   {
     name: 'globals' as const,
     score: 1.5,
