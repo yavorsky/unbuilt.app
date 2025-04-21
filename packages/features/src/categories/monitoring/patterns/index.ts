@@ -7,6 +7,7 @@ import { datadog } from './datadog.js';
 import { airbrake } from './airbrake.js';
 import { honeybadger } from './honeybadger.js';
 import { appdynamics } from './appdynamics.js';
+import { atatus } from './atatus.js';
 
 export const patterns = {
   sentry,
@@ -15,6 +16,7 @@ export const patterns = {
   trackjs,
   airbrake,
   honeybadger,
+  atatus,
   appdynamics,
   raygun,
   datadog,
