@@ -7,6 +7,7 @@ import { airbrake } from './airbrake.js';
 import { honeybadger } from './honeybadger.js';
 import { appdynamics } from './appdynamics.js';
 import { atatus } from './atatus.js';
+import { elasticapm } from './elasticapm.js';
 
 export const meta = {
   sentry,
@@ -16,6 +17,7 @@ export const meta = {
   atatus,
   honeybadger,
   appdynamics,
+  elasticapm,
   trackjs,
   datadog,
 } as const;

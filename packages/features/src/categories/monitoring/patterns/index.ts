@@ -8,6 +8,7 @@ import { airbrake } from './airbrake.js';
 import { honeybadger } from './honeybadger.js';
 import { appdynamics } from './appdynamics.js';
 import { atatus } from './atatus.js';
+import { elasticapm } from './elasticapm.js';
 
 export const patterns = {
   sentry,
@@ -16,6 +17,7 @@ export const patterns = {
   trackjs,
   airbrake,
   honeybadger,
+  elasticapm,
   atatus,
   appdynamics,
   raygun,
