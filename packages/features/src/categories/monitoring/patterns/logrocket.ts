@@ -61,7 +61,6 @@ export const logrocket = [
     score: 1.2,
     filenames: [
       /cdn\.logrocket\.(?:com|io)/,
-      /cdn\.lr\-(?:ingest|intake|in|kt\-in)\.com/,
     ],
   },
 ];
