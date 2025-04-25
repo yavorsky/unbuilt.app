@@ -486,6 +486,7 @@ export type Database = {
         | "instana"
         | "stackdriver"
         | "unknown"
+        | "appdynamics"
       platform_type:
         | "unknown"
         | "shopify"
@@ -799,6 +800,7 @@ export const Constants = {
         "instana",
         "stackdriver",
         "unknown",
+        "appdynamics",
       ],
       platform_type: [
         "unknown",
