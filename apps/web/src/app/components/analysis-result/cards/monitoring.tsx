@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { AnalyzeResult } from '@unbuilt/analyzer';
 import { SingleResultAnalysisCard } from './common/single-result-card';
-import { CloudAlert } from 'lucide-react';
+import { Binoculars } from 'lucide-react';
 
 export const MonitoringCard: FC<{
   monitoring: AnalyzeResult['analysis']['monitoring'] | undefined;
@@ -10,7 +10,9 @@ export const MonitoringCard: FC<{
     <SingleResultAnalysisCard
       name="monitoring"
       analysis={monitoring}
-      Icon={CloudAlert}
+      Icon={Binoculars}
+      secondaryMatchesLabel="Other Monitoring Detected"
+      isSecondaryMatchesExpanded={true}
     />
   );
 };
