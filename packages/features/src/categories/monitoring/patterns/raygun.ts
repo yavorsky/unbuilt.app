@@ -2,25 +2,47 @@ import { Page } from 'playwright';
 
 export const raygun = [
   {
-    name: 'globals' as const,
+    name: 'breadcrumbs' as const,
     score: 1.5,
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        const markers = {
-          hasRaygun: !!window.Raygun,
-          hasRaygunInitialized: window.RaygunInitialized === true,
-          hasRaygunBreadcrumbsFactory: !!window.RaygunBreadcrumbsFactory,
-        };
-        return Object.values(markers).some(Boolean);
+        return !!window.raygunBreadcrumbsFactory;
       });
     },
   },
   {
-    name: 'hash' as const,
+    name: 'coreWebVital' as const,
     score: 1.5,
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        return !!window.RaygunObject;
+        return !!window.raygunCoreWebVitalFactory;
+      });
+    },
+  },
+  {
+    name: 'errorUtilities' as const,
+    score: 1.5,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        return !!window.raygunErrorUtilitiesFactory;
+      });
+    },
+  },
+  {
+    name: 'meta' as const,
+    score: 1.5,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        return !!window.raygunUserAgent;
+      });
+    },
+  },
+  {
+    name: 'meta' as const,
+    score: 1.5,
+    browser: async (page: Page) => {
+      return page.evaluate(() => {
+        return !!window.raygunUserAgent || !!window.raygunSnowplow;
       });
     },
   },
@@ -65,16 +87,16 @@ export const raygun = [
     name: 'core' as const,
     score: 1.2,
     scripts: [
-      /_publicRaygunFunctions/,
-      /Options\._raygunApiKey/,
-      /Options\._raygunApiUrl/,
-      /Not enabling RUM because Raygun4JS has detected a React Native environment/,
-      /log\(['"]Raygun4JS:/,
+      /this\.DEFAULT_XHR_IGNORED_HOSTS\s*=\s*\[\s*['"']raygun['"']\s*\]/,
+      /[a-zA-Z_$][a-zA-Z0-9_$]*\s*=\s*['"']raygun4js-userid['"']/,
+      /Options\._raygunApiUrl\s*=\s*['"']https:\/\/api\.raygun\.io['"']/,
+      /constructNewRaygun:/,
+      /[a-zA-Z_$][a-zA-Z0-9_$]*\.RaygunObject/,
     ],
   },
   {
     name: 'sources' as const,
     score: 1.2,
-    filenames: [/cdn\.raygun\.io/],
+    filenames: [/cdn\.raygun\.io/, /api\.raygun\.io/],
   },
 ];
