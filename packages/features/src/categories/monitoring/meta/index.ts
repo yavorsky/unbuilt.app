@@ -8,6 +8,7 @@ import { honeybadger } from './honeybadger.js';
 import { appdynamics } from './appdynamics.js';
 import { atatus } from './atatus.js';
 import { elasticapm } from './elasticapm.js';
+import { instana } from './instana.js';
 
 export const meta = {
   sentry,
@@ -15,6 +16,7 @@ export const meta = {
   newrelic,
   airbrake,
   atatus,
+  instana,
   honeybadger,
   appdynamics,
   elasticapm,

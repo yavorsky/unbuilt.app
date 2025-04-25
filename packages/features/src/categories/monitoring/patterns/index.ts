@@ -8,6 +8,7 @@ import { airbrake } from './airbrake.js';
 import { honeybadger } from './honeybadger.js';
 import { appdynamics } from './appdynamics.js';
 import { atatus } from './atatus.js';
+import { instana } from './instana.js';
 import { elasticapm } from './elasticapm.js';
 
 export const patterns = {
@@ -18,6 +19,7 @@ export const patterns = {
   airbrake,
   honeybadger,
   elasticapm,
+  instana,
   atatus,
   appdynamics,
   raygun,
