@@ -4,6 +4,7 @@ import { countly } from './countly.js';
 import { fathom } from './fathom.js';
 import { googleAnalytics } from './google-analytics.js';
 import { heap } from './heap.js';
+import { hotjar } from './hotjar.js';
 import { matomo } from './matomo.js';
 import { mixpanel } from './mixpanel.js';
 import { plausible } from './plausible.js';
@@ -19,6 +20,7 @@ export const meta = {
   vercelAnalytics,
   posthog,
   countly,
+  hotjar,
   heap,
   clarity,
   matomo,

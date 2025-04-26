@@ -43,8 +43,13 @@ jobs:
       - name: Install playwright
         run: yarn playwright install --with-deps
 
-      - name: Build application
+      - name: Build application (main branch)
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         run: yarn turbo run build
+
+      - name: Build packages and CLI only (PR)
+        if: github.event_name == 'pull_request'
+        run: yarn turbo run build --filter="./packages/*" --filter="@unbuilt/cli"
 
       - name: Run lint
         run: yarn lint

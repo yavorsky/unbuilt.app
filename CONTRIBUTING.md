@@ -35,7 +35,7 @@ Setting up your local development environment is straightforward with our setup 
 1. **Clone the repository**
    ```bash
    git clone https://github.com/unbuild/unbuilt.app.git
-   cd unbuilt.app
+   cd unbuilt.app/apps/web
    ```
 
 2. **Set up the local environment**
