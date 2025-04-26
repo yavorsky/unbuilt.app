@@ -10,6 +10,7 @@ import { appdynamics } from './appdynamics.js';
 import { atatus } from './atatus.js';
 import { instana } from './instana.js';
 import { elasticapm } from './elasticapm.js';
+import { vercelSpeedInsights } from './vercel-speed-insights.js';
 
 export const patterns = {
   sentry,
@@ -18,6 +19,7 @@ export const patterns = {
   trackjs,
   airbrake,
   honeybadger,
+  vercelSpeedInsights,
   elasticapm,
   instana,
   atatus,

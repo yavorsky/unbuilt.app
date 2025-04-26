@@ -207,7 +207,8 @@ export const CardsGrid: FC<{
             })}
 
             {/* Fixed position cards */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            {/* Coming Soon Card - Centered in large screens */}
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-3">
               <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-6">
