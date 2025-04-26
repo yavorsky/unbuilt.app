@@ -134,3 +134,36 @@ a {
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes shine {
+  0% {
+    background-position: -100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.shine-text {
+  transition: opacity 0.5s ease-out, background 0.3s ease-out;
+  opacity: 0.5;
+}
+
+.shine-container:hover .shine-text {
+  opacity: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.1) 0%,
+    rgba(255,255,255,0.2) 25%,
+    rgba(255,255,255,0.3) 50%,
+    rgba(255,255,255,0.2) 75%,
+    rgba(255,255,255,0.1) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine 3s linear infinite;
+  transition: opacity 0.3s ease-in;
+} 

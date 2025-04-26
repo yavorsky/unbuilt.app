@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 import { useStartNewAnalysis } from '@/app/hooks/use-start-new-analysis';
 import { DetectedLabel } from './detected-label';
 import { NotDetectedLabel } from './not-detected-label';
+import { cn } from '@/app/utils/cn';
 
 export function SingleResultAnalysisCard<
   N extends AnalysisTechnologies,
@@ -58,8 +59,18 @@ export function SingleResultAnalysisCard<
     [name]
   );
   const activeState = activeCategory === name ? 'selected' : 'default';
-  const className =
-    'max-w-md bg-muted backdrop-blur-sm border-border hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 data-[status=unknown]:opacity-60 transition-all duration-300 min-h-40';
+
+  const isUnknown = !analysis?.name || analysis.name === 'unknown';
+
+  const className = cn(
+    'max-w-md backdrop-blur-sm border-border transition-all duration-500 min-h-40',
+    {
+      'bg-muted hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 hover:bg-muted/80 cursor-pointer group':
+        !isUnknown,
+      'bg-muted/30 hover:bg-muted/40 data-[state=selected]:border-indigo-500/30 opacity-75 group hover:opacity-90 shine-container transition-opacity duration-500 ease-in-out':
+        isUnknown,
+    }
+  );
 
   const categoryAddedAfterAnalysis = isCompleted && analysis?.name === null;
 
@@ -140,7 +151,6 @@ export function SingleResultAnalysisCard<
   const resultMeta = getTechnologyMetaForType(name, analysis.name as M);
   const ResultIcon = resultMeta?.Icon ?? Icon;
 
-  const isUnknown = analysis.name === 'unknown' || analysis.name === null;
   const discoveredStatus = isUnknown ? 'unknown' : 'discovered';
 
   return (
@@ -161,12 +171,27 @@ export function SingleResultAnalysisCard<
               <div className="flex items-center gap-3 mt-1">
                 <div className="w-5 flex justify-center items-center">
                   <Suspense>
-                    <ResultIcon width={18} height={18} className="h-6 w-6" />
+                    <ResultIcon
+                      width={18}
+                      height={18}
+                      className={cn(
+                        'h-6 w-6 transition-transform duration-300',
+                        {
+                          'opacity-50 group-hover:opacity-60': isUnknown,
+                          'group-hover:scale-110': !isUnknown,
+                        }
+                      )}
+                    />
                   </Suspense>
                 </div>
                 <div className="flex items-center gap-2">
                   <h3
-                    className={`${isUnknown ? 'font-normal' : 'font-bold'} text-2xl tracking-tight text-foreground`}
+                    className={cn('text-2xl tracking-tight', {
+                      'font-normal text-foreground/50 shine-text transition-all duration-500 ease-in-out':
+                        isUnknown,
+                      'font-bold text-foreground group-hover:text-indigo-400 transition-colors duration-300':
+                        !isUnknown,
+                    })}
                   >
                     {isUnknown ? (
                       <NotDetectedLabel />
@@ -196,7 +221,15 @@ export function SingleResultAnalysisCard<
                 ? resultMeta?.featuresToDisplay[feature]
                 : feature;
             return (
-              <Badge key={feature} variant="outline" className="text-xs">
+              <Badge
+                key={feature}
+                variant="outline"
+                className={cn('text-xs transition-colors duration-300', {
+                  'opacity-50 border-slate-600/30': isUnknown,
+                  'group-hover:bg-indigo-500/10 group-hover:border-indigo-500/30':
+                    !isUnknown,
+                })}
+              >
                 <div className="flex items-center gap-2">{label}</div>
               </Badge>
             );
@@ -206,7 +239,11 @@ export function SingleResultAnalysisCard<
               <Badge
                 key={tag}
                 variant="outline"
-                className="text-xs bg-slate-700 text-slate-200 border-0"
+                className={cn('text-xs transition-colors duration-300', {
+                  'bg-slate-800/30 text-slate-400 border-0': isUnknown,
+                  'bg-slate-700 text-slate-200 border-0 group-hover:bg-indigo-900':
+                    !isUnknown,
+                })}
               >
                 {tag}
               </Badge>
