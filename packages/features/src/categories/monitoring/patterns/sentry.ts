@@ -3,11 +3,12 @@ import { Page } from 'playwright';
 export const sentry = [
   {
     name: 'globals' as const,
-    score: 1.5,
+    score: 2.5,
     browser: async (page: Page) => {
       return page.evaluate(() => {
         const markers = {
           hasSentry: !!window.__SENTRY__ || !!window.Sentry,
+          hasDebugIds: !!window._sentryDebugIds,
           hasRaven: !!window.Raven,
           hasRavenConfig: !!window.RavenConfig,
         };
@@ -48,6 +49,9 @@ export const sentry = [
       /\b[a-zA-Z_$][\w$]*\.setAttribute\(["']sentry\.cancellation_reason["'],\s*["']document\.hidden["']\)/,
       /\b[a-zA-Z_$][\w$]*\.__sentry_own_request__/,
       /\b[a-zA-Z_$][\w$]*\.__sentry_xhr_span_id__/,
+      /\b[a-zA-Z_$][\w$]*\.__SENTRY_INSTRUMENTED__/,
+      /\b[a-zA-Z_$][\w$]*\.__SENTRY_LOADER__/,
+      /Error\(['"']Sentry syntheticException['"']\)/,
       /\b[a-zA-Z_$][\w$]*\._sentryRewriteFramesAssetPrefixPath\b/,
     ],
   },
