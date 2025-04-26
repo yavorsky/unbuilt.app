@@ -490,7 +490,8 @@ export type Database = {
         | 'instana'
         | 'stackdriver'
         | 'unknown'
-        | 'appdynamics';
+        | 'appdynamics'
+        | 'vercelSpeedInsights';
       platform_type:
         | 'unknown'
         | 'shopify'
@@ -806,6 +807,7 @@ export const Constants = {
         'stackdriver',
         'unknown',
         'appdynamics',
+        'vercelSpeedInsights',
       ],
       platform_type: [
         'unknown',
