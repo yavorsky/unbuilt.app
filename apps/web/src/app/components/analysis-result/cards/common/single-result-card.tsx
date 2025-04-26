@@ -65,11 +65,12 @@ export function SingleResultAnalysisCard<
   const className = cn(
     'max-w-md backdrop-blur-sm border-border transition-all duration-500 min-h-40',
     {
-      'bg-muted hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 hover:bg-muted/80 cursor-pointer group':
+      'bg-muted hover:border-indigo-500/60 data-[state=selected]:border-indigo-500 hover:shadow-lg hover:shadow-indigo-500/10 hover:-translate-y-1 hover:bg-muted/80 cursor-pointer':
         !isUnknown,
-      'bg-muted/30 hover:bg-muted/40 data-[state=selected]:border-indigo-500/30 opacity-75 group hover:opacity-90 shine-container transition-opacity duration-500 ease-in-out':
+      'bg-muted/30 hover:bg-muted/40 data-[state=selected]:border-indigo-500/30 opacity-75 hover:opacity-90 transition-opacity duration-500 ease-in-out shine-container':
         isUnknown,
-    }
+    },
+    'group/card'
   );
 
   const categoryAddedAfterAnalysis = isCompleted && analysis?.name === null;
@@ -174,22 +175,19 @@ export function SingleResultAnalysisCard<
                     <ResultIcon
                       width={18}
                       height={18}
-                      className={cn(
-                        'h-6 w-6 transition-transform duration-300',
-                        {
-                          'opacity-50 group-hover:opacity-60': isUnknown,
-                          'group-hover:scale-110': !isUnknown,
-                        }
-                      )}
+                      className={cn('h-6 w-6 transition-all duration-300', {
+                        'opacity-50 group-hover/card:opacity-80': isUnknown,
+                        'group-hover/card:scale-110': !isUnknown,
+                      })}
                     />
                   </Suspense>
                 </div>
                 <div className="flex items-center gap-2">
                   <h3
                     className={cn('text-2xl tracking-tight', {
-                      'font-normal text-foreground/50 shine-text transition-all duration-500 ease-in-out':
+                      'font-normal text-foreground/50 transition-all duration-500 ease-in-out':
                         isUnknown,
-                      'font-bold text-foreground group-hover:text-indigo-400 transition-colors duration-300':
+                      'font-bold text-foreground group-hover/card:text-indigo-400 transition-colors duration-300':
                         !isUnknown,
                     })}
                   >
@@ -226,7 +224,7 @@ export function SingleResultAnalysisCard<
                 variant="outline"
                 className={cn('text-xs transition-colors duration-300', {
                   'opacity-50 border-slate-600/30': isUnknown,
-                  'group-hover:bg-indigo-500/10 group-hover:border-indigo-500/30':
+                  'group-hover/card:bg-indigo-500/10 group-hover/card:border-indigo-500/30':
                     !isUnknown,
                 })}
               >
@@ -241,7 +239,7 @@ export function SingleResultAnalysisCard<
                 variant="outline"
                 className={cn('text-xs transition-colors duration-300', {
                   'bg-slate-800/30 text-slate-400 border-0': isUnknown,
-                  'bg-slate-700 text-slate-200 border-0 group-hover:bg-indigo-900':
+                  'bg-slate-700 text-slate-200 border-0 group-hover/card:bg-indigo-900':
                     !isUnknown,
                 })}
               >
