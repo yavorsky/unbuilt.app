@@ -56,6 +56,7 @@ unbuilt.app deconstructs websites to reveal technologies across these categories
 - **Analytics** - Google Analytics, Mixpanel, Umami, Microsoft Clarity, etc.
 - **Styling Libraries** - TailwindCSS, MUI, Lucide, shadcn/ui, etc.
 - **Transpilers** - Babel, SWC, TypeScript, etc.
+- **Monitoring** - Sentry, Datadog, Rollbar, Newrelic, Opentelemetry, Vercel Speed Insights, etc.
 - **Platforms** - Wix, Weebly, Webflow, Squarespace, Shopify, etc.
 - **Unbuilt Resources** - Js/CSS/HTML files, DOM elements, etc.
 

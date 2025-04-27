@@ -12,6 +12,7 @@ import {
   datesMeta,
   stylingLibrariesMeta,
   transpilerMeta,
+  monitoringMeta,
   platformMeta,
   analyticsMeta,
 } from '@unbuilt/features';
@@ -35,6 +36,7 @@ const technologyMetaMap: Record<
   dates: datesMeta,
   stylingLibraries: stylingLibrariesMeta,
   transpiler: transpilerMeta,
+  monitoring: monitoringMeta,
   analytics: analyticsMeta,
 };
 

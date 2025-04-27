@@ -112,6 +112,15 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.transpiler || {},
       },
+      monitoring: {
+        type: 'monitoring',
+        name: data.monitoring,
+        confidence: data.monitoring_confidence,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.monitoring || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.monitoring || {},
+      },
       uiLibrary: {
         type: 'uiLibrary',
         name: data.ui_library,

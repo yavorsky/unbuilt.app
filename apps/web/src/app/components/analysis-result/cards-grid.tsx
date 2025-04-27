@@ -24,6 +24,7 @@ import { NewAnalysisDialog } from '../new-analysis-dialog';
 import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
+import { MonitoringCard } from './cards/monitoring';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -123,6 +124,11 @@ export const CardsGrid: FC<{
         el: <AnalyticsCard analytics={result?.analysis.analytics} />,
       },
       {
+        id: 'monitoring',
+        isUnknown: isUnknown(result?.analysis.monitoring?.name),
+        el: <MonitoringCard monitoring={result?.analysis.monitoring} />,
+      },
+      {
         id: 'stylingLibraries',
         isUnknown:
           Object.values(result?.analysis.stylingLibraries ?? {}).length === 0,
@@ -201,7 +207,8 @@ export const CardsGrid: FC<{
             })}
 
             {/* Fixed position cards */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            {/* Coming Soon Card - Centered in large screens */}
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-3">
               <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-6">
