@@ -11,12 +11,14 @@ import { elasticapm } from './elasticapm.js';
 import { instana } from './instana.js';
 import { raygun } from './raygun.js';
 import { vercelSpeedInsights } from './vercel-speed-insights.js';
+import { opentelemetry } from './opentelemetry.js';
 
 export const meta = {
   sentry,
   rollbar,
   newrelic,
   airbrake,
+  opentelemetry,
   vercelSpeedInsights,
   atatus,
   instana,
