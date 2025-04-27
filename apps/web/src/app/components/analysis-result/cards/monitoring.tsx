@@ -11,7 +11,7 @@ export const MonitoringCard: FC<{
       name="monitoring"
       analysis={monitoring}
       Icon={Binoculars}
-      secondaryMatchesLabel="Other Monitoring Detected"
+      secondaryMatchesLabel="Additional Items Detected"
       isSecondaryMatchesExpanded={true}
     />
   );
