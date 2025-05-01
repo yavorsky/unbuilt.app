@@ -15,7 +15,6 @@ import {
 import { getTechnologyWebsitesQuery } from '../server/api/get-technology-websites';
 import { getAnalysis, getStatus, startAnalysis } from './analyzer';
 import { normalizeUrl } from '@unbuilt/helpers';
-import { getRandomSuggestions } from '@/app/utils/shuffle';
 
 type AnalyzeState = { error: string | null; analysisId?: string };
 
@@ -104,20 +103,4 @@ export async function getTechnologyWebsites<T extends AnalysisTechnologies>({
     search,
     pageSize,
   });
-}
-
-export async function getSuggestionsUrls() {
-  // TODO: Use popular analysis
-  return getRandomSuggestions([
-    'nextjs.org',
-    'react.dev',
-    'vuejs.org',
-    'wix.com',
-    'vercel.com',
-    'lightest.app',
-    'unbuilt.app',
-    'mentor.sh',
-    'cal.com',
-    'nuxt.com',
-  ]);
 }
