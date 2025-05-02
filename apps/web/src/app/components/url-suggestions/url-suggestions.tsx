@@ -1,19 +1,15 @@
 import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form';
-import { getSeededRandomSuggestions } from '@/app/utils/shuffle';
 import { Button } from '@/components/ui';
 
-const urlSuggestionsList = getSeededRandomSuggestions([
-  'nextjs.org',
-  'react.dev',
-  'vuejs.org',
+const urlSuggestionsList = [
   'vercel.com',
+  'unbuilt.app',
   'lightest.app',
   'mentor.sh',
-  'unbuilt.app',
   'cal.com',
   'nuxt.com',
   'wix.com',
-]);
+];
 
 export const URLSuggestions = ({
   onChangeUrl,
