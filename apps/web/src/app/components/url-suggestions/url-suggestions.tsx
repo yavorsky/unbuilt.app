@@ -6,9 +6,6 @@ const urlSuggestionsList = [
   'unbuilt.app',
   'lightest.app',
   'mentor.sh',
-  'cal.com',
-  'nuxt.com',
-  'wix.com',
 ];
 
 export const URLSuggestions = ({
