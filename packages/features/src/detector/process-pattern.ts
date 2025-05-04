@@ -6,6 +6,7 @@ import { processStylesheetPattern } from './pattern-processors/stylesheet.js';
 import { processBrowserPattern } from './pattern-processors/browser.js';
 import { processFilenamePattern } from './pattern-processors/filename.js';
 import { processDocumentPattern } from './pattern-processors/document.js';
+import { processHeaderValue } from './pattern-processors/headers.js';
 
 export async function processPattern<Names extends string>(
   pattern: Pattern<Names>,
@@ -14,6 +15,7 @@ export async function processPattern<Names extends string>(
     scriptsContent: string;
     stylesheetsContent: string;
     documentsContent: string;
+    headers: Map<string, string>;
     filenames: string[];
     page: Page;
     browser: Browser;
@@ -26,6 +28,7 @@ export async function processPattern<Names extends string>(
     scriptsContent,
     stylesheetsContent,
     documentsContent,
+    headers,
     filenames,
     page,
     browser,
@@ -112,6 +115,29 @@ export async function processPattern<Names extends string>(
         filenamePattern,
         pattern,
         filenames,
+        result,
+        debug
+      );
+    }
+
+    if (debug) {
+      console.timeEnd(`filenames ${type} ${pattern.name}`);
+    }
+  }
+
+  // 4. Process headers
+  if (pattern.headers) {
+    if (debug) {
+      console.time(`filenames ${type} ${pattern.name}`);
+    }
+
+    // Process each filename pattern sequentially
+    for (const [headerName, headerValue] of Object.entries(pattern.headers)) {
+      await processHeaderValue(
+        headerName,
+        headerValue,
+        pattern,
+        headers,
         result,
         debug
       );
