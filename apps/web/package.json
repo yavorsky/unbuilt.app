@@ -8,7 +8,7 @@
     "dev": "next dev",
     "dev:debug": "set NODE_OPTIONS=--inspect && next dev",
     "start:debug": "NODE_OPTIONS='--inspect' next start",
-    "build": "NODE_OPTIONS='--inspect' next build",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "pull-production-schema": "yarn env-setup --sync-schema",

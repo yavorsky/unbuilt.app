@@ -59,6 +59,21 @@ jobs:
         env:
           NODE_ENV: test
 
+      # Archive the build artifacts for deployment
+      - name: Archive build artifacts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          tar -czf build-artifacts.tar.gz apps/web/.next apps/web/public node_modules package.json yarn.lock ecosystem.config.cjs
+
+      # Upload build artifacts
+      - name: Upload build artifacts
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-artifacts
+          path: build-artifacts.tar.gz
+          retention-days: 1
+
   publish-cli:
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
@@ -146,16 +161,25 @@ jobs:
       CLARITY_PROJECT_ID: ${{ secrets.CLARITY_PROJECT_ID }}
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
         with:
-          node-version: '22'
-          cache: 'yarn'
+          name: build-artifacts
 
-      - name: Deploy to DigitalOcean
+      # Prepare for artifact transfer
+
+      # Use SCP via SSH Action to transfer artifacts
+      - name: Transfer artifacts to DigitalOcean
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DROPLET_IP }}
+          username: ${{ secrets.DROPLET_USERNAME }}
+          key: ${{ secrets.DROPLET_SSH_KEY }}
+          source: "build-artifacts.tar.gz"
+          target: "/home/server/unbuilt-app/"
+
+      # Deploy on server
+      - name: Deploy on DigitalOcean
         uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
@@ -165,16 +189,19 @@ jobs:
           script: |
             set -e # Exit if fail
             cd /home/server/unbuilt-app && \
-            git fetch origin main && git reset --hard origin/main && \
-            echo "SUPABASE_URL=${SUPABASE_URL}" > apps/web/.env && \
-            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> apps/web/.env && \
-            echo "SUPABASE_ID=${SUPABASE_ID}" >> apps/web/.env && \
-            echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> apps/web/.env && \
-            echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> apps/web/.env && \
-            echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> apps/web/.env && \
-            echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> apps/web/.env && \
-            yarn install && \
-            NODE_ENV=production yarn turbo run build && \
-            pm2 delete web || true && \
+            # Create .env file
+            echo "SUPABASE_URL=${SUPABASE_URL}" > .env && \
+            echo "SUPABASE_KEY=${SUPABASE_KEY}" >> .env && \
+            echo "SUPABASE_ID=${SUPABASE_ID}" >> .env && \
+            echo "LOGFLARE_SOURCE_TOKEN=${LOGFLARE_SOURCE_TOKEN}" >> .env && \
+            echo "LOGFLARE_API_KEY=${LOGFLARE_API_KEY}" >> .env && \
+            echo "CLARITY_PROJECT_ID=${CLARITY_PROJECT_ID}" >> .env && \
+            echo "UNBUILT_API_KEY=${UNBUILT_API_KEY}" >> .env && \
+            # Extract new build artifacts
+            tar -xzf build-artifacts.tar.gz && \
+            # Restart the application
+            NODE_ENV=production pm2 delete web || true && \
             NODE_ENV=production pm2 start ecosystem.config.cjs --update-env && \
-            pm2 save --force
+            pm2 save --force && \
+            # Clean up
+            rm -f build-artifacts.tar.gz
