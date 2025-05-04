@@ -128,7 +128,7 @@ export async function processPattern<Names extends string>(
   // 4. Process headers
   if (pattern.headers) {
     if (debug) {
-      console.time(`filenames ${type} ${pattern.name}`);
+      console.time(`headers ${type} ${pattern.name}`);
     }
 
     // Process each filename pattern sequentially
@@ -144,7 +144,7 @@ export async function processPattern<Names extends string>(
     }
 
     if (debug) {
-      console.timeEnd(`filenames ${type} ${pattern.name}`);
+      console.timeEnd(`headers ${type} ${pattern.name}`);
     }
   }
 

@@ -32,11 +32,18 @@ export class Resources {
       try {
         request = route.request();
         resourceType = request.resourceType();
-        requestHeaders = request.headers(); // Get the request headers
       } catch (error) {
         onError?.(error as Error);
         await route.continue();
         return;
+      }
+
+      const url = request.url();
+
+      try {
+        requestHeaders = request.headers();
+      } catch (error) {
+        onError?.(error as Error);
       }
 
       let content = null;
@@ -49,6 +56,8 @@ export class Resources {
         try {
           const response = await route.fetch();
           const headers = response.headers();
+
+          this.setHeaders(url, headers);
 
           const contentEncoding = headers['content-encoding'] || '';
           // Playwright doesn't decode zstd encoding, so we need to manually decode it.
@@ -76,7 +85,7 @@ export class Resources {
       // Save the resource with headers
       this.set(
         {
-          url: request.url(),
+          url,
           size: 0,
           timing: Date.now(),
           type: resourceType as ResourceType,
@@ -84,9 +93,6 @@ export class Resources {
         },
         content
       );
-
-      // Also save the headers separately
-      this.setHeaders(request.url(), requestHeaders);
 
       await route.continue();
     });
@@ -98,14 +104,20 @@ export class Resources {
   handleResponse = async (response: Response) => {
     let url: string;
     let requestHeaders: Record<string, string> = {};
+    let request: Request;
 
     try {
-      const request = response.request();
+      request = response.request();
       url = request.url();
-      requestHeaders = request.headers(); // Get the request headers
     } catch (error) {
       this.onError?.(error as Error);
       return;
+    }
+
+    try {
+      requestHeaders = request.headers(); // Get the request headers
+    } catch (error) {
+      this.onError?.(error as Error);
     }
 
     if (this.has(url)) {
@@ -121,9 +133,6 @@ export class Resources {
           timing: Date.now() - resource.timing,
           headers: requestHeaders, // Include the headers in the updated resource
         });
-
-        // Update headers map
-        this.setHeaders(url, requestHeaders);
       }
     }
   };

@@ -29,7 +29,7 @@ export async function processHeaderValue<Names extends string>(
     if (matched) {
       if (debug) {
         console.log(
-          `---> Header pattern ${pattern.name} matched -- ${headerValue}`
+          `---> Header pattern ${pattern.name} matched -- ${headerName}: ${headerValue}`
         );
       }
       result.totalScore = normalizeScore(pattern.score + result.totalScore);
