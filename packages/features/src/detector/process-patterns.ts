@@ -19,6 +19,7 @@ export async function processPatterns<Names extends string>(
   const scriptsContent = resources.getAllScriptsContent();
   const stylesheetsContent = resources.getAllStylesheetsContent();
   const documentsContent = resources.getAllDocumentsContent();
+  const headers = resources.getAllHeaders();
   const totalContent = scriptsContent + stylesheetsContent + documentsContent;
   const filenames = Array.from(resources.getAllScriptsNames());
 
@@ -34,6 +35,7 @@ export async function processPatterns<Names extends string>(
       scriptsContent,
       stylesheetsContent,
       documentsContent,
+      headers,
       filenames,
       page,
       browser,

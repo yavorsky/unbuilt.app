@@ -71,6 +71,16 @@ export const next = [
       });
     },
   },
+  {
+    score: 1.4,
+    name: 'headers' as const,
+    headers: {
+      server: /Vercel/,
+      'x-vercel-cache': /HIT/,
+      'x-vercel-id': /./,
+      'x-powered-by': /nextjs/,
+    },
+  },
   // Generic SSR detection
   // Disabling for now since this check takes too long
   // {

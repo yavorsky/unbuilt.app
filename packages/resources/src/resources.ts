@@ -1,6 +1,13 @@
 import { Page, Request, Response } from 'playwright';
-import { Resource, ResourcesMap, ResourceType, ScriptsMap } from './types.js';
+import {
+  HeadersMap,
+  Resource,
+  ResourcesMap,
+  ResourceType,
+  ScriptsMap,
+} from './types.js';
 import { initZstd } from './decoders/zstd.js';
+import { normalizeHeaders } from './utils.js';
 
 export class Resources {
   private page: Page;
@@ -9,6 +16,7 @@ export class Resources {
   private scriptsMap: ScriptsMap = new Map();
   private stylesheetsMap: ScriptsMap = new Map();
   private documentsMap: ScriptsMap = new Map();
+  private headersMap: Map<string, HeadersMap> = new Map();
   private onError?: (error: Error) => void;
   constructor(page: Page) {
     this.page = page;
@@ -19,6 +27,7 @@ export class Resources {
     await this.page.route('**/*', async (route) => {
       let resourceType: string;
       let request: Request;
+      let requestHeaders: Record<string, string> = {};
 
       try {
         request = route.request();
@@ -27,6 +36,14 @@ export class Resources {
         onError?.(error as Error);
         await route.continue();
         return;
+      }
+
+      const url = request.url();
+
+      try {
+        requestHeaders = request.headers();
+      } catch (error) {
+        onError?.(error as Error);
       }
 
       let content = null;
@@ -39,6 +56,8 @@ export class Resources {
         try {
           const response = await route.fetch();
           const headers = response.headers();
+
+          this.setHeaders(url, headers);
 
           const contentEncoding = headers['content-encoding'] || '';
           // Playwright doesn't decode zstd encoding, so we need to manually decode it.
@@ -62,12 +81,15 @@ export class Resources {
           return;
         }
       }
+
+      // Save the resource with headers
       this.set(
         {
-          url: request.url(),
+          url,
           size: 0,
           timing: Date.now(),
           type: resourceType as ResourceType,
+          headers: requestHeaders,
         },
         content
       );
@@ -81,12 +103,21 @@ export class Resources {
 
   handleResponse = async (response: Response) => {
     let url: string;
+    let requestHeaders: Record<string, string> = {};
+    let request: Request;
+
     try {
-      const request = response.request();
+      request = response.request();
       url = request.url();
     } catch (error) {
       this.onError?.(error as Error);
       return;
+    }
+
+    try {
+      requestHeaders = request.headers(); // Get the request headers
+    } catch (error) {
+      this.onError?.(error as Error);
     }
 
     if (this.has(url)) {
@@ -100,10 +131,43 @@ export class Resources {
           size: (await response.body()).length,
           status: response.status(),
           timing: Date.now() - resource.timing,
+          headers: requestHeaders, // Include the headers in the updated resource
         });
       }
     }
   };
+
+  // New method to set headers
+  setHeaders(url: string, headers: Record<string, string>) {
+    this.headersMap.set(url, normalizeHeaders(headers));
+  }
+
+  // New method to get headers
+  getHeaders(url: string) {
+    return this.headersMap.get(url);
+  }
+
+  // New method to get all headers
+  getAllHeaders() {
+    const allHeaders: Map<string, string> = new Map();
+
+    this.headersMap.forEach((headersObj, _url) => {
+      // Add each header to the flattened map
+      Object.entries(headersObj).forEach(([headerName, headerValue]) => {
+        if (allHeaders.has(headerName)) {
+          allHeaders.set(
+            headerName,
+            // Concatinate multiple headers with the same name.
+            allHeaders.get(headerName) + ', ' + headerValue
+          );
+        } else {
+          allHeaders.set(headerName, headerValue);
+        }
+      });
+    });
+
+    return allHeaders;
+  }
 
   set(resource: Resource, content?: string | null) {
     this.resourcesMap.set(resource.url, {
@@ -112,6 +176,7 @@ export class Resources {
       size: resource.size ?? 0,
       status: resource.status ?? 0,
       timing: resource.timing ?? Date.now(),
+      headers: resource.headers ?? {}, // Include headers in the resource map
     });
 
     if (content) {
@@ -197,11 +262,11 @@ export class Resources {
   }
 
   private clearAllMaps() {
-    // Clear all resource maps and cache
     this.resourcesMap?.clear();
     this.scriptsMap?.clear();
     this.stylesheetsMap?.clear();
     this.documentsMap?.clear();
+    this.headersMap?.clear(); // Clear the headers map
     this.cache?.clear();
   }
 

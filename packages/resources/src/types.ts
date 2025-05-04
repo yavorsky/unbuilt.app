@@ -44,7 +44,9 @@ export type Resource = {
   url: string;
   timing: number;
   status?: number;
+  headers?: HeadersMap;
 };
 
 export type ResourcesMap = Map<string, Resource>;
 export type ScriptsMap = Map<string, string>;
+export type HeadersMap = Record<string, string>;

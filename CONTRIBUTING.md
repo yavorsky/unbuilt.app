@@ -235,7 +235,22 @@ RegExp patterns that run against HTML documents:
 }
 ```
 
-#### 4. Browser Function
+#### 4. Headers Patterns
+
+Patterns based on header name and Http Patterns that run against HTTP headers:
+
+```typescript
+{
+  name: 'core',
+  score: 1.0,
+  headers: {
+    'content-type': /application\/json/,
+    'x-powered-by': /nextjs/,
+  },
+}
+```
+
+#### 5. Browser Function
 
 JavaScript function that executes after all resources are loaded:
 
