@@ -25,6 +25,7 @@ import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
 import { MonitoringCard } from './cards/monitoring';
+import { OutdatedBadge } from './outdated-badge';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -182,8 +183,14 @@ export const CardsGrid: FC<{
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <span className="text-foreground/50 mt-4 h-6">
-          {formattedDate && <>Analysis from {formattedDate}.</>}
+        <span className="text-foreground/50 mt-4 h-6 flex items-center gap-2">
+          {formattedDate && (
+            <>
+              <span className="hidden md:inline">Analysis from </span>
+              <b>{formattedDate}</b>
+            </>
+          )}
+          {result?.url && <OutdatedBadge variant="critical" url={result.url} />}
           {truncatedUrl && (
             <NewAnalysisDialog initialUrl={truncatedUrl} selectOnOpen />
           )}

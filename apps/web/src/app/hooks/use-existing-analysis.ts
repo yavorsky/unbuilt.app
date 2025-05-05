@@ -10,11 +10,31 @@ export const statuses = {
   FOUND: 'FOUND',
   NOT_FOUND: 'NOT_FOUND',
   PENDING: 'PENDING',
+  OUTDATED: 'OUTDATED',
   NO_URL: 'NO_URL',
 } as const;
 
-type AnalysisMeta = { id: string | undefined; analyzedAt: string | undefined };
+type AnalysisMeta = {
+  id: string | undefined;
+  analyzedAt: string | undefined;
+  notProcessed: string[] | undefined;
+};
 type State = Record<URL, AnalysisMeta>;
+
+const MAX_CACHE_AGE = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+const isOutdated = (analysisMeta: AnalysisMeta) => {
+  if (!analysisMeta.analyzedAt) {
+    return true;
+  }
+  const now = Date.now();
+  const analyzedAt = new Date(analysisMeta.analyzedAt).getTime();
+
+  const withNotProcessedCategories =
+    (analysisMeta.notProcessed?.length ?? 0) > 0;
+
+  return now - analyzedAt > MAX_CACHE_AGE || withNotProcessedCategories;
+};
 
 export const useExistingAnalysisMeta = (url: URL) => {
   const [analysisMap, setAnalysisMap] = useState<State>({});
@@ -30,7 +50,11 @@ export const useExistingAnalysisMeta = (url: URL) => {
 
         setAnalysisMap((prevMap) => ({
           ...prevMap,
-          [urlToFetch]: { id: result?.id, analyzedAt: result?.analyzedAt },
+          [urlToFetch]: {
+            id: result?.id,
+            analyzedAt: result?.analyzedAt,
+            notProcessed: result?.notProcessed,
+          },
         }));
       } catch (e) {
         // Capture with Sentry with additional context
@@ -64,6 +88,14 @@ export const useExistingAnalysisMeta = (url: URL) => {
   }, [url, analysisMap, debouncedFetch]);
 
   if (analysisMap[url] && analysisMap[url].id) {
+    if (isOutdated(analysisMap[url])) {
+      return {
+        id: analysisMap[url].id,
+        analyzedAt: analysisMap[url].analyzedAt,
+        notProcessed: analysisMap[url].notProcessed,
+        status: statuses.OUTDATED,
+      };
+    }
     return {
       id: analysisMap[url].id,
       analyzedAt: analysisMap[url].analyzedAt,

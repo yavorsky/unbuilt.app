@@ -124,7 +124,11 @@ export class AnalysisManager {
   async getAnalyzysMetaByUrl(url: string) {
     try {
       const { data } = await getAnalyzysMetaByUrlQuery(url);
-      return { id: data?.id, analyzedAt: data?.analyzed_at };
+      return {
+        id: data?.id,
+        analyzedAt: data?.analyzed_at,
+        notProcessed: data?.not_processed,
+      };
     } catch (e) {
       trackError(e as Error, { url });
       return null;
