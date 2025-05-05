@@ -12,7 +12,6 @@ interface OutdatedBadgeProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string;
   url: string;
   variant?: 'subtle' | 'warning' | 'critical';
-  label?: string;
 }
 
 /**
