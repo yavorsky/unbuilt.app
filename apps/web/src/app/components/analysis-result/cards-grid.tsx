@@ -166,9 +166,9 @@ export const CardsGrid: FC<{
   return (
     <div className="max-w-7xl mx-auto pb-6">
       <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
-        <div className="flex-1 flex items-start justify-start">
+        <div className="flex-1 flex items-start justify-start max-w-full overflow-x-scroll">
           <Breadcrumb>
-            <BreadcrumbList>
+            <BreadcrumbList className="flex-nowrap">
               <h3 className="text-foreground text-3xl">{actionLabel}</h3>
               {truncatedUrl ? (
                 <URLBreadcrumb
@@ -183,9 +183,7 @@ export const CardsGrid: FC<{
           </Breadcrumb>
         </div>
         <span className="text-foreground/50 mt-4 h-6">
-          {formattedDate && (
-            <>Tech stack results based on the analysis from {formattedDate}.</>
-          )}
+          {formattedDate && <>Analysis from {formattedDate}.</>}
           {truncatedUrl && (
             <NewAnalysisDialog initialUrl={truncatedUrl} selectOnOpen />
           )}
