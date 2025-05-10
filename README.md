@@ -56,6 +56,7 @@ unbuilt.app deconstructs websites to reveal technologies across these categories
 - **Analytics** - Google Analytics, Mixpanel, Umami, Microsoft Clarity, etc.
 - **Styling Libraries** - TailwindCSS, MUI, Lucide, shadcn/ui, etc.
 - **Transpilers** - Babel, SWC, TypeScript, etc.
+- **Monitoring** - Sentry, Datadog, Rollbar, Newrelic, Opentelemetry, Vercel Speed Insights, etc.
 - **Platforms** - Wix, Weebly, Webflow, Squarespace, Shopify, etc.
 - **Unbuilt Resources** - Js/CSS/HTML files, DOM elements, etc.
 
@@ -85,7 +86,7 @@ Check more details in the [CLI documentation](./apps/cli/README.md).
 
 ## Tech Stack
 
-Why list everything here when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/f280c84c-3168-46c3-ae2d-becfd002e7fd)!
+Why list everything here when you can check it on [unbuilt unbuilt.app](https://unbuilt.app/analysis/afe50dde-2dfb-4db6-ae95-3127aff27e7a)!
 
 > Yes, we've unbuilt ourselves too! We practice what we preach.
 

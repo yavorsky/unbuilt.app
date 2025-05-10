@@ -24,7 +24,7 @@ export function NewAnalysisDialog({
         <DialogTrigger asChild>
           <Button
             variant="link"
-            className="text-foreground/80 hover:text-foreground text-base"
+            className="text-foreground/80 hover:text-foreground text-base px-0"
           >
             <span>New Analysis</span>
             <Repeat2Icon className="h-4 w-4" />

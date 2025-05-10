@@ -24,6 +24,8 @@ import { NewAnalysisDialog } from '../new-analysis-dialog';
 import { StatsCard } from './cards/stats';
 import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
+import { MonitoringCard } from './cards/monitoring';
+import { OutdatedBadge } from './outdated-badge';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -123,6 +125,11 @@ export const CardsGrid: FC<{
         el: <AnalyticsCard analytics={result?.analysis.analytics} />,
       },
       {
+        id: 'monitoring',
+        isUnknown: isUnknown(result?.analysis.monitoring?.name),
+        el: <MonitoringCard monitoring={result?.analysis.monitoring} />,
+      },
+      {
         id: 'stylingLibraries',
         isUnknown:
           Object.values(result?.analysis.stylingLibraries ?? {}).length === 0,
@@ -160,9 +167,9 @@ export const CardsGrid: FC<{
   return (
     <div className="max-w-7xl mx-auto pb-6">
       <div className="border-gray-900 flex items-center justify-center max-w-7xl mx-auto flex-col h-20">
-        <div className="flex-1 flex items-start justify-start">
+        <div className="flex-1 flex items-start justify-start max-w-full overflow-x-scroll">
           <Breadcrumb>
-            <BreadcrumbList>
+            <BreadcrumbList className="flex-nowrap">
               <h3 className="text-foreground text-3xl">{actionLabel}</h3>
               {truncatedUrl ? (
                 <URLBreadcrumb
@@ -176,10 +183,14 @@ export const CardsGrid: FC<{
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <span className="text-foreground/50 mt-4 h-6">
+        <span className="text-foreground/50 mt-4 h-6 flex items-center gap-2">
           {formattedDate && (
-            <>Tech stack results based on the analysis from {formattedDate}.</>
+            <>
+              <span className="hidden md:inline">Analysis from </span>
+              <b>{formattedDate}</b>
+            </>
           )}
+          {result?.url && <OutdatedBadge variant="critical" url={result.url} />}
           {truncatedUrl && (
             <NewAnalysisDialog initialUrl={truncatedUrl} selectOnOpen />
           )}
@@ -201,7 +212,8 @@ export const CardsGrid: FC<{
             })}
 
             {/* Fixed position cards */}
-            <div className="col-span-1 sm:col-span-1 lg:col-span-2">
+            {/* Coming Soon Card - Centered in large screens */}
+            <div className="col-span-1 sm:col-span-2 lg:col-span-2 lg:col-start-3">
               <ComingSoonCard isLoading={isLoading || status === 'delayed'} />
             </div>
             <div className="col-span-1 sm:col-span-2 md:col-span-2 lg:col-span-6">

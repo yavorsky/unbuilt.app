@@ -2,14 +2,10 @@ import { useAnalysisForm } from '@/app/contexts/analysis-form/use-analysis-form'
 import { Button } from '@/components/ui';
 
 const urlSuggestionsList = [
-  'nextjs.org',
-  'react.dev',
-  'vuejs.org',
-  'wix.com',
-  // 'stripe.com',
-  // 'github.com',
-  // 'shopify.com',
-  // 'nytimes.com',
+  'vercel.com',
+  'unbuilt.app',
+  'lightest.app',
+  'mentor.sh',
 ];
 
 export const URLSuggestions = ({
