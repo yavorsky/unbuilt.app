@@ -13,7 +13,7 @@ export const NotDetectedLabel = () => {
       <Tooltip>
         <TooltipTrigger>
           <div className="flex items-center gap-2">
-            <span className="shine-text transition-all duration-300">
+            <span className="shine-text text-foreground/50 transition-all duration-300">
               Not Detected
             </span>
             <InfoIcon

@@ -154,11 +154,11 @@ a {
   opacity: 1;
   background: linear-gradient(
     90deg,
-    rgba(255,255,255,0.1) 0%,
-    rgba(255,255,255,0.2) 25%,
-    rgba(255,255,255,0.3) 50%,
-    rgba(255,255,255,0.2) 75%,
-    rgba(255,255,255,0.1) 100%
+    hsl(var(--foreground) / 0.1) 0%,
+    hsl(var(--foreground) / 0.2) 25%,
+    hsl(var(--foreground) / 0.3) 50%,
+    hsl(var(--foreground) / 0.2) 75%,
+    hsl(var(--foreground) / 0.1) 100%
   );
   background-size: 200% 100%;
   background-clip: text;
