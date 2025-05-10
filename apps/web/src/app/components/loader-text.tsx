@@ -18,7 +18,7 @@ const LoaderText: FC<{ supportedOptions: string[]; interval?: number }> = ({
 
   return (
     <div className="space-y-2">
-      <span className="inline-block animate-pulse text-white">
+      <span className="inline-block shine-text text-white">
         Looking for {supportedOptions[currentIndex]}...
       </span>
     </div>

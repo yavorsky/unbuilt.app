@@ -54,29 +54,16 @@ a {
     --border: 240 3.7% 80%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.8% 95.9%;
-
-    /* Light mode chart colors - 20 colors */
-    --chart-1: 12 76% 61%;      /* Coral */
-    --chart-2: 173 58% 39%;     /* Teal */
-    --chart-3: 197 37% 24%;     /* Dark Blue */
-    --chart-4: 43 74% 66%;      /* Yellow Green */
-    --chart-5: 27 87% 67%;      /* Orange */
-    --chart-6: 220 70% 50%;     /* Blue */
-    --chart-7: 290 65% 45%;     /* Purple */
-    --chart-8: 150 60% 45%;     /* Green */
-    --chart-9: 335 80% 60%;     /* Pink */
-    --chart-10: 65 70% 55%;     /* Lime */
-    --chart-11: 183 65% 50%;    /* Cyan */
-    --chart-12: 358 75% 59%;    /* Red */
-    --chart-13: 93 50% 45%;     /* Olive Green */
-    --chart-14: 264 60% 55%;    /* Violet */
-    --chart-15: 15 85% 55%;     /* Red Orange */
-    --chart-16: 200 60% 35%;    /* Steel Blue */
-    --chart-17: 320 55% 45%;    /* Magenta */
-    --chart-18: 160 70% 35%;    /* Forest Green */
-    --chart-19: 50 90% 60%;     /* Amber */
-    --chart-20: 240 60% 60%;    /* Royal Blue */
-
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --chart-6: 220 70% 50%;
+    --chart-7: 290 65% 45%;
+    --chart-8: 150 60% 45%;
+    --chart-9: 335 80% 60%;
+    --chart-10: 65 70% 55%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 0 0% 98%;
@@ -109,29 +96,16 @@ a {
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
-
-    /* Dark mode chart colors - 20 colors */
-    --chart-1: 220 70% 50%;     /* Blue */
-    --chart-2: 160 60% 45%;     /* Green */
-    --chart-3: 30 80% 55%;      /* Orange */
-    --chart-4: 280 65% 60%;     /* Purple */
-    --chart-5: 340 75% 55%;     /* Red */
-    --chart-6: 220 80% 65%;     /* Light Blue */
-    --chart-7: 290 75% 60%;     /* Violet */
-    --chart-8: 150 70% 55%;     /* Light Green */
-    --chart-9: 335 90% 70%;     /* Pink */
-    --chart-10: 65 80% 65%;     /* Yellow Green */
-    --chart-11: 195 80% 65%;    /* Cyan */
-    --chart-12: 0 80% 65%;      /* Bright Red */
-    --chart-13: 90 70% 60%;     /* Lime */
-    --chart-14: 260 80% 70%;    /* Periwinkle */
-    --chart-15: 15 85% 65%;     /* Bright Orange */
-    --chart-16: 200 70% 60%;    /* Sky Blue */
-    --chart-17: 320 75% 65%;    /* Magenta */
-    --chart-18: 170 75% 55%;    /* Seafoam */
-    --chart-19: 50 90% 70%;     /* Amber */
-    --chart-20: 240 75% 70%;    /* Royal Blue */
-
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --chart-6: 220 80% 65%;
+    --chart-7: 290 75% 60%;
+    --chart-8: 150 70% 55%;
+    --chart-9: 335 90% 70%;
+    --chart-10: 65 80% 65%;
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
@@ -160,3 +134,36 @@ a {
     @apply bg-background text-foreground;
   }
 }
+
+
+@keyframes shine {
+  0% {
+    background-position: -100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+.shine-text {
+  transition: opacity 0.5s ease-out, background 0.3s ease-out;
+  opacity: 0.5;
+}
+
+.shine-container:hover .shine-text {
+  opacity: 1;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--foreground) / 0.1) 0%,
+    hsl(var(--foreground) / 0.2) 25%,
+    hsl(var(--foreground) / 0.3) 50%,
+    hsl(var(--foreground) / 0.2) 75%,
+    hsl(var(--foreground) / 0.1) 100%
+  );
+  background-size: 200% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shine 3s linear infinite;
+  transition: opacity 0.3s ease-in;
+} 
