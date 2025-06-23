@@ -47,6 +47,9 @@ export * as analyticsMeta from './categories/analytics/meta/index.js';
 export * as monitoring from './categories/monitoring/index.js';
 export * as monitoringMeta from './categories/monitoring/meta/index.js';
 
+export * as deployment from './categories/deployment/index.js';
+export * as deploymentMeta from './categories/deployment/meta/index.js';
+
 // Utils to calculate results
 export * from './detector/index.js';
 

@@ -55,6 +55,10 @@ export type Database = {
           created_at: string | null
           dates: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence: number | null
+          deployment_platform:
+            | Database["public"]["Enums"]["deployment_platform_type"]
+            | null
+          deployment_platform_confidence: number | null
           dom_metrics:
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
@@ -111,6 +115,10 @@ export type Database = {
           created_at?: string | null
           dates?: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence?: number | null
+          deployment_platform?:
+            | Database["public"]["Enums"]["deployment_platform_type"]
+            | null
+          deployment_platform_confidence?: number | null
           dom_metrics?:
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
@@ -167,6 +175,10 @@ export type Database = {
           created_at?: string | null
           dates?: Database["public"]["Enums"]["dates_type"] | null
           dates_confidence?: number | null
+          deployment_platform?:
+            | Database["public"]["Enums"]["deployment_platform_type"]
+            | null
+          deployment_platform_confidence?: number | null
           dom_metrics?:
             | Database["public"]["CompositeTypes"]["dom_metrics"]
             | null
@@ -431,6 +443,17 @@ export type Database = {
         | "jsJoda"
         | "luxon"
         | "moment"
+      deployment_platform_type:
+        | "vercel"
+        | "netlify"
+        | "cloudflare"
+        | "aws-amplify"
+        | "firebase"
+        | "github-pages"
+        | "render"
+        | "railway"
+        | "heroku"
+        | "digitalocean"
       framework_type:
         | "unknown"
         | "astro"
@@ -745,6 +768,18 @@ export const Constants = {
         "deno",
       ],
       dates_type: ["unknown", "dateFns", "dayJs", "jsJoda", "luxon", "moment"],
+      deployment_platform_type: [
+        "vercel",
+        "netlify",
+        "cloudflare",
+        "aws-amplify",
+        "firebase",
+        "github-pages",
+        "render",
+        "railway",
+        "heroku",
+        "digitalocean",
+      ],
       framework_type: [
         "unknown",
         "astro",
