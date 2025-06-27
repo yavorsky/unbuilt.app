@@ -59,7 +59,7 @@ export function ComingSoonCard({ isLoading }: { isLoading: boolean }) {
             <span>Follow updates</span>
           </a>
           <a
-            href="https://github.com/yavorsky/unbuilt.app/contribution-guide"
+            href="https://github.com/yavorsky/unbuilt.app/blob/main/CONTRIBUTING.md"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 hover:text-indigo-500 transition-colors"
