@@ -20,7 +20,7 @@ export const babel = [
   },
   {
     name: 'syntaxTransforms' as const,
-    score: 0.6,
+    score: 0.8,
     scripts: [
       // Class transformation patterns
       /var\s+\w+\s*=\s*function\s*\(\)\s*\{\s*function\s+\w+\([^)]*\)\s*\{[^}]*_classCallCheck\(this,\s*\w+\)/,
@@ -48,17 +48,27 @@ export const babel = [
       // Object spread/rest transforms
       /function\s+_objectWithoutProperties\s*\([^)]+\)\s*\{/,
       /function\s+_objectWithoutPropertiesLoose\s*\([^)]+\)\s*\{/,
+      
+      // Babel's typical minified patterns for optional chaining and nullish coalescing
+      /\w+===(?:void\s*0|null)\?\s*void\s*0:\w+\.\w+/,
+      /\w+!==(?:void\s*0|null)&&\w+!==void\s*0\?\w+:/,
     ],
   },
   {
     name: 'modernFeatures' as const,
-    score: 0.25,
+    score: 0.4,
     scripts: [
       // Optional chaining transform (babel specific)
       /var\s+\w+\s*=\s*\w+\s*==\s*null\s*\?\s*void\s*0\s*:\s*\w+(?:\[|\.)(?:[^;]|;(?=[^;]))*;/,
 
       // Nullish coalescing transform
       /var\s+\w+\s*=\s*\w+\s*===?\s*null\s*\|\|\s*\w+\s*===?\s*void\s*0\s*\?\s*\w+\s*:\s*\w+/,
+      
+      // Babel's specific void 0 pattern for nullish coalescing
+      /\w+\s*!==\s*null\s*&&\s*\w+\s*!==\s*void\s*0\s*\?\s*\w+\s*:/,
+
+      // Babel optional chaining with property access
+      /\w+\s*===\s*null\s*\|\|\s*\w+\s*===\s*void\s*0\s*\?\s*void\s*0\s*:\s*\w+\.\w+/,
 
       // Private fields transform (WeakMap based)
       /var\s+\w+\s*=\s*new\s+WeakMap\(\);\s*var\s+\w+\s*=\s*function\s*\w+\s*\(/,
@@ -69,7 +79,7 @@ export const babel = [
   },
   {
     name: 'importExport' as const,
-    score: 0.2,
+    score: 0.4,
     scripts: [
       // Import transforms
       /Object\.defineProperty\(exports,\s*["']__esModule["'],\s*\{\s*value:\s*true\s*\}\)/,
