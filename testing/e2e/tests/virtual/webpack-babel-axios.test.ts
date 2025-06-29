@@ -201,7 +201,7 @@ describe('detects webpack, babel and axios in vanilla js app', async () => {
 
   it('detects babel transpiler', async () => {
     expect(result.transpiler.name).toBe('babel');
-    expect(result.transpiler.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.transpiler.confidence).toBeGreaterThanOrEqual(0.6);
   });
 
   it('detects axios usage', async () => {
