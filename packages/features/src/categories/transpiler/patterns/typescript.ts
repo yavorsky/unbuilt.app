@@ -31,12 +31,9 @@ export const typescript = [
   },
   {
     name: 'moduleSystem' as const,
-    score: 0.25,
+    score: 0.1,
     scripts: [
-      // TSC's module implementation
-      /Object\.defineProperty\(exports,\s*["']__esModule["'],\s*\{\s*value:\s*true\s*\}\)/,
-
-      // TSC's specific import helpers
+      // TSC's specific import helpers - these are more unique to TypeScript
       /var\s+__importDefault\s*=\s*\(this\s*&&\s*this\.__importDefault\)\s*\|\|\s*function\s*\(mod\)\s*\{/,
       /var\s+__importStar\s*=\s*\(this\s*&&\s*this\.__importStar\)\s*\|\|\s*function\s*\(mod\)\s*\{/,
 
@@ -46,7 +43,7 @@ export const typescript = [
   },
   {
     name: 'classFeatures' as const,
-    score: 0.8,
+    score: 0.2,
     scripts: [
       // TSC's class feature implementation
       /(?:\(0,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\.C6\)|__extends)\s*\(\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*,\s*_super\)/,
@@ -54,28 +51,21 @@ export const typescript = [
   },
   {
     name: 'propertyPattern' as const,
-    score: 0.8,
+    score: 0.2,
     scripts: [
       /Object\.defineProperty\s*\([a-zA-Z$_][a-zA-Z$_0-9]*,\s*[a-zA-Z$_][a-zA-Z$_0-9]*,\s*\{\s*enumerable:\s*(?:true|false),\s*get:\s*function/,
     ],
   },
   {
     name: 'exports' as const,
-    score: 0.8,
+    score: 0.2,
     scripts: [
       /r\.d\s*\(\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*,\s*\{\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*:\s*\(\)\s*=>\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*\}\)/,
     ],
   },
   {
-    name: 'void' as const,
-    score: 0.8,
-    scripts: [
-      /void\s+0\s*===\s*[a-zA-Z$_][a-zA-Z$_0-9]*|[a-zA-Z$_][a-zA-Z$_0-9]*\s*===\s*void\s+0/,
-    ],
-  },
-  {
     name: 'assign' as const,
-    score: 0.6,
+    score: 0.2,
     scripts: [
       /(?:\(0,\s*[a-zA-Z$_][a-zA-Z$_0-9]*\.Cl\)|__assign)\s*\(\s*\{\s*\}/,
     ],
