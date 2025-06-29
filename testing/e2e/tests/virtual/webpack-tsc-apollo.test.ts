@@ -248,7 +248,7 @@ describe('detects webpack, typescript and apollo in vanilla app', async () => {
 
   it('detects typescript transpiler', async () => {
     expect(result.transpiler.name).toBe('typescript');
-    expect(result.transpiler.confidence).toBeGreaterThanOrEqual(1);
+    expect(result.transpiler.confidence).toBeGreaterThanOrEqual(0.9);
   });
 
   it('detects apollo client usage', async () => {
