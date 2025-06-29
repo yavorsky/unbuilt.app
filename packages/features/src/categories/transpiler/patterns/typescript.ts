@@ -64,6 +64,25 @@ export const typescript = [
     ],
   },
   {
+    name: 'void' as const,
+    score: 0.3,
+    scripts: [
+      // TypeScript void 0 patterns that are more specific
+      // TypeScript parameter default checks (not optional chaining)
+      /if\s*\(\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*===\s*void\s+0\s*\)\s*\{\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*=/,
+      // TypeScript's specific pattern for default parameters in functions
+      /=\s*[a-zA-Z$_][a-zA-Z$_0-9]*\s*===\s*void\s+0\s*\?\s*[^:]+\s*:\s*[a-zA-Z$_][a-zA-Z$_0-9]*[,;)]/,
+    ],
+  },
+  {
+    name: 'strictMode' as const,
+    score: 0.4,
+    scripts: [
+      // TypeScript adds "use strict" for modules
+      /^["']use strict["'];/m,
+    ],
+  },
+  {
     name: 'assign' as const,
     score: 0.2,
     scripts: [
@@ -85,6 +104,14 @@ export const typescript = [
 
       // Computed enum members
       /\w+\[\w+\[\w+\s*=\s*\w+\.\w+\]\s*=\s*\w+\]/,
+    ],
+  },
+  {
+    name: 'genericVoid' as const,
+    score: 0.1,
+    scripts: [
+      // Generic void 0 pattern with low score as fallback
+      /void\s+0\s*===\s*[a-zA-Z$_][a-zA-Z$_0-9]*|[a-zA-Z$_][a-zA-Z$_0-9]*\s*===\s*void\s+0/,
     ],
   },
 ];
