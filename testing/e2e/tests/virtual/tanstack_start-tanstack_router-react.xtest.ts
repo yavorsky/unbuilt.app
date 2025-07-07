@@ -3,7 +3,7 @@ import { analyzeVirtualApp } from '../../testkits/virtual/index.js';
 
 const PORT = 4050;
 
-describe.skip('detects tanstack suite (start, router)', async () => {
+describe('detects tanstack suite (start, router)', async () => {
   const result = await analyzeVirtualApp({
     outDir: 'dist',
     buildCommand: 'vinxi build',
