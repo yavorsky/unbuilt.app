@@ -46,10 +46,12 @@
     "commander": "^11.1.0",
     "playwright": "^1.48.1",
     "console-table-printer": "^2.11.2",
-    "ora": "^5.4.1"
+    "ora": "^5.4.1",
+    "eventsource": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.5.7",
+    "@types/eventsource": "^1.1.15",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
     "esbuild": "^0.19.5",

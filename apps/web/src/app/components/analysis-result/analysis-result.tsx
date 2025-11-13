@@ -16,8 +16,7 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isCheckingRef = useRef(false);
-  const timeoutRef = useRef<number | null>(null);
+  const eventSourceRef = useRef<EventSource | null>(null);
 
   const handleUrlTrancate = useTruncatedUrlCallback();
 
@@ -32,66 +31,89 @@ export function AnalysisResult({ analysisId }: { analysisId: string }) {
   }, [handleUrlTrancate]);
 
   useEffect(() => {
-    const checkStatus = async () => {
-      if (isCheckingRef.current) {
-        return;
-      }
-      isCheckingRef.current = true;
+    // Use SSE for real-time updates instead of polling
+    const streamUrl = `/api/analysis/${analysisId}/stream`;
+    const eventSource = new EventSource(streamUrl);
+    eventSourceRef.current = eventSource;
 
-      const updatedStatus = await getAnalysisResults(analysisId);
-      const prevStatus = jobStatusRef.current;
-      jobStatusRef.current = updatedStatus.status;
+    eventSource.addEventListener('connected', () => {
+      console.log('SSE connection established', { analysisId });
+    });
 
-      if (updatedStatus.error || !updatedStatus.result) {
-        setError(updatedStatus.error);
-        // If status is delayed, we still trying to get the result
-        if (updatedStatus.status !== 'delayed') {
-          setJobStatus(updatedStatus);
+    eventSource.addEventListener('status', (event) => {
+      try {
+        const updatedStatus: AnalysisResults = JSON.parse(event.data);
+        const prevStatus = jobStatusRef.current;
+        jobStatusRef.current = updatedStatus.status;
+
+        if (updatedStatus.error || !updatedStatus.result) {
+          setError(updatedStatus.error);
+          // If status is delayed, we still trying to get the result
+          if (updatedStatus.status !== 'delayed') {
+            setJobStatus(updatedStatus);
+            setIsLoading(false);
+            if (updatedStatus.status === 'completed' || updatedStatus.status === 'failed') {
+              eventSource.close();
+            }
+            return;
+          }
+        }
+
+        setJobStatus(updatedStatus);
+
+        if (updatedStatus?.result?.url) {
+          updateActiveAnalysis({
+            url: updatedStatus?.result?.url,
+            status: updatedStatus.status,
+          });
+        }
+
+        if (updatedStatus.status === 'completed' && prevStatus === 'active') {
+          toast({
+            title: `Analysis for ${handleUrlTrancate(updatedStatus?.result?.url)} is completed`,
+            action: (
+              <Button variant="secondary" onClick={handleCopyUrl}>
+                Copy
+              </Button>
+            ),
+          });
+        }
+
+        if (
+          updatedStatus.status === 'completed' ||
+          updatedStatus.status === 'failed'
+        ) {
           setIsLoading(false);
-          return;
+          eventSource.close();
         }
+      } catch (err) {
+        console.error('Error parsing SSE status event:', err);
       }
+    });
 
-      setJobStatus(updatedStatus);
+    eventSource.addEventListener('error', (event: any) => {
+      console.error('SSE connection error:', event);
+      setError('Connection error occurred');
+      setIsLoading(false);
+      eventSource.close();
+    });
 
-      if (updatedStatus?.result?.url) {
-        updateActiveAnalysis({
-          url: updatedStatus?.result?.url,
-          status: updatedStatus.status,
-        });
-      }
+    eventSource.addEventListener('close', (event) => {
+      console.log('SSE connection closed:', JSON.parse(event.data));
+      eventSource.close();
+    });
 
-      if (updatedStatus.status === 'completed' && prevStatus === 'active') {
-        toast({
-          title: `Analysis for ${handleUrlTrancate(updatedStatus?.result?.url)} is completed`,
-          action: (
-            <Button variant="secondary" onClick={handleCopyUrl}>
-              Copy
-            </Button>
-          ),
-        });
-      }
-
-      if (
-        updatedStatus.status !== 'completed' &&
-        updatedStatus.status !== 'failed'
-      ) {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        timeoutRef.current = window.setTimeout(checkStatus, 2000);
-      } else {
-        setIsLoading(false);
-      }
-      isCheckingRef.current = false;
+    // Handle EventSource errors (connection lost, etc.)
+    eventSource.onerror = () => {
+      // EventSource will automatically try to reconnect
+      // We can add custom logic here if needed
+      console.log('SSE connection error, will retry...');
     };
 
-    checkStatus();
-
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
     };
   }, [analysisId, updateActiveAnalysis, handleCopyUrl, handleUrlTrancate]);

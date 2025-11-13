@@ -5,6 +5,7 @@ import { AnalyzeResult } from '@unbuilt/analyzer';
 import chalk from 'chalk';
 import { renderResults } from './render-results';
 import { AnalysisStatusResponse } from './types';
+import EventSource from 'eventsource';
 
 interface AnalysisResponse {
   analysisId?: string;
@@ -43,7 +44,7 @@ export async function runRemoteAnalysis(
 
     spinner.succeed(`Analysis started with ID: ${analysisId}`);
 
-    // If wait option is specified, poll for results
+    // If wait option is specified, use SSE streaming for real-time updates
     if (!options.async) {
       const waitSpinner = ora('Waiting for analysis to complete...').start();
       const startTime = Date.now();
@@ -52,48 +53,99 @@ export async function runRemoteAnalysis(
       let completed = false;
       let results: AnalyzeResult | null = null;
 
-      while (!completed && Date.now() - startTime < timeoutMs) {
-        try {
-          const statusResponse = await api.get<AnalysisStatusResponse>(
-            `/analysis/${analysisId}`
-          );
-          const { status, result, progress, error } = statusResponse.data;
+      await new Promise<void>((resolve, reject) => {
+        // Get base URL from axios instance
+        const baseURL = api.defaults.baseURL || '';
+        const streamUrl = `${baseURL}/analysis/${analysisId}/stream`;
 
-          if (error) {
-            waitSpinner.fail(`Analysis failed: ${error}`);
-            process.exit(1);
+        const eventSource = new EventSource(streamUrl);
+
+        // Set up timeout
+        const timeout = setTimeout(() => {
+          eventSource.close();
+          if (!completed) {
+            waitSpinner.fail(`Analysis timed out after ${options.timeout} seconds`);
+            console.log(
+              chalk.yellow(
+                `You can check results later with: unbuilt status ${analysisId}`
+              )
+            );
+            reject(new Error('Timeout'));
           }
+        }, timeoutMs);
 
-          waitSpinner.text = `Analysis in progress: ${Math.round(progress)}%`;
+        eventSource.addEventListener('connected', () => {
+          // Connection established
+        });
 
-          if (status === 'completed') {
-            completed = true;
-            results = result;
-          } else {
-            // Wait for 1 second before checking again
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+        eventSource.addEventListener('status', (event: any) => {
+          try {
+            const statusData: AnalysisStatusResponse = JSON.parse(event.data);
+            const { status, result, progress, error } = statusData;
+
+            if (error) {
+              clearTimeout(timeout);
+              eventSource.close();
+              waitSpinner.fail(`Analysis failed: ${error}`);
+              reject(new Error(error));
+              return;
+            }
+
+            waitSpinner.text = `Analysis in progress: ${Math.round(progress)}%`;
+
+            if (status === 'completed') {
+              clearTimeout(timeout);
+              completed = true;
+              results = result;
+              eventSource.close();
+              waitSpinner.succeed('Analysis completed!');
+              resolve();
+            } else if (status === 'failed') {
+              clearTimeout(timeout);
+              eventSource.close();
+              waitSpinner.fail(`Analysis failed: ${error || 'Unknown error'}`);
+              reject(new Error(error || 'Analysis failed'));
+            }
+          } catch (err) {
+            clearTimeout(timeout);
+            eventSource.close();
+            waitSpinner.fail(`Error parsing status: ${String(err)}`);
+            reject(err);
           }
-        } catch (err) {
-          if (axios.isAxiosError(err)) {
-            waitSpinner.fail(`Error checking status: ${err.message}`);
-          } else {
-            waitSpinner.fail(`Unexpected error: ${String(err)}`);
+        });
+
+        eventSource.addEventListener('error', (event: any) => {
+          try {
+            const errorData = JSON.parse(event.data);
+            clearTimeout(timeout);
+            eventSource.close();
+            waitSpinner.fail(`Analysis error: ${errorData.message}`);
+            reject(new Error(errorData.message));
+          } catch {
+            // Connection error
+            clearTimeout(timeout);
+            eventSource.close();
+            waitSpinner.fail('Connection error occurred');
+            reject(new Error('Connection error'));
           }
-          process.exit(1);
-        }
-      }
+        });
 
-      if (!completed) {
-        waitSpinner.fail(`Analysis timed out after ${options.timeout} seconds`);
-        console.log(
-          chalk.yellow(
-            `You can check results later with: web-tech-analyzer status ${analysisId}`
-          )
-        );
-        process.exit(1);
-      }
+        eventSource.addEventListener('close', () => {
+          clearTimeout(timeout);
+          eventSource.close();
+        });
 
-      waitSpinner.succeed('Analysis completed!');
+        eventSource.onerror = (err: any) => {
+          // Network error or connection closed
+          clearTimeout(timeout);
+          eventSource.close();
+          if (!completed) {
+            waitSpinner.fail(`Connection error: ${err.message || 'Unknown error'}`);
+            reject(new Error('Connection error'));
+          }
+        };
+      });
+
       if (results) {
         renderResults(results, { json: options.json });
       } else {
