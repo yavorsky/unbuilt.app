@@ -1,3 +1,5 @@
+// Updated for React 19.2.0 - 2025-12-15T16:04:59.756Z
+// New patterns detected: __reactBoundary, reactFormState
 import { Page } from 'playwright';
 import { AnalysisFeatures } from '../../../types/analysis.js';
 
