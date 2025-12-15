@@ -94,4 +94,23 @@ export const svelte = [
       });
     },
   },
+  {
+    // Svelte 5 Runes - Added 2025-12-15
+    name: 'svelte5Runes' as const,
+    score: 0.5,
+    scripts: [
+      // Svelte 5 runes - new reactivity primitives
+      /\$state\s*[=(]/,
+      /\$derived\s*\(/,
+      /\$effect\s*\(/,
+      /\$props\s*\(/,
+      /\$bindable\s*\(/,
+
+      // Svelte 5 internal markers
+      /__svelte_runes/,
+      /svelte\/reactivity/,
+      /$.proxy/,
+    ],
+  },
+
 ];
