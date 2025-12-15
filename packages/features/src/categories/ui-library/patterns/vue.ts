@@ -125,4 +125,21 @@ export const vue = [
       });
     },
   },
+  {
+    // Vue 3.5.0+ Vapor Mode patterns - Added 2025-12-15
+    name: 'vue35VaporMode' as const,
+    score: 0.3,
+    scripts: [
+      // Vue 3.5 Vapor mode - new compilation strategy
+      /__VUE_VAPOR__/,
+      /vaporInteropDirectives/,
+      /createVaporApp/,
+
+      // Vue 3.5 improved reactivity
+      /effectScope\.active/,
+      /pauseScheduling/,
+      /resetScheduling/,
+    ],
+  },
+
 ];
