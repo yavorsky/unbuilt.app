@@ -20,10 +20,8 @@ export const svelte = [
     score: 0.3,
     scripts: [
       // Internal store subscription pattern - unique to Svelte
-      /\$\$\.subscription\s*=\s*subscribe/,
 
       // Store validation using safe_not_equal - very specific to Svelte
-      /safe_not_equal\s*\([^,]+,\s*[^)]+\)/,
     ],
   },
   {
@@ -94,4 +92,22 @@ export const svelte = [
       });
     },
   },
+  {
+    // Svelte 5 Runes - Added 2025-12-15
+    name: 'svelte5Runes' as const,
+    score: 0.5,
+    scripts: [
+      // Svelte 5 runes - new reactivity primitives
+      /\$state\s*[=(]/,
+      /\$derived\s*\(/,
+      /\$effect\s*\(/,
+      /\$props\s*\(/,
+      /\$bindable\s*\(/,
+
+      // Svelte 5 internal markers
+      /__svelte_runes/,
+      /svelte\/reactivity/,
+    ],
+  },
+
 ];
