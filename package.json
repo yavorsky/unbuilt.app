@@ -2,6 +2,7 @@
   "name": "unbuilt",
   "private": true,
   "type": "module",
+  "description": "Package to unbuild you application",
   "workspaces": [
     "apps/*",
     "packages/*",
