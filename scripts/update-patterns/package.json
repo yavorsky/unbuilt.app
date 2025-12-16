@@ -1,0 +1,12 @@
+{
+  "name": "@unbuilt/update-patterns",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "npx tsx run.ts"
+  },
+  "dependencies": {
+    "uuid": "^11.0.5"
+  }
+}
