@@ -144,6 +144,51 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.stylingProcessor || {},
       },
+      tableLibrary: {
+        type: 'tableLibrary',
+        name: data.table_library ?? 'unknown',
+        confidence: data.table_library_confidence ?? 0,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.tableLibrary || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.tableLibrary || {},
+      },
+      componentLibrary: {
+        type: 'componentLibrary',
+        name: data.component_library ?? 'unknown',
+        confidence: data.component_library_confidence ?? 0,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.componentLibrary || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.componentLibrary || {},
+      },
+      animation: {
+        type: 'animation',
+        name: data.animation ?? 'unknown',
+        confidence: data.animation_confidence ?? 0,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.animation || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.animation || {},
+      },
+      formLibrary: {
+        type: 'formLibrary',
+        name: data.form_library ?? 'unknown',
+        confidence: data.form_library_confidence ?? 0,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.formLibrary || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.formLibrary || {},
+      },
+      apiPattern: {
+        type: 'apiPattern',
+        name: data.api_pattern ?? 'unknown',
+        confidence: data.api_pattern_confidence ?? 0,
+        detectedFeatures:
+          data.additional_data?.detectedFeatures?.apiPattern || {},
+        secondaryMatches:
+          data.additional_data?.secondaryMatches?.apiPattern || {},
+      },
       stats: {
         resourceCount: data.resource_count,
         totalSize: data.total_size,

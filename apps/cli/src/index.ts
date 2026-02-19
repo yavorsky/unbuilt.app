@@ -40,6 +40,10 @@ const configureAnalyzeCommand = (cmd: Command) => {
     )
     .option('-j, --json', 'Output results in JSON format')
     .option(
+      '-f, --format <format>',
+      'Output format: default, json, agent (compact text for LLMs)'
+    )
+    .option(
       '-S, --session',
       'Use local chrome session to get more accurate results'
     );
@@ -55,20 +59,24 @@ const handleAnalyzeAction = async (
     timeout: string;
     save?: boolean;
     json?: boolean;
+    format?: string;
     session?: boolean;
   }
 ) => {
   const normalizedUrl = normalizeUrl(url);
+  const useJson = options.json || options.format === 'json';
+  const useAgent = options.format === 'agent';
   if (options.remote) {
     await runRemoteAnalysis(normalizedUrl, {
       lookupForExisting: !options.refresh,
       async: options.async ?? false,
       timeout: options.timeout,
-      json: options.json ?? false,
+      json: useJson,
     });
   } else {
     await runLocalAnalysis(normalizedUrl, {
-      json: options.json ?? false,
+      json: useJson,
+      agent: useAgent,
       save: options.save ?? process.env.UNBUILT_API_KEY !== undefined,
       useSession: options.session ?? false,
     });

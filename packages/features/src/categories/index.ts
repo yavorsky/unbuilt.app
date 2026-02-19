@@ -14,3 +14,8 @@ export * as stylingLibraries from './styling-libraries/index.js';
 export * as transpiler from './transpiler/index.js';
 export * as analytics from './analytics/index.js';
 export * as monitoring from './monitoring/index.js';
+export * as tableLibrary from './table-library/index.js';
+export * as componentLibrary from './component-library/index.js';
+export * as animation from './animation/index.js';
+export * as formLibrary from './form-library/index.js';
+export * as apiPattern from './api-pattern/index.js';

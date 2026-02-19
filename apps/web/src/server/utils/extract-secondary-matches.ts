@@ -22,6 +22,11 @@ export function extractSecondaryMatches(analysis: AnalyzeResult['analysis']) {
     httpClient: analysis.httpClient?.secondaryMatches || {},
     analytics: analysis.analytics?.secondaryMatches || {},
     platform: analysis.platform?.secondaryMatches || {},
+    tableLibrary: analysis.tableLibrary?.secondaryMatches || {},
+    componentLibrary: analysis.componentLibrary?.secondaryMatches || {},
+    animation: analysis.animation?.secondaryMatches || {},
+    formLibrary: analysis.formLibrary?.secondaryMatches || {},
+    apiPattern: analysis.apiPattern?.secondaryMatches || {},
   };
 
   return result;
@@ -44,6 +49,11 @@ export function extractDetectedFeatures(analysis: AnalyzeResult['analysis']) {
     uiLibrary: Array.from(analysis.uiLibrary?.detectedFeatures),
     httpClient: Array.from(analysis.httpClient?.detectedFeatures),
     platform: Array.from(analysis.platform?.detectedFeatures),
+    tableLibrary: Array.from(analysis.tableLibrary?.detectedFeatures),
+    componentLibrary: Array.from(analysis.componentLibrary?.detectedFeatures),
+    animation: Array.from(analysis.animation?.detectedFeatures),
+    formLibrary: Array.from(analysis.formLibrary?.detectedFeatures),
+    apiPattern: Array.from(analysis.apiPattern?.detectedFeatures),
   };
 
   return result;

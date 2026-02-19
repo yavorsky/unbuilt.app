@@ -101,6 +101,59 @@ We welcome contributions from the community! Help us see the web unbuilt togethe
 
 Your help makes unbuilt.app better for everyone!
 
+## Agent Integration
+
+unbuilt.app is designed to work with AI coding agents. When an agent needs to understand what technologies a reference app uses — "build me something like linear.com" — unbuilt provides the answer.
+
+### AGENTS.md
+
+The repository includes an [`AGENTS.md`](./AGENTS.md) file that helps coding agents (Claude Code, Cursor, Codex, etc.) understand the project structure, how detection works, and how to add new patterns.
+
+### Agent-Friendly CLI Output
+
+```bash
+# Compact output optimized for LLM context windows
+unbuilt https://example.com --format agent
+```
+
+Output:
+```
+Framework: Next.js
+UI: React
+Bundler: Webpack
+Styling: Tailwind CSS + PostCSS
+State: Zustand
+Tables: TanStack Table + TanStack Virtual
+Components: Radix UI
+Animation: Framer Motion
+Router: Next.js Router
+Monitoring: Sentry
+```
+
+### Future Plans
+
+- **MCP Server** — Expose unbuilt as a tool for any MCP-compatible agent
+- **LLM-powered deep analysis** — Use AI to interpret runtime signals for library-level detection beyond pattern matching
+- **Runtime behavior probing** — Scroll, resize, interact with pages to detect virtualization, lazy loading, and other dynamic patterns
+
+## Agent Integration
+
+unbuilt.app is designed to be agent-friendly for the AI era:
+
+- **[AGENTS.md](./AGENTS.md)** — Structured guide for AI coding agents to understand the codebase, add detection patterns, and extend categories
+- **`--format agent` CLI flag** — Compact, LLM-optimized text output for tech stack summaries (no JSON noise, minimal tokens)
+  ```bash
+  unbuilt example.com --format agent
+  # Output:
+  # Framework: next
+  # UI: react
+  # Bundler: webpack
+  # Styling: tailwindcss + postcss
+  # State: zustand
+  # Platform: vercel
+  ```
+- **Future plans**: MCP server for direct LLM integration, deeper LLM-powered analysis for ambiguous detections
+
 ## Coming Soon
 
 - Browser Extension - Unbuild any site as you browse

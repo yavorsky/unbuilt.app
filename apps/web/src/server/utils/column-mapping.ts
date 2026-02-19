@@ -15,4 +15,9 @@ export const columnMapping = {
   stylingLibraries: 'styling_libraries',
   analytics: 'analytics',
   translations: 'translations',
+  tableLibrary: 'table_library',
+  componentLibrary: 'component_library',
+  animation: 'animation',
+  formLibrary: 'form_library',
+  apiPattern: 'api_pattern',
 } as const;

@@ -4,13 +4,14 @@ import { getBrowserContext } from './helpers/get-browser-context';
 import { analyze } from '@unbuilt/analyzer';
 import { v4 as uuidv4 } from 'uuid';
 import { renderResults } from './render-results';
+import { renderAgentResults } from './render-agent-results';
 import chalk from 'chalk';
 import api from './api';
 
 // Run analysis locally using Playwright
 export async function runLocalAnalysis(
   url: string,
-  options: { json?: boolean; save?: boolean; useSession?: boolean }
+  options: { json?: boolean; agent?: boolean; save?: boolean; useSession?: boolean }
 ): Promise<void> {
   const spinner = ora('Running local analysis...').start();
 
@@ -53,7 +54,11 @@ export async function runLocalAnalysis(
       }
       spinner.succeed('Analysis completed!');
       spinner.clear();
-      renderResults(result, { json: options.json, isSaved });
+      if (options.agent) {
+        renderAgentResults(result);
+      } else {
+        renderResults(result, { json: options.json, isSaved });
+      }
     } catch (error: unknown) {
       if (page) await page?.close();
       throw error;
