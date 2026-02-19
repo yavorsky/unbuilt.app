@@ -1,13 +1,18 @@
+// urql — focus on unique package references, not generic hook names
 export const graphqlUrql = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/\burql\b/, /\@urql\//],
-    filenames: [/urql/],
+    filenames: [/urql[.\-@/]/, /@urql\//],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
-    scripts: [/useQuery\s*\(.*urql/, /urqlClient/, /createClient\s*\(.*url.*exchanges/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"urql"/, // Package self-reference
+      /"@urql\/core"/, // Scoped package
+      /"@urql\/exchange-graphcache"/, // urql-specific exchange
+      /"urqlClient"/, // Common variable name in string form
+    ],
   },
 ];

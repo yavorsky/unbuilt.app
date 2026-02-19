@@ -1,13 +1,21 @@
+// React Table (v7 legacy) — package references
 export const reactTableLegacy = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/react-table/, /useTable\s*\(\s*\{/],
-    filenames: [/react-table/],
+    filenames: [/react-table[.\-@/]/],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.7,
-    scripts: [/useSortBy/, /useFilters/, /usePagination/, /useGroupBy/, /useExpanded/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"react-table"/, // Package self-reference
+      // React Table v7 hook names — these are likely preserved as displayName strings
+      /"useTable"/,
+      /"useSortBy"/,
+      /"useFilters"/,
+      /"usePagination"/,
+      /"useGroupBy"/,
+    ],
   },
 ];

@@ -1,13 +1,22 @@
+// TanStack Virtual — match package references
 export const tanstackVirtual = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/\@tanstack\/virtual-core/, /\@tanstack\/react-virtual/, /\@tanstack\/vue-virtual/, /\@tanstack\/solid-virtual/],
-    filenames: [/tanstack.*virtual/],
+    filenames: [
+      /@tanstack\/virtual-core[.\-@/]/,
+      /@tanstack\/react-virtual[.\-@/]/,
+      /@tanstack\/vue-virtual[.\-@/]/,
+      /@tanstack\/solid-virtual[.\-@/]/,
+    ],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
-    scripts: [/useVirtualizer\s*\(/, /useWindowVirtualizer\s*\(/, /Virtualizer\s*\(/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"@tanstack\/virtual-core"/, // Package self-reference
+      /"@tanstack\/react-virtual"/,
+      /"Virtualizer"/, // Class name as string
+    ],
   },
 ];

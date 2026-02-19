@@ -1,13 +1,19 @@
+// React Window — package references and unique component names
 export const reactWindow = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/react-window/],
-    filenames: [/react-window/],
+    filenames: [/react-window[.\-@/]/],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
-    scripts: [/FixedSizeList/, /VariableSizeList/, /FixedSizeGrid/, /VariableSizeGrid/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"react-window"/, // Package self-reference
+      /"FixedSizeList"/, // Component display names (preserved as strings for React DevTools)
+      /"VariableSizeList"/,
+      /"FixedSizeGrid"/,
+      /"VariableSizeGrid"/,
+    ],
   },
 ];

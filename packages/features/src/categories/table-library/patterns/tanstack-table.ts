@@ -1,26 +1,27 @@
+// TanStack Table — match package references and unique string identifiers
 export const tanstackTable = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [
-      /\@tanstack\/table-core/,
-      /\@tanstack\/react-table/,
-      /\@tanstack\/vue-table/,
-      /\@tanstack\/solid-table/,
-      /\@tanstack\/svelte-table/,
+    filenames: [
+      /@tanstack\/table-core[.\-@/]/,
+      /@tanstack\/react-table[.\-@/]/,
+      /@tanstack\/vue-table[.\-@/]/,
+      /@tanstack\/solid-table[.\-@/]/,
+      /@tanstack\/svelte-table[.\-@/]/,
     ],
-    filenames: [/tanstack.*table/, /react-table/],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
+    name: 'runtimeStrings' as const,
+    score: 0.9,
     scripts: [
-      /useReactTable\s*\(/,
-      /getCoreRowModel\s*\(/,
-      /getSortedRowModel\s*\(/,
-      /getFilteredRowModel\s*\(/,
-      /getPaginationRowModel\s*\(/,
-      /flexRender\s*\(/,
+      /"@tanstack\/table-core"/, // Package self-reference
+      /"@tanstack\/react-table"/,
+      /"getCoreRowModel"/, // Unique API name as string key
+      /"getSortedRowModel"/, // Unique API name
+      /"getFilteredRowModel"/,
+      /"getPaginationRowModel"/,
+      /"flexRender"/, // TanStack Table's unique render helper
     ],
   },
 ];

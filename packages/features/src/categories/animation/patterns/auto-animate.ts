@@ -1,13 +1,16 @@
+// AutoAnimate — focus on package references
 export const autoAnimate = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/\@formkit\/auto-animate/, /autoAnimate/],
-    filenames: [/auto-animate/],
+    filenames: [/@formkit\/auto-animate[.\-@/]/, /auto-animate/],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
-    scripts: [/useAutoAnimate\s*\(/, /autoAnimate\s*\(/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"@formkit\/auto-animate"/, // Package self-reference
+      /"autoAnimate"/, // Named export as string
+    ],
   },
 ];

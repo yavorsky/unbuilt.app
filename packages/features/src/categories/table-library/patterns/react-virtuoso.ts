@@ -1,13 +1,19 @@
+// React Virtuoso — package references and unique component names
 export const reactVirtuoso = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    scripts: [/react-virtuoso/],
-    filenames: [/react-virtuoso/],
+    filenames: [/react-virtuoso[.\-@/]/],
   },
   {
-    name: 'apiUsage' as const,
-    score: 0.8,
-    scripts: [/\bVirtuoso\b/, /\bGroupedVirtuoso\b/, /\bTableVirtuoso\b/, /\bVirtuosoGrid\b/],
+    name: 'runtimeStrings' as const,
+    score: 0.9,
+    scripts: [
+      /"react-virtuoso"/, // Package self-reference
+      /"Virtuoso"/, // Component display names
+      /"GroupedVirtuoso"/,
+      /"TableVirtuoso"/,
+      /"VirtuosoGrid"/,
+    ],
   },
 ];
