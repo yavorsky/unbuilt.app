@@ -1,41 +1,31 @@
-import { Page } from 'playwright';
-
-// React Hook Form — well-known named exports and unique string identifiers
+// Verified against minified bundle: cdn.jsdelivr.net/npm/react-hook-form@7.54.2/dist/index.cjs.min.js
+// Named exports survive: FormProvider, useForm, useController, useFieldArray, useWatch, useFormContext, Controller
 export const reactHookForm = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    filenames: [/react-hook-form[.\-@/]/, /node_modules\/react-hook-form/],
+    filenames: [/react-hook-form[.\-@/]/],
   },
   {
-    name: 'runtimeStrings' as const,
+    name: 'namedExports' as const,
     score: 0.9,
     scripts: [
-      /"react-hook-form"/, // Self-reference in bundle
-      /"useForm"/, // Named export as string key (when re-exported)
-      /"FormProvider"/, // Component name preserved as string for React DevTools
-      /"useFormContext"/, // Named export
-      /"useFieldArray"/, // Named export
-      /"useController"/, // Named export
+      // CJS named exports verified in minified bundle
+      /exports\.FormProvider/,
+      /exports\.useForm\b/,
+      /exports\.useController\b/,
+      /exports\.useFieldArray\b/,
+      /exports\.useFormContext\b/,
+      /exports\.Controller\b/,
     ],
   },
   {
-    name: 'browser-check' as const,
-    score: 1.5,
-    browser: async (page: Page) => {
-      return page.evaluate(() => {
-        // React Hook Form adds specific data attributes to form elements
-        const hasRHFAttributes = document.querySelector('[name]') !== null &&
-          document.querySelector('form') !== null;
-        // Check for RHF's DevTools
-        const hasDevTools = !!document.querySelector('[data-rhf-devtools]');
-        // Check inline scripts for the package name
-        const scripts = Array.from(document.querySelectorAll('script'));
-        const hasInBundle = scripts.some((s) =>
-          (s.textContent || '').includes('react-hook-form')
-        );
-        return hasDevTools || hasInBundle;
-      });
-    },
+    name: 'esmExports' as const,
+    score: 0.9,
+    scripts: [
+      // ESM export names — these survive as identifiers in ESM bundles
+      /\bflexRender\b.*\buseReactTable\b|\buseReactTable\b.*\bflexRender\b/, // co-occurrence check
+      /\bFormProvider\b.*\buseForm\b/, // RHF co-occurrence
+    ],
   },
 ];

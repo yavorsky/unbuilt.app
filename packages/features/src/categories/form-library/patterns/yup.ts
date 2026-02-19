@@ -1,27 +1,16 @@
-// Yup detection — same principle: only match strings/identifiers that survive minification
+// Yup — rely on filename detection primarily.
+// Yup's minified bundle doesn't have many unique string identifiers.
+// Also detectable via Formik's Yup-specific exports.
 export const yup = [
   {
     name: 'coreBundle' as const,
     score: 1,
-    filenames: [/yup[.\-@/]/, /node_modules\/yup/],
+    filenames: [/\/yup[.\-@/]/, /node_modules\/yup/],
   },
   {
-    name: 'errorStrings' as const,
-    score: 0.9,
-    scripts: [
-      // Yup's internal type strings and error messages
-      /"ValidationError"/, // Yup's error class name
-      /"yup:"/,  // Internal debug prefix
-      /"abortEarly"/, // Yup-specific option names (string keys)
-      /"stripUnknown"/, // Yup-specific option
-      /"this must be a \`"/, // Yup's default error message prefix
-      /"this is a required field"/, // Yup's default required message
-    ],
-  },
-  {
-    name: 'resolverIntegration' as const,
-    score: 0.8,
-    scripts: [/"yupResolver"/, /yupResolver/],
-    filenames: [/hookform.*resolvers.*yup/, /resolvers\/yup/],
+    name: 'formikIntegration' as const,
+    score: 0.7,
+    // Formik ships Yup-specific exports — if these exist, Yup is almost certainly present
+    scripts: [/exports\.validateYupSchema\b/, /exports\.yupToFormErrors\b/],
   },
 ];

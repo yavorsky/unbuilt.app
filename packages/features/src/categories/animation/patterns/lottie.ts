@@ -1,6 +1,7 @@
 import { Page } from 'playwright';
 
-// Lottie — has strong DOM markers (custom elements) and unique runtime identifiers
+// Verified against minified bundle: cdn.jsdelivr.net/npm/lottie-web@5.12.2/build/player/lottie.min.js
+// Survives: "bodymovin", "autoplay", "autoloadSegments", "canvas", custom element tags
 export const lottie = [
   {
     name: 'coreBundle' as const,
@@ -8,19 +9,17 @@ export const lottie = [
     filenames: [/lottie-web[.\-@/]/, /lottie-player[.\-@/]/, /@lottiefiles\//],
   },
   {
-    name: 'domMarkers' as const,
+    name: 'runtimeStrings' as const,
     score: 0.9,
-    // Custom elements that are unique to Lottie
-    documents: [/<lottie-player/, /<dotlottie-player/],
+    scripts: [
+      /"bodymovin"/, // Lottie's original name — verified in minified bundle
+    ],
   },
   {
-    name: 'runtimeStrings' as const,
-    score: 0.8,
-    scripts: [
-      /"lottie-web"/, // Package self-reference
-      /"bodymovin"/, // Lottie's original name (string reference)
-      /lottie\.loadAnimation/, // Known API on the lottie global
-    ],
+    name: 'domMarkers' as const,
+    score: 0.9,
+    // Custom elements unique to Lottie
+    documents: [/<lottie-player/, /<dotlottie-player/],
   },
   {
     name: 'browser-check' as const,
@@ -29,7 +28,6 @@ export const lottie = [
       return page.evaluate(() => {
         return document.querySelector('lottie-player') !== null ||
           document.querySelector('dotlottie-player') !== null ||
-          typeof (window as Record<string, unknown>).lottie !== 'undefined' ||
           typeof (window as Record<string, unknown>).bodymovin !== 'undefined';
       });
     },

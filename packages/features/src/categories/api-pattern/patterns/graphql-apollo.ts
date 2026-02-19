@@ -1,6 +1,7 @@
 import { Page } from 'playwright';
 
-// Apollo GraphQL — has very strong unique identifiers (__APOLLO_STATE__, __APOLLO_CLIENT__)
+// Apollo Client — __APOLLO_STATE__ is injected into HTML by SSR (not in the JS bundle itself).
+// The JS bundle exports survive as CJS named exports.
 export const graphqlApollo = [
   {
     name: 'coreBundle' as const,
@@ -8,21 +9,10 @@ export const graphqlApollo = [
     filenames: [/@apollo\/client[.\-@/]/, /apollo-client[.\-@/]/, /apollo-boost[.\-@/]/],
   },
   {
-    name: 'runtimeMarkers' as const,
+    name: 'ssrState' as const,
     score: 1,
-    // These are unique string identifiers that survive minification
-    scripts: [/__APOLLO_STATE__/, /__APOLLO_CLIENT__/],
-    documents: [/__APOLLO_STATE__/],
-  },
-  {
-    name: 'runtimeStrings' as const,
-    score: 0.8,
-    scripts: [
-      /"@apollo\/client"/, // Package self-reference
-      /"ApolloProvider"/, // Component name preserved as string
-      /"ApolloClient"/, // Class name as string
-      /"InMemoryCache"/, // Apollo-specific cache class name
-    ],
+    // __APOLLO_STATE__ and __APOLLO_CLIENT__ are injected into the HTML during SSR
+    documents: [/__APOLLO_STATE__/, /__APOLLO_CLIENT__/],
   },
   {
     name: 'browser-check' as const,

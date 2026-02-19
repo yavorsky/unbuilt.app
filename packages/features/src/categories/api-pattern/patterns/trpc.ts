@@ -1,4 +1,5 @@
-// tRPC — unique package names and URL patterns
+// Verified against minified bundle: cdn.jsdelivr.net/npm/@trpc/client@10.45.2/dist/index.min.mjs
+// Survives: TRPCClientError, TRPCUntypedClient, createTRPCClient, httpBatchLink, etc.
 export const trpc = [
   {
     name: 'coreBundle' as const,
@@ -6,20 +7,21 @@ export const trpc = [
     filenames: [/@trpc\/client[.\-@/]/, /@trpc\/server[.\-@/]/, /@trpc\/react-query[.\-@/]/, /@trpc\/next[.\-@/]/],
   },
   {
-    name: 'runtimeStrings' as const,
+    name: 'namedExports' as const,
     score: 0.9,
     scripts: [
-      /"@trpc\/client"/, // Package self-reference
-      /"@trpc\/server"/,
-      /"@trpc\/react-query"/,
-      /"TRPCClientError"/, // Error class name as string
+      // Verified ESM exports in minified bundle
+      /TRPCClientError/,
+      /TRPCUntypedClient/,
+      /createTRPCClient/,
+      /createTRPCProxyClient/,
+      /httpBatchLink/,
     ],
   },
   {
     name: 'urlPatterns' as const,
     score: 0.8,
-    // tRPC batch requests have a unique URL pattern
-    documents: [/\/api\/trpc\//, /trpc\/\?batch/],
-    scripts: [/\/api\/trpc\//],
+    // tRPC batch requests have unique URL patterns
+    documents: [/\/api\/trpc\//, /\/trpc\//],
   },
 ];

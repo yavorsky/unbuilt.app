@@ -1,8 +1,7 @@
 import { Page } from 'playwright';
 
-// GSAP — has strong unique identifiers. "gsap" as a 4-letter word is distinctive,
-// but gsap.to() / gsap.from() are too generic in minified code.
-// Focus on string identifiers and runtime globals.
+// Verified against minified bundle: cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js
+// Survives: GreenSock, GreenSockGlobals, gsap, registerPlugin, scrollTrigger
 export const gsap = [
   {
     name: 'coreBundle' as const,
@@ -13,13 +12,12 @@ export const gsap = [
     name: 'runtimeStrings' as const,
     score: 0.9,
     scripts: [
-      /"GreenSock"/, // Brand name in license comments / strings
-      /"gsap"/, // Self-reference
-      /"ScrollTrigger"/, // Plugin name as string
-      /"ScrollSmoother"/, // Plugin name
-      /"Draggable"/, // Plugin name
-      /"MotionPathPlugin"/, // Plugin name
-      /gsap\.registerPlugin/, // This specific API is never minified (property access on known global)
+      // Verified in minified bundle
+      /GreenSock/, // Brand name — not a string literal, but a code identifier that survives
+      /GreenSockGlobals/, // Global registration
+      /registerPlugin/, // Plugin API — property name on gsap object
+      /"scrollTrigger"/, // String literal in minified bundle
+      /"autoAlpha"/, // GSAP-unique CSS property string
     ],
   },
   {
@@ -27,7 +25,6 @@ export const gsap = [
     score: 2,
     browser: async (page: Page) => {
       return page.evaluate(() => {
-        // GSAP registers itself as window.gsap
         return typeof (window as Record<string, unknown>).gsap !== 'undefined' ||
           typeof (window as Record<string, unknown>).GreenSockGlobals !== 'undefined';
       });
