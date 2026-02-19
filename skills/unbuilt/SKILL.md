@@ -1,5 +1,5 @@
 ---
-name: unbuilt-analyze
+name: unbuilt
 description: Detect the full technology stack of any website by URL. Returns framework, UI library, bundler, state management, styling, tables, animations, forms, API patterns, monitoring, analytics, and more. Use when a user asks to analyze a website's tech stack, build something similar to an existing app, or understand what technologies a site uses.
 license: MIT
 metadata:
