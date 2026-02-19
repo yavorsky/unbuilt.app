@@ -47,6 +47,21 @@ export * as analyticsMeta from './categories/analytics/meta/index.js';
 export * as monitoring from './categories/monitoring/index.js';
 export * as monitoringMeta from './categories/monitoring/meta/index.js';
 
+export * as tableLibrary from './categories/table-library/index.js';
+export * as tableLibraryMeta from './categories/table-library/meta/index.js';
+
+export * as componentLibrary from './categories/component-library/index.js';
+export * as componentLibraryMeta from './categories/component-library/meta/index.js';
+
+export * as animation from './categories/animation/index.js';
+export * as animationMeta from './categories/animation/meta/index.js';
+
+export * as formLibrary from './categories/form-library/index.js';
+export * as formLibraryMeta from './categories/form-library/meta/index.js';
+
+export * as apiPattern from './categories/api-pattern/index.js';
+export * as apiPatternMeta from './categories/api-pattern/meta/index.js';
+
 // Utils to calculate results
 export * from './detector/index.js';
 

@@ -16,6 +16,11 @@ import {
   router,
   getStats,
   analytics,
+  tableLibrary,
+  componentLibrary,
+  animation,
+  formLibrary,
+  apiPattern,
 } from '@unbuilt/features';
 
 import { OnProgressHandler } from './progress.js';
@@ -40,6 +45,11 @@ export const detectionMap = {
   stateManagement: stateManagement.detect,
   stylingLibraries: stylingLibraries.detect,
   analytics: analytics.detect,
+  tableLibrary: tableLibrary.detect,
+  componentLibrary: componentLibrary.detect,
+  animation: animation.detect,
+  formLibrary: formLibrary.detect,
+  apiPattern: apiPattern.detect,
   stats: getStats,
 };
 

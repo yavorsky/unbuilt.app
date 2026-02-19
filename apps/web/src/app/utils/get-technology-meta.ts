@@ -15,6 +15,11 @@ import {
   monitoringMeta,
   platformMeta,
   analyticsMeta,
+  tableLibraryMeta,
+  componentLibraryMeta,
+  animationMeta,
+  formLibraryMeta,
+  apiPatternMeta,
 } from '@unbuilt/features';
 import type { AnalysisFeatures, Meta } from '@unbuilt/features';
 
@@ -38,6 +43,11 @@ const technologyMetaMap: Record<
   transpiler: transpilerMeta,
   monitoring: monitoringMeta,
   analytics: analyticsMeta,
+  tableLibrary: tableLibraryMeta,
+  componentLibrary: componentLibraryMeta,
+  animation: animationMeta,
+  formLibrary: formLibraryMeta,
+  apiPattern: apiPatternMeta,
 };
 
 export type TechnologyMetaMap = typeof technologyMetaMap;

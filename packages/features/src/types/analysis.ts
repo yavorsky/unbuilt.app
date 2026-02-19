@@ -28,6 +28,11 @@ export type AnalysisFeatures = {
   monitoring: AnalysisResult<typeof allFeatures.monitoring.detect>;
   platform: AnalysisResult<typeof allFeatures.platform.detect>;
   analytics: AnalysisResult<typeof allFeatures.analytics.detect>;
+  tableLibrary: AnalysisResult<typeof allFeatures.tableLibrary.detect>;
+  componentLibrary: AnalysisResult<typeof allFeatures.componentLibrary.detect>;
+  animation: AnalysisResult<typeof allFeatures.animation.detect>;
+  formLibrary: AnalysisResult<typeof allFeatures.formLibrary.detect>;
+  apiPattern: AnalysisResult<typeof allFeatures.apiPattern.detect>;
 };
 
 export type AnalysisKeys = keyof AnalysisFeatures;

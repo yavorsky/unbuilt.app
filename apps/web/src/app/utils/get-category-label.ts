@@ -20,6 +20,11 @@ const categoryLabelsMap: Record<keyof AnalysisFeaturesWithStats, string> = {
   monitoring: 'Monitoring & Error Tracking',
   translations: 'Translations Library',
   analytics: 'Analytics',
+  tableLibrary: 'Table Library',
+  componentLibrary: 'Component Library',
+  animation: 'Animation',
+  formLibrary: 'Form Library',
+  apiPattern: 'API Pattern',
   stats: 'General Stats',
 };
 
