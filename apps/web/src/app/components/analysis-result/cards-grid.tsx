@@ -26,6 +26,11 @@ import { ComingSoonCard } from './cards/coming-soon';
 import { AnalyticsCard } from './cards/analytics';
 import { MonitoringCard } from './cards/monitoring';
 import { OutdatedBadge } from './outdated-badge';
+import { TableLibraryCard } from './cards/table-library';
+import { ComponentLibraryCard } from './cards/component-library';
+import { ApiPatternCard } from './cards/api-pattern';
+import { AnimationCard } from './cards/animation';
+import { FormLibraryCard } from './cards/form-library';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -152,6 +157,35 @@ export const CardsGrid: FC<{
         id: 'modules',
         isUnknown: isUnknown(result?.analysis.modules?.name),
         el: <ModulesCard modules={result?.analysis.modules} />,
+      },
+      {
+        id: 'tableLibrary',
+        isUnknown: isUnknown(result?.analysis.tableLibrary?.name),
+        el: <TableLibraryCard tableLibrary={result?.analysis.tableLibrary} />,
+      },
+      {
+        id: 'componentLibrary',
+        isUnknown: isUnknown(result?.analysis.componentLibrary?.name),
+        el: (
+          <ComponentLibraryCard
+            componentLibrary={result?.analysis.componentLibrary}
+          />
+        ),
+      },
+      {
+        id: 'apiPattern',
+        isUnknown: isUnknown(result?.analysis.apiPattern?.name),
+        el: <ApiPatternCard apiPattern={result?.analysis.apiPattern} />,
+      },
+      {
+        id: 'animation',
+        isUnknown: isUnknown(result?.analysis.animation?.name),
+        el: <AnimationCard animation={result?.analysis.animation} />,
+      },
+      {
+        id: 'formLibrary',
+        isUnknown: isUnknown(result?.analysis.formLibrary?.name),
+        el: <FormLibraryCard formLibrary={result?.analysis.formLibrary} />,
       },
     ];
 
