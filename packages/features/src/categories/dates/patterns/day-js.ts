@@ -33,4 +33,19 @@ export const dayJs = [
       /"plugin conflict"|"plugin function is required"|"plugin name is required"/,
     ],
   },
+  {
+    // Day.js 1.11.13 patterns - Added 2025-12-15
+    name: 'dayjs11113Features' as const,
+    score: 0.2,
+    scripts: [
+      // Day.js BigInt timestamp support
+      /\$toBigInt/,
+      /bigIntEnabled/,
+
+      // Day.js improved week calculations
+      /weekYear\s*\(/,
+      /isoWeeksInYear/,
+    ],
+  },
+
 ];
