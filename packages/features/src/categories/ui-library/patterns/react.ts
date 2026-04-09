@@ -164,6 +164,27 @@ export const react = [
     },
   },
   {
+    // React 19.2.0+ patterns - Added 2025-12-15
+    name: 'react19Features' as const,
+    score: 0.4,
+    scripts: [
+      // React 19 Form Actions - new primitives for form handling
+      /__reactFormState[$\w]*/,
+      /reactFormStatus/,
+
+      // React 19 boundary markers
+      /__reactBoundary[$\w]*/,
+
+      // React 19 use() hook patterns
+      /use\s*\(\s*(?:Promise|Context)/,
+
+      // React 19 Actions
+      /useActionState\s*\(/,
+      /useFormStatus\s*\(/,
+      /useOptimistic\s*\(/,
+    ],
+  },
+  {
     name: 'isNextJs' as const,
     score: 1,
     dependencies: (analysis: AnalysisFeatures) => {
