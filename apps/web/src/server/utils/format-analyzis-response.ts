@@ -189,6 +189,13 @@ export const formatAnalyzisResponse = (
         secondaryMatches:
           data.additional_data?.secondaryMatches?.apiPattern || {},
       },
+      hosting: {
+        type: 'hosting',
+        name: data.hosting ?? 'unknown',
+        confidence: data.hosting_confidence ?? 0,
+        detectedFeatures: data.additional_data?.detectedFeatures?.hosting || {},
+        secondaryMatches: data.additional_data?.secondaryMatches?.hosting || {},
+      },
       stats: {
         resourceCount: data.resource_count,
         totalSize: data.total_size,

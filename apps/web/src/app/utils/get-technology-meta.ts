@@ -20,6 +20,7 @@ import {
   animationMeta,
   formLibraryMeta,
   apiPatternMeta,
+  hostingMeta,
 } from '@unbuilt/features';
 import type { AnalysisFeatures, Meta } from '@unbuilt/features';
 
@@ -48,6 +49,7 @@ const technologyMetaMap: Record<
   animation: animationMeta,
   formLibrary: formLibraryMeta,
   apiPattern: apiPatternMeta,
+  hosting: hostingMeta,
 };
 
 export type TechnologyMetaMap = typeof technologyMetaMap;

@@ -61,6 +61,8 @@ export type Database = {
           duration: number
           framework: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence: number | null
+          hosting: Database["public"]["Enums"]["hosting_type"] | null
+          hosting_confidence: number | null
           http_client: Database["public"]["Enums"]["http_client_type"] | null
           http_client_confidence: number | null
           id: string
@@ -117,6 +119,8 @@ export type Database = {
           duration: number
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
+          hosting?: Database["public"]["Enums"]["hosting_type"] | null
+          hosting_confidence?: number | null
           http_client?: Database["public"]["Enums"]["http_client_type"] | null
           http_client_confidence?: number | null
           id: string
@@ -173,6 +177,8 @@ export type Database = {
           duration?: number
           framework?: Database["public"]["Enums"]["framework_type"] | null
           framework_confidence?: number | null
+          hosting?: Database["public"]["Enums"]["hosting_type"] | null
+          hosting_confidence?: number | null
           http_client?: Database["public"]["Enums"]["http_client_type"] | null
           http_client_confidence?: number | null
           id?: string
@@ -444,6 +450,7 @@ export type Database = {
         | "remix"
         | "gatsby"
         | "tanstackStart"
+      hosting_type: "unknown" | "bisup"
       http_client_type:
         | "unknown"
         | "apollo"
@@ -759,6 +766,7 @@ export const Constants = {
         "gatsby",
         "tanstackStart",
       ],
+      hosting_type: ["unknown", "bisup"],
       http_client_type: [
         "unknown",
         "apollo",
