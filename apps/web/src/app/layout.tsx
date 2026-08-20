@@ -9,6 +9,8 @@ import MicrosoftClarity from './components/clarity';
 const baseUrl = 'https://unbuilt.app';
 const clarityProjectId = process.env.CLARITY_PROJECT_ID;
 
+console.log('Test');
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
