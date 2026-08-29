@@ -131,4 +131,22 @@ export const tailwindCSS = [
       });
     },
   },
+  {
+    // Tailwind CSS 4.0+ patterns - Added 2025-12-15
+    name: 'tailwind4Features' as const,
+    score: 0.4,
+    styles: [
+      // Tailwind 4 new CSS-first config
+      /@theme\s*\{/,
+      /@utility\s+[\w-]+\s*\{/,
+      /@variant\s+[\w-]+/,
+
+      // Tailwind 4 OKLCH color space
+      /oklch\([\d.]+%?\s+[\d.]+\s+[\d.]+/,
+
+      // Tailwind 4 container queries
+      /@container\s+[\w-]*\s*\(/,
+    ],
+  },
+
 ];
