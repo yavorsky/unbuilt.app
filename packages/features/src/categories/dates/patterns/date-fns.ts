@@ -83,4 +83,26 @@ export const dateFns = [
       /pipe\(\s*(?:addDays|addMonths|addYears)\s*\(\d+\)\s*,\s*(?:format|formatDistance|formatRelative)/,
     ],
   },
+  {
+    // date-fns 4.0+ patterns - Added 2025-12-15
+    name: 'dateFns4Features' as const,
+    score: 0.3,
+    scripts: [
+      // date-fns 4 timezone support
+      /TZDate/,
+      /zonedTimeToUtc/,
+      /utcToZonedTime/,
+
+      // date-fns 4 interval type
+      /Interval\s*[:{]/,
+      /isWithinInterval/,
+      /areIntervalsOverlapping/,
+
+      // date-fns 4 Duration improvements
+      /Duration\s*[:{]/,
+      /formatDuration/,
+      /intervalToDuration/,
+    ],
+  },
+
 ];
