@@ -31,6 +31,7 @@ import { ComponentLibraryCard } from './cards/component-library';
 import { ApiPatternCard } from './cards/api-pattern';
 import { AnimationCard } from './cards/animation';
 import { FormLibraryCard } from './cards/form-library';
+import { HostingCard } from './cards/hosting';
 
 const isUnknown = (name: string | undefined) => name === 'unknown';
 
@@ -84,6 +85,11 @@ export const CardsGrid: FC<{
         id: 'platform',
         isUnknown: isUnknown(result?.analysis.platform?.name),
         el: <PlatformCard platform={result?.analysis.platform} />,
+      },
+      {
+        id: 'hosting',
+        isUnknown: isUnknown(result?.analysis.hosting?.name),
+        el: <HostingCard hosting={result?.analysis.hosting} />,
       },
       {
         id: 'bundler',

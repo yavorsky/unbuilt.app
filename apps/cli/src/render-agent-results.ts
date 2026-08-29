@@ -23,6 +23,7 @@ const categoryLabels: Record<string, string> = {
   animation: 'Animation',
   formLibrary: 'Forms',
   apiPattern: 'API',
+  hosting: 'Hosting',
 };
 
 export function renderAgentResults(result: AnalyzeResult): void {

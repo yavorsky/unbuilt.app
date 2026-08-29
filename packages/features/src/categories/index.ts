@@ -19,3 +19,4 @@ export * as componentLibrary from './component-library/index.js';
 export * as animation from './animation/index.js';
 export * as formLibrary from './form-library/index.js';
 export * as apiPattern from './api-pattern/index.js';
+export * as hosting from './hosting/index.js';

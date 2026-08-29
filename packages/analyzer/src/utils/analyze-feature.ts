@@ -21,6 +21,7 @@ import {
   animation,
   formLibrary,
   apiPattern,
+  hosting,
 } from '@unbuilt/features';
 
 import { OnProgressHandler } from './progress.js';
@@ -50,6 +51,7 @@ export const detectionMap = {
   animation: animation.detect,
   formLibrary: formLibrary.detect,
   apiPattern: apiPattern.detect,
+  hosting: hosting.detect,
   stats: getStats,
 };
 

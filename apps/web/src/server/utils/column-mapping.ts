@@ -20,4 +20,5 @@ export const columnMapping = {
   animation: 'animation',
   formLibrary: 'form_library',
   apiPattern: 'api_pattern',
+  hosting: 'hosting',
 } as const;

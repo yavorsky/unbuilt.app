@@ -25,6 +25,7 @@ const categoryLabelsMap: Record<keyof AnalysisFeaturesWithStats, string> = {
   animation: 'Animation',
   formLibrary: 'Form Library',
   apiPattern: 'API Pattern',
+  hosting: 'Hosting',
   stats: 'General Stats',
 };
 

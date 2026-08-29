@@ -27,6 +27,7 @@ export function extractSecondaryMatches(analysis: AnalyzeResult['analysis']) {
     animation: analysis.animation?.secondaryMatches || {},
     formLibrary: analysis.formLibrary?.secondaryMatches || {},
     apiPattern: analysis.apiPattern?.secondaryMatches || {},
+    hosting: analysis.hosting?.secondaryMatches || {},
   };
 
   return result;
@@ -54,6 +55,7 @@ export function extractDetectedFeatures(analysis: AnalyzeResult['analysis']) {
     animation: Array.from(analysis.animation?.detectedFeatures),
     formLibrary: Array.from(analysis.formLibrary?.detectedFeatures),
     apiPattern: Array.from(analysis.apiPattern?.detectedFeatures),
+    hosting: Array.from(analysis.hosting?.detectedFeatures),
   };
 
   return result;

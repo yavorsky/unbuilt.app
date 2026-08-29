@@ -62,6 +62,9 @@ export * as formLibraryMeta from './categories/form-library/meta/index.js';
 export * as apiPattern from './categories/api-pattern/index.js';
 export * as apiPatternMeta from './categories/api-pattern/meta/index.js';
 
+export * as hosting from './categories/hosting/index.js';
+export * as hostingMeta from './categories/hosting/meta/index.js';
+
 // Utils to calculate results
 export * from './detector/index.js';
 

@@ -54,6 +54,8 @@ export async function saveAnalysis(
       http_client: analysisData.analysis.httpClient?.name ?? null,
       http_client_confidence:
         analysisData.analysis.httpClient?.confidence ?? null,
+      hosting: analysisData.analysis.hosting?.name ?? null,
+      hosting_confidence: analysisData.analysis.hosting?.confidence ?? null,
       minifier: analysisData.analysis.minifier?.name ?? null,
       minifier_confidence: analysisData.analysis.minifier?.confidence ?? null,
       modules: analysisData.analysis.modules?.name ?? null,

@@ -33,6 +33,7 @@ export type AnalysisFeatures = {
   animation: AnalysisResult<typeof allFeatures.animation.detect>;
   formLibrary: AnalysisResult<typeof allFeatures.formLibrary.detect>;
   apiPattern: AnalysisResult<typeof allFeatures.apiPattern.detect>;
+  hosting: AnalysisResult<typeof allFeatures.hosting.detect>;
 };
 
 export type AnalysisKeys = keyof AnalysisFeatures;
