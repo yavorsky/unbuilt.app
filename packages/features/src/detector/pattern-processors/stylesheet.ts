@@ -1,4 +1,5 @@
 import { Pattern } from '../../types/pattern.js';
+import { isMatch } from 'super-regex';
 import { ProcessPatternsResult } from '../process-patterns.js';
 import { normalizeScore } from './utils.js';
 
@@ -11,8 +12,17 @@ export async function processStylesheetPattern<Names extends string>(
 ): Promise<void> {
   try {
     const matched = await Promise.resolve(
-      runtimePattern.test(styleSheetsContent)
+      isMatch(runtimePattern, styleSheetsContent, { timeout: 400 })
     );
+
+    if (matched === undefined) {
+      console.log(
+        'Timeout while running runtime stylesheet pattern',
+        pattern.name,
+        runtimePattern
+      );
+      return;
+    }
 
     if (matched) {
       if (debug) {

@@ -25,7 +25,7 @@ export const tailwindCSS = [
       /--tw-[a-z-]+:\s*[^;]*;/,
 
       // Multiple tw vars in block
-      /(?:\*|:before|:after|:first|:last|:only|:even:before|::after|::backdrop)\s*\{[^}]*(?:--tw-[a-z-]+:[^;]*;.*){5,}/s,
+      /(?:\*|:before|:after|:first|:last|:only|:even:before|::after|::backdrop)\s*\{(?:[^{}]*?--tw-[a-z-]+:[^;{}]*;){5,}/,
 
       // Reset structure
       /\*\s*,\s*:after\s*,\s*:before\s*\{[^}]*--tw-[a-z-]+:/,
